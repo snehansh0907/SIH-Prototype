@@ -1,0 +1,74 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --app-bg: #F4EFE6;
+    --card-bg: #FCFAF7;
+    --primary-green: #1B4332;
+    --primary-green-light: #2D6A4F;
+    --accent-wheat: #D4A373;
+  }
+
+  html {
+    -webkit-tap-highlight-color: transparent;
+    scroll-behavior: smooth;
+    font-family: 'Plus Jakarta Sans', 'Noto Sans Devanagari', system-ui, sans-serif;
+  }
+
+  body {
+    background-color: var(--app-bg);
+    color: #1c1917;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* Custom high-touch accessibility rules */
+  button, a {
+    touch-action: manipulation;
+  }
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+  
+  /* Glassmorphism with warm tints */
+  .glass-card {
+    background: rgba(252, 250, 247, 0.88);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(229, 215, 192, 0.6);
+  }
+
+  .glass-header {
+    background: rgba(27, 67, 50, 0.95);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+  }
+
+  .glass-nav {
+    background: rgba(255, 255, 255, 0.92);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border-top: 1px solid rgba(229, 215, 192, 0.5);
+  }
+
+  /* Hide scrollbar for tabs / chips */
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+}
+
+/* Custom leaflet map adjustments */
+.leaflet-container {
+  font-family: inherit;
+  border-radius: 1.25rem;
+  z-index: 10;
+}
