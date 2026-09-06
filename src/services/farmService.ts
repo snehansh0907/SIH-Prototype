@@ -92,6 +92,27 @@ export const farmService = {
     }
   },
 
+  async createFarm(payload: {
+    farmer_id: string;
+    farm_name: string;
+    latitude: number;
+    longitude: number;
+    village?: string;
+    taluka?: string;
+    district?: string;
+    area_acres?: number;
+  }): Promise<BackendFarm | null> {
+    try {
+      const res = await apiClient<{ success: boolean; data: BackendFarm }>('/farms', {
+        method: 'POST',
+        body: JSON.stringify(payload),
+      });
+      return res.data || null;
+    } catch {
+      return null;
+    }
+  },
+
   getCropCycleIdForCrop(cropId: string): string {
     const key = cropId.toLowerCase();
     return SEEDED_DEMO_CROP_CYCLES[key] || SEEDED_DEMO_CROP_CYCLES.tomato;

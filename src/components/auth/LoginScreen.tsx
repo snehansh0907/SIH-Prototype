@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Lock,
   User,
@@ -14,11 +14,17 @@ import {
   Copy,
   Check,
   AlertCircle,
-  ChevronDown
+  ChevronDown,
+  Navigation,
+  Search,
+  X,
+  Map as MapIcon,
 } from 'lucide-react';
 import { useLanguage } from '../../context/LanguageContext';
 import { useAuth } from '../../context/AuthContext';
 import { SEEDED_DEMO_FARMERS } from '../../services/authService';
+import { ALL_INDIAN_STATES_AND_UTS } from '../../data/indianStates';
+import { locationService, type LocationSearchResult } from '../../services/locationService';
 import type { Language } from '../../types';
 
 const CROPS = [
@@ -36,6 +42,8 @@ export const LoginScreen: React.FC = () => {
   const { language, setLanguage, t } = useLanguage();
   const { login, register, loginAsDemo } = useAuth();
 
+  const isMarathi = language === 'mr';
+
   // Language Popover Menu State
   const [showLangMenu, setShowLangMenu] = useState(false);
 
@@ -51,14 +59,36 @@ export const LoginScreen: React.FC = () => {
   // Quick Demo Autofill Selector ('ramesh' | 'vikas')
   const [selectedDemoKey, setSelectedDemoKey] = useState<'ramesh' | 'vikas'>('ramesh');
 
-  // Registration Form State
+  // Registration Form State: Personal Details
   const [regName, setRegName] = useState('');
   const [regPhone, setRegPhone] = useState('');
   const [regEmail, setRegEmail] = useState('');
   const [regPassword, setRegPassword] = useState('');
-  const [regVillage, setRegVillage] = useState('Niphad');
-  const [regTaluka, setRegTaluka] = useState('Niphad');
-  const [regDistrict, setRegDistrict] = useState('Nashik');
+
+  // India-Wide Location Search State
+  const [searchQuery, setSearchQuery] = useState('');
+  const [searchResults, setSearchResults] = useState<LocationSearchResult[]>([]);
+  const [isSearching, setIsSearching] = useState(false);
+  const [showDropdown, setShowDropdown] = useState(false);
+  const [searchDebounceTimer, setSearchDebounceTimer] = useState<any>(null);
+
+  // Structured Editable Address Details
+  const [regState, setRegState] = useState('');
+  const [regDistrict, setRegDistrict] = useState('');
+  const [regTaluka, setRegTaluka] = useState('');
+  const [regVillage, setRegVillage] = useState('');
+  const [regPincode, setRegPincode] = useState('');
+  const [regLatitude, setRegLatitude] = useState<number | undefined>(undefined);
+  const [regLongitude, setRegLongitude] = useState<number | undefined>(undefined);
+
+  // Geolocation & Detection Feedback State
+  const [detectStatus, setDetectStatus] = useState<
+    'idle' | 'detecting_coords' | 'finding_address' | 'success' | 'error'
+  >('idle');
+  const [locationSuccessMsg, setLocationSuccessMsg] = useState<string | null>(null);
+  const [locationErrorMsg, setLocationErrorMsg] = useState<string | null>(null);
+
+  // Farm Details
   const [regFarmName, setRegFarmName] = useState('My Green Farm');
   const [regAreaAcres, setRegAreaAcres] = useState<number | string>('2.5');
   const [regMainCrop, setRegMainCrop] = useState<string>('Tomato');
@@ -69,6 +99,13 @@ export const LoginScreen: React.FC = () => {
   // Success Screen State
   const [registeredFarmerId, setRegisteredFarmerId] = useState<string | null>(null);
   const [hasCopiedId, setHasCopiedId] = useState(false);
+
+  // Clean up timer on unmount
+  useEffect(() => {
+    return () => {
+      if (searchDebounceTimer) clearTimeout(searchDebounceTimer);
+    };
+  }, [searchDebounceTimer]);
 
   // ----------------------------------------------------
   // Handlers
@@ -83,6 +120,93 @@ export const LoginScreen: React.FC = () => {
       setLoginPassword(demo.passwords[0]);
       setLoginError(null);
     }
+  };
+
+  // Option A: Use My Current Location
+  const handleDetectCurrentLocation = async () => {
+    setLocationErrorMsg(null);
+    setLocationSuccessMsg(null);
+    setDetectStatus('detecting_coords');
+
+    try {
+      // 1. Request browser GPS permission and acquire coordinates
+      const coords = await locationService.getCurrentCoordinates();
+      setDetectStatus('finding_address');
+
+      // 2. Reverse geocode coordinates into structured address
+      const result = await locationService.reverseGeocode(coords.latitude, coords.longitude);
+      if (result.success) {
+        if (result.state) setRegState(result.state);
+        if (result.district) setRegDistrict(result.district);
+        if (result.taluka) setRegTaluka(result.taluka);
+        if (result.village) setRegVillage(result.village);
+        if (result.pincode) setRegPincode(result.pincode);
+        setRegLatitude(result.latitude);
+        setRegLongitude(result.longitude);
+
+        setLocationSuccessMsg(
+          isMarathi
+            ? '✓ स्थान यशस्वीरित्या आढळले'
+            : '✓ Location detected successfully'
+        );
+        setDetectStatus('success');
+      }
+    } catch (err: any) {
+      setDetectStatus('error');
+      setLocationErrorMsg(
+        err.message || 'Unable to detect your location. Please search manually.'
+      );
+    }
+  };
+
+  // Option B: India-Wide Location Search
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const val = e.target.value;
+    setSearchQuery(val);
+    setShowDropdown(true);
+
+    if (searchDebounceTimer) {
+      clearTimeout(searchDebounceTimer);
+    }
+
+    if (val.trim().length < 2) {
+      setSearchResults([]);
+      setIsSearching(false);
+      return;
+    }
+
+    setIsSearching(true);
+    const timer = setTimeout(async () => {
+      try {
+        const results = await locationService.searchLocation(val);
+        setSearchResults(results);
+      } catch {
+        setSearchResults([]);
+      } finally {
+        setIsSearching(false);
+      }
+    }, 350);
+
+    setSearchDebounceTimer(timer);
+  };
+
+  const handleSelectSearchResult = (item: LocationSearchResult) => {
+    setRegState(item.state || 'Maharashtra');
+    setRegDistrict(item.district || '');
+    setRegTaluka(item.taluka || item.village || '');
+    setRegVillage(item.village || item.taluka || '');
+    if (item.pincode) setRegPincode(item.pincode);
+    setRegLatitude(item.latitude);
+    setRegLongitude(item.longitude);
+
+    setSearchQuery(item.displayName);
+    setShowDropdown(false);
+    setLocationSuccessMsg(
+      isMarathi
+        ? `✓ स्थान निवडले: ${item.village || item.taluka}, ${item.district}`
+        : `✓ Selected: ${item.village || item.taluka}, ${item.district}`
+    );
+    setLocationErrorMsg(null);
   };
 
   // Handle Login Submit
@@ -122,6 +246,10 @@ export const LoginScreen: React.FC = () => {
       setRegError(t.valPassLength);
       return;
     }
+    if (!regState.trim()) {
+      setRegError(isMarathi ? 'कृपया तुमचे राज्य निवडा' : language === 'hi' ? 'कृपया अपना राज्य चुनें।' : 'Please select your state.');
+      return;
+    }
     if (!regVillage.trim() || !regTaluka.trim() || !regDistrict.trim()) {
       setRegError(t.valLocationFields);
       return;
@@ -137,12 +265,16 @@ export const LoginScreen: React.FC = () => {
       phone: regPhone.trim(),
       email: regEmail.trim() || undefined,
       password: regPassword.trim(),
-      village: regVillage.trim(),
-      taluka: regTaluka.trim(),
+      state: regState.trim(),
       district: regDistrict.trim(),
+      taluka: regTaluka.trim() || regVillage.trim(),
+      village: regVillage.trim(),
+      pincode: regPincode.trim() || undefined,
       farmName: regFarmName.trim(),
       areaAcres: regAreaAcres || 1,
       mainCrop: regMainCrop,
+      latitude: regLatitude,
+      longitude: regLongitude,
     });
     setIsRegistering(false);
 
@@ -212,11 +344,10 @@ export const LoginScreen: React.FC = () => {
                       setLanguage(langItem.code as Language);
                       setShowLangMenu(false);
                     }}
-                    className={`w-full px-3 py-2 text-left text-xs font-bold flex items-center justify-between transition-colors ${
-                      language === langItem.code
+                    className={`w-full px-3 py-2 text-left text-xs font-bold flex items-center justify-between transition-colors ${language === langItem.code
                         ? 'bg-amber-400 text-forest-950 font-black'
                         : 'text-stone-200 hover:bg-forest-800'
-                    }`}
+                      }`}
                   >
                     <span>{langItem.label}</span>
                     {language === langItem.code && <Check className="w-3.5 h-3.5 text-forest-950" />}
@@ -259,11 +390,10 @@ export const LoginScreen: React.FC = () => {
                 setActiveTab('login');
                 setLoginError(null);
               }}
-              className={`py-2.5 px-4 rounded-xl text-xs font-extrabold font-display transition-all duration-150 cursor-pointer flex items-center justify-center gap-1.5 ${
-                activeTab === 'login'
+              className={`py-2.5 px-4 rounded-xl text-xs font-extrabold font-display transition-all duration-150 cursor-pointer flex items-center justify-center gap-1.5 ${activeTab === 'login'
                   ? 'bg-forest-800 text-white shadow-md'
                   : 'text-stone-700 hover:text-stone-900'
-              }`}
+                }`}
             >
               <span>🔑 {t.loginTab}</span>
             </button>
@@ -274,11 +404,10 @@ export const LoginScreen: React.FC = () => {
                 setActiveTab('register');
                 setRegError(null);
               }}
-              className={`py-2.5 px-4 rounded-xl text-xs font-extrabold font-display transition-all duration-150 cursor-pointer flex items-center justify-center gap-1.5 ${
-                activeTab === 'register'
+              className={`py-2.5 px-4 rounded-xl text-xs font-extrabold font-display transition-all duration-150 cursor-pointer flex items-center justify-center gap-1.5 ${activeTab === 'register'
                   ? 'bg-forest-800 text-white shadow-md'
                   : 'text-stone-700 hover:text-stone-900'
-              }`}
+                }`}
             >
               <span>🌾 {t.createAccountTab}</span>
             </button>
@@ -324,11 +453,10 @@ export const LoginScreen: React.FC = () => {
                   <button
                     type="button"
                     onClick={() => handleAutofillDemo('ramesh')}
-                    className={`py-2 px-2.5 rounded-xl text-[11px] font-bold border transition-all active:scale-95 flex flex-col items-start ${
-                      selectedDemoKey === 'ramesh' && loginIdentifier === 'farmer123'
+                    className={`py-2 px-2.5 rounded-xl text-[11px] font-bold border transition-all active:scale-95 flex flex-col items-start ${selectedDemoKey === 'ramesh' && loginIdentifier === 'farmer123'
                         ? 'bg-amber-200/90 border-amber-400 text-amber-950 font-black shadow-sm'
                         : 'bg-white border-amber-200 text-stone-700 hover:bg-amber-100/60'
-                    }`}
+                      }`}
                   >
                     <span className="font-extrabold">🍅 Ramesh Patil</span>
                     <span className="text-[10px] text-stone-500">farmer123 (Tomato)</span>
@@ -337,11 +465,10 @@ export const LoginScreen: React.FC = () => {
                   <button
                     type="button"
                     onClick={() => handleAutofillDemo('vikas')}
-                    className={`py-2 px-2.5 rounded-xl text-[11px] font-bold border transition-all active:scale-95 flex flex-col items-start ${
-                      selectedDemoKey === 'vikas' && loginIdentifier === 'vikas123'
+                    className={`py-2 px-2.5 rounded-xl text-[11px] font-bold border transition-all active:scale-95 flex flex-col items-start ${selectedDemoKey === 'vikas' && loginIdentifier === 'vikas123'
                         ? 'bg-amber-200/90 border-amber-400 text-amber-950 font-black shadow-sm'
                         : 'bg-white border-amber-200 text-stone-700 hover:bg-amber-100/60'
-                    }`}
+                      }`}
                   >
                     <span className="font-extrabold">🌱 Vikas More</span>
                     <span className="text-[10px] text-stone-500">vikas123 (Soybean)</span>
@@ -427,7 +554,7 @@ export const LoginScreen: React.FC = () => {
         {/* TAB 2: CREATE NEW FARMER ACCOUNT */}
         {/* ==================================================== */}
         {activeTab === 'register' && (
-          <div className="p-5 sm:p-6 bg-[#F7F4EC] flex-1 flex flex-col justify-between animate-fadeIn max-h-[70vh] overflow-y-auto">
+          <div className="p-5 sm:p-6 bg-[#F7F4EC] flex-1 flex flex-col justify-between animate-fadeIn max-h-[72vh] overflow-y-auto">
             <div>
               <div className="text-center mb-4">
                 <h2 className="text-base font-black text-stone-900 font-display">
@@ -436,148 +563,381 @@ export const LoginScreen: React.FC = () => {
                 <p className="text-xs text-stone-500 font-medium mt-0.5">
                   {t.setupFarmProfileSub}
                 </p>
-              </div>
+              </div >
 
-              {/* Error Feedback */}
-              {regError && (
-                <div className="mb-4 p-3 rounded-2xl bg-rose-50 border border-rose-300 text-xs text-rose-900 font-bold flex items-start gap-2 animate-shake">
-                  <AlertCircle className="w-4 h-4 text-rose-600 shrink-0 mt-0.5" />
-                  <span>{regError}</span>
-                </div>
-              )}
+  {/* Error Feedback */ }
+{
+  regError && (
+    <div className="mb-4 p-3 rounded-2xl bg-rose-50 border border-rose-300 text-xs text-rose-900 font-bold flex items-start gap-2 animate-shake">
+      <AlertCircle className="w-4 h-4 text-rose-600 shrink-0 mt-0.5" />
+      <span>{regError}</span>
+    </div>
+  )
+}
 
-              <form onSubmit={handleRegisterSubmit} className="space-y-4">
-                {/* SECTION 1: 👤 About You */}
-                <div className="bg-white rounded-2xl p-3.5 border border-stone-300/80 shadow-sm space-y-2.5">
-                  <div className="flex items-center gap-1.5 text-xs font-black text-forest-900 font-display pb-1 border-b border-stone-100">
-                    <span>👤</span>
-                    <span>{t.aboutYou}</span>
+<form onSubmit={handleRegisterSubmit} className="space-y-4">
+  {/* SECTION 1: 👤 About You */}
+  <div className="bg-white rounded-2xl p-3.5 border border-stone-300/80 shadow-sm space-y-2.5">
+    <div className="flex items-center gap-1.5 text-xs font-black text-forest-900 font-display pb-1 border-b border-stone-100">
+      <span>👤</span>
+      <span>{t.aboutYou}</span>
+    </div>
+
+    <div>
+      <label className="block text-[10px] font-bold uppercase tracking-wider text-stone-600 mb-0.5">
+        {t.fullNameLabel}
+      </label>
+      <div className="relative">
+        <input
+          type="text"
+          value={regName}
+          onChange={(e) => setRegName(e.target.value)}
+          placeholder={t.fullNamePlaceholder}
+          className="w-full px-3 py-2 rounded-xl bg-stone-50 border border-stone-300 text-stone-900 text-xs font-semibold focus:outline-none focus:ring-2 focus:ring-forest-600"
+          required
+        />
+      </div>
+    </div>
+
+    <div className="grid grid-cols-2 gap-2">
+      <div>
+        <label className="block text-[10px] font-bold uppercase tracking-wider text-stone-600 mb-0.5">
+          {t.mobileNumberLabel}
+        </label>
+        <div className="relative">
+          <Phone className="w-3.5 h-3.5 absolute left-2.5 top-2.5 text-stone-400" />
+          <input
+            type="tel"
+            value={regPhone}
+            onChange={(e) => setRegPhone(e.target.value)}
+            placeholder="9876543210"
+            maxLength={10}
+            className="w-full pl-8 pr-2.5 py-2 rounded-xl bg-stone-50 border border-stone-300 text-stone-900 text-xs font-semibold focus:outline-none focus:ring-2 focus:ring-forest-600"
+            required
+          />
+        </div>
+      </div>
+
+      <div>
+        <label className="block text-[10px] font-bold uppercase tracking-wider text-stone-600 mb-0.5">
+          {t.passwordLabel}
+        </label>
+        <div className="relative">
+          <Lock className="w-3.5 h-3.5 absolute left-2.5 top-2.5 text-stone-400" />
+          <input
+            type="password"
+            value={regPassword}
+            onChange={(e) => setRegPassword(e.target.value)}
+            placeholder="••••••"
+            className="w-full pl-8 pr-2.5 py-2 rounded-xl bg-stone-50 border border-stone-300 text-stone-900 text-xs font-semibold focus:outline-none focus:ring-2 focus:ring-forest-600"
+            required
+          />
+        </div>
+      </div>
+    </div>
+
+    <div>
+      <label className="block text-[10px] font-bold uppercase tracking-wider text-stone-600 mb-0.5">
+        {t.emailOptionalLabel}
+      </label>
+      <div className="relative">
+        <Mail className="w-3.5 h-3.5 absolute left-2.5 top-2.5 text-stone-400" />
+        <input
+          type="email"
+          value={regEmail}
+          onChange={(e) => setRegEmail(e.target.value)}
+          placeholder="farmer@example.com"
+          className="w-full pl-8 pr-2.5 py-2 rounded-xl bg-stone-50 border border-stone-300 text-stone-900 text-xs font-semibold focus:outline-none focus:ring-2 focus:ring-forest-600"
+        />
+      </div>
+    </div>
+  </div>
+
+                {/* SECTION 2: 📍 Your Farm Location (Scalable India-wide System) */}
+                <div className="bg-white rounded-2xl p-4 border border-stone-300/80 shadow-sm space-y-3">
+                  <div className="pb-1 border-b border-stone-100">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-1.5 text-xs font-black text-forest-900 font-display">
+                        <MapPin className="w-4 h-4 text-forest-700" />
+                        <span>{isMarathi ? '📍 तुमच्या शेताचे स्थान' : '📍 Your Farm Location'}</span>
+                      </div>
+                      <span className="text-[10px] font-bold text-forest-800 bg-forest-100/90 px-2 py-0.5 rounded-full">
+                        {isMarathi ? 'अखिल भारतीय' : 'All-India'}
+                      </span>
+                    </div>
+                    <p className="text-[11px] text-stone-500 font-medium mt-0.5">
+                      {isMarathi
+                        ? 'शेताचे स्थान शोधा किंवा तुमचे सध्याचे स्थान वापरा.'
+                        : 'Search your farm location across India or use current location.'}
+                    </p>
                   </div>
 
-                  <div>
-                    <label className="block text-[10px] font-bold uppercase tracking-wider text-stone-600 mb-0.5">
-                      {t.fullNameLabel}
+                  {/* OPTION A: Use My Current Location Button */}
+                  <button
+                    type="button"
+                    onClick={handleDetectCurrentLocation}
+                    disabled={detectStatus === 'detecting_coords' || detectStatus === 'finding_address'}
+                    className="w-full py-2.5 px-3.5 rounded-xl bg-forest-50 hover:bg-forest-100 active:scale-[0.99] border-2 border-forest-600/70 text-forest-900 text-xs font-bold transition-all shadow-sm flex items-center justify-center gap-2 cursor-pointer disabled:opacity-60"
+                  >
+                    {detectStatus === 'detecting_coords' ? (
+                      <>
+                        <span className="w-3.5 h-3.5 rounded-full border-2 border-forest-700 border-t-transparent animate-spin" />
+                        <span>{isMarathi ? '⏳ स्थान शोधत आहे...' : '⏳ Detecting your location...'}</span>
+                      </>
+                    ) : detectStatus === 'finding_address' ? (
+                      <>
+                        <span className="w-3.5 h-3.5 rounded-full border-2 border-forest-700 border-t-transparent animate-spin" />
+                        <span>{isMarathi ? '📍 स्थान आढळले. पत्ता शोधत आहे...' : '📍 Location detected. Finding your address...'}</span>
+                      </>
+                    ) : (
+                      <>
+                        <Navigation className="w-3.5 h-3.5 text-forest-700 shrink-0" />
+                        <span>{isMarathi ? '📍 माझे सध्याचे स्थान वापरा' : '📍 Use My Current Location'}</span>
+                      </>
+                    )}
+                  </button>
+
+                  {/* Geolocation Success Feedback */}
+                  {locationSuccessMsg && (
+                    <div className="p-2.5 rounded-xl bg-emerald-50 border border-emerald-300 text-emerald-900 text-[11px] font-bold flex items-center gap-2 animate-fadeIn">
+                      <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
+                      <span className="truncate">{locationSuccessMsg}</span>
+                    </div>
+                  )}
+
+                  {/* Geolocation Error Feedback */}
+                  {locationErrorMsg && (
+                    <div className="p-2.5 rounded-xl bg-amber-50 border border-amber-300 text-amber-900 text-[11px] font-semibold flex items-start gap-2 animate-fadeIn">
+                      <AlertCircle className="w-4 h-4 text-amber-700 shrink-0 mt-0.5" />
+                      <span>{locationErrorMsg}</span>
+                    </div>
+                  )}
+
+                  {/* Divider */}
+                  <div className="relative flex items-center py-0.5">
+                    <div className="flex-grow border-t border-stone-200"></div>
+                    <span className="flex-shrink mx-3 text-[10px] uppercase font-bold text-stone-400">
+                      {isMarathi ? 'किंवा शोधा' : 'OR SEARCH'}
+                    </span>
+                    <div className="flex-grow border-t border-stone-200"></div>
+                  </div>
+
+                  {/* OPTION B: Smart India-Wide Search Bar */}
+                  <div className="relative">
+                    <label className="block text-[10px] font-bold uppercase text-stone-600 mb-1 font-display">
+                      {isMarathi
+                        ? '🔎 गाव, शहर, जिल्हा किंवा पिनकोड शोधा'
+                        : '🔎 Search Village, Town, City, District, or Pincode'}
                     </label>
                     <div className="relative">
-                      <input
-                        type="text"
-                        value={regName}
-                        onChange={(e) => setRegName(e.target.value)}
-                        placeholder={t.fullNamePlaceholder}
-                        className="w-full px-3 py-2 rounded-xl bg-stone-50 border border-stone-300 text-stone-900 text-xs font-semibold focus:outline-none focus:ring-2 focus:ring-forest-600"
-                        required
-                      />
-                    </div>
+                      <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-stone-400">
+                        <Search className="w-3.5 h-3.5" />
+                      </div>
+            <input
+              type="text"
+              value={searchQuery}
+              onChange={handleSearchChange}
+              onFocus={() => {
+                if (searchResults.length > 0) setShowDropdown(true);
+              }}
+              placeholder={
+                isMarathi
+                  ? 'उदा. निफाड, नाशिक, 422303 किंवा रामपूर...'
+                  : 'e.g. Niphad, Nashik, Pune, Rampur, 422303...'
+              }
+              className="w-full pl-9 pr-8 py-2.5 rounded-xl bg-stone-50 border border-stone-300 text-stone-900 text-xs font-semibold placeholder:text-stone-400 focus:outline-none focus:ring-2 focus:ring-forest-600 shadow-sm"
+            />
+            {searchQuery && (
+              <button
+                type="button"
+                onClick={() => {
+                  setSearchQuery('');
+                  setSearchResults([]);
+                  setShowDropdown(false);
+                }}
+                className="absolute inset-y-0 right-0 pr-2.5 flex items-center text-stone-400 hover:text-stone-600"
+              >
+                <X className="w-3.5 h-3.5" />
+              </button>
+            )}
+          </div>
+
+                    {/* Dynamic Auto-Complete Search Results Dropdown */}
+                    {showDropdown && (
+                      <div className="absolute z-20 w-full mt-1 bg-white rounded-xl shadow-xl border border-stone-300/80 overflow-hidden max-h-56 overflow-y-auto">
+                        {isSearching && (
+                          <div className="p-3 text-xs text-stone-500 flex items-center gap-2">
+                            <span className="w-3.5 h-3.5 rounded-full border-2 border-forest-600 border-t-transparent animate-spin" />
+                            <span>{isMarathi ? 'स्थान शोधत आहे...' : 'Searching across India...'}</span>
+                          </div>
+                        )}
+                        {!isSearching && searchResults.length === 0 && searchQuery.length >= 2 && (
+                          <div className="p-3 text-xs text-stone-500">
+                            {isMarathi
+                              ? 'अचूक स्थान सापडले नाही. खालील फील्डमध्ये तुमचे गाव मॅन्युअली टाईप करा.'
+                              : 'No exact location found. You can type your village name directly in the fields below.'}
+                          </div>
+                        )}
+                        {searchResults.map((item) => (
+                          <button
+                            key={item.id}
+                            type="button"
+                            onClick={() => handleSelectSearchResult(item)}
+                            className="w-full px-3 py-2 text-left text-xs text-stone-800 hover:bg-forest-50 border-b border-stone-100 last:border-0 flex items-start gap-2 transition-colors cursor-pointer"
+                          >
+                            <MapPin className="w-3.5 h-3.5 text-forest-700 shrink-0 mt-0.5" />
+                            <div className="truncate">
+                              <div className="font-bold text-stone-900 truncate">
+                                {item.village || item.taluka || item.displayName}
+                              </div>
+                              <div className="text-[10px] text-stone-500 truncate">{item.displayName}</div>
+                            </div>
+                          </button>
+                        ))}
+                      </div>
+                    )}
                   </div>
 
-                  <div className="grid grid-cols-2 gap-2">
-                    <div>
-                      <label className="block text-[10px] font-bold uppercase tracking-wider text-stone-600 mb-0.5">
-                        {t.mobileNumberLabel}
-                      </label>
-                      <div className="relative">
-                        <Phone className="w-3.5 h-3.5 absolute left-2.5 top-2.5 text-stone-400" />
+                  {/* STRUCTURED EDITABLE DETAILS (Review & Rural Fallback) */}
+                  <div className="space-y-2.5 pt-2 border-t border-stone-100">
+                    <div className="text-[10px] uppercase font-bold text-stone-500 flex items-center justify-between">
+                      <span>{isMarathi ? 'पडताळणी व दुरुस्ती (दुरुस्त करता येतील)' : 'Address Details (Review & Edit)'}</span>
+                      <span className="text-forest-700 font-medium lowercase">
+                        {isMarathi ? 'गाव स्वतः टाईप करू शकता' : 'village can be typed manually'}
+                      </span>
+                    </div>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                      {/* STATE Dropdown (All 28 States + 8 UTs) */}
+                      <div>
+                        <label className="block text-[10px] font-bold uppercase text-stone-600 mb-0.5 font-display">
+                          {isMarathi ? 'राज्य (State) *' : 'State *'}
+                        </label>
+                        <div className="relative">
+                          <select
+                            value={regState}
+                            onChange={(e) => setRegState(e.target.value)}
+                            className="w-full px-3 py-2 rounded-xl bg-stone-50 border border-stone-300 text-stone-900 text-xs font-bold focus:outline-none focus:ring-2 focus:ring-forest-600 appearance-none cursor-pointer"
+                          >
+                            <option value="">{isMarathi ? '-- राज्य निवडा --' : '-- Select State --'}</option>
+                            {ALL_INDIAN_STATES_AND_UTS.map((s) => (
+                              <option key={s.code} value={s.name}>
+                                {isMarathi ? (s.nameMr || s.name) : s.name} {s.isUT ? '(UT)' : ''}
+                              </option>
+                            ))}
+                          </select>
+                          <ChevronDown className="w-4 h-4 text-stone-500 absolute right-2.5 top-2.5 pointer-events-none" />
+                        </div>
+                      </div>
+
+                      {/* DISTRICT Input */}
+                      <div>
+                        <label className="block text-[10px] font-bold uppercase text-stone-600 mb-0.5 font-display">
+                          {isMarathi ? 'जिल्हा (District) *' : 'District *'}
+                        </label>
                         <input
-                          type="tel"
-                          value={regPhone}
-                          onChange={(e) => setRegPhone(e.target.value)}
-                          placeholder="9876543210"
-                          maxLength={10}
-                          className="w-full pl-8 pr-2.5 py-2 rounded-xl bg-stone-50 border border-stone-300 text-stone-900 text-xs font-semibold focus:outline-none focus:ring-2 focus:ring-forest-600"
+                          type="text"
+                          value={regDistrict}
+                          onChange={(e) => setRegDistrict(e.target.value)}
+                          placeholder={isMarathi ? 'उदा. Nashik' : 'e.g. Nashik, Rampur'}
+                          className="w-full px-3 py-2 rounded-xl bg-stone-50 border border-stone-300 text-stone-900 text-xs font-semibold focus:outline-none focus:ring-2 focus:ring-forest-600"
                           required
                         />
                       </div>
                     </div>
 
-                    <div>
-                      <label className="block text-[10px] font-bold uppercase tracking-wider text-stone-600 mb-0.5">
-                        {t.passwordLabel}
-                      </label>
-                      <div className="relative">
-                        <Lock className="w-3.5 h-3.5 absolute left-2.5 top-2.5 text-stone-400" />
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                      {/* TALUKA / TEHSIL Input */}
+                      <div>
+                        <label className="block text-[10px] font-bold uppercase text-stone-600 mb-0.5 font-display">
+                          {isMarathi ? 'तालुका / तहसील (Taluka)' : 'Taluka / Tehsil'}
+                        </label>
                         <input
-                          type="password"
-                          value={regPassword}
-                          onChange={(e) => setRegPassword(e.target.value)}
-                          placeholder="••••••"
-                          className="w-full pl-8 pr-2.5 py-2 rounded-xl bg-stone-50 border border-stone-300 text-stone-900 text-xs font-semibold focus:outline-none focus:ring-2 focus:ring-forest-600"
+                          type="text"
+                          value={regTaluka}
+                          onChange={(e) => setRegTaluka(e.target.value)}
+                          placeholder={isMarathi ? 'उदा. Niphad' : 'e.g. Niphad'}
+                          className="w-full px-3 py-2 rounded-xl bg-stone-50 border border-stone-300 text-stone-900 text-xs font-semibold focus:outline-none focus:ring-2 focus:ring-forest-600"
+                        />
+                      </div>
+
+                      {/* VILLAGE / LOCALITY Input (Rural Friendly) */}
+                      <div>
+                        <label className="block text-[10px] font-bold uppercase text-stone-600 mb-0.5 font-display">
+                          {isMarathi ? 'गाव / परिसर (Village) *' : 'Village / Locality *'}
+                        </label>
+                        <input
+                          type="text"
+                          value={regVillage}
+                          onChange={(e) => setRegVillage(e.target.value)}
+                          placeholder={isMarathi ? 'तुमच्या गावाचे नाव' : 'Enter your village name'}
+                          className="w-full px-3 py-2 rounded-xl bg-stone-50 border border-stone-300 text-stone-900 text-xs font-semibold focus:outline-none focus:ring-2 focus:ring-forest-600"
                           required
                         />
                       </div>
                     </div>
-                  </div>
 
-                  <div>
-                    <label className="block text-[10px] font-bold uppercase tracking-wider text-stone-600 mb-0.5">
-                      {t.emailOptionalLabel}
-                    </label>
-                    <div className="relative">
-                      <Mail className="w-3.5 h-3.5 absolute left-2.5 top-2.5 text-stone-400" />
-                      <input
-                        type="email"
-                        value={regEmail}
-                        onChange={(e) => setRegEmail(e.target.value)}
-                        placeholder="farmer@example.com"
-                        className="w-full pl-8 pr-2.5 py-2 rounded-xl bg-stone-50 border border-stone-300 text-stone-900 text-xs font-semibold focus:outline-none focus:ring-2 focus:ring-forest-600"
-                      />
-                    </div>
-                  </div>
-                </div>
-
-                {/* SECTION 2: 📍 Your Location */}
-                <div className="bg-white rounded-2xl p-3.5 border border-stone-300/80 shadow-sm space-y-2.5">
-                  <div className="flex items-center gap-1.5 text-xs font-black text-forest-900 font-display pb-1 border-b border-stone-100">
-                    <MapPin className="w-3.5 h-3.5 text-forest-700" />
-                    <span>{t.yourLocation}</span>
-                  </div>
-
-                  <div className="grid grid-cols-3 gap-2">
-                    <div>
-                      <label className="block text-[10px] font-bold uppercase tracking-wider text-stone-600 mb-0.5">
-                        {t.villageLabel}
+                    {/* PINCODE Input */}
+                    <div className="w-full sm:w-1/2">
+                      <label className="block text-[10px] font-bold uppercase text-stone-600 mb-0.5 font-display">
+                        {isMarathi ? 'पिनकोड (Pincode)' : 'Pincode'}
                       </label>
-                      <input
-                        type="text"
-                        value={regVillage}
-                        onChange={(e) => setRegVillage(e.target.value)}
-                        placeholder="Niphad"
-                        className="w-full px-2.5 py-2 rounded-xl bg-stone-50 border border-stone-300 text-stone-900 text-xs font-semibold focus:outline-none focus:ring-2 focus:ring-forest-600"
-                        required
-                      />
-                    </div>
+      <input
+        type="text"
+        value={regPincode}
+        onChange={(e) => setRegPincode(e.target.value)}
+        placeholder="e.g. 422303"
+        maxLength={6}
+        className="w-full px-3 py-2 rounded-xl bg-stone-50 border border-stone-300 text-stone-900 text-xs font-semibold focus:outline-none focus:ring-2 focus:ring-forest-600"
+      />
+    </div>
+</div>
 
-                    <div>
-                      <label className="block text-[10px] font-bold uppercase tracking-wider text-stone-600 mb-0.5">
-                        {t.talukaLabel}
-                      </label>
-                      <input
-                        type="text"
-                        value={regTaluka}
-                        onChange={(e) => setRegTaluka(e.target.value)}
-                        placeholder="Niphad"
-                        className="w-full px-2.5 py-2 rounded-xl bg-stone-50 border border-stone-300 text-stone-900 text-xs font-semibold focus:outline-none focus:ring-2 focus:ring-forest-600"
-                        required
-                      />
-                    </div>
+{/* Farm Location Summary & Map Coordinates Preview */ }
+{
+  regLatitude && regLongitude && (
+    <div className="pt-2 border-t border-stone-100 space-y-2">
+      <div className="flex items-center justify-between text-[11px] bg-stone-50 rounded-xl p-2.5 border border-stone-200">
+        <div className="flex items-center gap-1.5 text-stone-700 font-bold truncate">
+          <MapPin className="w-3.5 h-3.5 text-forest-700 shrink-0" />
+          <span className="truncate">
+            📍 {regVillage || regTaluka}, {regDistrict}, {regState}
+            {regPincode ? ` - ${regPincode}` : ''}
+          </span>
+        </div>
+        <span className="shrink-0 px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 text-[10px] font-extrabold flex items-center gap-1 border border-emerald-300">
+          <span className="w-1.5 h-1.5 rounded-full bg-emerald-600 animate-pulse" />
+          <span>GPS ✓</span>
+        </span>
+      </div>
 
-                    <div>
-                      <label className="block text-[10px] font-bold uppercase tracking-wider text-stone-600 mb-0.5">
-                        {t.districtLabel}
-                      </label>
-                      <input
-                        type="text"
-                        value={regDistrict}
-                        onChange={(e) => setRegDistrict(e.target.value)}
-                        placeholder="Nashik"
-                        className="w-full px-2.5 py-2 rounded-xl bg-stone-50 border border-stone-300 text-stone-900 text-xs font-semibold focus:outline-none focus:ring-2 focus:ring-forest-600"
-                        required
-                      />
-                    </div>
-                  </div>
-                </div>
+      {/* Optional Interactive Map Embed Preview */}
+      <div className="rounded-2xl overflow-hidden border-2 border-forest-600/40 shadow-sm relative h-28 bg-stone-100">
+        <iframe
+          title="Farm Location Map"
+          width="100%"
+          height="100%"
+          frameBorder="0"
+          scrolling="no"
+          marginHeight={0}
+          marginWidth={0}
+          src={`https://www.openstreetmap.org/export/embed.html?bbox=${regLongitude - 0.04}%2C${regLatitude - 0.03}%2C${regLongitude + 0.04}%2C${regLatitude + 0.03}&layer=mapnik&marker=${regLatitude}%2C${regLongitude}`}
+          className="w-full h-full pointer-events-none"
+        />
+        <div className="absolute top-2 left-2 bg-stone-950/80 text-wheat-200 text-[10px] font-bold px-2 py-0.5 rounded-md flex items-center gap-1 shadow-md">
+          <MapIcon className="w-3 h-3 text-amber-300" />
+          <span>
+            {regLatitude.toFixed(4)}°N, {regLongitude.toFixed(4)}°E
+          </span>
+        </div>
+      </div>
+    </div>
+  )
+}
+                </div >
 
-                {/* SECTION 3: 🌾 Your Farm */}
-                <div className="bg-white rounded-2xl p-3.5 border border-stone-300/80 shadow-sm space-y-2.5">
+  {/* SECTION 3: 🌾 Your Farm */ }
+  < div className = "bg-white rounded-2xl p-3.5 border border-stone-300/80 shadow-sm space-y-2.5" >
                   <div className="flex items-center gap-1.5 text-xs font-black text-forest-900 font-display pb-1 border-b border-stone-100">
                     <Sprout className="w-3.5 h-3.5 text-forest-700" />
                     <span>{t.yourFarm}</span>
@@ -614,31 +974,30 @@ export const LoginScreen: React.FC = () => {
                     </div>
                   </div>
 
-                  {/* Main Crop Selectable Cards (Expanded to 8 Crops) */}
-                  <div>
-                    <label className="block text-[10px] font-bold uppercase tracking-wider text-stone-600 mb-1.5 font-display">
-                      {t.selectMainCrop}
-                    </label>
-                    <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
-                      {CROPS.map((c) => (
-                        <button
-                          key={c.key}
-                          type="button"
-                          onClick={() => setRegMainCrop(c.key)}
-                          className={`py-2 px-1.5 rounded-xl border text-xs font-extrabold flex flex-col items-center justify-center gap-0.5 transition-all cursor-pointer ${
-                            regMainCrop === c.key
-                              ? 'bg-forest-800 text-white border-forest-900 shadow-md scale-[1.02]'
-                              : 'bg-stone-50 text-stone-700 border-stone-300 hover:bg-stone-100'
-                          }`}
-                        >
-                          <span className="text-base">{c.icon}</span>
-                          <span className="truncate max-w-full text-[11px]">
-                            {t[c.transKey as keyof typeof t] || c.defaultLabel}
-                          </span>
-                        </button>
-                      ))}
-                    </div>
-                  </div>
+{/* Main Crop Selectable Cards (Expanded to 8 Crops) */ }
+<div>
+  <label className="block text-[10px] font-bold uppercase tracking-wider text-stone-600 mb-1.5 font-display">
+    {t.selectMainCrop}
+  </label>
+  <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+    {CROPS.map((c) => (
+      <button
+        key={c.key}
+        type="button"
+        onClick={() => setRegMainCrop(c.key as any)}
+        className={`py-2 px-1 rounded-xl border text-xs font-extrabold flex flex-col items-center gap-0.5 transition-all cursor-pointer ${regMainCrop === c.key
+            ? 'bg-forest-800 text-white border-forest-900 shadow-md scale-[1.02]'
+            : 'bg-stone-50 text-stone-700 border-stone-300 hover:bg-stone-100'
+          }`}
+      >
+        <span className="text-base">{c.icon}</span>
+        <span className="truncate max-w-full text-[11px]">
+          {t[c.transKey as keyof typeof t] || c.defaultLabel}
+        </span>
+      </button>
+    ))}
+  </div>
+</div>
                 </div>
 
                 {/* Submit Registration Button */}
@@ -649,82 +1008,83 @@ export const LoginScreen: React.FC = () => {
                 >
                   <span>{isRegistering ? t.creatingAccount : t.btnCreateAccountSubmit}</span>
                   <ArrowRight className="w-4 h-4 text-forest-950" />
-                </button>
-              </form>
-            </div>
-          </div>
+                </button >
+              </form >
+            </div >
+          </div >
         )}
-      </div>
+      </div >
 
-      {/* ==================================================== */}
-      {/* REGISTRATION SUCCESS MODAL SCREEN */}
-      {/* ==================================================== */}
-      {registeredFarmerId && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-stone-950/75 backdrop-blur-sm animate-fadeIn">
-          <div className="w-full max-w-sm bg-[#F7F4EC] rounded-3xl border-2 border-forest-700 shadow-2xl overflow-hidden text-center animate-scaleUp">
-            {/* Top Celebration Banner */}
-            <div className="bg-gradient-to-b from-forest-900 to-forest-800 text-white p-6 relative">
-              <div className="w-16 h-16 rounded-3xl bg-amber-400 text-forest-950 flex items-center justify-center mx-auto mb-3 text-3xl shadow-lg animate-bounce">
-                🌱
-              </div>
-              <h3 className="text-xl font-black font-display tracking-tight text-white mb-1">
-                {t.welcomeModalTitle}
-              </h3>
-              <p className="text-xs text-wheat-200 font-medium">
-                {t.accountCreatedSub}
-              </p>
-            </div>
-
-            {/* Farmer ID High-Contrast Display Card */}
-            <div className="p-5 space-y-4">
-              <div className="bg-white rounded-2xl p-4 border-2 border-forest-600/60 shadow-sm">
-                <div className="text-[11px] uppercase font-bold text-stone-500 mb-1">
-                  {t.permanentFarmerId}
-                </div>
-                <div className="text-2xl font-black font-mono tracking-wider text-forest-900 select-all mb-2">
-                  {registeredFarmerId}
-                </div>
-
-                <button
-                  type="button"
-                  onClick={handleCopyFarmerId}
-                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-stone-100 hover:bg-stone-200 text-stone-700 text-xs font-bold transition-all active:scale-95 cursor-pointer border border-stone-300"
-                >
-                  {hasCopiedId ? (
-                    <>
-                      <Check className="w-3.5 h-3.5 text-emerald-600" />
-                      <span className="text-emerald-700">{t.copied}</span>
-                    </>
-                  ) : (
-                    <>
-                      <Copy className="w-3.5 h-3.5 text-stone-600" />
-                      <span>{t.btnCopyId}</span>
-                    </>
-                  )}
-                </button>
-              </div>
-
-              <div className="bg-emerald-50 rounded-xl p-3 border border-emerald-200 text-left text-xs text-emerald-900 font-medium flex items-start gap-2">
-                <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
-                <span>{t.saveIdNotice}</span>
-              </div>
-
-              {/* Continue to Dashboard CTA */}
-              <button
-                type="button"
-                onClick={() => {
-                  // Closing the modal lets AuthContext active session render the dashboard
-                  setRegisteredFarmerId(null);
-                }}
-                className="w-full py-3.5 px-4 rounded-2xl bg-forest-800 hover:bg-forest-900 active:scale-[0.98] text-white font-black text-xs font-display transition-all shadow-elevated flex items-center justify-center gap-2 cursor-pointer border-2 border-forest-700"
-              >
-                <span>{t.btnContinueToDashboard}</span>
-                <ArrowRight className="w-4 h-4 text-amber-300" />
-              </button>
-            </div>
+  {/* ==================================================== */ }
+{/* REGISTRATION SUCCESS MODAL SCREEN */ }
+{/* ==================================================== */ }
+{
+  registeredFarmerId && (
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-stone-950/75 backdrop-blur-sm animate-fadeIn">
+      <div className="w-full max-w-sm bg-[#F7F4EC] rounded-3xl border-2 border-forest-700 shadow-2xl overflow-hidden text-center animate-scaleUp">
+        {/* Top Celebration Banner */}
+        <div className="bg-gradient-to-b from-forest-900 to-forest-800 text-white p-6 relative">
+          <div className="w-16 h-16 rounded-3xl bg-amber-400 text-forest-950 flex items-center justify-center mx-auto mb-3 text-3xl shadow-lg animate-bounce">
+            🌱
           </div>
+          <h3 className="text-xl font-black font-display tracking-tight text-white mb-1">
+            {t.welcomeModalTitle}
+          </h3>
+          <p className="text-xs text-wheat-200 font-medium">
+            {t.accountCreatedSub}
+          </p>
         </div>
-      )}
+
+        {/* Farmer ID High-Contrast Display Card */}
+        <div className="p-5 space-y-4">
+          <div className="bg-white rounded-2xl p-4 border-2 border-forest-600/60 shadow-sm">
+            <div className="text-[11px] uppercase font-bold text-stone-500 mb-1">
+              {t.permanentFarmerId}
+            </div>
+            <div className="text-2xl font-black font-mono tracking-wider text-forest-900 select-all mb-2">
+              {registeredFarmerId}
+            </div>
+
+            <button
+              type="button"
+              onClick={handleCopyFarmerId}
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-stone-100 hover:bg-stone-200 text-stone-700 text-xs font-bold transition-all active:scale-95 cursor-pointer border border-stone-300"
+            >
+              {hasCopiedId ? (
+                <>
+                  <Check className="w-3.5 h-3.5 text-emerald-600" />
+                  <span className="text-emerald-700">{t.copied}</span>
+                </>
+              ) : (
+                <>
+                  <Copy className="w-3.5 h-3.5 text-stone-600" />
+                  <span>{t.btnCopyId}</span>
+                </>
+              )}
+            </button>
+          </div>
+
+          <div className="bg-emerald-50 rounded-xl p-3 border border-emerald-200 text-left text-xs text-emerald-900 font-medium flex items-start gap-2">
+            <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
+            <span>{t.saveIdNotice}</span>
+          </div>
+
+          {/* Continue to Dashboard CTA */}
+          <button
+            type="button"
+            onClick={() => {
+              setRegisteredFarmerId(null);
+            }}
+            className="w-full py-3.5 px-4 rounded-2xl bg-forest-800 hover:bg-forest-900 active:scale-[0.98] text-white font-black text-xs font-display transition-all shadow-elevated flex items-center justify-center gap-2 cursor-pointer border-2 border-forest-700"
+          >
+            <span>{t.btnContinueToDashboard}</span>
+            <ArrowRight className="w-4 h-4 text-amber-300" />
+          </button>
+        </div>
+      </div>
     </div>
+  )
+}
+    </div >
   );
 };

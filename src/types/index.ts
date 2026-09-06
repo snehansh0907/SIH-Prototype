@@ -14,9 +14,13 @@ export interface FarmerUser {
   village: string;
   taluka: string;
   district: string;
+  state?: string;
+  pincode?: string;
   location: string;
   locationMr?: string;
   locationHi?: string;
+  latitude?: number;
+  longitude?: number;
   userType: 'demo' | 'registered';
   farmName: string;
   areaAcres: number | string;
