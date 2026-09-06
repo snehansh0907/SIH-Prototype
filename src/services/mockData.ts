@@ -23,6 +23,14 @@ export const MOCK_CROPS: CropInfo[] = [
         condition: 'Healthy Leaf',
         url: 'https://images.unsplash.com/photo-1560493676-04071c5f467b?auto=format&fit=crop&w=600&q=80',
         isHealthy: true,
+      },
+      {
+        id: 'tomato_blurry_uncertain',
+        title: 'Blurry / Unclear Leaf Photo (Uncertain AI)',
+        titleMr: 'अंधुक / अस्पष्ट पानाचा फोटो (अनिश्चित)',
+        condition: 'Uncertain AI',
+        url: 'https://images.unsplash.com/photo-1530836369250-ef72a3f5cda8?auto=format&fit=crop&w=600&q=80',
+        isHealthy: false,
       }
     ]
   },
@@ -59,40 +67,6 @@ export const MOCK_CROPS: CropInfo[] = [
         isHealthy: false,
       }
     ]
-  },
-  {
-    id: 'rice',
-    name: 'Rice (Paddy)',
-    nameMr: 'भात (धान)',
-    icon: '🌾',
-    scientificName: 'Oryza sativa',
-    sampleImages: [
-      {
-        id: 'rice_blast',
-        title: 'Spindle-shaped Lesions on Rice',
-        titleMr: 'भाताच्या पानांवर लांबट करपा चट्टे',
-        condition: 'Rice Blast',
-        url: 'https://images.unsplash.com/photo-1536704689578-8ffe53d499f5?auto=format&fit=crop&w=600&q=80',
-        isHealthy: false,
-      }
-    ]
-  },
-  {
-    id: 'potato',
-    name: 'Potato',
-    nameMr: 'बटाटा',
-    icon: '🥔',
-    scientificName: 'Solanum tuberosum',
-    sampleImages: [
-      {
-        id: 'potato_late_blight',
-        title: 'Water-soaked Dark Patches on Potato',
-        titleMr: 'बटाट्याच्या पानांवर काळपट पाणथळ चट्टे',
-        condition: 'Late Blight',
-        url: 'https://images.unsplash.com/photo-1518977676601-b53f82aba655?auto=format&fit=crop&w=600&q=80',
-        isHealthy: false,
-      }
-    ]
   }
 ];
 
@@ -106,40 +80,45 @@ export const DEFAULT_DIAGNOSIS: DiagnosisResult = {
   pathogen: 'Alternaria solani (Fungal Pathogen)',
   severity: 'moderate',
   confidenceLabel: 'reliable',
+  isUncertain: false,
   detectedAt: 'Today, 10:15 AM',
   imageUrl: 'https://images.unsplash.com/photo-1592417817098-8f3d69102a5e?auto=format&fit=crop&w=600&q=80',
   whatToDoToday: [
     {
       step: 1,
-      title: 'Remove heavily affected lower leaves',
-      titleMr: 'खालची जास्त बाधित पाने काढून नष्ट करा',
-      description: 'Prune infected lower leaves touching soil. Do not leave them in the field; bury or burn them.',
-      descriptionMr: 'मातीला टेकलेली व करपलेली पाने कात्रीने काळजीपूर्वक कापा. ही पाने शेतात न टाकता नष्ट करा.',
-      priority: 'critical'
+      title: 'Avoid overhead watering & maintain ridge drainage',
+      titleMr: 'वरतून पाणी देणे टाळा व वाफ्यांमध्ये पाणी साचू देऊ नका',
+      description: 'Do not wet foliage during humid evenings. Ensure clear drainage between crop ridges.',
+      descriptionMr: 'संध्याकाळी पानांवर पाणी फवारू नका. वाफ्यांमध्ये साचलेल्या पाण्याचा निचरा करा.',
+      priority: 'critical',
+      category: 'cultural'
     },
     {
       step: 2,
-      title: 'Avoid overhead watering & excess moisture',
-      titleMr: 'वरतून पाणी देणे टाळा व ठिबक सिंचन वापरा',
-      description: 'Do not wet the foliage in evening hours. Ensure clear drainage between crop ridges.',
-      descriptionMr: 'संध्याकाळी पानांवर पाणी फवारू नका. वाफ्यांमध्ये पाणी साचू नये याची काळजी घ्या.',
-      priority: 'critical'
+      title: 'Prune & destroy heavily affected lower leaves',
+      titleMr: 'खालची जास्त बाधित पाने कापून नष्ट करा',
+      description: 'Prune infected lower leaves touching soil using clean shears. Burn or deeply bury removed leaves.',
+      descriptionMr: 'मातीला टेकलेली व करपलेली पाने काळजीपूर्वक कापा. ही पाने शेतात न टाकता नष्ट करा.',
+      priority: 'critical',
+      category: 'mechanical'
     },
     {
       step: 3,
-      title: 'Inspect nearby plants within 5-meter radius',
-      titleMr: 'लगतच्या ५ मीटर परिसरातील इतर रोपे तपासा',
-      description: 'Check adjacent rows for initial brown target-like spots on leaves.',
-      descriptionMr: 'शेजारील ओळींमधील पानांवर गोलाकार तपकिरी डाग आहेत का ते नीट पाहा.',
-      priority: 'important'
+      title: 'Apply Neem-based organic extract (NSKE 5%)',
+      titleMr: 'निमार्क ५% किंवा कडुनिंब अर्काची फवारणी',
+      description: 'Spray Neem seed kernel extract (NSKE 5%) @ 5ml/L to inhibit fungal spore multiplication naturally.',
+      descriptionMr: 'बुरशीची वाढ नैसर्गिकरीत्या रोखण्यासाठी निमार्क ५% ची फवारणी करा.',
+      priority: 'important',
+      category: 'biological'
     },
     {
       step: 4,
-      title: 'Preventive Spray (If humidity > 80%)',
-      titleMr: 'प्रतिबंधात्मक फवारणी (आर्द्रता जास्त असल्यास)',
-      description: 'Spray Mancozeb 75% WP @ 2.5g/L water OR Copper Oxychloride 50% WP @ 3g/L during dry morning hours.',
-      descriptionMr: 'सकाळच्या वेळी मॅन्कोझेब ७५% WP (२.५ ग्रॅम प्रति लिटर पाणी) किंवा कॉपर ऑक्सिक्लोराईडची फवारणी करा.',
-      priority: 'preventive'
+      title: 'Targeted Fungicide Spray (Only if humidity > 80%)',
+      titleMr: 'नियंत्रित बुरशीनाशक फवारणी (आर्द्रता जास्त असल्यास)',
+      description: 'Spray Mancozeb 75% WP @ 2.5g/L water OR Copper Oxychloride 50% WP @ 3g/L during clear morning hours.',
+      descriptionMr: 'सकाळच्या वेळी मॅन्कोझेब ७५% WP (२.५ ग्रॅम प्रति लिटर पाणी) ची नियंत्रित फवारणी करा.',
+      priority: 'preventive',
+      category: 'chemical'
     }
   ],
   whatToMonitor: [
@@ -181,8 +160,8 @@ export const MOCK_WEATHER: WeatherCondition = {
 export const MOCK_RISK_FORECAST: RiskForecast = {
   cropId: 'tomato',
   currentLevel: 'moderate',
-  summary: 'Disease pressure will peak in Day 3 & 4 due to combined rainfall and sustained humidity.',
-  summaryMr: 'पाऊस आणि सततच्या आर्द्रतेमुळे ३ऱ्या आणि ४थ्या दिवशी रोगाचा प्रादुर्भाव सर्वोच्च राहू शकतो.',
+  summary: 'Disease risk is INCREASING because relative humidity is at 84% and rainfall is expected tomorrow.',
+  summaryMr: 'हवेतील आर्द्रता ८४% असून उद्या पावसाची शक्यता असल्याने रोगाचा धोका वाढणार आहे.',
   timeline: [
     { day: 'Today', dayMr: 'आज', date: 'Sat, Sep 6', level: 'moderate', score: 55 },
     { day: 'Tomorrow', dayMr: 'उद्या', date: 'Sun, Sep 7', level: 'moderate', score: 62 },
@@ -193,38 +172,38 @@ export const MOCK_RISK_FORECAST: RiskForecast = {
   reasons: [
     {
       id: 'r-humidity',
-      title: 'Sustained High Humidity',
-      titleMr: 'सतत जास्त आर्द्रता',
+      title: 'High Relative Humidity (84%)',
+      titleMr: 'जास्त हवेतील आर्द्रता (८४%)',
       icon: 'droplet',
-      detail: '80% - 88% humidity projected continuously for next 3 days.',
-      detailMr: 'पुढील ३ दिवस आर्द्रता ८०% ते ८८% दरम्यान राहण्याचा अंदाज.'
+      detail: '80% - 88% humidity projected continuously over next 3 days, accelerating fungal spore germination.',
+      detailMr: 'पुढील ३ दिवस आर्द्रता ८०% ते ८८% दरम्यान राहण्याचा अंदाज, ज्याने बुरशीचे बीजाणू वेगाने वाढतात.'
     },
     {
       id: 'r-rain',
-      title: 'Rain Expected Tomorrow',
-      titleMr: 'उद्या पावसाचा अंदाज',
+      title: 'Rainfall Expected in 24 hrs',
+      titleMr: '२४ तासांत पावसाची शक्यता',
       icon: 'cloud-rain',
-      detail: 'Precipitation will wash away unprotected foliage and splash spores.',
-      detailMr: 'पावसाच्या पाण्यामुळे बुरशीचे कण शेजारील निरोगी पानांवर उडू शकतात.'
+      detail: 'Rain splash spreads fungal spores onto upper healthy leaves.',
+      detailMr: 'पावसाच्या पाण्यामुळे बुरशीचे कण निरोगी पानांवर उडतात.'
     },
     {
       id: 'r-cluster',
       title: '14 Confirmed Cases Nearby',
       titleMr: 'परिसरात १४ शेतांमध्ये प्रादुर्भाव',
       icon: 'map-pin',
-      detail: 'Neighboring farms in Dindori sector reported Early Blight within 5 km.',
-      detailMr: '५ किमी परिसरातील दिंडोरी विभागातील इतर शेतांमध्येही करपा रोग नोंदवला गेला आहे.'
+      detail: 'Neighboring farms within 5 km report active Early Blight clusters.',
+      detailMr: '५ किमी परिसरातील शेतांमध्ये करपा रोगाचे क्लस्टर आढळले आहेत.'
     }
   ],
-  recommendation: 'Complete protective copper/mancozeb spray today before rain starts. Ensure ridge drainage is clear.',
-  recommendationMr: 'पाऊस सुरू होण्यापूर्वी आजच सकाळच्या सत्रात प्रतिबंधात्मक फवारणी पूर्ण करा आणि शेतात पाण्याचा निचरा व्यवस्थित ठेवा.'
+  recommendation: 'Complete cultural leaf pruning and biological/copper spray today before rain starts.',
+  recommendationMr: 'पाऊस सुरू होण्यापूर्वी आजच सकाळच्या सत्रात बाधित पाने कापा व योग्य फवारणी पूर्ण करा.'
 };
 
 export const MOCK_AREA_REPORT: AreaReport = {
   district: 'Nashik',
   districtMr: 'नाशिक',
-  subDistrict: 'Dindori & Niphad Rural',
-  subDistrictMr: 'दिंडोरी व निफाड ग्रामीण',
+  subDistrict: 'Dindori & Niphad Belt',
+  subDistrictMr: 'दिंडोरी व निफाड पट्टा',
   status: 'moderate',
   diseaseTrend: 'increasing',
   activeCasesCount: 14,
@@ -235,8 +214,8 @@ export const MOCK_AREA_REPORT: AreaReport = {
       lat: 20.082,
       lng: 73.845,
       intensity: 'high',
-      areaName: 'Dindori Sector B',
-      areaNameMr: 'दिंडोरी विभाग ब',
+      areaName: 'Dindori Cluster A',
+      areaNameMr: 'दिंडोरी क्लस्टर अ',
       crop: 'Tomato',
       reportedCases: 6,
       distanceKm: 2.1
@@ -246,8 +225,8 @@ export const MOCK_AREA_REPORT: AreaReport = {
       lat: 20.035,
       lng: 73.892,
       intensity: 'moderate',
-      areaName: 'Niphad Border Road',
-      areaNameMr: 'निफाड सीमा रस्ता',
+      areaName: 'Niphad Border Sector',
+      areaNameMr: 'निफाड सीमा क्षेत्र',
       crop: 'Tomato & Chilli',
       reportedCases: 5,
       distanceKm: 3.8
@@ -257,36 +236,36 @@ export const MOCK_AREA_REPORT: AreaReport = {
       lat: 19.992,
       lng: 73.791,
       intensity: 'low',
-      areaName: 'Panchavati West Belt',
-      areaNameMr: 'पंचवटी पश्चिम पट्टा',
+      areaName: 'Panchavati Belt',
+      areaNameMr: 'पंचवटी पट्टा',
       crop: 'Soybean',
       reportedCases: 3,
       distanceKm: 4.9
     }
   ],
-  communityAdvisory: 'KVK Nashik advisory: Early Blight outbreak alert issued for tomato growers across Niphad and Dindori. Farmers are advised to avoid nitrogen fertilizer over-application and monitor lower canopies.',
-  communityAdvisoryMr: 'कृषी विज्ञान केंद्र नाशिक सल्ला: दिंडोरी व निफाड तालुक्यातील टोमॅटो उत्पादक शेतकऱ्यांसाठी करपा रोगाचा इशारा. नत्र खतांचा अतिवापर टाळा व पानांच्या खालच्या भागाची नियमित तपासणी करा.'
+  communityAdvisory: 'Regional Advisory: Early Blight outbreak alert issued for tomato growers across Niphad and Dindori. Farmers are advised to clear ridge drainage and inspect lower leaf canopy.',
+  communityAdvisoryMr: 'प्रादेशिक सल्ला: दिंडोरी व निफाड तालुक्यातील टोमॅटो उत्पादक शेतकऱ्यांसाठी करपा रोगाचा इशारा. पाण्याचा निचरा ठेवा व खालच्या पानांची तपासणी करा.'
 };
 
 export const MOCK_EXPERT: ExpertProfile = {
-  id: 'exp-ramesh-patil',
-  name: 'Dr. Ramesh Patil',
-  nameMr: 'डॉ. रमेश पाटील',
-  role: 'Senior Plant Pathologist & Agronomist',
-  roleMr: 'वरिष्ठ वनस्पती रोग शास्त्रज्ञ',
-  station: 'Krishi Vigyan Kendra (KVK), Nashik',
-  stationMr: 'कृषी विज्ञान केंद्र (KVK), नाशिक',
+  id: 'exp-demo-patil',
+  name: 'Dr. R. Patil (Demo Agronomist)',
+  nameMr: 'डॉ. आर. पाटील (डेमो कृषी शास्त्रज्ञ)',
+  role: 'Plant Pathologist (Prototype Demo Data)',
+  roleMr: 'वनस्पती रोग शास्त्रज्ञ (प्रोटोटाइप नमुना)',
+  station: 'KVK Nashik Advisory Desk (Demo)',
+  stationMr: 'कृषी सल्ला केंद्र (डेमो नमुना)',
   avatar: 'https://images.unsplash.com/photo-1537368910025-700350fe46c7?auto=format&fit=crop&w=200&q=80',
   available: true,
-  phone: '1800-180-1551'
+  phone: '1800-000-0000 (Demo)'
 };
 
 export const INITIAL_EXPERT_MESSAGES: ChatMessage[] = [
   {
     id: 'm1',
     sender: 'expert',
-    text: 'Namaste Kisan bhai! I reviewed your Tomato diagnosis (Early Blight - Moderate). How many acres are affected, and have you done any spray in the past 7 days?',
-    textMr: 'नमस्ते शेतकरी मित्र! मी तुमच्या टोमॅटोच्या पिकाचा अहवाल पाहिला (करपा रोग - मध्यम). किती क्षेत्र बाधित आहे आणि मागील आठवड्यात काही फवारणी केली आहे का?',
+    text: 'Namaste Kisan bhai! (Demo Expert Desk). I reviewed your Tomato diagnosis (Early Blight - Moderate). How many acres are affected, and have you sprayed in the last 7 days?',
+    textMr: 'नमस्ते शेतकरी मित्र! (डेमो सल्ला केंद्र). मी तुमच्या टोमॅटोच्या पिकाचा अहवाल पाहिला (करपा रोग - मध्यम). किती क्षेत्र बाधित आहे?',
     timestamp: '10:18 AM'
   }
 ];

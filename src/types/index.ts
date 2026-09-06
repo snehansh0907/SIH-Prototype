@@ -1,4 +1,19 @@
-export type Language = 'en' | 'mr';
+export type Language = 'en' | 'hi' | 'mr';
+
+export type AuthRole = 'unauthenticated' | 'demo' | 'farmer';
+
+export interface FarmerUser {
+  id: string;
+  name: string;
+  nameMr: string;
+  emailOrPhone: string;
+  location: string;
+  locationMr: string;
+  monitoredCrop: string;
+  monitoredCropMr: string;
+  avatar?: string;
+  isDemo?: boolean;
+}
 
 export type SeverityLevel = 'low' | 'moderate' | 'high';
 export type ConfidenceLevel = 'reliable' | 'monitor' | 'review';
@@ -26,6 +41,7 @@ export interface ActionItem {
   description: string;
   descriptionMr: string;
   priority: 'critical' | 'important' | 'preventive';
+  category?: 'cultural' | 'mechanical' | 'biological' | 'chemical';
 }
 
 export interface MonitorItem {
@@ -45,6 +61,7 @@ export interface DiagnosisResult {
   pathogen: string;
   severity: SeverityLevel;
   confidenceLabel: ConfidenceLevel;
+  isUncertain?: boolean;
   detectedAt: string;
   imageUrl?: string;
   whatToDoToday: ActionItem[];

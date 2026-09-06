@@ -2,11 +2,13 @@ import React, { useState } from 'react';
 import { Camera, MapPin, Volume2, VolumeX, UserCheck, Sparkles } from 'lucide-react';
 import { useLanguage } from '../../context/LanguageContext';
 import { useCrop } from '../../context/CropContext';
+import { useAuth } from '../../context/AuthContext';
 import { speechService } from '../../utils/speech';
 
 export const QuickActionGrid: React.FC = () => {
   const { language, t } = useLanguage();
   const { setActiveTab, diagnosis } = useCrop();
+  const { requireFarmerAccess } = useAuth();
   const [isPlayingAudio, setIsPlayingAudio] = useState(false);
 
   const handleListenAdvice = () => {
@@ -36,7 +38,7 @@ export const QuickActionGrid: React.FC = () => {
       textColor: 'text-white',
       subColor: 'text-wheat-200/90',
       badge: 'AI Scan',
-      onClick: () => setActiveTab('check'),
+      onClick: () => requireFarmerAccess(() => setActiveTab('check')),
     },
     {
       id: 'area',
@@ -49,7 +51,7 @@ export const QuickActionGrid: React.FC = () => {
       subColor: 'text-stone-500',
       border: 'border border-stone-200',
       badge: 'Nashik Radar',
-      onClick: () => setActiveTab('area'),
+      onClick: () => requireFarmerAccess(() => setActiveTab('area')),
     },
     {
       id: 'listen',
@@ -74,8 +76,8 @@ export const QuickActionGrid: React.FC = () => {
       textColor: 'text-stone-900',
       subColor: 'text-stone-500',
       border: 'border border-stone-200',
-      badge: 'Dr. Patil KVK',
-      onClick: () => setActiveTab('expert'),
+      badge: 'Demo Expert',
+      onClick: () => requireFarmerAccess(() => setActiveTab('expert')),
     },
   ];
 

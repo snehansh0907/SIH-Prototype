@@ -125,6 +125,40 @@ export const translations = {
     feedbackSame: 'Keep monitoring closely. Follow recommended spray timings.',
     feedbackWorse: 'Immediate action needed. Let us connect you to an agronomist.',
     
+    // Questions & IPM
+    howIsMyCrop: 'How is my crop?',
+    whatIsWrong: 'What is wrong?',
+    whatShouldIDoNow: '🌱 WHAT SHOULD I DO NOW?',
+    whatMightHappenNext: 'What might happen next?',
+    whatIsHappeningAroundMe: 'What is happening around me?',
+    diagnosisUncertain: '⚠️ Diagnosis Uncertain',
+    diagnosisUncertainDesc: 'AI confidence is low for this photo. Speak with an agricultural expert for safe advice.',
+    talkToExpertCTA: 'TALK TO AN AGRICULTURAL EXPERT',
+    ipmCultural: '1. Cultural Practices',
+    ipmMechanical: '2. Mechanical & Physical Methods',
+    ipmBiological: '3. Biological Control',
+    ipmChemical: '4. Chemical Control (Only when necessary)',
+    demoNotice: 'Demo / Prototype Data',
+    demoHelpline: 'Demo Helpline: 1800-000-0000 (Prototype)',
+
+    // Auth & Restrictions
+    loginTitle: 'Farmer Portal Login',
+    farmerIdLabel: 'Farmer ID or Email',
+    farmerIdPlaceholder: 'Enter ID or Email (e.g. farmer123)',
+    passwordLabel: 'Password',
+    passwordPlaceholder: 'Enter Password',
+    btnLogin: 'LOGIN',
+    btnDemoUser: 'Continue as Demo User',
+    trustMessage: 'AI-powered crop health guidance for farmers',
+    autofillCredentials: '⚡ Auto-fill Demo Credentials',
+    farmerLoginRequired: '🔒 Farmer Login Required',
+    restrictionSubtitle: 'Please login with your Farmer ID or email and password to access this personalized feature.',
+    btnLoginAsFarmer: 'LOGIN AS FARMER',
+    btnContinueExploring: 'Continue Exploring Demo',
+    demoModeBanner: '🔒 DEMO MODE • Limited Access',
+    loggedAsFarmer: 'Demo Farmer',
+    btnLogout: 'Logout',
+
     // Common
     loading: 'Loading...',
     tryAgain: 'Try Again',
@@ -242,13 +276,13 @@ export const translations = {
     
     // Expert
     expertTitle: 'कृषी तज्ञांशी थेट बोला',
-    expertSubtitle: 'तुमच्या विभागातील कृषी विज्ञान केंद्राशी (KVK) थेट संपर्क',
+    expertSubtitle: 'कृषी तज्ञांचे थेट मार्गदर्शन (डेमो / नमुना)',
     cropContextTitle: 'सध्या तपासलेले पीक',
     onlineNow: 'ऑनलाइन उपलब्ध',
     typicalReplyTime: 'साधारण ५ मिनिटांत उत्तर मिळते',
-    typeMessagePlaceholder: 'डॉ. पाटलांना प्रश्न विचारा...',
+    typeMessagePlaceholder: 'तज्ञांना प्रश्न विचारा...',
     quickQuestions: 'वारंवार विचारले जाणारे प्रश्न:',
-    callKisanHelpline: 'किसान कॉल सेंटरवर फोन करा (टोल-फ्री १८००-१८०-१५५१)',
+    callKisanHelpline: 'डेमो हेल्पलाइनवर फोन करा (१८००-०००-००००)',
     
     // Follow-up
     followUpTitle: 'आता तुमचे पीक कसे आहे?',
@@ -259,6 +293,40 @@ export const translations = {
     feedbackBetter: 'छान बातमी! पीक पूर्णपणे निरोगी होईपर्यंत योग्य काळजी चालू ठेवा.',
     feedbackSame: 'नियमित लक्ष ठेवा. औषध फवारणी वेळेवर करा.',
     feedbackWorse: 'त्वरित उपाय आवश्यक आहे. आम्ही तुम्हाला कृषी तज्ञांशी जोडू इच्छितो.',
+
+    // Questions & IPM
+    howIsMyCrop: 'आपले पीक कसे आहे?',
+    whatIsWrong: 'काय अडचण आहे?',
+    whatShouldIDoNow: '🌱 मी आता काय केले पाहिजे?',
+    whatMightHappenNext: 'पुढे काय होऊ शकते?',
+    whatIsHappeningAroundMe: 'माझ्या परिसरात काय घडत आहे?',
+    diagnosisUncertain: '⚠️ निदान अनिश्चित आहे',
+    diagnosisUncertainDesc: 'या प्रतिमेवरून AI निदान अनिश्चित आहे. सुरक्षित मार्गदर्शनासाठी कृषी तज्ञांशी बोला.',
+    talkToExpertCTA: 'कृषी तज्ञांशी बोला',
+    ipmCultural: '१. मशागतीचे उपाय (Cultural)',
+    ipmMechanical: '२. भौतिक / तांत्रिक उपाय (Mechanical)',
+    ipmBiological: '३. जैविक / सेंद्रिय उपाय (Biological)',
+    ipmChemical: '४. रासायनिक फवारणी (आवश्यक असल्यास)',
+    demoNotice: 'डेमो / नमुना माहिती',
+    demoHelpline: 'डेमो हेल्पलाइन: १८००-०००-०००० (प्रोटोटाइप)',
+
+    // Auth & Restrictions
+    loginTitle: 'शेतकरी पोर्टल लॉगिन',
+    farmerIdLabel: 'शेतकरी आयडी किंवा ईमेल',
+    farmerIdPlaceholder: 'आयडी / ईमेल टाका (उदा. farmer123)',
+    passwordLabel: 'पासवर्ड',
+    passwordPlaceholder: 'पासवर्ड टाका',
+    btnLogin: 'लॉगिन करा',
+    btnDemoUser: 'डेमो वापरकर्ता म्हणून सुरू ठेवा',
+    trustMessage: 'शेतकऱ्यांसाठी AI-आधारित पीक आरोग्य मार्गदर्शन',
+    autofillCredentials: '⚡ डेमो लॉगिन माहिती भरा',
+    farmerLoginRequired: '🔒 शेतकरी लॉगिन आवश्यक आहे',
+    restrictionSubtitle: 'या वैयक्तिक वैशिष्ट्याचा वापर करण्यासाठी कृपया तुमच्या शेतकरी आयडी आणि पासवर्डने लॉगिन करा.',
+    btnLoginAsFarmer: 'शेतकरी म्हणून लॉगिन करा',
+    btnContinueExploring: 'डेमो पाहणे चालू ठेवा',
+    demoModeBanner: '🔒 डेमो मोड • मर्यादित वापर',
+    loggedAsFarmer: 'डेमो शेतकरी',
+    btnLogout: 'बाहेर पडा',
     
     // Common
     loading: 'लोड होत आहे...',

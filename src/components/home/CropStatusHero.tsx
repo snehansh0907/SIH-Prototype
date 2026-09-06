@@ -2,12 +2,14 @@ import React from 'react';
 import { AlertTriangle, Clock, ArrowRight } from 'lucide-react';
 import { useLanguage } from '../../context/LanguageContext';
 import { useCrop } from '../../context/CropContext';
+import { useAuth } from '../../context/AuthContext';
 import { StatusBadge } from '../common/StatusBadge';
 import { VoiceButton } from '../common/VoiceButton';
 
 export const CropStatusHero: React.FC = () => {
   const { language, t } = useLanguage();
   const { diagnosis, setActiveTab } = useCrop();
+  const { requireFarmerAccess } = useAuth();
 
   const cropName = language === 'mr' ? diagnosis.cropNameMr : diagnosis.cropName;
   const diseaseName = language === 'mr' ? diagnosis.diseaseNameMr : diagnosis.diseaseName;
@@ -70,9 +72,9 @@ export const CropStatusHero: React.FC = () => {
         />
 
         <button
-          onClick={() => setActiveTab('diagnosis')}
+          onClick={() => requireFarmerAccess(() => setActiveTab('diagnosis'))}
           type="button"
-          className="flex items-center justify-center gap-1.5 py-2.5 px-3 rounded-xl bg-forest-800 text-white font-bold text-xs hover:bg-forest-900 shadow-sm active:scale-95 transition-transform"
+          className="flex items-center justify-center gap-1.5 py-2.5 px-3 rounded-xl bg-forest-800 text-white font-bold text-xs hover:bg-forest-900 shadow-sm active:scale-95 transition-transform cursor-pointer"
         >
           <span>{language === 'mr' ? 'पूर्ण सल्ला पाहा' : 'View Advice'}</span>
           <ArrowRight className="w-3.5 h-3.5" />

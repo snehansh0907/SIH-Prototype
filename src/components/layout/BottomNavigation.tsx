@@ -2,11 +2,23 @@ import React from 'react';
 import { Home, Camera, MapPin, MessageSquareText } from 'lucide-react';
 import { useLanguage } from '../../context/LanguageContext';
 import { useCrop } from '../../context/CropContext';
+import { useAuth } from '../../context/AuthContext';
 import type { NavigationTab } from '../../context/CropContext';
 
 export const BottomNavigation: React.FC = () => {
   const { t } = useLanguage();
   const { activeTab, setActiveTab } = useCrop();
+  const { requireFarmerAccess } = useAuth();
+
+  const handleNavClick = (tabId: NavigationTab) => {
+    if (tabId === 'home') {
+      setActiveTab('home');
+      return;
+    }
+
+    // Protect check, area, and expert tabs for Demo users
+    requireFarmerAccess(() => setActiveTab(tabId));
+  };
 
   const navItems: { id: NavigationTab; label: string; icon: React.ReactNode; isAction?: boolean }[] = [
     {
@@ -42,9 +54,9 @@ export const BottomNavigation: React.FC = () => {
             return (
               <button
                 key={item.id}
-                onClick={() => setActiveTab(item.id)}
+                onClick={() => handleNavClick(item.id)}
                 type="button"
-                className="relative -top-4 flex flex-col items-center group focus:outline-none"
+                className="relative -top-4 flex flex-col items-center group focus:outline-none cursor-pointer"
                 aria-label={item.label}
               >
                 <div className={`w-14 h-14 rounded-full flex items-center justify-center transition-all duration-300 shadow-elevated ${
@@ -66,9 +78,9 @@ export const BottomNavigation: React.FC = () => {
           return (
             <button
               key={item.id}
-              onClick={() => setActiveTab(item.id)}
+              onClick={() => handleNavClick(item.id)}
               type="button"
-              className={`flex flex-col items-center justify-center w-16 py-1 rounded-xl transition-all duration-200 active:scale-95 ${
+              className={`flex flex-col items-center justify-center w-16 py-1 rounded-xl transition-all duration-200 active:scale-95 cursor-pointer ${
                 isActive ? 'text-forest-800 font-bold' : 'text-stone-500 hover:text-stone-700'
               }`}
             >

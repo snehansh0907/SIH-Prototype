@@ -17,6 +17,61 @@ export const diagnosisService = {
       // Return realistic diagnosis matched to the selected crop
       const selectedCrop = MOCK_CROPS.find(c => c.id === cropId) || MOCK_CROPS[0];
       
+      // Check for uncertain / low confidence demo image
+      if (imageSource && (imageSource.includes('530836369250') || imageSource.includes('blurry') || imageSource.includes('uncertain'))) {
+        return {
+          ...DEFAULT_DIAGNOSIS,
+          id: `diag-uncertain-${Date.now()}`,
+          cropId,
+          cropName: selectedCrop.name,
+          cropNameMr: selectedCrop.nameMr,
+          diseaseName: 'Uncertain Image / Low AI Confidence',
+          diseaseNameMr: 'अस्पष्ट फोटो / AI निदान अनिश्चित',
+          pathogen: 'Undetermined (Blurred foliage / lighting issue)',
+          severity: 'low',
+          confidenceLabel: 'review',
+          isUncertain: true,
+          imageUrl: imageSource,
+          whatToDoToday: [
+            {
+              step: 1,
+              title: 'Take a fresh close-up photo in bright daylight',
+              titleMr: 'सूर्यप्रकाशात पानाचा नवीन स्पष्ट फोटो घ्या',
+              description: 'Position camera 10-15 cm from leaf spot with steady hands.',
+              descriptionMr: 'पानाच्या डागापासून १० ते १५ सेमी अंतरावर कॅमेरा धरून स्पष्ट फोटो काढा.',
+              priority: 'critical',
+              category: 'cultural'
+            },
+            {
+              step: 2,
+              title: 'Connect with Demo Agricultural Expert',
+              titleMr: 'डेमो कृषी तज्ञांशी थेट संपर्क साधा',
+              description: 'Share your field symptoms directly with an agronomist for manual verification.',
+              descriptionMr: 'खात्रीशीर सल्ल्यासाठी शेतातील लक्षणे थेट कृषी तज्ञांना पाठवा.',
+              priority: 'critical',
+              category: 'mechanical'
+            }
+          ],
+          whatToMonitor: [
+            {
+              title: 'Leaf symptom expansion',
+              titleMr: 'पानावरील डागांचा प्रसार',
+              check: 'Check if spots enlarge or change color over 24 hours.',
+              checkMr: '२४ तासांत डागांचा रंग बदलतो का ते तपासा.'
+            }
+          ],
+          whatMayHappenNext: {
+            title: 'Manual Review Recommended',
+            titleMr: 'तज्ञ तपासणी आवश्यक',
+            text: 'AI could not confirm the exact disease due to image clarity. Human expert review is safest before spraying chemical fungicides.',
+            textMr: 'फोटो अस्पष्ट असल्याने AI निदान अनिश्चित आहे. कोणतीही औषध फवारणी करण्यापूर्वी कृषी तज्ञांचा सल्ला घ्या.',
+            riskTrend: 'stable'
+          },
+          advisoryVoiceScript: 'Diagnosis uncertain due to image clarity. Please take a clearer photo in daylight or consult an agricultural expert before spraying chemicals.',
+          advisoryVoiceScriptMr: 'फोटोच्या अस्पष्टतेमुळे निदान निश्चित नाही. कृपया दिवसा चांगल्या प्रकाशात नवीन फोटो घ्या किंवा फवारणीपूर्वी कृषी तज्ञांशी बोला.'
+        };
+      }
+
       if (cropId === 'cotton') {
         return {
           ...DEFAULT_DIAGNOSIS,
@@ -29,31 +84,44 @@ export const diagnosisService = {
           pathogen: 'Begomovirus (Whitefly-transmitted)',
           severity: 'moderate',
           confidenceLabel: 'reliable',
+          isUncertain: false,
           imageUrl: imageSource || selectedCrop.sampleImages[0]?.url,
           whatToDoToday: [
             {
               step: 1,
-              title: 'Target Whitefly Vector Control',
-              titleMr: 'पांढरी माशीचे तातडीने नियंत्रण करा',
-              description: 'Install yellow sticky traps (15-20 traps/acre) to reduce whitefly vector population.',
-              descriptionMr: 'पांढऱ्या माशीच्या नियंत्रणासाठी एकरी १५ ते २० पिवळे चिकट सापळे लावा.',
-              priority: 'critical'
+              title: 'Avoid excessive nitrogen & balance irrigation',
+              titleMr: 'नत्र खतांचा अतिवापर टाळा व पाणी नियंत्रण ठेवा',
+              description: 'Excess nitrogen produces tender foliage attractive to whiteflies.',
+              descriptionMr: 'नत्र खतांमुळे पाने मऊ होऊन किडींचा प्रादुर्भाव वाढतो.',
+              priority: 'critical',
+              category: 'cultural'
             },
             {
               step: 2,
-              title: 'Apply Neem-based insect repellent',
-              titleMr: 'निमार्क ५% किंवा कडुनिंब तेल फवारणी',
-              description: 'Spray Azadirachtin 10,000 ppm @ 1ml/L to deter sucking pests.',
-              descriptionMr: 'रसशोषक किडींचा प्रादुर्भाव रोखण्यासाठी निमार्कची फवारणी करा.',
-              priority: 'important'
+              title: 'Install Yellow Sticky Traps & rogue infected plants',
+              titleMr: 'पिवळे चिकट सापळे लावा व अतिबाधित झाडे नष्ट करा',
+              description: 'Install 15-20 yellow sticky traps per acre to trap whiteflies. Uproot heavily stunted plants.',
+              descriptionMr: 'एकरी १५ ते २० पिवळे चिकट सापळे लावा आणि अतिबाधित झाडे उपटून नष्ट करा.',
+              priority: 'critical',
+              category: 'mechanical'
             },
             {
               step: 3,
-              title: 'Rogue out severely stunted plants',
-              titleMr: 'अतिबाधित झाडे उपटून नष्ट करा',
-              description: 'Uproot severely deformed plants to prevent virus spread to neighboring healthy bushes.',
-              descriptionMr: 'रोग इतर झाडांवर पसरू नये म्हणून अतिबाधित झाडे काढून जमिनीत गाडून टाका.',
-              priority: 'important'
+              title: 'Spray Neem Seed Kernel Extract (NSKE 5%)',
+              titleMr: 'निमार्क ५% किंवा कडुनिंब तेल फवारणी',
+              description: 'Spray Azadirachtin 10,000 ppm @ 1ml/L water to deter sucking vectors naturally.',
+              descriptionMr: 'रसशोषक किडींचा प्रादुर्भाव रोखण्यासाठी निमार्कची फवारणी करा.',
+              priority: 'important',
+              category: 'biological'
+            },
+            {
+              step: 4,
+              title: 'Targeted Insecticide Spray (If vector threshold is high)',
+              titleMr: 'नियंत्रित कीटकनाशक फवारणी (प्रादुर्भाव जास्त असल्यास)',
+              description: 'If whitefly count > 8-10 per leaf, spray Diafenthiuron 50% WP @ 1.2g/L or Flonicamid 50% WG @ 0.3g/L.',
+              descriptionMr: 'पांढरी माशी जास्त असल्यास शिफारशीनुसार डायफेन्थ्युरॉन किंवा फ्लोनिकॅमिडची फवारणी करा.',
+              priority: 'preventive',
+              category: 'chemical'
             }
           ],
           whatToMonitor: [
@@ -88,23 +156,44 @@ export const diagnosisService = {
           pathogen: 'Phakopsora pachyrhizi',
           severity: 'moderate',
           confidenceLabel: 'reliable',
+          isUncertain: false,
           imageUrl: imageSource || selectedCrop.sampleImages[0]?.url,
           whatToDoToday: [
             {
               step: 1,
-              title: 'Spray Hexaconazole or Tebuconazole',
-              titleMr: 'हेक्झाकोनॅझोल किंवा टेब्युकोनॅझोल फवारणी',
-              description: 'Spray Hexaconazole 5% EC @ 1ml/L or Tebuconazole 25.9% EC @ 1.5ml/L in calm morning.',
-              descriptionMr: 'सकाळच्या शांत हवेत हेक्झाकोनॅझोल (१ मिली प्रति लिटर) औषधाची फवारणी करा.',
-              priority: 'critical'
+              title: 'Avoid late evening irrigation',
+              titleMr: 'संध्याकाळी उशिरा पाणी देणे टाळा',
+              description: 'Ensure canopy leaves dry quickly after sunrise to inhibit rust spore germination.',
+              descriptionMr: 'रात्रीच्या वेळी पानांवर ओलावा राहणार नाही याची खबरदारी घ्या.',
+              priority: 'critical',
+              category: 'cultural'
             },
             {
               step: 2,
-              title: 'Avoid late evening watering',
-              titleMr: 'संध्याकाळी उशिरा पाणी देणे टाळा',
-              description: 'Keep lower foliage dry during nighttime hours.',
-              descriptionMr: 'रात्रीच्या वेळी पानांवर ओलावा राहणार नाही याची खबरदारी घ्या.',
-              priority: 'important'
+              title: 'Strip diseased lower leaves with pustules',
+              titleMr: 'तांबूस फोड असलेली खालची पाने काढून टाका',
+              description: 'Remove and destroy lower leaf canopy showing dense brown rust spots.',
+              descriptionMr: 'तांबेरा डाग असलेली खालची पाने तोडून नष्ट करा.',
+              priority: 'critical',
+              category: 'mechanical'
+            },
+            {
+              step: 3,
+              title: 'Spray Bio-Fungicide (Trichoderma viride)',
+              titleMr: 'ट्रायकोडर्मा व्हिरिडी (जैविक बुरशीनाशक)',
+              description: 'Spray Trichoderma viride @ 5g/L water during late afternoon hours.',
+              descriptionMr: 'जैविक नियंत्रणासाठी ट्रायकोडर्मा व्हिरिडीची फवारणी करा.',
+              priority: 'important',
+              category: 'biological'
+            },
+            {
+              step: 4,
+              title: 'Triazole Fungicide Spray (If rust > 5% leaf area)',
+              titleMr: 'टेब्युकोनॅझोल किंवा हेक्झाकोनॅझोल फवारणी',
+              description: 'Spray Hexaconazole 5% EC @ 1ml/L or Tebuconazole 25.9% EC @ 1.5ml/L during calm dry morning.',
+              descriptionMr: 'सकाळच्या शांत हवेत हेक्झाकोनॅझोल (१ मिली प्रति लिटर) औषधाची फवारणी करा.',
+              priority: 'preventive',
+              category: 'chemical'
             }
           ],
           whatToMonitor: [
