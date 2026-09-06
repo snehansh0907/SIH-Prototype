@@ -38,6 +38,27 @@ async function resolveImageBlob(imageSource?: string | File | Blob): Promise<Blo
   return null;
 }
 
+// Helper to resolve an image source (File, Blob, or URL string) into a renderable display URL
+async function resolveImageDisplayUrl(imageSource?: string | File | Blob): Promise<string> {
+  if (!imageSource) return '';
+  if (typeof imageSource === 'string') return imageSource;
+  if (imageSource instanceof File || imageSource instanceof Blob) {
+    return new Promise<string>((resolve) => {
+      const reader = new FileReader();
+      reader.onloadend = () => resolve((reader.result as string) || '');
+      reader.onerror = () => {
+        try {
+          resolve(URL.createObjectURL(imageSource));
+        } catch {
+          resolve('');
+        }
+      };
+      reader.readAsDataURL(imageSource);
+    });
+  }
+  return '';
+}
+
 // Marathi disease name map for standard recognized diseases
 const DISEASE_NAME_MR_MAP: Record<string, string> = {
   'Early Blight': 'करपा रोग (Early Blight)',
@@ -136,7 +157,10 @@ export const diagnosisService = {
     const cropCycleId = options?.cropCycleId || farmService.getCropCycleIdForCrop(cropId);
 
     try {
-      // 1. Prepare image blob
+      // 1. Resolve renderable display URL for image
+      const displayImageUrl = await resolveImageDisplayUrl(imageSource);
+
+      // 2. Prepare image blob
       let imageBlob = await resolveImageBlob(imageSource);
 
       // If no valid image blob could be extracted (e.g. offline sample URL), create a fallback image blob
@@ -231,7 +255,8 @@ export const diagnosisService = {
 
       const finalImageUrl =
         serverImageUrl ||
-        (typeof imageSource === 'string' ? imageSource : selectedCrop.sampleImages[0]?.url);
+        displayImageUrl ||
+        (selectedCrop?.sampleImages?.[0]?.url || DEFAULT_DIAGNOSIS.imageUrl);
 
       return {
         id: backendData.case_id,
@@ -272,7 +297,9 @@ export const diagnosisService = {
     } catch (apiError) {
       console.warn('[diagnosisService] Real backend request failed, running rich local engine fallback:', apiError);
 
-      // Return realistic diagnosis matched to the selected crop
+      // Resolve display URL for fallback engine
+      const displayImageUrl = await resolveImageDisplayUrl(imageSource);
+      const resolvedImageUrl = displayImageUrl || selectedCrop?.sampleImages?.[0]?.url || DEFAULT_DIAGNOSIS.imageUrl;
       const isString = typeof imageSource === 'string';
       const imageStr = isString ? (imageSource as string) : '';
 
@@ -292,7 +319,7 @@ export const diagnosisService = {
           severity: 'low',
           confidenceLabel: 'review',
           isUncertain: true,
-          imageUrl: isString ? imageStr : selectedCrop.sampleImages[0]?.url,
+          imageUrl: resolvedImageUrl,
           whatToDoToday: [
             {
               step: 1,
@@ -360,7 +387,7 @@ export const diagnosisService = {
           severity: 'moderate',
           confidenceLabel: 'reliable',
           isUncertain: false,
-          imageUrl: isString ? imageStr : selectedCrop.sampleImages[0]?.url,
+          imageUrl: resolvedImageUrl,
           whatToDoToday: [
             {
               step: 1,
@@ -451,7 +478,7 @@ export const diagnosisService = {
           severity: 'moderate',
           confidenceLabel: 'reliable',
           isUncertain: false,
-          imageUrl: isString ? imageStr : selectedCrop.sampleImages[0]?.url,
+          imageUrl: resolvedImageUrl,
           whatToDoToday: [
             {
               step: 1,
@@ -527,11 +554,30 @@ export const diagnosisService = {
         };
       }
 
-      // Default to Tomato Early Blight
+      // Dynamic crop name and metadata resolution for all 8 crops
+      const cropNameMap: Record<string, { name: string; nameMr: string }> = {
+        tomato: { name: 'Tomato', nameMr: 'टोमॅटो' },
+        cotton: { name: 'Cotton', nameMr: 'कापूस' },
+        soybean: { name: 'Soybean', nameMr: 'सोयाबीन' },
+        sugarcane: { name: 'Sugarcane', nameMr: 'ऊस' },
+        maize: { name: 'Maize', nameMr: 'मका' },
+        onion: { name: 'Onion', nameMr: 'कांदा' },
+        rice: { name: 'Rice', nameMr: 'भात' },
+        wheat: { name: 'Wheat', nameMr: 'गहू' },
+      };
+
+      const cropMeta = cropNameMap[cropId.toLowerCase()] || {
+        name: selectedCrop?.name || cropId.charAt(0).toUpperCase() + cropId.slice(1),
+        nameMr: selectedCrop?.nameMr || cropId,
+      };
+
       return {
         ...DEFAULT_DIAGNOSIS,
         id: `diag-${cropId}-${Date.now()}`,
-        imageUrl: isString ? imageStr : selectedCrop.sampleImages[0]?.url,
+        cropId: cropId.toLowerCase(),
+        cropName: cropMeta.name,
+        cropNameMr: cropMeta.nameMr,
+        imageUrl: resolvedImageUrl,
       };
     }
   },

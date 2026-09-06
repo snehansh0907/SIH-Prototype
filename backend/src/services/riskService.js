@@ -69,19 +69,24 @@ function getRiskLevel(score) {
   return 'HIGH';
 }
 
-function buildExplanation({ humidityFactor, rainFactor, cropStageFactor, nearbyCasesFactor, nearbyCases, current, cropStage }) {
+function buildExplanation({ humidityFactor, rainFactor, cropStageFactor, nearbyCasesFactor: _nearbyCasesFactor, nearbyCases, current, forecast, cropStage }) {
   const explanation = [];
+  const rainProb = forecast?.[0]?.rain_probability_percent ?? 0;
 
   if (humidityFactor >= 18) {
-    explanation.push(`High humidity expected (${current.humidity_percent ?? 'N/A'}%)`);
+    explanation.push(`High relative humidity (${current.humidity_percent ?? 'N/A'}%) increases fungal disease risk`);
   } else if (humidityFactor >= 10) {
-    explanation.push(`Moderate humidity levels (${current.humidity_percent ?? 'N/A'}%)`);
+    explanation.push(`Moderate humidity levels (${current.humidity_percent ?? 'N/A'}%) maintain disease risk`);
+  } else {
+    explanation.push(`Low humidity (${current.humidity_percent ?? 'N/A'}%) helps suppress disease development`);
   }
 
   if (rainFactor >= 15) {
-    explanation.push('Significant rainfall predicted in the coming days');
+    explanation.push(`Significant rainfall predicted (${rainProb}% chance) increases disease risk through spore splash`);
   } else if (rainFactor >= 8) {
-    explanation.push('Some rainfall expected in the coming days');
+    explanation.push(`Upcoming rain showers (${rainProb}% probability) may increase foliar disease risk`);
+  } else {
+    explanation.push('Dry weather conditions expected with minimal rain-driven risk');
   }
 
   if (cropStageFactor >= 14) {
@@ -117,7 +122,7 @@ async function calculateRisk(farm, cropCycle) {
 
   const humidityFactor = calculateHumidityFactor(weather.current.humidity_percent);
   const rainFactor = calculateRainFactor(
-    weather.current.rainfall_mm,
+    Math.max(weather.current.rainfall_mm || 0, weather.forecast?.[0]?.rainfall_mm || 0),
     weather.forecast?.[0]?.rain_probability_percent
   );
   const cropStageFactor = calculateCropStageFactor(cropStage);
@@ -136,6 +141,7 @@ async function calculateRisk(farm, cropCycle) {
     nearbyCasesFactor,
     nearbyCases,
     current: weather.current,
+    forecast: weather.forecast,
     cropStage,
   });
 

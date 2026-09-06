@@ -1,12 +1,12 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
 import type { DiagnosisResult, WeatherCondition, RiskForecast, FollowUpStatus } from '../types';
-import { DEFAULT_DIAGNOSIS, MOCK_WEATHER, MOCK_RISK_FORECAST } from '../services/mockData';
+import { DEFAULT_DIAGNOSIS, MOCK_RISK_FORECAST } from '../services/mockData';
 import { diagnosisService } from '../services/diagnosisService';
 import { weatherService } from '../services/weatherService';
 import { riskService } from '../services/riskService';
 
 import { followUpService } from '../services/followUpService';
-import { SEEDED_DEMO_FARM_ID } from '../services/farmService';
+import { farmService, SEEDED_DEMO_FARM_ID, type BackendFarm } from '../services/farmService';
 import { useAuth } from './AuthContext';
 
 export type NavigationTab = 'home' | 'check' | 'diagnosis' | 'risk' | 'area' | 'expert';
@@ -19,7 +19,13 @@ interface CropContextType {
   diagnosis: DiagnosisResult;
   setDiagnosis: (diag: DiagnosisResult) => void;
   isAnalyzing: boolean;
-  weather: WeatherCondition;
+  weather: WeatherCondition | null;
+  isWeatherLoading: boolean;
+  weatherError: string | null;
+  refetchWeather: () => Promise<void>;
+  selectedFarm: BackendFarm | null;
+  setSelectedFarm: (farm: BackendFarm) => void;
+  availableFarms: BackendFarm[];
   riskForecast: RiskForecast;
   followUpStatus: FollowUpStatus | null;
   setFollowUpStatus: (status: FollowUpStatus | null) => void;
@@ -37,7 +43,14 @@ export const CropProvider: React.FC<{ children: React.ReactNode }> = ({ children
   );
   const [diagnosis, setDiagnosis] = useState<DiagnosisResult>(DEFAULT_DIAGNOSIS);
   const [isAnalyzing, setIsAnalyzing] = useState<boolean>(false);
-  const [weather, setWeather] = useState<WeatherCondition>(MOCK_WEATHER);
+
+  // Weather & Farm State
+  const [selectedFarm, setSelectedFarm] = useState<BackendFarm | null>(null);
+  const [availableFarms, setAvailableFarms] = useState<BackendFarm[]>([]);
+  const [weather, setWeather] = useState<WeatherCondition | null>(null);
+  const [isWeatherLoading, setIsWeatherLoading] = useState<boolean>(true);
+  const [weatherError, setWeatherError] = useState<string | null>(null);
+
   const [riskForecast, setRiskForecast] = useState<RiskForecast>(MOCK_RISK_FORECAST);
   const [followUpStatus, setFollowUpStatusState] = useState<FollowUpStatus | null>(null);
 
@@ -48,12 +61,94 @@ export const CropProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   }, [user?.farmerId, user?.monitoredCrop]);
 
-  // Initialize fresh weather & risk data based on active user's farm
+  // Synchronize available farms and selected farm when user changes
   useEffect(() => {
-    weatherService.getWeatherContext().then(setWeather).catch(() => {});
-    const targetFarmId = user?.farmId || SEEDED_DEMO_FARM_ID;
-    riskService.getRiskForecast(selectedCropId, targetFarmId).then(setRiskForecast).catch(() => {});
-  }, [selectedCropId, user?.farmId]);
+    let isCancelled = false;
+
+    async function loadFarms() {
+      const farmerId = user?.farmerId || user?.id || SEEDED_DEMO_FARM_ID;
+      const farms = await farmService.getFarmsByFarmer(farmerId);
+
+      // If user has specific registered coordinates and farmName, ensure it's in the list
+      let userFarm: BackendFarm | null = null;
+      if (user?.latitude && user?.longitude) {
+        userFarm = {
+          id: user.farmId || `user-farm-${user.id || 'reg'}`,
+          farmer_id: farmerId,
+          farm_name: user.farmName || `${user.village || 'My'} Farm`,
+          latitude: user.latitude,
+          longitude: user.longitude,
+          village: user.village,
+          taluka: user.taluka,
+          district: user.district,
+          area_acres: typeof user.areaAcres === 'number' ? user.areaAcres : parseFloat(String(user.areaAcres || '2.5')),
+        };
+      }
+
+      if (!isCancelled) {
+        const combined = userFarm
+          ? [userFarm, ...farms.filter((f) => f.id !== userFarm!.id)]
+          : farms;
+        setAvailableFarms(combined);
+        setSelectedFarm(combined[0] || null);
+      }
+    }
+
+    loadFarms();
+
+    return () => {
+      isCancelled = true;
+    };
+  }, [
+    user?.id,
+    user?.farmerId,
+    user?.farmId,
+    user?.latitude,
+    user?.longitude,
+    user?.farmName,
+    user?.village,
+    user?.taluka,
+    user?.district,
+    user?.areaAcres,
+  ]);
+
+  // Live Weather & Dynamic Risk Fetcher
+  const fetchLiveWeatherAndRisk = useCallback(async () => {
+    const lat = selectedFarm?.latitude ?? user?.latitude ?? 20.156556;
+    const lng = selectedFarm?.longitude ?? user?.longitude ?? 74.117339;
+    const farmId = selectedFarm?.id || user?.farmId || SEEDED_DEMO_FARM_ID;
+
+    setIsWeatherLoading(true);
+    setWeatherError(null);
+
+    try {
+      const liveWeatherData = await weatherService.getWeather(lat, lng);
+      setWeather(liveWeatherData);
+      setIsWeatherLoading(false);
+
+      // Re-calculate risk forecast dynamically using live weather data
+      try {
+        const risk = await riskService.getRiskForecast(selectedCropId, farmId, liveWeatherData);
+        setRiskForecast(risk);
+      } catch (rErr) {
+        console.warn('[CropContext] Dynamic risk forecast calculation notice:', rErr);
+      }
+    } catch (err: unknown) {
+      console.error('[CropContext] Failed to fetch live weather for coordinates:', lat, lng, err);
+      setIsWeatherLoading(false);
+      const message = err instanceof Error ? err.message : 'Weather data unavailable. Please try again.';
+      setWeatherError(message);
+    }
+  }, [selectedFarm?.id, selectedFarm?.latitude, selectedFarm?.longitude, user?.latitude, user?.longitude, user?.farmId, selectedCropId]);
+
+  // Trigger weather & risk refetch whenever selected farm or crop changes
+  useEffect(() => {
+    fetchLiveWeatherAndRisk();
+  }, [fetchLiveWeatherAndRisk]);
+
+  const refetchWeather = async () => {
+    await fetchLiveWeatherAndRisk();
+  };
 
   const setFollowUpStatus = (status: FollowUpStatus | null) => {
     setFollowUpStatusState(status);
@@ -107,6 +202,12 @@ export const CropProvider: React.FC<{ children: React.ReactNode }> = ({ children
         setDiagnosis,
         isAnalyzing,
         weather,
+        isWeatherLoading,
+        weatherError,
+        refetchWeather,
+        selectedFarm,
+        setSelectedFarm,
+        availableFarms,
         riskForecast,
         followUpStatus,
         setFollowUpStatus,

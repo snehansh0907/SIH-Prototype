@@ -48,13 +48,13 @@ export const ImageUploader: React.FC = () => {
   };
 
   const handleSubmit = async () => {
-    if (selectedFile) {
-      await performDiagnosis(selectedCropId, selectedFile);
-    } else if (selectedImage) {
+    if (selectedImage) {
       await performDiagnosis(selectedCropId, selectedImage);
+    } else if (selectedFile) {
+      await performDiagnosis(selectedCropId, selectedFile);
     } else {
       // Default to sample if user clicks without picking
-      const fallbackUrl = currentCrop.sampleImages[0]?.url;
+      const fallbackUrl = currentCrop?.sampleImages?.[0]?.url || MOCK_CROPS[0].sampleImages[0].url;
       await performDiagnosis(selectedCropId, fallbackUrl);
     }
   };
@@ -136,6 +136,13 @@ export const ImageUploader: React.FC = () => {
               src={selectedImage}
               alt="Crop Leaf Preview"
               className="w-full h-64 object-cover object-center"
+              onError={(e) => {
+                const target = e.currentTarget;
+                const sample = currentCrop?.sampleImages?.find(s => s.url === selectedImage || s.fallbackUrl === selectedImage);
+                if (sample?.fallbackUrl && target.src !== sample.fallbackUrl) {
+                  target.src = sample.fallbackUrl;
+                }
+              }}
             />
 
             {/* Image Overlay Header */}
@@ -190,6 +197,7 @@ export const ImageUploader: React.FC = () => {
 
         <div className="grid grid-cols-2 gap-2">
           {currentCrop.sampleImages.map((sample) => {
+<<<<<<< HEAD
             const isPicked = selectedImage === sample.url;
             const title =
               language === 'mr'
@@ -216,6 +224,10 @@ export const ImageUploader: React.FC = () => {
               }
               return sample.condition;
             };
+=======
+            const isPicked = selectedImage === sample.url || (sample.fallbackUrl && selectedImage === sample.fallbackUrl);
+            const title = language === 'mr' ? sample.titleMr : sample.title;
+>>>>>>> cc4dc7b5608b36e4ddf546f73263d581f1f3f727
 
             return (
               <button
@@ -232,6 +244,12 @@ export const ImageUploader: React.FC = () => {
                   src={sample.url}
                   alt={title}
                   className="w-10 h-10 rounded-xl object-cover shrink-0"
+                  onError={(e) => {
+                    const target = e.currentTarget;
+                    if (sample.fallbackUrl && target.src !== sample.fallbackUrl) {
+                      target.src = sample.fallbackUrl;
+                    }
+                  }}
                 />
                 <div className="min-w-0">
                   <div className="text-[11px] font-extrabold text-stone-900 truncate leading-tight">

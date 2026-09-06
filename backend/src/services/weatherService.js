@@ -7,8 +7,10 @@
 // directly - only what the app actually needs.
 // =========================================================
 
-const fetch = require('node-fetch');
-require('dotenv').config();
+const fetch = globalThis.fetch || require('node-fetch');
+try {
+  require('dotenv').config();
+} catch {}
 
 const BASE_URL = process.env.OPEN_METEO_BASE_URL || 'https://api.open-meteo.com';
 

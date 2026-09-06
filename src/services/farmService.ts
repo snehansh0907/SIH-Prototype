@@ -33,45 +33,72 @@ export const SEEDED_DEMO_CROP_CYCLES: Record<string, string> = {
   soybean: '23114716-38fc-493d-b823-0f80e3e8aef6',
 };
 
+export const SEEDED_FARMS: BackendFarm[] = [
+  {
+    id: SEEDED_DEMO_FARM_ID,
+    farmer_id: SEEDED_DEMO_FARMER_ID,
+    farm_name: "Ramesh's Niphad Plot",
+    latitude: 20.156556,
+    longitude: 74.117339,
+    village: 'Niphad',
+    taluka: 'Niphad',
+    district: 'Nashik',
+    area_acres: 3.29,
+  },
+  {
+    id: 'f2-dindori-plot',
+    farmer_id: SEEDED_DEMO_FARMER_ID,
+    farm_name: "Ramesh's Dindori Hill Orchard",
+    latitude: 20.174100,
+    longitude: 73.832200,
+    village: 'Dindori',
+    taluka: 'Dindori',
+    district: 'Nashik',
+    area_acres: 2.15,
+  },
+  {
+    id: '46b37fe5-aedb-4e2c-bb26-a4e8b1dae26a',
+    farmer_id: 'd53fc6d1-cca3-4c91-8c61-b32029cc231e',
+    farm_name: "Vikas's Chandori Farm",
+    latitude: 20.079700,
+    longitude: 74.032200,
+    village: 'Chandori',
+    taluka: 'Niphad',
+    district: 'Nashik',
+    area_acres: 3.51,
+  },
+  {
+    id: '6e5c646e-53f8-4be4-a731-13ed3de4f3d0',
+    farmer_id: '6ecf18a7-f888-4ba6-9b7c-c43253a0409c',
+    farm_name: "Anita's Ozar Farm",
+    latitude: 20.092700,
+    longitude: 73.918900,
+    village: 'Ozar',
+    taluka: 'Niphad',
+    district: 'Nashik',
+    area_acres: 2.45,
+  },
+];
+
 export const farmService = {
   async getFarmsByFarmer(farmerId: string = SEEDED_DEMO_FARMER_ID): Promise<BackendFarm[]> {
     try {
       const res = await apiClient<{ success: boolean; data: BackendFarm[] }>(`/farms/farmer/${farmerId}`);
-      return res.data || [];
-    } catch {
-      return [
-        {
-          id: SEEDED_DEMO_FARM_ID,
-          farmer_id: farmerId,
-          farm_name: "Ramesh's Farm",
-          latitude: 20.156556,
-          longitude: 74.117339,
-          village: 'Niphad',
-          taluka: 'Niphad',
-          district: 'Nashik',
-          area_acres: 3.29,
-        },
-      ];
-    }
+      if (res.data && res.data.length > 0) return res.data;
+    } catch {}
+
+    const matched = SEEDED_FARMS.filter((f) => f.farmer_id === farmerId);
+    return matched.length > 0 ? matched : [SEEDED_FARMS[0]];
   },
 
   async getFarmById(id: string = SEEDED_DEMO_FARM_ID): Promise<BackendFarm | null> {
     try {
       const res = await apiClient<{ success: boolean; data: BackendFarm }>(`/farms/${id}`);
-      return res.data || null;
-    } catch {
-      return {
-        id,
-        farmer_id: SEEDED_DEMO_FARMER_ID,
-        farm_name: "Ramesh's Farm",
-        latitude: 20.156556,
-        longitude: 74.117339,
-        village: 'Niphad',
-        taluka: 'Niphad',
-        district: 'Nashik',
-        area_acres: 3.29,
-      };
-    }
+      if (res.data) return res.data;
+    } catch {}
+
+    const found = SEEDED_FARMS.find((f) => f.id === id);
+    return found || SEEDED_FARMS[0];
   },
 
   async getCropCyclesByFarm(farmId: string = SEEDED_DEMO_FARM_ID): Promise<BackendCropCycle[]> {
