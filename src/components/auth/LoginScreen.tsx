@@ -175,9 +175,11 @@ export const LoginScreen: React.FC = () => {
             type="button"
             onClick={toggleLanguage}
             className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/10 hover:bg-white/20 text-xs font-semibold border border-white/20 transition-all active:scale-95 cursor-pointer"
+            aria-label="Toggle language (English / हिंदी / मराठी)"
           >
+
             <Globe className="w-3.5 h-3.5 text-amber-300" />
-            <span>{language === 'en' ? 'मराठी' : 'English'}</span>
+            <span>{language === 'en' ? 'English' : language === 'hi' ? 'हिंदी' : 'मराठी'}</span>
           </button>
         </div>
 
@@ -213,11 +215,10 @@ export const LoginScreen: React.FC = () => {
                 setActiveTab('login');
                 setLoginError(null);
               }}
-              className={`py-2.5 px-4 rounded-xl text-xs font-extrabold font-display transition-all duration-150 cursor-pointer flex items-center justify-center gap-1.5 ${
-                activeTab === 'login'
-                  ? 'bg-forest-800 text-white shadow-md'
-                  : 'text-stone-700 hover:text-stone-900'
-              }`}
+              className={`py-2.5 px-4 rounded-xl text-xs font-extrabold font-display transition-all duration-150 cursor-pointer flex items-center justify-center gap-1.5 ${activeTab === 'login'
+                ? 'bg-forest-800 text-white shadow-md'
+                : 'text-stone-700 hover:text-stone-900'
+                }`}
             >
               <span>🔑 {isMarathi ? 'लॉगिन करा' : 'Login'}</span>
             </button>
@@ -228,11 +229,10 @@ export const LoginScreen: React.FC = () => {
                 setActiveTab('register');
                 setRegError(null);
               }}
-              className={`py-2.5 px-4 rounded-xl text-xs font-extrabold font-display transition-all duration-150 cursor-pointer flex items-center justify-center gap-1.5 ${
-                activeTab === 'register'
-                  ? 'bg-forest-800 text-white shadow-md'
-                  : 'text-stone-700 hover:text-stone-900'
-              }`}
+              className={`py-2.5 px-4 rounded-xl text-xs font-extrabold font-display transition-all duration-150 cursor-pointer flex items-center justify-center gap-1.5 ${activeTab === 'register'
+                ? 'bg-forest-800 text-white shadow-md'
+                : 'text-stone-700 hover:text-stone-900'
+                }`}
             >
               <span>🌾 {isMarathi ? 'नवीन खाते तयार करा' : 'Create Account'}</span>
             </button>
@@ -278,11 +278,10 @@ export const LoginScreen: React.FC = () => {
                   <button
                     type="button"
                     onClick={() => handleAutofillDemo('ramesh')}
-                    className={`py-2 px-2.5 rounded-xl text-[11px] font-bold border transition-all active:scale-95 flex flex-col items-start ${
-                      selectedDemoKey === 'ramesh' && loginIdentifier === 'farmer123'
-                        ? 'bg-amber-200/90 border-amber-400 text-amber-950 font-black shadow-sm'
-                        : 'bg-white border-amber-200 text-stone-700 hover:bg-amber-100/60'
-                    }`}
+                    className={`py-2 px-2.5 rounded-xl text-[11px] font-bold border transition-all active:scale-95 flex flex-col items-start ${selectedDemoKey === 'ramesh' && loginIdentifier === 'farmer123'
+                      ? 'bg-amber-200/90 border-amber-400 text-amber-950 font-black shadow-sm'
+                      : 'bg-white border-amber-200 text-stone-700 hover:bg-amber-100/60'
+                      }`}
                   >
                     <span className="font-extrabold">🍅 Ramesh Patil</span>
                     <span className="text-[10px] text-stone-500">farmer123 (Tomato)</span>
@@ -291,11 +290,10 @@ export const LoginScreen: React.FC = () => {
                   <button
                     type="button"
                     onClick={() => handleAutofillDemo('vikas')}
-                    className={`py-2 px-2.5 rounded-xl text-[11px] font-bold border transition-all active:scale-95 flex flex-col items-start ${
-                      selectedDemoKey === 'vikas' && loginIdentifier === 'vikas123'
-                        ? 'bg-amber-200/90 border-amber-400 text-amber-950 font-black shadow-sm'
-                        : 'bg-white border-amber-200 text-stone-700 hover:bg-amber-100/60'
-                    }`}
+                    className={`py-2 px-2.5 rounded-xl text-[11px] font-bold border transition-all active:scale-95 flex flex-col items-start ${selectedDemoKey === 'vikas' && loginIdentifier === 'vikas123'
+                      ? 'bg-amber-200/90 border-amber-400 text-amber-950 font-black shadow-sm'
+                      : 'bg-white border-amber-200 text-stone-700 hover:bg-amber-100/60'
+                      }`}
                   >
                     <span className="font-extrabold">🌱 Vikas More</span>
                     <span className="text-[10px] text-stone-500">vikas123 (Soybean)</span>
@@ -583,11 +581,10 @@ export const LoginScreen: React.FC = () => {
                           key={c.key}
                           type="button"
                           onClick={() => setRegMainCrop(c.key as any)}
-                          className={`py-2 px-1 rounded-xl border text-xs font-extrabold flex flex-col items-center gap-0.5 transition-all cursor-pointer ${
-                            regMainCrop === c.key
-                              ? 'bg-forest-800 text-white border-forest-900 shadow-md scale-[1.02]'
-                              : 'bg-stone-50 text-stone-700 border-stone-300 hover:bg-stone-100'
-                          }`}
+                          className={`py-2 px-1 rounded-xl border text-xs font-extrabold flex flex-col items-center gap-0.5 transition-all cursor-pointer ${regMainCrop === c.key
+                            ? 'bg-forest-800 text-white border-forest-900 shadow-md scale-[1.02]'
+                            : 'bg-stone-50 text-stone-700 border-stone-300 hover:bg-stone-100'
+                            }`}
                         >
                           <span className="text-base">{c.icon}</span>
                           <span>{c.label}</span>

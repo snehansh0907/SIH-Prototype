@@ -11,10 +11,13 @@ interface LanguageContextType {
 
 const LanguageContext = createContext<LanguageContextType | undefined>(undefined);
 
+// Define the 3-language cycle order: English -> Hindi -> Marathi -> English
+const LANGUAGE_CYCLE: Language[] = ['en', 'hi', 'mr'];
+
 export const LanguageProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [language, setLanguageState] = useState<Language>(() => {
-    const saved = localStorage.getItem('krishi_sarthak_lang');
-    return (saved === 'mr' || saved === 'en') ? saved : 'en';
+    const saved = localStorage.getItem('krishi_sarthak_lang') as Language;
+    return LANGUAGE_CYCLE.includes(saved) ? saved : 'en';
   });
 
   const setLanguage = (lang: Language) => {
@@ -23,14 +26,16 @@ export const LanguageProvider: React.FC<{ children: React.ReactNode }> = ({ chil
   };
 
   const toggleLanguage = () => {
-    setLanguage(language === 'en' ? 'mr' : 'en');
+    const currentIndex = LANGUAGE_CYCLE.indexOf(language);
+    const nextIndex = (currentIndex + 1) % LANGUAGE_CYCLE.length;
+    setLanguage(LANGUAGE_CYCLE[nextIndex]);
   };
 
   useEffect(() => {
     document.documentElement.lang = language;
   }, [language]);
 
-  const t = translations[language];
+  const t = translations[language] || translations.en;
 
   return (
     <LanguageContext.Provider value={{ language, setLanguage, toggleLanguage, t }}>

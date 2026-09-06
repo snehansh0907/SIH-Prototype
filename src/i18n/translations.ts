@@ -168,6 +168,175 @@ export const translations = {
     speaking: 'Playing audio advisory...',
     stopAudio: 'Stop Audio',
   },
+  hi: {
+    // Brand
+    appName: 'कृषि सार्थक',
+    appTagline: 'सही समय पर सही सलाह',
+    farmerBadge: 'किसान पोर्टल',
+    activeLocation: 'नासिक, महाराष्ट्र',
+    
+    // Nav
+    navHome: 'होम',
+    navCheck: 'फसल जांचें',
+    navArea: 'मेरा क्षेत्र',
+    navExpert: 'विशेषज्ञ',
+    
+    // Status
+    statusSafe: 'सुरक्षित / कम जोखिम',
+    statusAttention: 'ध्यान देने की आवश्यकता',
+    statusDanger: 'उच्च जोखिम',
+    
+    // Home
+    myCropStatus: 'मेरी फसल की स्थिति',
+    cropStatusDesc: 'बढ़ती आर्द्रता के कारण आने वाले कुछ दिनों में बीमारी का जोखिम बढ़ सकता है।',
+    lastScanned: 'अंतिम जांच: आज, सुबह ९:३०',
+    currentCrop: 'टमाटर (त्रिशूल ४४)',
+    
+    // Quick Actions
+    actionCheckCrop: 'मेरी फसल जांचें',
+    actionCheckCropSub: 'फोटो लें या अपलोड करें',
+    actionMyArea: 'मेरा क्षेत्र',
+    actionMyAreaSub: 'हॉटस्पॉट और क्लस्टर',
+    actionListen: 'सलाह सुनें',
+    actionListenSub: 'दैनिक वॉयस सारांश',
+    actionExpert: 'विशेषज्ञ से बात करें',
+    actionExpertSub: 'कृषि विशेषज्ञ मार्गदर्शन',
+    
+    // Weather
+    todaysConditions: 'आज का मौसम',
+    humidity: 'आर्द्रता (नमी)',
+    rainExpected: 'कल बारिश की संभावना',
+    temp: 'तापमान',
+    weatherCropImpact: 'यह मौसम निचले खेतों में फंगल बीमारियों के जोखिम को बढ़ा सकता है।',
+    
+    // Check Crop Flow
+    checkCropTitle: 'अपनी फसल जांचें',
+    checkCropSubtitle: 'त्वरित निदान के लिए प्रभावित पत्ती या पौधे की स्पष्ट फोटो लें।',
+    selectCrop: 'अपनी फसल चुनें',
+    takePhoto: 'फोटो लें',
+    uploadImage: 'फोटो अपलोड करें',
+    orUseSample: 'या नमूना फोटो चुनें:',
+    dragDropText: 'पत्ती की फोटो लेने या अपलोड करने के लिए टैप करें',
+    removePhoto: 'फोटो हटाएं',
+    replacePhoto: 'फोटो बदलें',
+    btnCheckCrop: '🌿 मेरी फसल जांचें',
+    
+    // Photo Guidance
+    guidanceTitle: 'सर्वोत्तम परिणामों के लिए फोटो दिशानिर्देश',
+    guideLighting: 'प्राकृतिक और पर्याप्त रोशनी में फोटो लें',
+    guideVisible: 'प्रभावित हिस्से को फोकस में रखें',
+    guideNoBlur: 'धुंधली या हिलती हुई फोटो से बचें',
+    guideNoDark: 'गहरे साये या फ्लैश की चमक से बचें',
+    
+    // Processing
+    processingTitle: 'आपकी फसल की जांच की जा रही है',
+    step1: 'आपकी फसल की फोटो जांची जा रही है...',
+    step2: 'पत्तियों पर दिखाई देने वाले लक्षण खोजे जा रहे हैं...',
+    step3: 'स्थानीय मौसम और आर्द्रता का विश्लेषण हो रहा है...',
+    step4: 'उपयोगी और सटीक सलाह तैयार की जा रही है...',
+    processingSub: 'बैकग्राउंड में तकनीक काम कर रही है। आपके लिए सरल उपाय तैयार किए जा रहे हैं।',
+    
+    // Diagnosis Result
+    resultTitle: 'फसल जांच परिणाम',
+    possibleIssue: 'संभावित समस्या पाई गई',
+    confidenceReliable: 'निदान विश्वसनीय लगता है',
+    confidenceMonitor: 'कृपया ध्यान से निगरानी करें',
+    confidenceReview: 'विशेषज्ञ समीक्षा की सिफारिश की जाती है',
+    severityModerate: 'मध्यम गंभीरता',
+    severityHigh: 'उच्च गंभीरता',
+    severityLow: 'कम गंभीरता / शुरुआती चरण',
+    
+    // Actions & Sections
+    whatToDoToday: 'आज आपको क्या करना चाहिए',
+    whatToMonitor: 'क्या निगरानी करनी चाहिए',
+    whatMayHappenNext: 'आगे क्या हो सकता है',
+    btnListenAdvice: 'सलाह सुनें (ऑडियो)',
+    btnViewAreaRisk: 'क्षेत्रीय जोखिम देखें',
+    btnAskExpert: 'विशेषज्ञ से पूछें',
+    btnRetake: 'दूसरी पत्ती जांचें',
+    
+    // Risk Forecast
+    riskForecastTitle: 'फसल जोखिम पूर्वानुमान',
+    riskTrendSubtitle: 'अगले ५ दिनों में बीमारी प्रसार का रुझान',
+    whyRiskIncreasing: 'जोखिम क्यों बढ़ रहा है?',
+    whatShouldYouDo: 'आपको क्या करना चाहिए?',
+    highHumidityReason: 'अधिक आर्द्रता (औसत ८२% से अधिक)',
+    rainExpectedReason: '२४-४८ घंटों में बारिश की संभावना',
+    nearbyCasesReason: 'आस-पास के खेतों में संक्रमण के मामले',
+    
+    // Area
+    areaTitle: 'मेरे क्षेत्र की स्थिति',
+    areaStatusTitle: 'मध्यम बीमारी गतिविधि',
+    reportsIncreasing: 'क्षेत्र में बीमारी की रिपोर्ट बढ़ रही हैं',
+    multipleCasesNearby: '५ किमी के दायरे में १४ मामले सामने आए',
+    updatedRecently: '२ घंटे पहले अपडेट किया गया',
+    areaMapTitle: 'गुमनाम सामुदायिक क्लस्टर रडार',
+    areaMapNotice: 'किसानों की पहचान और गोपनीयता पूरी तरह सुरक्षित है।',
+    officialAdvisoryTitle: 'केवीके कृषि सलाह',
+    
+    // Expert
+    expertTitle: 'कृषि विशेषज्ञ से बात करें',
+    expertSubtitle: 'अपने क्षेत्रीय कृषि विज्ञान केंद्र (KVK) से सीधा संपर्क',
+    cropContextTitle: 'सक्रिय फसल संदर्भ',
+    onlineNow: 'ऑनलाइन उपलब्ध',
+    typicalReplyTime: 'आमतौर पर ~५ मिनट में जवाब मिलता है',
+    typeMessagePlaceholder: 'डॉ. पाटिल से सवाल पूछें...',
+    quickQuestions: 'अक्सर पूछे जाने वाले प्रश्न:',
+    callKisanHelpline: 'किसान हेल्पलाइन पर कॉल करें (टोल-फ्री १८००-१८०-१५५१)',
+    
+    // Follow-up
+    followUpTitle: 'अब आपकी फसल कैसी है?',
+    followUpSubtitle: 'स्थानीय सलाह को बेहतर बनाने और सुधार को ट्रैक करने में मदद करें।',
+    btnBetter: 'बेहतर है 😊',
+    btnSame: 'वैसी ही है 😐',
+    btnWorse: 'हालत बिगड़ी है 😟',
+    feedbackBetter: 'बहुत बढ़िया! फसल के पूरी तरह स्वस्थ होने तक देखभाल जारी रखें।',
+    feedbackSame: 'नियमित निगरानी बनाए रखें। अनुशंसित समय पर छिड़काव करें।',
+    feedbackWorse: 'तुरंत कार्रवाई आवश्यक है। हम आपको कृषि विशेषज्ञ से जोड़ते हैं।',
+    
+    // Questions & IPM
+    howIsMyCrop: 'मेरी फसल कैसी है?',
+    whatIsWrong: 'क्या समस्या है?',
+    whatShouldIDoNow: '🌱 मुझे अब क्या करना चाहिए?',
+    whatMightHappenNext: 'आगे क्या हो सकता है?',
+    whatIsHappeningAroundMe: 'मेरे आस-पास क्या हो रहा है?',
+    diagnosisUncertain: '⚠️ निदान अनिश्चित है',
+    diagnosisUncertainDesc: 'इस फोटो से AI का आत्मविश्वास कम है। सुरक्षित सलाह के लिए कृषि विशेषज्ञ से बात करें।',
+    talkToExpertCTA: 'कृषि विशेषज्ञ से बात करें',
+    ipmCultural: '१. शस्य/कृषि पद्धतियां (Cultural)',
+    ipmMechanical: '२. यांत्रिक और भौतिक तरीके (Mechanical)',
+    ipmBiological: '३. जैविक नियंत्रण (Biological)',
+    ipmChemical: '४. रासायनिक नियंत्रण (केवल आवश्यकता पड़ने पर)',
+    demoNotice: 'डेमो / प्रोटोटाइप डेटा',
+    demoHelpline: 'डेमो हेल्पलाइन: १८००-०००-०००० (प्रोटोटाइप)',
+    
+    // Auth & Restrictions
+    loginTitle: 'किसान पोर्टल लॉगिन',
+    farmerIdLabel: 'किसान आईडी या ईमेल',
+    farmerIdPlaceholder: 'आईडी या ईमेल दर्ज करें (उदा. farmer123)',
+    passwordLabel: 'पासवर्ड',
+    passwordPlaceholder: 'पासवर्ड दर्ज करें',
+    btnLogin: 'लॉगिन करें',
+    btnDemoUser: 'डेमो यूजर के रूप में जारी रखें',
+    trustMessage: 'किसानों के लिए AI-संचालित फसल स्वास्थ्य मार्गदर्शन',
+    autofillCredentials: '⚡ डेमो लॉगिन विवरण भरें',
+    farmerLoginRequired: '🔒 किसान लॉगिन आवश्यक है',
+    restrictionSubtitle: 'इस व्यक्तिगत सुविधा का उपयोग करने के लिए कृपया अपनी किसान आईडी और पासवर्ड से लॉगिन करें।',
+    btnLoginAsFarmer: 'किसान के रूप में लॉगिन करें',
+    btnContinueExploring: 'डेमो देखना जारी रखें',
+    demoModeBanner: '🔒 डेमो मोड • सीमित पहुंच',
+    loggedAsFarmer: 'डेमो किसान',
+    btnLogout: 'लॉगआउट',
+    
+    // Common
+    loading: 'लोड हो रहा है...',
+    tryAgain: 'पुनः प्रयास करें',
+    errorTitle: 'आपकी फसल की जांच नहीं हो सकी',
+    errorDesc: 'कृपया पत्ती की अधिक स्पष्ट और अच्छी रोशनी वाली तस्वीर के साथ पुनः प्रयास करें।',
+    emptyNearby: '🌾 आस-पास किसी बड़ी समस्या की सूचना नहीं है।',
+    speaking: 'ऑडियो सलाह चलाई जा रही है...',
+    stopAudio: 'ऑडियो रोकें',
+  },
   mr: {
     // Brand
     appName: 'कृषि सार्थक',
