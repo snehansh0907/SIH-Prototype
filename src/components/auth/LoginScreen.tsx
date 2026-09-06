@@ -14,23 +14,17 @@ import {
   Copy,
   Check,
   AlertCircle,
-<<<<<<< HEAD
   ChevronDown,
   Navigation,
   Search,
   X,
   Map as MapIcon,
-=======
-  ChevronDown
->>>>>>> 17403c2c139852b8cc33a1a1f88a36aa5f817824
 } from 'lucide-react';
 import { useLanguage } from '../../context/LanguageContext';
 import { useAuth } from '../../context/AuthContext';
 import { SEEDED_DEMO_FARMERS } from '../../services/authService';
-<<<<<<< HEAD
 import { ALL_INDIAN_STATES_AND_UTS } from '../../data/indianStates';
 import { locationService, type LocationSearchResult } from '../../services/locationService';
-=======
 import type { Language } from '../../types';
 
 const CROPS = [
@@ -43,11 +37,12 @@ const CROPS = [
   { key: 'Rice', transKey: 'cropRice', defaultLabel: 'Rice', icon: '🌾' },
   { key: 'Wheat', transKey: 'cropWheat', defaultLabel: 'Wheat', icon: '🌾' },
 ];
->>>>>>> 17403c2c139852b8cc33a1a1f88a36aa5f817824
 
 export const LoginScreen: React.FC = () => {
   const { language, setLanguage, t } = useLanguage();
   const { login, register, loginAsDemo } = useAuth();
+
+  const isMarathi = language === 'mr';
 
   // Language Popover Menu State
   const [showLangMenu, setShowLangMenu] = useState(false);
@@ -255,21 +250,12 @@ export const LoginScreen: React.FC = () => {
       setRegError(t.valPassLength);
       return;
     }
-<<<<<<< HEAD
     if (!regState.trim()) {
-      setRegError(isMarathi ? 'कृपया तुमचे राज्य निवडा' : 'Please select your state.');
+      setRegError(isMarathi ? 'कृपया तुमचे राज्य निवडा' : language === 'hi' ? 'कृपया अपना राज्य चुनें।' : 'Please select your state.');
       return;
     }
-    if (!regDistrict.trim()) {
-      setRegError(isMarathi ? 'कृपया तुमचा जिल्हा प्रविष्ट करा' : 'Please enter your district.');
-      return;
-    }
-    if (!regVillage.trim()) {
-      setRegError(isMarathi ? 'कृपया तुमचे गाव / परिसर प्रविष्ट करा' : 'Please enter your village / locality.');
-=======
     if (!regVillage.trim() || !regTaluka.trim() || !regDistrict.trim()) {
       setRegError(t.valLocationFields);
->>>>>>> 17403c2c139852b8cc33a1a1f88a36aa5f817824
       return;
     }
     if (!regFarmName.trim()) {
@@ -335,17 +321,6 @@ export const LoginScreen: React.FC = () => {
             </span>
           </div>
 
-          {/* <<<<<<< HEAD */}
-          <button
-            type="button"
-            onClick={toggleLanguage}
-            className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/10 hover:bg-white/20 text-xs font-semibold border border-white/20 transition-all active:scale-95 cursor-pointer"
-            aria-label="Toggle language (English / हिंदी / मराठी)"
-          >
-            <Globe className="w-3.5 h-3.5 text-amber-300" />
-            <span>{language === 'en' ? 'English' : language === 'hi' ? 'हिंदी' : 'मराठी'}</span>
-          </button>
-          {/* ======= */}
           {/* 3-Language Explicit Selector Dropdown */}
           <div className="relative">
             <button
@@ -385,7 +360,6 @@ export const LoginScreen: React.FC = () => {
               </div>
             )}
           </div>
->>>>>>> 17403c2c139852b8cc33a1a1f88a36aa5f817824
         </div>
 
         {/* Brand Banner Hero - Clear High Contrast Contrast */}
@@ -591,12 +565,8 @@ export const LoginScreen: React.FC = () => {
                   {t.newFarmerRegistration}
                 </h2>
                 <p className="text-xs text-stone-500 font-medium mt-0.5">
-<<<<<<< HEAD
-  { isMarathi ? 'भारतातील कोणत्याही भागातील शेतकरी नोंदणी करू शकतात' : 'Register your farm anywhere across India' }
-=======
                   {t.setupFarmProfileSub}
->>>>>>> 17403c2c139852b8cc33a1a1f88a36aa5f817824
-                </p >
+                </p>
               </div >
 
   {/* Error Feedback */ }
@@ -687,101 +657,86 @@ export const LoginScreen: React.FC = () => {
     </div>
   </div>
 
-<<<<<<< HEAD
-{/* SECTION 2: 📍 Your Farm Location (Scalable India-wide System) */ }
-<div className="bg-white rounded-2xl p-4 border border-stone-300/80 shadow-sm space-y-3">
-  <div className="pb-1 border-b border-stone-100">
-    <div className="flex items-center justify-between">
-      <div className="flex items-center gap-1.5 text-xs font-black text-forest-900 font-display">
-        <MapPin className="w-4 h-4 text-forest-700" />
-        <span>{isMarathi ? '📍 तुमच्या शेताचे स्थान' : '📍 Your Farm Location'}</span>
-      </div>
-      <span className="text-[10px] font-bold text-forest-800 bg-forest-100/90 px-2 py-0.5 rounded-full">
-        {isMarathi ? 'अखिल भारतीय' : 'All-India'}
-      </span>
-    </div>
-    <p className="text-[11px] text-stone-500 font-medium mt-0.5">
-      {isMarathi
-        ? 'शेताचे स्थान शोधा किंवा तुमचे सध्याचे स्थान वापरा.'
-        : 'Search your farm location across India or use current location.'}
-    </p>
-  </div>
+                {/* SECTION 2: 📍 Your Farm Location (Scalable India-wide System) */}
+                <div className="bg-white rounded-2xl p-4 border border-stone-300/80 shadow-sm space-y-3">
+                  <div className="pb-1 border-b border-stone-100">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-1.5 text-xs font-black text-forest-900 font-display">
+                        <MapPin className="w-4 h-4 text-forest-700" />
+                        <span>{isMarathi ? '📍 तुमच्या शेताचे स्थान' : '📍 Your Farm Location'}</span>
+                      </div>
+                      <span className="text-[10px] font-bold text-forest-800 bg-forest-100/90 px-2 py-0.5 rounded-full">
+                        {isMarathi ? 'अखिल भारतीय' : 'All-India'}
+                      </span>
+                    </div>
+                    <p className="text-[11px] text-stone-500 font-medium mt-0.5">
+                      {isMarathi
+                        ? 'शेताचे स्थान शोधा किंवा तुमचे सध्याचे स्थान वापरा.'
+                        : 'Search your farm location across India or use current location.'}
+                    </p>
+                  </div>
 
-  {/* OPTION A: Use My Current Location Button */}
-  <button
-    type="button"
-    onClick={handleDetectCurrentLocation}
-    disabled={detectStatus === 'detecting_coords' || detectStatus === 'finding_address'}
-    className="w-full py-2.5 px-3.5 rounded-xl bg-forest-50 hover:bg-forest-100 active:scale-[0.99] border-2 border-forest-600/70 text-forest-900 text-xs font-bold transition-all shadow-sm flex items-center justify-center gap-2 cursor-pointer disabled:opacity-60"
-  >
-    {detectStatus === 'detecting_coords' ? (
-      <>
-        <span className="w-3.5 h-3.5 rounded-full border-2 border-forest-700 border-t-transparent animate-spin" />
-        <span>{isMarathi ? 'स्थान शोधत आहे...' : 'Detecting your location...'}</span>
-      </>
-    ) : detectStatus === 'finding_address' ? (
-      <>
-        <span className="w-3.5 h-3.5 rounded-full border-2 border-forest-700 border-t-transparent animate-spin" />
-        <span>{isMarathi ? 'पत्ता शोधत आहे...' : 'Finding your address...'}</span>
-      </>
-    ) : (
-      <>
-        <Navigation className="w-3.5 h-3.5 text-forest-700 shrink-0" />
-        <span>{isMarathi ? '📍 माझे सध्याचे स्थान वापरा' : '📍 Use My Current Location'}</span>
-      </>
-    )}
-  </button>
+                  {/* OPTION A: Use My Current Location Button */}
+                  <button
+                    type="button"
+                    onClick={handleDetectCurrentLocation}
+                    disabled={detectStatus === 'detecting_coords' || detectStatus === 'finding_address'}
+                    className="w-full py-2.5 px-3.5 rounded-xl bg-forest-50 hover:bg-forest-100 active:scale-[0.99] border-2 border-forest-600/70 text-forest-900 text-xs font-bold transition-all shadow-sm flex items-center justify-center gap-2 cursor-pointer disabled:opacity-60"
+                  >
+                    {detectStatus === 'detecting_coords' ? (
+                      <>
+                        <span className="w-3.5 h-3.5 rounded-full border-2 border-forest-700 border-t-transparent animate-spin" />
+                        <span>{isMarathi ? 'स्थान शोधत आहे...' : 'Detecting your location...'}</span>
+                      </>
+                    ) : detectStatus === 'finding_address' ? (
+                      <>
+                        <span className="w-3.5 h-3.5 rounded-full border-2 border-forest-700 border-t-transparent animate-spin" />
+                        <span>{isMarathi ? 'पत्ता शोधत आहे...' : 'Finding your address...'}</span>
+                      </>
+                    ) : (
+                      <>
+                        <Navigation className="w-3.5 h-3.5 text-forest-700 shrink-0" />
+                        <span>{isMarathi ? '📍 माझे सध्याचे स्थान वापरा' : '📍 Use My Current Location'}</span>
+                      </>
+                    )}
+                  </button>
 
-  {/* Geolocation Success Feedback */}
-  {locationSuccessMsg && (
-    <div className="p-2.5 rounded-xl bg-emerald-50 border border-emerald-300 text-emerald-900 text-[11px] font-bold flex items-center gap-2 animate-fadeIn">
-      <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
-      <span className="truncate">{locationSuccessMsg}</span>
-    </div>
-  )}
+                  {/* Geolocation Success Feedback */}
+                  {locationSuccessMsg && (
+                    <div className="p-2.5 rounded-xl bg-emerald-50 border border-emerald-300 text-emerald-900 text-[11px] font-bold flex items-center gap-2 animate-fadeIn">
+                      <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
+                      <span className="truncate">{locationSuccessMsg}</span>
+                    </div>
+                  )}
 
-  {/* Geolocation Error Feedback */}
-  {locationErrorMsg && (
-    <div className="p-2.5 rounded-xl bg-amber-50 border border-amber-300 text-amber-900 text-[11px] font-semibold flex items-start gap-2 animate-fadeIn">
-      <AlertCircle className="w-4 h-4 text-amber-700 shrink-0 mt-0.5" />
-      <span>{locationErrorMsg}</span>
-    </div>
-  )}
+                  {/* Geolocation Error Feedback */}
+                  {locationErrorMsg && (
+                    <div className="p-2.5 rounded-xl bg-amber-50 border border-amber-300 text-amber-900 text-[11px] font-semibold flex items-start gap-2 animate-fadeIn">
+                      <AlertCircle className="w-4 h-4 text-amber-700 shrink-0 mt-0.5" />
+                      <span>{locationErrorMsg}</span>
+                    </div>
+                  )}
 
-  {/* Divider */}
-  <div className="relative flex items-center py-0.5">
-    <div className="flex-grow border-t border-stone-200"></div>
-    <span className="flex-shrink mx-3 text-[10px] uppercase font-bold text-stone-400">
-      {isMarathi ? 'किंवा शोधा' : 'OR SEARCH'}
-    </span>
-    <div className="flex-grow border-t border-stone-200"></div>
-  </div>
+                  {/* Divider */}
+                  <div className="relative flex items-center py-0.5">
+                    <div className="flex-grow border-t border-stone-200"></div>
+                    <span className="flex-shrink mx-3 text-[10px] uppercase font-bold text-stone-400">
+                      {isMarathi ? 'किंवा शोधा' : 'OR SEARCH'}
+                    </span>
+                    <div className="flex-grow border-t border-stone-200"></div>
+                  </div>
 
-  {/* OPTION B: Smart India-Wide Search Bar */}
-  <div className="relative">
-    <label className="block text-[10px] font-bold uppercase text-stone-600 mb-1 font-display">
-      {isMarathi
-        ? '🔎 गाव, शहर, जिल्हा किंवा पिनकोड शोधा'
-        : '🔎 Search Village, Town, City, District, or Pincode'}
-    </label>
-    <div className="relative">
-      <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-stone-400">
-        <Search className="w-3.5 h-3.5" />
-      </div>
-=======
-                {/* SECTION 2: 📍 Your Location */}
-      <div className="bg-white rounded-2xl p-3.5 border border-stone-300/80 shadow-sm space-y-2.5">
-        <div className="flex items-center gap-1.5 text-xs font-black text-forest-900 font-display pb-1 border-b border-stone-100">
-          <MapPin className="w-3.5 h-3.5 text-forest-700" />
-          <span>{t.yourLocation}</span>
-        </div>
-
-        <div className="grid grid-cols-3 gap-2">
-          <div>
-            <label className="block text-[10px] font-bold uppercase tracking-wider text-stone-600 mb-0.5">
-              {t.villageLabel}
-            </label>
->>>>>>> 17403c2c139852b8cc33a1a1f88a36aa5f817824
+                  {/* OPTION B: Smart India-Wide Search Bar */}
+                  <div className="relative">
+                    <label className="block text-[10px] font-bold uppercase text-stone-600 mb-1 font-display">
+                      {isMarathi
+                        ? '🔎 गाव, शहर, जिल्हा किंवा पिनकोड शोधा'
+                        : '🔎 Search Village, Town, City, District, or Pincode'}
+                    </label>
+                    <div className="relative">
+                      <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-stone-400">
+                        <Search className="w-3.5 h-3.5" />
+                      </div>
             <input
               type="text"
               value={searchQuery}
@@ -811,47 +766,44 @@ export const LoginScreen: React.FC = () => {
             )}
           </div>
 
-<<<<<<< HEAD
-{/* Dynamic Auto-Complete Search Results Dropdown */ }
-{
-  showDropdown && (
-    <div className="absolute z-20 w-full mt-1 bg-white rounded-xl shadow-xl border border-stone-300/80 overflow-hidden max-h-56 overflow-y-auto">
-      {isSearching && (
-        <div className="p-3 text-xs text-stone-500 flex items-center gap-2">
-          <span className="w-3.5 h-3.5 rounded-full border-2 border-forest-600 border-t-transparent animate-spin" />
-          <span>{isMarathi ? 'स्थान शोधत आहे...' : 'Searching across India...'}</span>
-        </div>
-      )}
-      {!isSearching && searchResults.length === 0 && searchQuery.length >= 2 && (
-        <div className="p-3 text-xs text-stone-500">
-          {isMarathi
-            ? 'अचूक स्थान सापडले नाही. खालील फील्डमध्ये तुमचे गाव मॅन्युअली टाईप करा.'
-            : 'No exact location found. You can type your village name directly in the fields below.'}
-        </div>
-      )}
-      {searchResults.map((item) => (
-        <button
-          key={item.id}
-          type="button"
-          onClick={() => handleSelectSearchResult(item)}
-          className="w-full px-3 py-2 text-left text-xs text-stone-800 hover:bg-forest-50 border-b border-stone-100 last:border-0 flex items-start gap-2 transition-colors cursor-pointer"
-        >
-          <MapPin className="w-3.5 h-3.5 text-forest-700 shrink-0 mt-0.5" />
-          <div className="truncate">
-            <div className="font-bold text-stone-900 truncate">
-              {item.village || item.taluka || item.displayName}
-            </div>
-            <div className="text-[10px] text-stone-500 truncate">{item.displayName}</div>
-          </div>
-        </button>
-      ))}
-    </div>
-  )
-}
-                  </div >
+                    {/* Dynamic Auto-Complete Search Results Dropdown */}
+                    {showDropdown && (
+                      <div className="absolute z-20 w-full mt-1 bg-white rounded-xl shadow-xl border border-stone-300/80 overflow-hidden max-h-56 overflow-y-auto">
+                        {isSearching && (
+                          <div className="p-3 text-xs text-stone-500 flex items-center gap-2">
+                            <span className="w-3.5 h-3.5 rounded-full border-2 border-forest-600 border-t-transparent animate-spin" />
+                            <span>{isMarathi ? 'स्थान शोधत आहे...' : 'Searching across India...'}</span>
+                          </div>
+                        )}
+                        {!isSearching && searchResults.length === 0 && searchQuery.length >= 2 && (
+                          <div className="p-3 text-xs text-stone-500">
+                            {isMarathi
+                              ? 'अचूक स्थान सापडले नाही. खालील फील्डमध्ये तुमचे गाव मॅन्युअली टाईप करा.'
+                              : 'No exact location found. You can type your village name directly in the fields below.'}
+                          </div>
+                        )}
+                        {searchResults.map((item) => (
+                          <button
+                            key={item.id}
+                            type="button"
+                            onClick={() => handleSelectSearchResult(item)}
+                            className="w-full px-3 py-2 text-left text-xs text-stone-800 hover:bg-forest-50 border-b border-stone-100 last:border-0 flex items-start gap-2 transition-colors cursor-pointer"
+                          >
+                            <MapPin className="w-3.5 h-3.5 text-forest-700 shrink-0 mt-0.5" />
+                            <div className="truncate">
+                              <div className="font-bold text-stone-900 truncate">
+                                {item.village || item.taluka || item.displayName}
+                              </div>
+                              <div className="text-[10px] text-stone-500 truncate">{item.displayName}</div>
+                            </div>
+                          </button>
+                        ))}
+                      </div>
+                    )}
+                  </div>
 
-  {/* STRUCTURED EDITABLE DETAILS (Review & Rural Fallback) */ }
-  < div className = "space-y-2.5 pt-2 border-t border-stone-100" >
+                  {/* STRUCTURED EDITABLE DETAILS (Review & Rural Fallback) */}
+                  <div className="space-y-2.5 pt-2 border-t border-stone-100">
                     <div className="text-[10px] uppercase font-bold text-stone-500 flex items-center justify-between">
                       <span>{isMarathi ? 'पडताळणी व दुरुस्ती (दुरुस्त करता येतील)' : 'Address Details (Review & Edit)'}</span>
                       <span className="text-forest-700 font-medium lowercase">
@@ -928,30 +880,11 @@ export const LoginScreen: React.FC = () => {
                       </div>
                     </div>
 
-{/* PINCODE Input */ }
-<div className="w-full sm:w-1/2">
-  <label className="block text-[10px] font-bold uppercase text-stone-600 mb-0.5 font-display">
-    {isMarathi ? 'पिनकोड (Pincode)' : 'Pincode'}
-=======
-                    <div>
-      <label className="block text-[10px] font-bold uppercase tracking-wider text-stone-600 mb-0.5">
-        {t.talukaLabel}
-      </label>
-      <input
-        type="text"
-        value={regTaluka}
-        onChange={(e) => setRegTaluka(e.target.value)}
-        placeholder="Niphad"
-        className="w-full px-2.5 py-2 rounded-xl bg-stone-50 border border-stone-300 text-stone-900 text-xs font-semibold focus:outline-none focus:ring-2 focus:ring-forest-600"
-        required
-      />
-    </div>
-
-    <div>
-      <label className="block text-[10px] font-bold uppercase tracking-wider text-stone-600 mb-0.5">
-        {t.districtLabel}
->>>>>>> 17403c2c139852b8cc33a1a1f88a36aa5f817824
-      </label>
+                    {/* PINCODE Input */}
+                    <div className="w-full sm:w-1/2">
+                      <label className="block text-[10px] font-bold uppercase text-stone-600 mb-0.5 font-display">
+                        {isMarathi ? 'पिनकोड (Pincode)' : 'Pincode'}
+                      </label>
       <input
         type="text"
         value={regPincode}
@@ -1054,7 +987,6 @@ export const LoginScreen: React.FC = () => {
       <button
         key={c.key}
         type="button"
-<<<<<<< HEAD
         onClick={() => setRegMainCrop(c.key as any)}
         className={`py-2 px-1 rounded-xl border text-xs font-extrabold flex flex-col items-center gap-0.5 transition-all cursor-pointer ${regMainCrop === c.key
             ? 'bg-forest-800 text-white border-forest-900 shadow-md scale-[1.02]'
@@ -1069,27 +1001,15 @@ export const LoginScreen: React.FC = () => {
     ))}
   </div>
 </div>
-                </div >
+                </div>
 
-  {/* Submit Registration Button */ }
-  < button
-type = "submit"
-disabled = { isRegistering }
-className = "w-full py-3.5 rounded-2xl bg-amber-400 hover:bg-amber-300 active:scale-[0.98] text-forest-950 font-black text-sm font-display transition-all duration-200 shadow-elevated flex items-center justify-center gap-2 cursor-pointer border-2 border-amber-300 disabled:opacity-75"
-  >
-<<<<<<< HEAD
-                  <span>
-                    {isRegistering
-                      ? isMarathi
-                        ? 'नोंदणी होत आहे...'
-                        : 'Creating Account...'
-                      : isMarathi
-                      ? 'खाते तयार करा व पुढे जा'
-                      : 'Create Account & Continue'}
-                  </span>
-=======
+                {/* Submit Registration Button */}
+                <button
+                  type="submit"
+                  disabled={isRegistering}
+                  className="w-full py-3.5 rounded-2xl bg-amber-400 hover:bg-amber-300 active:scale-[0.98] text-forest-950 font-black text-sm font-display transition-all duration-200 shadow-elevated flex items-center justify-center gap-2 cursor-pointer border-2 border-amber-300 disabled:opacity-75"
+                >
                   <span>{isRegistering ? t.creatingAccount : t.btnCreateAccountSubmit}</span>
->>>>>>> 17403c2c139852b8cc33a1a1f88a36aa5f817824
                   <ArrowRight className="w-4 h-4 text-forest-950" />
                 </button >
               </form >

@@ -17,7 +17,6 @@ export interface RegisterPayload {
   pincode?: string;
   farmName: string;
   areaAcres: number | string;
-  mainCrop: 'Tomato' | 'Cotton' | 'Soybean' | string;
   latitude?: number;
   longitude?: number;
   mainCrop: 'Tomato' | 'Cotton' | 'Soybean' | 'Sugarcane' | 'Maize' | 'Onion' | 'Rice' | 'Wheat' | string;

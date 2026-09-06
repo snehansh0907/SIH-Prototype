@@ -1,8 +1,4 @@
-<<<<<<< HEAD
-export type Language = 'en' | 'mr' | 'hi';
-=======
 export type Language = 'en' | 'hi' | 'mr';
->>>>>>> 17403c2c139852b8cc33a1a1f88a36aa5f817824
 
 export type AuthRole = 'unauthenticated' | 'demo' | 'farmer';
 
