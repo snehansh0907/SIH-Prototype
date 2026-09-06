@@ -1,4 +1,9 @@
 import { ALL_INDIAN_STATES_AND_UTS } from '../data/indianStates';
+import {
+  normalizeStateName,
+  normalizeDistrictName,
+  findPincodeForVillage,
+} from '../data/locations';
 
 export interface Coordinates {
   latitude: number;
@@ -358,8 +363,9 @@ export const locationService = {
               '';
 
             const taluka = cleanAdminName(addr.county || addr.tehsil || addr.taluk || addr.subdistrict || '');
-            const district = cleanAdminName(addr.state_district || addr.county || addr.district || '');
-            const state = matchOfficialState(addr.state || '');
+            const rawDist = cleanAdminName(addr.state_district || addr.county || addr.district || '');
+            const state = normalizeStateName(addr.state || '') || matchOfficialState(addr.state || '');
+            const district = normalizeDistrictName(state, rawDist) || rawDist;
             const pincode = addr.postcode || (isSixDigitPincode ? trimmed : '');
 
             const parts = [village, taluka, district, state]
@@ -551,10 +557,15 @@ export const locationService = {
       }
     }
 
-    const state = matchOfficialState(rawState);
-    const district = cleanAdminName(rawDistrict) || cleanAdminName(rawTaluka) || cleanAdminName(rawVillage) || '';
+    const state = normalizeStateName(rawState) || matchOfficialState(rawState);
+    const cleanedDist = cleanAdminName(rawDistrict);
+    const district = normalizeDistrictName(state, cleanedDist) || cleanedDist || cleanAdminName(rawTaluka) || cleanAdminName(rawVillage) || '';
     const taluka = cleanAdminName(rawTaluka) || cleanAdminName(rawDistrict) || cleanAdminName(rawVillage) || '';
     const village = rawVillage.trim() || taluka || district || '';
+    let pincode = rawPincode;
+    if (!pincode && state && district && taluka && village) {
+      pincode = findPincodeForVillage(state, district, taluka, village) || '';
+    }
 
     return {
       success: true,
@@ -564,7 +575,7 @@ export const locationService = {
       district,
       taluka,
       village,
-      pincode: rawPincode,
+      pincode,
       formattedAddress: formatted || [village, taluka, district, state].filter(Boolean).join(', '),
     };
   },

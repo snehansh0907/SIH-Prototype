@@ -24,6 +24,14 @@ import { useLanguage } from '../../context/LanguageContext';
 import { useAuth } from '../../context/AuthContext';
 import { SEEDED_DEMO_FARMERS } from '../../services/authService';
 import { ALL_INDIAN_STATES_AND_UTS } from '../../data/indianStates';
+import {
+  getDistrictsForState,
+  getTalukasForDistrict,
+  getVillagesForTaluka,
+  findPincodeForVillage,
+  normalizeStateName,
+} from '../../data/locations';
+import { SearchableSelect, type SelectOption } from '../common/SearchableSelect';
 import { locationService, type LocationSearchResult } from '../../services/locationService';
 import type { Language } from '../../types';
 
@@ -136,11 +144,22 @@ export const LoginScreen: React.FC = () => {
       // 2. Reverse geocode coordinates into structured address
       const result = await locationService.reverseGeocode(coords.latitude, coords.longitude);
       if (result.success) {
-        if (result.state) setRegState(result.state);
+        const detectedState = normalizeStateName(result.state) || result.state || '';
+        if (detectedState) setRegState(detectedState);
         if (result.district) setRegDistrict(result.district);
         if (result.taluka) setRegTaluka(result.taluka);
         if (result.village) setRegVillage(result.village);
-        if (result.pincode) setRegPincode(result.pincode);
+        if (result.pincode) {
+          setRegPincode(result.pincode);
+        } else if (detectedState && result.district && (result.taluka || result.village)) {
+          const pin = findPincodeForVillage(
+            detectedState,
+            result.district,
+            result.taluka || result.village || '',
+            result.village || result.taluka || ''
+          );
+          if (pin) setRegPincode(pin);
+        }
         setRegLatitude(result.latitude);
         setRegLongitude(result.longitude);
 
@@ -191,11 +210,22 @@ export const LoginScreen: React.FC = () => {
   };
 
   const handleSelectSearchResult = (item: LocationSearchResult) => {
-    setRegState(item.state || 'Maharashtra');
+    const matchedState = normalizeStateName(item.state) || item.state || '';
+    setRegState(matchedState);
     setRegDistrict(item.district || '');
     setRegTaluka(item.taluka || item.village || '');
     setRegVillage(item.village || item.taluka || '');
-    if (item.pincode) setRegPincode(item.pincode);
+    if (item.pincode) {
+      setRegPincode(item.pincode);
+    } else if (matchedState && item.district && (item.taluka || item.village)) {
+      const pin = findPincodeForVillage(
+        matchedState,
+        item.district,
+        item.taluka || item.village || '',
+        item.village || item.taluka || ''
+      );
+      if (pin) setRegPincode(pin);
+    }
     setRegLatitude(item.latitude);
     setRegLongitude(item.longitude);
 
@@ -208,6 +238,75 @@ export const LoginScreen: React.FC = () => {
     );
     setLocationErrorMsg(null);
   };
+
+  // Cascading Location Handlers
+  const handleStateChange = (newState: string) => {
+    setRegState(newState);
+    // When user changes State: immediately clear District, Taluka, Village, Pincode
+    setRegDistrict('');
+    setRegTaluka('');
+    setRegVillage('');
+    setRegPincode('');
+    setLocationErrorMsg(null);
+    setLocationSuccessMsg(null);
+  };
+
+  const handleDistrictChange = (newDistrict: string) => {
+    setRegDistrict(newDistrict);
+    // When user changes District: clear Taluka, Village, Pincode
+    setRegTaluka('');
+    setRegVillage('');
+    setRegPincode('');
+  };
+
+  const handleTalukaChange = (newTaluka: string) => {
+    setRegTaluka(newTaluka);
+    // When user changes Taluka: clear Village, Pincode
+    setRegVillage('');
+    setRegPincode('');
+  };
+
+  const handleVillageChange = (newVillage: string, meta?: any) => {
+    setRegVillage(newVillage);
+    // When user selects a Village: populate correct pincode if available
+    if (meta && meta.pincode) {
+      setRegPincode(meta.pincode);
+    } else if (regState && regDistrict && regTaluka && newVillage) {
+      const pin = findPincodeForVillage(regState, regDistrict, regTaluka, newVillage);
+      if (pin) setRegPincode(pin);
+    }
+  };
+
+  // Computed cascading options for searchable dropdowns
+  const stateOptions: SelectOption[] = ALL_INDIAN_STATES_AND_UTS.map((s) => ({
+    label: isMarathi ? `${s.nameMr || s.name} (${s.name})` : s.name,
+    value: s.name,
+    subLabel: s.isUT ? (isMarathi ? 'केंद्रशासित प्रदेश (UT)' : 'Union Territory') : undefined,
+  }));
+
+  const districtList = regState ? getDistrictsForState(regState) : [];
+  const districtOptions: SelectOption[] = districtList.map((d) => ({
+    label: d,
+    value: d,
+  }));
+
+  const talukaList = regState && regDistrict ? getTalukasForDistrict(regState, regDistrict) : [];
+  const talukaOptions: SelectOption[] = talukaList.map((t) => ({
+    label: isMarathi && t.nameMr ? `${t.nameMr} (${t.name})` : t.name,
+    value: t.name,
+    subLabel: isMarathi && t.nameMr ? t.nameMr : undefined,
+  }));
+
+  const villageList =
+    regState && regDistrict && regTaluka
+      ? getVillagesForTaluka(regState, regDistrict, regTaluka)
+      : [];
+  const villageOptions: SelectOption[] = villageList.map((v) => ({
+    label: isMarathi && v.nameMr ? `${v.nameMr} (${v.name})` : v.name,
+    value: v.name,
+    subLabel: v.pincode ? `PIN: ${v.pincode}` : undefined,
+    meta: { pincode: v.pincode },
+  }));
 
   // Handle Login Submit
   const handleLoginSubmit = async (e: React.FormEvent) => {
@@ -809,88 +908,102 @@ export const LoginScreen: React.FC = () => {
 
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                       {/* STATE Dropdown (All 28 States + 8 UTs) */}
-                      <div>
-                        <label className="block text-[10px] font-bold uppercase text-stone-600 mb-0.5 font-display">
-                          {isMarathi ? 'राज्य (State) *' : 'State *'}
-                        </label>
-                        <div className="relative">
-                          <select
-                            value={regState}
-                            onChange={(e) => setRegState(e.target.value)}
-                            className="w-full px-3 py-2 rounded-xl bg-stone-50 border border-stone-300 text-stone-900 text-xs font-bold focus:outline-none focus:ring-2 focus:ring-forest-600 appearance-none cursor-pointer"
-                          >
-                            <option value="">{isMarathi ? '-- राज्य निवडा --' : '-- Select State --'}</option>
-                            {ALL_INDIAN_STATES_AND_UTS.map((s) => (
-                              <option key={s.code} value={s.name}>
-                                {isMarathi ? (s.nameMr || s.name) : s.name} {s.isUT ? '(UT)' : ''}
-                              </option>
-                            ))}
-                          </select>
-                          <ChevronDown className="w-4 h-4 text-stone-500 absolute right-2.5 top-2.5 pointer-events-none" />
-                        </div>
-                      </div>
+                      <SearchableSelect
+                        id="reg-state-select"
+                        label={isMarathi ? 'राज्य (State)' : language === 'hi' ? 'राज्य (State)' : 'State'}
+                        required
+                        value={regState}
+                        onChange={handleStateChange}
+                        options={stateOptions}
+                        placeholder={isMarathi ? '-- राज्य निवडा --' : '-- Select State --'}
+                        searchPlaceholder={isMarathi ? 'राज्य शोधा...' : 'Search state...'}
+                        noOptionsText={isMarathi ? 'राज्य आढळले नाही' : 'No state found'}
+                      />
 
-                      {/* DISTRICT Input */}
-                      <div>
-                        <label className="block text-[10px] font-bold uppercase text-stone-600 mb-0.5 font-display">
-                          {isMarathi ? 'जिल्हा (District) *' : 'District *'}
-                        </label>
-                        <input
-                          type="text"
-                          value={regDistrict}
-                          onChange={(e) => setRegDistrict(e.target.value)}
-                          placeholder={isMarathi ? 'उदा. Nashik' : 'e.g. Nashik, Rampur'}
-                          className="w-full px-3 py-2 rounded-xl bg-stone-50 border border-stone-300 text-stone-900 text-xs font-semibold focus:outline-none focus:ring-2 focus:ring-forest-600"
-                          required
-                        />
-                      </div>
+                      {/* DISTRICT Dropdown (Cascading based on State) */}
+                      <SearchableSelect
+                        id="reg-district-select"
+                        label={isMarathi ? 'जिल्हा (District)' : language === 'hi' ? 'ज़िला (District)' : 'District'}
+                        required
+                        value={regDistrict}
+                        onChange={handleDistrictChange}
+                        options={districtOptions}
+                        disabled={!regState}
+                        disabledPlaceholder={isMarathi ? '-- आधी राज्य निवडा --' : '-- Select State First --'}
+                        placeholder={isMarathi ? '-- जिल्हा निवडा --' : '-- Select District --'}
+                        searchPlaceholder={isMarathi ? 'जिल्हा शोधा...' : 'Search district...'}
+                        noOptionsText={isMarathi ? 'जिल्हा आढळला नाही' : 'No district found'}
+                        helperText={
+                          regState && districtOptions.length > 0
+                            ? isMarathi
+                              ? `${districtOptions.length} जिल्हे उपलब्ध`
+                              : `${districtOptions.length} districts in ${regState}`
+                            : undefined
+                        }
+                      />
                     </div>
 
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                      {/* TALUKA / TEHSIL Input */}
-                      <div>
-                        <label className="block text-[10px] font-bold uppercase text-stone-600 mb-0.5 font-display">
-                          {isMarathi ? 'तालुका / तहसील (Taluka)' : 'Taluka / Tehsil'}
-                        </label>
-                        <input
-                          type="text"
-                          value={regTaluka}
-                          onChange={(e) => setRegTaluka(e.target.value)}
-                          placeholder={isMarathi ? 'उदा. Niphad' : 'e.g. Niphad'}
-                          className="w-full px-3 py-2 rounded-xl bg-stone-50 border border-stone-300 text-stone-900 text-xs font-semibold focus:outline-none focus:ring-2 focus:ring-forest-600"
-                        />
-                      </div>
+                      {/* TALUKA / TEHSIL Dropdown (Cascading based on District) */}
+                      <SearchableSelect
+                        id="reg-taluka-select"
+                        label={isMarathi ? 'तालुका / तहसील (Taluka)' : language === 'hi' ? 'तहसील / तालुका (Tehsil)' : 'Taluka / Tehsil'}
+                        value={regTaluka}
+                        onChange={handleTalukaChange}
+                        options={talukaOptions}
+                        allowCustomInput={true}
+                        disabled={!regDistrict}
+                        disabledPlaceholder={isMarathi ? '-- आधी जिल्हा निवडा --' : '-- Select District First --'}
+                        placeholder={isMarathi ? 'उदा. निफाड किंवा टाईप करा' : 'e.g. Niphad or type tehsil'}
+                        searchPlaceholder={isMarathi ? 'तालुका शोधा...' : 'Search taluka...'}
+                        noOptionsText={isMarathi ? 'तालुका सापडला नाही. स्वतः टाईप करू शकता.' : 'No pre-indexed taluka. You can type directly.'}
+                        helperText={
+                          talukaOptions.length > 0
+                            ? isMarathi
+                              ? `${talukaOptions.length} तालुके उपलब्ध (किंवा टाईप करा)`
+                              : `${talukaOptions.length} talukas available (or type)`
+                            : undefined
+                        }
+                      />
 
-                      {/* VILLAGE / LOCALITY Input (Rural Friendly) */}
-                      <div>
-                        <label className="block text-[10px] font-bold uppercase text-stone-600 mb-0.5 font-display">
-                          {isMarathi ? 'गाव / परिसर (Village) *' : 'Village / Locality *'}
-                        </label>
-                        <input
-                          type="text"
-                          value={regVillage}
-                          onChange={(e) => setRegVillage(e.target.value)}
-                          placeholder={isMarathi ? 'तुमच्या गावाचे नाव' : 'Enter your village name'}
-                          className="w-full px-3 py-2 rounded-xl bg-stone-50 border border-stone-300 text-stone-900 text-xs font-semibold focus:outline-none focus:ring-2 focus:ring-forest-600"
-                          required
-                        />
-                      </div>
+                      {/* VILLAGE / LOCALITY Dropdown (Cascading based on Taluka) */}
+                      <SearchableSelect
+                        id="reg-village-select"
+                        label={isMarathi ? 'गाव / परिसर (Village)' : language === 'hi' ? 'गाँव / क्षेत्र (Village)' : 'Village / Locality'}
+                        required
+                        value={regVillage}
+                        onChange={handleVillageChange}
+                        options={villageOptions}
+                        allowCustomInput={true}
+                        disabled={!regTaluka}
+                        disabledPlaceholder={isMarathi ? '-- आधी तालुका निवडा --' : '-- Select Taluka First --'}
+                        placeholder={isMarathi ? 'तुमच्या गावाचे नाव किंवा निवडा' : 'Enter your village name or select'}
+                        searchPlaceholder={isMarathi ? 'गाव शोधा...' : 'Search village...'}
+                        noOptionsText={isMarathi ? 'गाव यादीत नाही. थेट टाईप करा.' : 'Not in quick list. You can type directly.'}
+                        helperText={
+                          villageOptions.length > 0
+                            ? isMarathi
+                              ? `${villageOptions.length} गावे उपलब्ध (किंवा टाईप करा)`
+                              : `${villageOptions.length} villages available (or type)`
+                            : undefined
+                        }
+                      />
                     </div>
 
                     {/* PINCODE Input */}
                     <div className="w-full sm:w-1/2">
                       <label className="block text-[10px] font-bold uppercase text-stone-600 mb-0.5 font-display">
-                        {isMarathi ? 'पिनकोड (Pincode)' : 'Pincode'}
+                        {isMarathi ? 'पिनकोड (Pincode)' : language === 'hi' ? 'पिनकोड (Pincode)' : 'Pincode'}
                       </label>
-      <input
-        type="text"
-        value={regPincode}
-        onChange={(e) => setRegPincode(e.target.value)}
-        placeholder="e.g. 422303"
-        maxLength={6}
-        className="w-full px-3 py-2 rounded-xl bg-stone-50 border border-stone-300 text-stone-900 text-xs font-semibold focus:outline-none focus:ring-2 focus:ring-forest-600"
-      />
-    </div>
+                      <input
+                        type="text"
+                        value={regPincode}
+                        onChange={(e) => setRegPincode(e.target.value.replace(/\D/g, '').slice(0, 6))}
+                        placeholder={isMarathi ? 'उदा. 422303' : 'e.g. 422303'}
+                        maxLength={6}
+                        className="w-full px-3 py-2 rounded-xl bg-stone-50 border border-stone-300 text-stone-900 text-xs font-semibold focus:outline-none focus:ring-2 focus:ring-forest-600"
+                      />
+                    </div>
 </div>
 
 {/* Farm Location Summary & Map Coordinates Preview */ }
