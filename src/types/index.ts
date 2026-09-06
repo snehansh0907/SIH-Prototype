@@ -1,4 +1,4 @@
-export type Language = 'en' | 'mr';
+export type Language = 'en' | 'mr' | 'hi';
 
 export type AuthRole = 'unauthenticated' | 'demo' | 'farmer';
 
@@ -13,8 +13,12 @@ export interface FarmerUser {
   village: string;
   taluka: string;
   district: string;
+  state?: string;
+  pincode?: string;
   location: string;
   locationMr?: string;
+  latitude?: number;
+  longitude?: number;
   userType: 'demo' | 'registered';
   farmName: string;
   areaAcres: number | string;

@@ -15,8 +15,8 @@ export const FarmerProfileCard: React.FC = () => {
 
   const farmLocation = user
     ? (isMarathi 
-        ? (user.locationMr || `${user.village}, ${user.taluka}`)
-        : `${user.village || user.location}, ${user.taluka || user.district}`)
+        ? (user.locationMr || `${user.village}, ${user.taluka} (${user.district})`)
+        : `${user.village || user.location}, ${user.taluka}${user.district ? ` (${user.district})` : ''}`)
     : (isMarathi ? 'महाराष्ट्र' : 'Maharashtra');
 
   const monitoredCrop = user

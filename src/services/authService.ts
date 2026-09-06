@@ -10,12 +10,16 @@ export interface RegisterPayload {
   phone: string;
   email?: string;
   password: string;
-  village: string;
-  taluka: string;
+  state?: string;
   district: string;
+  taluka: string;
+  village: string;
+  pincode?: string;
   farmName: string;
   areaAcres: number | string;
   mainCrop: 'Tomato' | 'Cotton' | 'Soybean' | string;
+  latitude?: number;
+  longitude?: number;
 }
 
 interface StoredRegisteredUser {
@@ -268,8 +272,9 @@ export const authService = {
     const phone = (payload.phone || '').trim();
     const password = (payload.password || '').trim();
     const village = (payload.village || '').trim();
-    const taluka = (payload.taluka || '').trim();
+    const taluka = (payload.taluka || payload.village || '').trim();
     const district = (payload.district || '').trim();
+    const state = (payload.state || 'Maharashtra').trim();
     const farmName = (payload.farmName || '').trim() || `${name.split(' ')[0]}'s Farm`;
     const areaAcres = payload.areaAcres || 2;
     const mainCrop = payload.mainCrop || 'Tomato';
@@ -283,8 +288,8 @@ export const authService = {
     if (!password || password.length < 4) {
       return { success: false, message: 'Password must be at least 4 characters.' };
     }
-    if (!village || !taluka || !district) {
-      return { success: false, message: 'Please complete your Village, Taluka, and District.' };
+    if (!village || !district) {
+      return { success: false, message: 'Please complete your Village and District.' };
     }
 
     // Check if phone or email already registered
@@ -319,11 +324,15 @@ export const authService = {
       phone,
       email: payload.email?.trim() || undefined,
       emailOrPhone: phone,
+      state,
       village,
       taluka,
       district,
+      pincode: payload.pincode,
       location: `${village}, ${taluka}`,
       locationMr: `${village}, ${taluka}`,
+      latitude: payload.latitude,
+      longitude: payload.longitude,
       userType: 'registered',
       farmName,
       areaAcres,
