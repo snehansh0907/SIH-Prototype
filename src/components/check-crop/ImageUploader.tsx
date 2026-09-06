@@ -197,8 +197,7 @@ export const ImageUploader: React.FC = () => {
 
         <div className="grid grid-cols-2 gap-2">
           {currentCrop.sampleImages.map((sample) => {
-<<<<<<< HEAD
-            const isPicked = selectedImage === sample.url;
+            const isPicked = selectedImage === sample.url || (Boolean(sample.fallbackUrl) && selectedImage === sample.fallbackUrl);
             const title =
               language === 'mr'
                 ? sample.titleMr
@@ -224,10 +223,6 @@ export const ImageUploader: React.FC = () => {
               }
               return sample.condition;
             };
-=======
-            const isPicked = selectedImage === sample.url || (sample.fallbackUrl && selectedImage === sample.fallbackUrl);
-            const title = language === 'mr' ? sample.titleMr : sample.title;
->>>>>>> cc4dc7b5608b36e4ddf546f73263d581f1f3f727
 
             return (
               <button
