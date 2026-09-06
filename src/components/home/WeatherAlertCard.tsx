@@ -7,7 +7,12 @@ export const WeatherAlertCard: React.FC = () => {
   const { language, t } = useLanguage();
   const { weather, setActiveTab } = useCrop();
 
-  const impactSummary = language === 'mr' ? weather.cropImpactSummaryMr : weather.cropImpactSummary;
+  const impactSummary =
+    language === 'mr'
+      ? weather.cropImpactSummaryMr
+      : language === 'hi'
+      ? (weather.cropImpactSummaryHi || weather.cropImpactSummary)
+      : weather.cropImpactSummary;
 
   return (
     <div className="rounded-3xl bg-white/90 border border-stone-200/90 p-4 shadow-soft mb-5">
@@ -24,7 +29,7 @@ export const WeatherAlertCard: React.FC = () => {
           type="button"
           className="text-xs font-bold text-forest-800 hover:text-forest-900 flex items-center gap-0.5"
         >
-          <span>{language === 'mr' ? '५-दिवस अंदाज' : '5-Day Risk'}</span>
+          <span>{t.fiveDayRisk}</span>
           <ArrowUpRight className="w-3.5 h-3.5" />
         </button>
       </div>
@@ -40,7 +45,7 @@ export const WeatherAlertCard: React.FC = () => {
             {weather.humidity}%
           </div>
           <div className="text-[10px] font-semibold text-emerald-800 uppercase tracking-tight">
-            {language === 'mr' ? 'जास्त आर्द्रता' : 'High Humidity'}
+            {t.highHumidity}
           </div>
         </div>
 
@@ -53,7 +58,7 @@ export const WeatherAlertCard: React.FC = () => {
             {weather.rainfallChance}%
           </div>
           <div className="text-[10px] font-semibold text-sky-800 uppercase tracking-tight">
-            {language === 'mr' ? 'उद्या पाऊस' : 'Rain Soon'}
+            {t.rainSoon}
           </div>
         </div>
 
@@ -66,7 +71,7 @@ export const WeatherAlertCard: React.FC = () => {
             {weather.temp}°C
           </div>
           <div className="text-[10px] font-semibold text-amber-800 uppercase tracking-tight">
-            {language === 'mr' ? 'तापमान' : 'Temp'}
+            {language === 'mr' ? 'तापमान' : language === 'hi' ? 'तापमान' : 'Temp'}
           </div>
         </div>
       </div>

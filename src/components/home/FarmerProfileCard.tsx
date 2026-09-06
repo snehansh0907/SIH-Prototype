@@ -4,28 +4,31 @@ import { useLanguage } from '../../context/LanguageContext';
 import { useAuth } from '../../context/AuthContext';
 
 export const FarmerProfileCard: React.FC = () => {
-  const { language } = useLanguage();
+  const { language, t } = useLanguage();
   const { user, isFarmer, logout, openLoginModal } = useAuth();
 
-  const isMarathi = language === 'mr';
-
   const farmerName = user
-    ? (isMarathi ? (user.nameMr || user.name) : user.name)
-    : (isMarathi ? 'अतिथी शेतकरी' : 'Guest Farmer');
+    ? (language === 'mr' ? (user.nameMr || user.name) : language === 'hi' ? (user.nameHi || user.name) : user.name)
+    : t.guestFarmer;
 
   const farmLocation = user
-    ? (isMarathi 
+    ? (language === 'mr' 
         ? (user.locationMr || `${user.village}, ${user.taluka} (${user.district})`)
+        : language === 'hi'
+        ? (user.locationHi || `${user.village}, ${user.taluka} (${user.district})`)
         : `${user.village || user.location}, ${user.taluka}${user.district ? ` (${user.district})` : ''}`)
-    : (isMarathi ? 'महाराष्ट्र' : 'Maharashtra');
+    : (language === 'mr' ? 'महाराष्ट्र' : language === 'hi' ? 'महाराष्ट्र' : 'Maharashtra');
 
   const monitoredCrop = user
-    ? (isMarathi ? (user.monitoredCropMr || user.monitoredCrop) : user.monitoredCrop)
-    : (isMarathi ? 'टोमॅटो' : 'Tomato');
+    ? (language === 'mr' ? (user.monitoredCropMr || user.monitoredCrop) : language === 'hi' ? (user.monitoredCropHi || user.monitoredCrop) : user.monitoredCrop)
+    : (language === 'mr' ? 'टोमॅटो' : language === 'hi' ? 'टमाटर' : 'Tomato');
+
+  const myFarm = language === 'mr' ? 'माझे शेत' : language === 'hi' ? 'मेरा खेत' : 'My Farm';
+  const defaultFarm = language === 'mr' ? 'शेत (२ एकर)' : language === 'hi' ? 'खेत (2 एकड़)' : 'Farm (2 Acres)';
 
   const farmDisplayName = user
-    ? `${user.farmName || (isMarathi ? 'माझे शेत' : 'My Farm')} (${user.areaAcres || '1'} ${isMarathi ? 'एकर' : 'Acres'})`
-    : (isMarathi ? 'शेत (२ एकर)' : 'Farm (2 Acres)');
+    ? `${user.farmName || myFarm} (${user.areaAcres || '1'} ${t.acresUnit})`
+    : defaultFarm;
 
   const farmerIdDisplay = user?.farmerId || (user?.id ? user.id.slice(0, 8) : 'KSF-001');
 
@@ -38,8 +41,8 @@ export const FarmerProfileCard: React.FC = () => {
             <span className="w-2 h-2 rounded-full bg-emerald-600 animate-pulse shrink-0" />
             <span>
               {user?.userType === 'registered'
-                ? (isMarathi ? 'स्थानिक प्रोफाइल सक्रिय' : 'Local Profile Active')
-                : (isMarathi ? 'डेटाबेस जोडणी सक्रिय' : 'Supabase Live Sync')}
+                ? t.localProfileActive
+                : t.cloudSyncActive}
             </span>
           </div>
 
@@ -54,10 +57,10 @@ export const FarmerProfileCard: React.FC = () => {
             type="button"
             onClick={logout}
             className="flex items-center gap-1 text-[11px] font-bold text-stone-600 hover:text-rose-600 active:scale-95 transition-all px-2.5 py-1 rounded-lg hover:bg-rose-50 border border-stone-200 hover:border-rose-200"
-            title={isMarathi ? 'लॉगआउट करा' : 'Logout'}
+            title={t.btnLogout}
           >
             <LogOut className="w-3.5 h-3.5" />
-            <span>{isMarathi ? 'लॉगआउट' : 'Logout'}</span>
+            <span>{t.btnLogout}</span>
           </button>
         ) : (
           <button
@@ -66,7 +69,7 @@ export const FarmerProfileCard: React.FC = () => {
             className="flex items-center gap-1 text-[10px] font-extrabold text-forest-950 bg-amber-400 hover:bg-amber-300 active:scale-95 transition-all px-2.5 py-1 rounded-full shadow-sm"
           >
             <ShieldCheck className="w-3 h-3" />
-            <span>{isMarathi ? 'शेतकरी लॉगिन' : 'Farmer Login'}</span>
+            <span>{t.btnFarmerLogin}</span>
             <ArrowRight className="w-3 h-3" />
           </button>
         )}
@@ -94,16 +97,16 @@ export const FarmerProfileCard: React.FC = () => {
               {user?.userType === 'registered' ? (
                 <span className="px-1.5 py-0.5 rounded bg-emerald-100 text-emerald-900 text-[10px] font-extrabold flex items-center gap-0.5">
                   <User className="w-3 h-3 text-emerald-700" />
-                  <span>{isMarathi ? 'नोंदणीकृत शेतकरी' : 'Registered Farmer'}</span>
+                  <span>{t.registeredFarmerBadge}</span>
                 </span>
               ) : isFarmer ? (
                 <span className="px-1.5 py-0.5 rounded bg-forest-100 text-forest-900 text-[10px] font-extrabold flex items-center gap-0.5">
                   <UserCheck className="w-3 h-3 text-forest-700" />
-                  <span>{isMarathi ? 'सत्यापित डेमो शेतकरी' : 'Verified Demo Farmer'}</span>
+                  <span>{t.verifiedDemoFarmerBadge}</span>
                 </span>
               ) : (
                 <span className="px-1.5 py-0.5 rounded bg-amber-100 text-amber-900 text-[10px] font-extrabold">
-                  {isMarathi ? 'डेमो सत्र' : 'Demo Session'}
+                  {t.demoSessionBadge}
                 </span>
               )}
             </div>
@@ -122,7 +125,7 @@ export const FarmerProfileCard: React.FC = () => {
           <Sprout className="w-4 h-4 text-emerald-700 shrink-0" />
           <div className="truncate">
             <div className="text-[9px] uppercase font-bold text-stone-500 leading-none">
-              {isMarathi ? 'सक्रिय पीक' : 'Active Crop'}
+              {t.activeCropLabel}
             </div>
             <div className="font-extrabold text-stone-800 truncate mt-0.5">
               {monitoredCrop}
@@ -134,7 +137,7 @@ export const FarmerProfileCard: React.FC = () => {
           <Database className="w-4 h-4 text-forest-700 shrink-0" />
           <div className="truncate">
             <div className="text-[9px] uppercase font-bold text-stone-500 leading-none">
-              {isMarathi ? 'तालुका केंद्र' : 'Taluka Hub'}
+              {t.talukaHubLabel}
             </div>
             <div className="font-extrabold text-stone-800 truncate mt-0.5">
               {user?.taluka || 'Niphad'} ({user?.district || 'Nashik'} KVK)

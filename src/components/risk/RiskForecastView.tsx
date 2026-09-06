@@ -22,9 +22,7 @@ export const RiskForecastView: React.FC = () => {
     }
   };
 
-  const voiceSummary = language === 'mr'
-    ? `पीक धोका अंदाज: पाऊस आणि जास्त आर्द्रतेमुळे पुढील ३ आणि ४ थ्या दिवशी रोगाचा धोका उच्च राहील. आजच प्रतिबंधात्मक फवारणी पूर्ण करा.`
-    : `Crop risk forecast: Due to rain and sustained humidity, disease risk will rise to high on day three and four. Apply protective spray today.`;
+  const voiceSummary = t.voiceRiskForecastSummary;
 
   return (
     <div className="pb-6 animate-fadeIn">
@@ -55,11 +53,11 @@ export const RiskForecastView: React.FC = () => {
         </div>
         <div className="flex items-center gap-2 mb-2">
           <span className="text-xs font-bold text-forest-800 bg-forest-100 px-2.5 py-0.5 rounded-full border border-forest-300">
-            {language === 'mr' ? 'पीक अवस्था: फुले व फळधारणा काळ' : 'Crop Stage: Flowering & Fruiting'}
+            {t.cropStageFlowering}
           </span>
         </div>
         <p className="text-xs text-stone-700 font-bold bg-amber-50 p-3 rounded-2xl border border-amber-300/80 leading-relaxed">
-          💡 {language === 'mr' ? riskForecast.summaryMr : riskForecast.summary}
+          💡 {language === 'mr' ? riskForecast.summaryMr : language === 'hi' ? (riskForecast.summaryHi || riskForecast.summary) : riskForecast.summary}
         </p>
       </div>
 
@@ -70,14 +68,14 @@ export const RiskForecastView: React.FC = () => {
             {t.riskTrendSubtitle}
           </span>
           <span className="text-[11px] font-bold text-amber-800 bg-amber-100 px-2 py-0.5 rounded-full">
-            {language === 'mr' ? '३ऱ्या दिवशी वाढ' : 'Peak on Day 3'}
+            {t.peakOnDay3}
           </span>
         </div>
 
         {/* 5-Day Horizontal Timeline */}
         <div className="space-y-2.5">
           {riskForecast.timeline.map((dayItem, index) => {
-            const dayLabel = language === 'mr' ? dayItem.dayMr : dayItem.day;
+            const dayLabel = language === 'mr' ? dayItem.dayMr : language === 'hi' ? (dayItem.dayHi || dayItem.day) : dayItem.day;
             const isToday = index === 0;
 
             const isHigh = dayItem.level === 'high';
@@ -134,8 +132,8 @@ export const RiskForecastView: React.FC = () => {
 
         <div className="space-y-2.5">
           {riskForecast.reasons.map((reason) => {
-            const title = language === 'mr' ? reason.titleMr : reason.title;
-            const detail = language === 'mr' ? reason.detailMr : reason.detail;
+            const title = language === 'mr' ? reason.titleMr : language === 'hi' ? (reason.titleHi || reason.title) : reason.title;
+            const detail = language === 'mr' ? reason.detailMr : language === 'hi' ? (reason.detailHi || reason.detail) : reason.detail;
 
             return (
               <div
@@ -169,7 +167,7 @@ export const RiskForecastView: React.FC = () => {
         </div>
 
         <p className="text-xs font-semibold text-white/95 leading-relaxed mb-4">
-          {language === 'mr' ? riskForecast.recommendationMr : riskForecast.recommendation}
+          {language === 'mr' ? riskForecast.recommendationMr : language === 'hi' ? (riskForecast.recommendationHi || riskForecast.recommendation) : riskForecast.recommendation}
         </p>
 
         <div className="grid grid-cols-2 gap-2">

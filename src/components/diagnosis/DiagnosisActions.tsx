@@ -10,7 +10,12 @@ export const DiagnosisActions: React.FC = () => {
   const { diagnosis, setActiveTab } = useCrop();
   const { requireFarmerAccess } = useAuth();
 
-  const script = language === 'mr' ? diagnosis.advisoryVoiceScriptMr : diagnosis.advisoryVoiceScript;
+  const script =
+    language === 'mr'
+      ? diagnosis.advisoryVoiceScriptMr
+      : language === 'hi'
+      ? (diagnosis.advisoryVoiceScriptHi || diagnosis.advisoryVoiceScript)
+      : diagnosis.advisoryVoiceScript;
 
   return (
     <div className="space-y-3 pt-2">

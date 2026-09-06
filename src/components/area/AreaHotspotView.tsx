@@ -14,6 +14,7 @@ interface HeatZone {
   radius: number; // blur radius in px
   intensity: SeverityLevel;
   areaName: string;
+  areaNameHi?: string;
   areaNameMr: string;
   crop: string;
   reportedCases: number;
@@ -23,15 +24,18 @@ interface HeatZone {
 interface LocationHeatDataset {
   id: string;
   name: string;
+  nameHi?: string;
   nameMr: string;
   taluka: string;
   district: string;
+  districtHi?: string;
   districtMr: string;
   status: SeverityLevel;
   activeCasesCount: number;
   diseaseTrend: 'increasing' | 'stable' | 'decreasing';
   lastUpdated: string;
   advisory: string;
+  advisoryHi?: string;
   advisoryMr: string;
   heatZones: HeatZone[];
 }
@@ -40,15 +44,18 @@ const MAHARASHTRA_DEMO_LOCATIONS: Record<string, LocationHeatDataset> = {
   niphad: {
     id: 'niphad',
     name: 'Niphad',
+    nameHi: 'निफाड़',
     nameMr: 'निफाड',
     taluka: 'Niphad',
     district: 'Nashik',
+    districtHi: 'नासिक',
     districtMr: 'नाशिक',
     status: 'high',
     activeCasesCount: 16,
     diseaseTrend: 'increasing',
     lastUpdated: '15 mins ago',
     advisory: 'Early Blight outbreak alert for tomato & grape growers across Niphad. Maintain 4-foot ridge drainage channels and spray copper oxychloride preventive.',
+    advisoryHi: 'निफाड़ में टमाटर और अंगूर उत्पादकों के लिए अगेती झुलसा का अलर्ट। 4-फुट रिज जल निकासी नालियां बनाए रखें और सुरक्षात्मक कॉपर ऑक्सीक्लोराइड का छिड़काव करें।',
     advisoryMr: 'निफाड द्राक्ष व टोमॅटो पट्ट्यात करपा रोगाचा वाढता प्रादुर्भाव. पाण्याचा निचरा सुरळीत ठेवा व तांबयुक्त बुरशीनाशकाची फवारणी करा.',
     heatZones: [
       {
@@ -58,6 +65,7 @@ const MAHARASHTRA_DEMO_LOCATIONS: Record<string, LocationHeatDataset> = {
         radius: 95,
         intensity: 'high',
         areaName: 'Niphad East Cluster',
+        areaNameHi: 'निफाड़ पूर्वी क्लस्टर',
         areaNameMr: 'निफाड पूर्व विभाग',
         crop: 'Tomato & Grape',
         reportedCases: 8,
@@ -70,6 +78,7 @@ const MAHARASHTRA_DEMO_LOCATIONS: Record<string, LocationHeatDataset> = {
         radius: 80,
         intensity: 'moderate',
         areaName: 'Pimpalgaon Ridge Sector',
+        areaNameHi: 'पिंपलगांव रिज सेक्टर',
         areaNameMr: 'पिंपळगाव परिसर',
         crop: 'Tomato',
         reportedCases: 5,
@@ -82,6 +91,7 @@ const MAHARASHTRA_DEMO_LOCATIONS: Record<string, LocationHeatDataset> = {
         radius: 65,
         intensity: 'low',
         areaName: 'Chandori River Belt',
+        areaNameHi: 'चांदोरी नदी बेल्ट',
         areaNameMr: 'चांदोरी पट्टा',
         crop: 'Cotton & Onion',
         reportedCases: 3,
@@ -92,15 +102,18 @@ const MAHARASHTRA_DEMO_LOCATIONS: Record<string, LocationHeatDataset> = {
   dindori: {
     id: 'dindori',
     name: 'Dindori',
+    nameHi: 'दिंडोरी',
     nameMr: 'दिंडोरी',
     taluka: 'Dindori',
     district: 'Nashik',
+    districtHi: 'नासिक',
     districtMr: 'नाशिक',
     status: 'high',
     activeCasesCount: 22,
     diseaseTrend: 'increasing',
     lastUpdated: '30 mins ago',
     advisory: 'Downy Mildew and fungal spot alert in Dindori hill belt due to high canopy humidity. Inspect lower leaf canopy daily.',
+    advisoryHi: 'उच्च आर्द्रता के कारण दिंडोरी पहाड़ी क्षेत्र में डाउनी मिल्ड्यू और फंगल धब्बों का अलर्ट। निचली पत्तियों की रोजाना जांच करें।',
     advisoryMr: 'दिंडोरी डोंगर भागात केवडा रोगाचा गंभीर इशारा. झाडांच्या खालच्या पानांवर दमटपणा व डाग तपासा.',
     heatZones: [
       {
@@ -110,6 +123,7 @@ const MAHARASHTRA_DEMO_LOCATIONS: Record<string, LocationHeatDataset> = {
         radius: 105,
         intensity: 'high',
         areaName: 'Dindori North Valley',
+        areaNameHi: 'दिंडोरी उत्तरी घाटी',
         areaNameMr: 'दिंडोरी उत्तर खोरे',
         crop: 'Grape & Tomato',
         reportedCases: 12,
@@ -122,6 +136,7 @@ const MAHARASHTRA_DEMO_LOCATIONS: Record<string, LocationHeatDataset> = {
         radius: 85,
         intensity: 'high',
         areaName: 'Vani Road Belt',
+        areaNameHi: 'वणी रोड क्षेत्र',
         areaNameMr: 'वणी रोड पट्टा',
         crop: 'Tomato',
         reportedCases: 7,
@@ -134,6 +149,7 @@ const MAHARASHTRA_DEMO_LOCATIONS: Record<string, LocationHeatDataset> = {
         radius: 65,
         intensity: 'moderate',
         areaName: 'Parna Sector',
+        areaNameHi: 'परना सेक्टर',
         areaNameMr: 'परना क्षेत्र',
         crop: 'Soybean',
         reportedCases: 3,
@@ -144,15 +160,18 @@ const MAHARASHTRA_DEMO_LOCATIONS: Record<string, LocationHeatDataset> = {
   chandori: {
     id: 'chandori',
     name: 'Chandori',
+    nameHi: 'चांदोरी',
     nameMr: 'चांदोरी',
     taluka: 'Niphad',
     district: 'Nashik',
+    districtHi: 'नासिक',
     districtMr: 'नाशिक',
     status: 'moderate',
     activeCasesCount: 9,
     diseaseTrend: 'stable',
     lastUpdated: '1 hour ago',
     advisory: 'Moderate fungal risk near Godavari riverbank farms. Farmers are advised to clear field weeds and inspect tomato foliage.',
+    advisoryHi: 'गोदावरी नदी तट के खेतों में मध्यम फंगल जोखिम। किसानों को खरपतवार हटाने और टमाटर के पत्तों की जांच करने की सलाह दी जाती है।',
     advisoryMr: 'गोदावरी काठच्या शेतात मध्यम बुरशीजन्य धोका. शेतातील तण काढा व पानावरील डाग तपासा.',
     heatZones: [
       {
@@ -162,6 +181,7 @@ const MAHARASHTRA_DEMO_LOCATIONS: Record<string, LocationHeatDataset> = {
         radius: 85,
         intensity: 'moderate',
         areaName: 'Godavari Basin Cluster',
+        areaNameHi: 'गोदावरी बेसिन क्लस्टर',
         areaNameMr: 'गोदावरी खोरे',
         crop: 'Sugarcane & Tomato',
         reportedCases: 5,
@@ -174,6 +194,7 @@ const MAHARASHTRA_DEMO_LOCATIONS: Record<string, LocationHeatDataset> = {
         radius: 70,
         intensity: 'moderate',
         areaName: 'Saykheda Sector',
+        areaNameHi: 'सायखेड़ा सेक्टर',
         areaNameMr: 'सायखेडा भाग',
         crop: 'Wheat',
         reportedCases: 3,
@@ -186,6 +207,7 @@ const MAHARASHTRA_DEMO_LOCATIONS: Record<string, LocationHeatDataset> = {
         radius: 60,
         intensity: 'low',
         areaName: 'Khedle Par',
+        areaNameHi: 'खेडले पार',
         areaNameMr: 'खेडले पार',
         crop: 'Onion',
         reportedCases: 1,
@@ -196,15 +218,18 @@ const MAHARASHTRA_DEMO_LOCATIONS: Record<string, LocationHeatDataset> = {
   pimpalgaon: {
     id: 'pimpalgaon',
     name: 'Pimpalgaon',
+    nameHi: 'पिंपलगांव',
     nameMr: 'पिंपळगाव',
     taluka: 'Niphad',
     district: 'Nashik',
+    districtHi: 'नासिक',
     districtMr: 'नाशिक',
     status: 'high',
     activeCasesCount: 15,
     diseaseTrend: 'increasing',
     lastUpdated: '45 mins ago',
     advisory: 'Thrips and early blight cluster identified near Pimpalgaon Market Yard. Improve field canopy ventilation.',
+    advisoryHi: 'पिंपलगांव मार्केट यार्ड के पास थ्रिप्स और अगेती झुलसा का समूह पाया गया। खेत में हवा का आवागमन सुधारें।',
     advisoryMr: 'पिंपळगाव बाजार समिती परिसरात थ्रिप्स व करपा रोगाचे क्लस्टर. पिकात हवेचे वहन सुधारा.',
     heatZones: [
       {
@@ -214,6 +239,7 @@ const MAHARASHTRA_DEMO_LOCATIONS: Record<string, LocationHeatDataset> = {
         radius: 95,
         intensity: 'high',
         areaName: 'Market Yard Outskirts',
+        areaNameHi: 'मार्केट यार्ड बाहरी क्षेत्र',
         areaNameMr: 'बाजार समिती परिसर',
         crop: 'Tomato',
         reportedCases: 8,
@@ -226,6 +252,7 @@ const MAHARASHTRA_DEMO_LOCATIONS: Record<string, LocationHeatDataset> = {
         radius: 75,
         intensity: 'moderate',
         areaName: 'Shirwade Sector',
+        areaNameHi: 'शिरवाड़े सेक्टर',
         areaNameMr: 'शिरवडे भाग',
         crop: 'Onion',
         reportedCases: 4,
@@ -238,6 +265,7 @@ const MAHARASHTRA_DEMO_LOCATIONS: Record<string, LocationHeatDataset> = {
         radius: 60,
         intensity: 'low',
         areaName: 'Umrane Road',
+        areaNameHi: 'उमराणे रोड',
         areaNameMr: 'उमराणे रस्ता',
         crop: 'Maize',
         reportedCases: 3,
@@ -248,15 +276,18 @@ const MAHARASHTRA_DEMO_LOCATIONS: Record<string, LocationHeatDataset> = {
   satara: {
     id: 'satara',
     name: 'Baramati / Satara',
+    nameHi: 'बारामती / सातारा',
     nameMr: 'बारामती / सातारा',
     taluka: 'Baramati',
     district: 'Pune / Satara',
+    districtHi: 'पुणे / सातारा',
     districtMr: 'पुणे / सातारा',
     status: 'low',
     activeCasesCount: 5,
     diseaseTrend: 'decreasing',
     lastUpdated: '2 hours ago',
     advisory: 'Low crop disease risk across sugarcane and maize belt. Routine preventive management recommended.',
+    advisoryHi: 'गन्ना और मक्का क्षेत्र में फसल रोग का जोखिम कम है। सामान्य सुरक्षात्मक उपाय जारी रखें।',
     advisoryMr: 'ऊस व मका पट्ट्यात रोगाचा धोका कमी. नियमित पीक सुरक्षा सुरू ठेवा.',
     heatZones: [
       {
@@ -266,6 +297,7 @@ const MAHARASHTRA_DEMO_LOCATIONS: Record<string, LocationHeatDataset> = {
         radius: 70,
         intensity: 'moderate',
         areaName: 'Sugarcane Canal Belt',
+        areaNameHi: 'गन्ना नहर बेल्ट',
         areaNameMr: 'ऊस कालवा पट्टा',
         crop: 'Sugarcane',
         reportedCases: 3,
@@ -278,6 +310,7 @@ const MAHARASHTRA_DEMO_LOCATIONS: Record<string, LocationHeatDataset> = {
         radius: 60,
         intensity: 'low',
         areaName: 'Neera Valley',
+        areaNameHi: 'नीरा घाटी',
         areaNameMr: 'नीरा खोरे',
         crop: 'Maize',
         reportedCases: 2,
@@ -330,6 +363,14 @@ export const AreaHotspotView: React.FC = () => {
             ? 'मध्यम'
             : 'कम'
         } रोग प्रादुर्भाव नोंदवला गेला आहे. ५ किमी परिसरात ${activeDataset.activeCasesCount} शेतांमध्ये हा रोग आढळला आहे. ${activeDataset.advisoryMr}`
+      : language === 'hi'
+      ? `${activeDataset.nameHi || activeDataset.name} (${activeDataset.districtHi || activeDataset.district}) क्षेत्र में ${
+          activeDataset.status === 'high'
+            ? 'गंभीर'
+            : activeDataset.status === 'moderate'
+            ? 'मध्यम'
+            : 'कम'
+        } रोग प्रकोप दर्ज किया गया है। 5 किमी के दायरे में ${activeDataset.activeCasesCount} खेतों में यह रोग पाया गया है। ${activeDataset.advisoryHi || activeDataset.advisory}`
       : `${
           activeDataset.status === 'high' ? 'High' : activeDataset.status === 'moderate' ? 'Moderate' : 'Low'
         } disease activity reported across ${activeDataset.name}, ${activeDataset.district}. ${
@@ -362,7 +403,7 @@ export const AreaHotspotView: React.FC = () => {
                 {t.whatIsHappeningAroundMe}
               </h2>
               <p className="text-xs text-stone-600 font-semibold mt-0.5">
-                {language === 'mr' ? activeDataset.nameMr : activeDataset.name} • {language === 'mr' ? activeDataset.districtMr : activeDataset.district}
+                {language === 'mr' ? activeDataset.nameMr : language === 'hi' ? (activeDataset.nameHi || activeDataset.name) : activeDataset.name} • {language === 'mr' ? activeDataset.districtMr : language === 'hi' ? (activeDataset.districtHi || activeDataset.district) : activeDataset.district}
               </p>
             </div>
           </div>
@@ -371,7 +412,7 @@ export const AreaHotspotView: React.FC = () => {
         {/* Demo Maharashtra Location Selector Pills */}
         <div className="mt-3 flex items-center gap-1.5 overflow-x-auto pb-1 scrollbar-none">
           <span className="text-[10px] font-black uppercase text-stone-400 shrink-0 font-display mr-1">
-            {language === 'mr' ? 'स्थान निवडा:' : 'Region:'}
+            {t.selectRegion}
           </span>
           {Object.values(MAHARASHTRA_DEMO_LOCATIONS).map((loc) => {
             const isCurrent = selectedLocId === loc.id;
@@ -386,7 +427,7 @@ export const AreaHotspotView: React.FC = () => {
                     : 'bg-white text-stone-700 hover:bg-stone-100 border border-stone-300'
                 }`}
               >
-                <span>📍 {language === 'mr' ? loc.nameMr : loc.name}</span>
+                <span>📍 {language === 'mr' ? loc.nameMr : language === 'hi' ? (loc.nameHi || loc.name) : loc.name}</span>
               </button>
             );
           })}
@@ -416,10 +457,10 @@ export const AreaHotspotView: React.FC = () => {
             ></span>
             <h3 className="text-lg font-black text-stone-900 font-display">
               {activeDataset.status === 'high'
-                ? (language === 'mr' ? 'उच्च रोग प्रादुर्भाव' : 'High Disease Activity')
+                ? t.highDiseaseActivity
                 : activeDataset.status === 'moderate'
                 ? t.areaStatusTitle
-                : (language === 'mr' ? 'कम रोग प्रादुर्भाव / सुरक्षित' : 'Low Disease Activity / Safe')}
+                : t.lowDiseaseActivity}
             </h3>
           </div>
           <StatusBadge level={activeDataset.status} type="risk" size="sm" />
@@ -432,6 +473,8 @@ export const AreaHotspotView: React.FC = () => {
             <span>
               {language === 'mr'
                 ? `या भागात ${activeDataset.activeCasesCount} शेतांमध्ये प्रादुर्भाव आढळला आहे`
+                : language === 'hi'
+                ? `इस क्षेत्र में ${activeDataset.activeCasesCount} खेतों में प्रकोप की पुष्टि हुई है (5 किमी दायरा)`
                 : `${activeDataset.activeCasesCount} active disease reports confirmed within 5 km`}
             </span>
           </div>
@@ -447,6 +490,14 @@ export const AreaHotspotView: React.FC = () => {
                       ? 'स्थिर'
                       : 'कमी होत आहे'
                   }`
+                : language === 'hi'
+                ? `रोग का प्रसार: ${
+                    activeDataset.diseaseTrend === 'increasing'
+                      ? 'बढ़ रहा है'
+                      : activeDataset.diseaseTrend === 'stable'
+                      ? 'स्थिर'
+                      : 'कम हो रहा है'
+                  }`
                 : `Disease Trend: ${
                     activeDataset.diseaseTrend === 'increasing'
                       ? 'Increasing'
@@ -460,7 +511,7 @@ export const AreaHotspotView: React.FC = () => {
           <div className="flex items-center gap-2.5 text-xs font-medium text-stone-600">
             <Clock className="w-4 h-4 text-stone-400 shrink-0" />
             <span>
-              {language === 'mr' ? 'अद्यतनित:' : 'Updated:'} {activeDataset.lastUpdated}
+              {t.updated}: {activeDataset.lastUpdated}
             </span>
           </div>
         </div>
@@ -476,7 +527,7 @@ export const AreaHotspotView: React.FC = () => {
             </h4>
           </div>
           <span className="text-[10px] font-black text-emerald-900 bg-emerald-100 border border-emerald-300 px-2.5 py-0.5 rounded-full">
-            {language === 'mr' ? '५ किमी परिसर' : '5 km Radius'}
+            {t.radius5km}
           </span>
         </div>
 
@@ -562,7 +613,7 @@ export const AreaHotspotView: React.FC = () => {
 
                   {/* Mini Hover Tooltip */}
                   <div className="opacity-0 group-hover:opacity-100 transition-opacity absolute bottom-full left-1/2 -translate-x-1/2 mb-1 bg-forest-950/90 text-white text-[9px] font-bold px-2 py-0.5 rounded shadow-lg whitespace-nowrap pointer-events-none z-40 border border-amber-400/40">
-                    {language === 'mr' ? zone.areaNameMr : zone.areaName} ({zone.reportedCases})
+                    {language === 'mr' ? zone.areaNameMr : language === 'hi' ? (zone.areaNameHi || zone.areaName) : zone.areaName} ({zone.reportedCases})
                   </div>
                 </button>
               </React.Fragment>
@@ -578,7 +629,7 @@ export const AreaHotspotView: React.FC = () => {
               </div>
             </div>
             <span className="text-[10px] font-black text-amber-300 bg-forest-950/95 px-2.5 py-0.5 rounded-full mt-1 border border-amber-400/60 shadow-md backdrop-blur-sm tracking-wide font-display">
-              🏠 {language === 'mr' ? 'आपले शेत' : 'Your Farm'}
+              🏠 {t.radarYourFarm}
             </span>
           </div>
 
@@ -586,15 +637,15 @@ export const AreaHotspotView: React.FC = () => {
           <div className="absolute top-2 right-2 z-20 bg-forest-950/90 backdrop-blur-md px-2.5 py-1.5 rounded-xl border border-emerald-500/30 flex items-center gap-2 text-[9px] font-bold text-stone-200 shadow-md">
             <span className="flex items-center gap-1">
               <span className="w-2 h-2 rounded-full bg-rose-500 animate-pulse" />
-              <span>{language === 'mr' ? 'उच्च' : 'High'}</span>
+              <span>{t.legendHigh}</span>
             </span>
             <span className="flex items-center gap-1">
               <span className="w-2 h-2 rounded-full bg-amber-400" />
-              <span>{language === 'mr' ? 'मध्यम' : 'Med'}</span>
+              <span>{t.legendMed}</span>
             </span>
             <span className="flex items-center gap-1">
               <span className="w-2 h-2 rounded-full bg-emerald-400" />
-              <span>{language === 'mr' ? 'कम' : 'Low'}</span>
+              <span>{t.legendLow}</span>
             </span>
           </div>
 
@@ -611,16 +662,16 @@ export const AreaHotspotView: React.FC = () => {
               <div>
                 <div className="font-extrabold text-stone-900 flex items-center gap-1.5">
                   <MapPin className="w-3.5 h-3.5 text-forest-700 shrink-0" />
-                  <span>{language === 'mr' ? activeZone.areaNameMr : activeZone.areaName}</span>
+                  <span>{language === 'mr' ? activeZone.areaNameMr : language === 'hi' ? (activeZone.areaNameHi || activeZone.areaName) : activeZone.areaName}</span>
                 </div>
                 <div className="text-[11px] text-stone-600 font-medium mt-0.5">
                   {activeZone.crop} • {activeZone.reportedCases}{' '}
-                  {language === 'mr' ? 'नोंदवलेली प्रकरणे' : 'reported disease cases'}
+                  {t.reportedCasesLabel}
                 </div>
               </div>
               <div className="text-right">
                 <span className="text-[11px] font-extrabold text-forest-900 bg-forest-100 px-2.5 py-1 rounded-lg border border-forest-200">
-                  ~{activeZone.distanceKm} km {language === 'mr' ? 'दूर' : 'away'}
+                  ~{activeZone.distanceKm} km {t.awayLabel}
                 </span>
               </div>
             </div>
@@ -637,7 +688,7 @@ export const AreaHotspotView: React.FC = () => {
           </h4>
         </div>
         <p className="text-xs font-medium text-wheat-100/90 leading-relaxed mb-4">
-          "{language === 'mr' ? activeDataset.advisoryMr : activeDataset.advisory}"
+          "{language === 'mr' ? activeDataset.advisoryMr : language === 'hi' ? (activeDataset.advisoryHi || activeDataset.advisory) : activeDataset.advisory}"
         </p>
 
         <button

@@ -53,7 +53,7 @@ export const ActionTodayCard: React.FC = () => {
             {t.whatShouldIDoNow}
           </h3>
           <p className="text-xs text-stone-600 font-medium">
-            {language === 'mr' ? 'एकात्मिक कीड व्यवस्थापन (IPM) शिफारशी क्रमवारीनुसार' : 'Integrated Pest Management (IPM) prioritized steps'}
+            {t.ipmPrioritizedSteps}
           </p>
         </div>
       </div>
@@ -61,8 +61,18 @@ export const ActionTodayCard: React.FC = () => {
       {/* Numbered IPM Action Steps */}
       <div className="space-y-3">
         {diagnosis.whatToDoToday.map((action) => {
-          const title = language === 'mr' ? action.titleMr : action.title;
-          const desc = language === 'mr' ? action.descriptionMr : action.description;
+          const title =
+            language === 'mr'
+              ? action.titleMr
+              : language === 'hi'
+              ? (action.titleHi || action.title)
+              : action.title;
+          const desc =
+            language === 'mr'
+              ? action.descriptionMr
+              : language === 'hi'
+              ? (action.descriptionHi || action.description)
+              : action.description;
           const ipm = getIpmCategoryBadge(action.category);
 
           return (
@@ -77,7 +87,7 @@ export const ActionTodayCard: React.FC = () => {
                   <span>{ipm.label}</span>
                 </span>
                 <span className="text-[11px] font-bold text-stone-400">
-                  Step {action.step}
+                  {t.stepLabel} {action.step}
                 </span>
               </div>
 

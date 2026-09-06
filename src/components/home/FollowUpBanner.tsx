@@ -5,7 +5,7 @@ import { useLanguage } from '../../context/LanguageContext';
 import { useCrop } from '../../context/CropContext';
 
 export const FollowUpBanner: React.FC = () => {
-  const { language, t } = useLanguage();
+  const { t } = useLanguage();
   const { followUpStatus, setFollowUpStatus, setActiveTab } = useCrop();
 
   const handleSelect = (status: 'better' | 'same' | 'worse') => {
@@ -40,7 +40,7 @@ export const FollowUpBanner: React.FC = () => {
             className="text-[11px] font-semibold text-stone-500 hover:text-stone-700 flex items-center gap-1"
           >
             <RotateCcw className="w-3 h-3" />
-            <span>{language === 'mr' ? 'बदला' : 'Change'}</span>
+            <span>{t.changeAction}</span>
           </button>
         )}
       </div>
@@ -86,7 +86,7 @@ export const FollowUpBanner: React.FC = () => {
               <CheckCircle2 className="w-5 h-5 text-emerald-700 shrink-0 mt-0.5" />
               <div>
                 <div className="text-xs font-bold text-emerald-950 mb-0.5">
-                  {language === 'mr' ? 'सुधारणा नोंदवली गेली!' : 'Recovery Logged!'}
+                  {t.recoveryLogged}
                 </div>
                 <p className="text-xs text-emerald-900 leading-relaxed">
                   {t.feedbackBetter}
@@ -100,7 +100,7 @@ export const FollowUpBanner: React.FC = () => {
               <span className="text-lg">ℹ️</span>
               <div>
                 <div className="text-xs font-bold text-amber-950 mb-0.5">
-                  {language === 'mr' ? 'सतत निरीक्षण सुरू ठेवा' : 'Continue Monitoring'}
+                  {t.continueMonitoring}
                 </div>
                 <p className="text-xs text-amber-900 leading-relaxed">
                   {t.feedbackSame}
@@ -115,7 +115,7 @@ export const FollowUpBanner: React.FC = () => {
                 <span className="text-lg">⚠️</span>
                 <div>
                   <div className="text-xs font-bold text-rose-950">
-                    {language === 'mr' ? 'त्वरित मदत उपलब्ध' : 'Immediate Help Recommended'}
+                    {t.immediateHelpRecommended}
                   </div>
                   <p className="text-xs text-rose-900 leading-relaxed">
                     {t.feedbackWorse}
@@ -131,7 +131,7 @@ export const FollowUpBanner: React.FC = () => {
                   className="flex items-center justify-center gap-1.5 py-2.5 px-3 rounded-xl bg-forest-800 text-white font-bold text-xs hover:bg-forest-900 active:scale-95 transition-transform shadow-sm"
                 >
                   <Camera className="w-3.5 h-3.5" />
-                  <span>{language === 'mr' ? 'नवीन फोटो काढा' : 'Upload New Photo'}</span>
+                  <span>{t.uploadNewPhoto}</span>
                 </button>
 
                 <button
@@ -140,7 +140,7 @@ export const FollowUpBanner: React.FC = () => {
                   className="flex items-center justify-center gap-1.5 py-2.5 px-3 rounded-xl bg-amber-600 text-white font-bold text-xs hover:bg-amber-700 active:scale-95 transition-transform shadow-sm"
                 >
                   <UserCheck className="w-3.5 h-3.5" />
-                  <span>{language === 'mr' ? 'तज्ञांशी बोला' : 'Talk to Expert'}</span>
+                  <span>{t.talkToExpertBtn}</span>
                 </button>
               </div>
             </div>

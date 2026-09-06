@@ -20,8 +20,18 @@ export const MonitorCard: React.FC = () => {
 
       <div className="space-y-2.5">
         {diagnosis.whatToMonitor.map((item, idx) => {
-          const title = language === 'mr' ? item.titleMr : item.title;
-          const check = language === 'mr' ? item.checkMr : item.check;
+          const title =
+            language === 'mr'
+              ? item.titleMr
+              : language === 'hi'
+              ? (item.titleHi || item.title)
+              : item.title;
+          const check =
+            language === 'mr'
+              ? item.checkMr
+              : language === 'hi'
+              ? (item.checkHi || item.check)
+              : item.check;
 
           return (
             <div key={idx} className="flex items-start gap-2.5 bg-stone-50/70 p-3 rounded-2xl border border-stone-200/70">

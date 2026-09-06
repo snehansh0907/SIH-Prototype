@@ -115,17 +115,24 @@ export const expertService = {
       setTimeout(() => {
         let replyText =
           'Understood. Since high humidity and rain are approaching, prioritize applying Mancozeb or Copper Oxychloride spray on dry foliage. Avoid spraying right before heavy rainfall.';
+        let replyTextHi =
+          'समझ गया। चूंकि अधिक आर्द्रता और बारिश का मौसम है, इसलिए सूखी पत्तियों पर मैन्कोजेब या कॉपर ऑक्सीक्लोराइड के छिड़काव को प्राथमिकता दें। भारी बारिश से ठीक पहले छिड़काव करने से बचें।';
         let replyTextMr =
           'समजले. आर्द्रता जास्त असल्याने आणि पावसाची शक्यता असल्याने कोरड्या पानांवर मॅन्कोझेब किंवा कॉपरची फवारणी करा. पाऊस सुरू होण्यापूर्वी फवारणी पूर्ण करा.';
 
-        if (text.toLowerCase().includes('organic') || text.toLowerCase().includes('जैविक')) {
+        const lowerText = text.toLowerCase();
+        if (lowerText.includes('organic') || lowerText.includes('जैविक') || lowerText.includes('सेंद्रिय')) {
           replyText =
             'For organic control, prepare 5% Neem seed kernel extract (NSKE) or Trichoderma viride @ 5g/L water. Spray in late afternoon.';
+          replyTextHi =
+            'जैविक नियंत्रण के लिए, 5% नीम बीज अर्क (एनएसकेई) या ट्राइकोडर्मा विरिडी @ 5 ग्राम/लीटर पानी तैयार करें। देर दोपहर में छिड़काव करें।';
           replyTextMr =
             'सेंद्रिय नियंत्रणासाठी ५% निंबोळी अर्क किंवा ट्रायकोडर्मा व्हिरिडी (५ ग्रॅम प्रति लिटर) संध्याकाळी फवारावे.';
-        } else if (text.toLowerCase().includes('rain') || text.toLowerCase().includes('पाऊस')) {
+        } else if (lowerText.includes('rain') || lowerText.includes('पाऊस') || lowerText.includes('बारिश')) {
           replyText =
             'Add an agricultural sticker/spreader (1ml/L) to prevent the fungicide from getting washed away by rain.';
+          replyTextHi =
+            'दवा को बारिश में धुलने से बचाने के लिए घोल में कृषि स्टीकर/स्प्रेडर (1 मिली/लीटर) अवश्य मिलाएं।';
           replyTextMr =
             'पावसामुळे औषध वाहून जाऊ नये म्हणून फवारणीच्या द्रावणात चांगल्या दर्जाचे स्टिकर (१ मिली प्रति लिटर) आवर्जून वापरा.';
         }
@@ -134,6 +141,7 @@ export const expertService = {
           id: `msg-reply-${Date.now()}`,
           sender: 'expert',
           text: replyText,
+          textHi: replyTextHi,
           textMr: replyTextMr,
           timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
         };

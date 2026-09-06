@@ -11,7 +11,7 @@ export const AppHeader: React.FC = () => {
   const { isFarmer, isDemo, user, logout, openLoginModal } = useAuth();
 
   const userName = isFarmer && user
-    ? (language === 'mr' ? user.nameMr : user.name)
+    ? (language === 'mr' ? user.nameMr : language === 'hi' ? (user.nameHi || user.name) : user.name)
     : (language === 'mr' ? 'डेमो नमुना' : language === 'hi' ? 'डेमो किसान' : 'Demo');
 
   return (

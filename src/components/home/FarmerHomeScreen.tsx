@@ -10,7 +10,7 @@ import { FollowUpBanner } from './FollowUpBanner';
 import { FarmerProfileCard } from './FarmerProfileCard';
 
 export const FarmerHomeScreen: React.FC = () => {
-  const { t } = useLanguage();
+  const { language, t } = useLanguage();
   const { setActiveTab } = useCrop();
   const { requireFarmerAccess } = useAuth();
 
@@ -26,10 +26,10 @@ export const FarmerHomeScreen: React.FC = () => {
         <div className="flex items-center justify-between mb-2">
           <span className="text-xs uppercase font-extrabold tracking-wider text-amber-300 flex items-center gap-1 font-display">
             <Sparkles className="w-3.5 h-3.5 text-amber-300" />
-            <span>SIH26131 • Maharashtra Farmer AI</span>
+            <span>{language === 'mr' ? 'SIH26131 • शेतकरी AI' : language === 'hi' ? 'SIH26131 • किसान AI' : 'SIH26131 • Farmer AI'}</span>
           </span>
           <span className="text-[10px] font-bold bg-amber-400 text-stone-900 px-2 py-0.5 rounded-full">
-            1-Tap Scan
+            {language === 'mr' ? '१-टॅप स्कॅन' : language === 'hi' ? '१-टैप स्कैन' : '1-Tap Scan'}
           </span>
         </div>
 

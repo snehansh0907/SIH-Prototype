@@ -16,7 +16,12 @@ export const QuickActionGrid: React.FC = () => {
       speechService.stop();
       setIsPlayingAudio(false);
     } else {
-      const script = language === 'mr' ? diagnosis.advisoryVoiceScriptMr : diagnosis.advisoryVoiceScript;
+      const script =
+        language === 'mr'
+          ? diagnosis.advisoryVoiceScriptMr
+          : language === 'hi'
+          ? (diagnosis.advisoryVoiceScriptHi || diagnosis.advisoryVoiceScript)
+          : diagnosis.advisoryVoiceScript;
       speechService.speak(
         script,
         language,
@@ -50,7 +55,7 @@ export const QuickActionGrid: React.FC = () => {
       textColor: 'text-stone-900',
       subColor: 'text-stone-500',
       border: 'border border-stone-200',
-      badge: 'Nashik Radar',
+      badge: language === 'hi' ? 'क्षेत्र रडार' : language === 'mr' ? 'परिसर रडार' : 'Area Radar',
       onClick: () => requireFarmerAccess(() => setActiveTab('area')),
     },
     {
@@ -63,7 +68,7 @@ export const QuickActionGrid: React.FC = () => {
       textColor: 'text-stone-900',
       subColor: 'text-stone-500',
       border: 'border border-stone-200',
-      badge: 'Bilingual TTS',
+      badge: language === 'hi' ? 'आवाज़ में सुनें' : language === 'mr' ? 'ध्वनी सल्ला' : 'Audio TTS',
       onClick: handleListenAdvice,
     },
     {
@@ -76,7 +81,7 @@ export const QuickActionGrid: React.FC = () => {
       textColor: 'text-stone-900',
       subColor: 'text-stone-500',
       border: 'border border-stone-200',
-      badge: 'Demo Expert',
+      badge: language === 'hi' ? 'कृषि विशेषज्ञ' : language === 'mr' ? 'तज्ञ सल्ला' : 'Agri Expert',
       onClick: () => requireFarmerAccess(() => setActiveTab('expert')),
     },
   ];
@@ -85,11 +90,11 @@ export const QuickActionGrid: React.FC = () => {
     <div className="mb-5">
       <div className="flex items-center justify-between mb-3 px-1">
         <h3 className="text-xs uppercase tracking-wider font-extrabold text-stone-500 font-display">
-          {language === 'mr' ? 'जलद कृती' : 'Quick Actions'}
+          {t.quickActionsTitle}
         </h3>
         <span className="text-[11px] font-semibold text-forest-800 flex items-center gap-1">
           <Sparkles className="w-3 h-3 text-amber-500" />
-          {language === 'mr' ? 'स्पर्श करून सुरू करा' : 'Tap to start'}
+          {t.tapToStart}
         </span>
       </div>
 

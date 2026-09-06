@@ -8,7 +8,12 @@ export const NextOutlookCard: React.FC = () => {
   const { diagnosis } = useCrop();
 
   const outlook = diagnosis.whatMayHappenNext;
-  const text = language === 'mr' ? outlook.textMr : outlook.text;
+  const text =
+    language === 'mr'
+      ? outlook.textMr
+      : language === 'hi'
+      ? (outlook.textHi || outlook.text)
+      : outlook.text;
 
   return (
     <div className="rounded-3xl bg-amber-50/80 border border-amber-300/80 p-4 shadow-soft mb-5">
@@ -22,7 +27,7 @@ export const NextOutlookCard: React.FC = () => {
 
         <span className="inline-flex items-center gap-1 text-[11px] font-bold text-amber-800 bg-amber-200/80 px-2 py-0.5 rounded-full">
           <TrendingUp className="w-3 h-3" />
-          <span>{language === 'mr' ? 'धोका वाढण्याची शक्यता' : 'Risk Rising'}</span>
+          <span>{t.riskRising}</span>
         </span>
       </div>
 

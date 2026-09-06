@@ -61,10 +61,10 @@ export const FarmerLoginModal: React.FC = () => {
               <div className="bg-amber-50 rounded-2xl p-3 border border-amber-300 text-xs text-stone-800">
                 <div className="font-extrabold text-amber-950 flex items-center gap-1 mb-0.5">
                   <Sparkles className="w-3.5 h-3.5 text-amber-600" />
-                  <span>{language === 'mr' ? 'डेमो शेतकरी खाते उपलब्ध' : 'Demo Credentials Available'}</span>
+                  <span>{t.demoCredentialsAvailable}</span>
                 </div>
                 <div className="text-[11px] text-stone-600 font-medium">
-                  {language === 'mr' ? 'आयडी: farmer123 | पासवर्ड: farmer123' : 'Use farmer123 / farmer123 for full access.'}
+                  {t.demoCredentialsSub}
                 </div>
               </div>
 
@@ -135,7 +135,7 @@ export const FarmerLoginModal: React.FC = () => {
                 onClick={() => setShowInlineForm(false)}
                 className="w-full text-center text-[11px] font-bold text-stone-500 hover:text-stone-700 py-1"
               >
-                Back
+                {language === 'mr' ? 'मागे जा' : language === 'hi' ? 'वापस' : 'Back'}
               </button>
             </form>
           )}
