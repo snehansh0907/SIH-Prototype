@@ -59,9 +59,10 @@ export const LoginScreen: React.FC = () => {
             type="button"
             onClick={toggleLanguage}
             className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-white/10 hover:bg-white/20 text-xs font-semibold border border-white/20 transition-all active:scale-95"
+            aria-label="Toggle language (English / हिंदी / मराठी)"
           >
             <Globe className="w-3.5 h-3.5 text-amber-300" />
-            <span>{language === 'en' ? 'मराठी' : 'English'}</span>
+            <span>{language === 'en' ? 'English' : language === 'hi' ? 'हिंदी' : 'मराठी'}</span>
           </button>
         </div>
 

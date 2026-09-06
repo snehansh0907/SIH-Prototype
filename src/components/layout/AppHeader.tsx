@@ -12,7 +12,7 @@ export const AppHeader: React.FC = () => {
 
   const userName = isFarmer && user
     ? (language === 'mr' ? user.nameMr : user.name)
-    : (language === 'mr' ? 'डेमो नमुना' : 'Demo');
+    : (language === 'mr' ? 'डेमो नमुना' : language === 'hi' ? 'डेमो किसान' : 'Demo');
 
   return (
     <header className="sticky top-0 z-40 w-full bg-forest-800/95 backdrop-blur-md text-white border-b border-forest-700/60 shadow-md">
@@ -68,20 +68,20 @@ export const AppHeader: React.FC = () => {
               onClick={openLoginModal}
               className="text-[10px] font-extrabold px-2 py-1 rounded-lg bg-amber-400 text-forest-950 hover:bg-amber-300 transition-all shadow-sm"
             >
-              {language === 'mr' ? 'लॉगिन' : 'Login'}
+              {language === 'mr' ? 'लॉगिन' : language === 'hi' ? 'लॉगिन' : 'Login'}
             </button>
           )}
 
-          {/* Bilingual Switcher */}
+          {/* Language Switcher (Cycles: en -> hi -> mr -> en) */}
           <button
             onClick={toggleLanguage}
             type="button"
-            className="flex items-center gap-1 px-2 py-1 rounded-full bg-white/10 hover:bg-white/20 active:scale-95 border border-white/20 text-[11px] font-semibold transition-all"
-            aria-label="Toggle language between English and Marathi"
+            className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-white/10 hover:bg-white/20 active:scale-95 border border-white/20 text-[11px] font-semibold transition-all"
+            aria-label="Toggle language (English / हिंदी / मराठी)"
           >
             <Globe className="w-3 h-3 text-amber-300" />
-            <span className={language === 'mr' ? 'text-amber-300 font-bold' : 'text-white/80'}>
-              {language === 'en' ? 'मराठी' : 'EN'}
+            <span className={language !== 'en' ? 'text-amber-300 font-bold' : 'text-white/90'}>
+              {language === 'en' ? 'English' : language === 'hi' ? 'हिंदी' : 'मराठी'}
             </span>
           </button>
         </div>

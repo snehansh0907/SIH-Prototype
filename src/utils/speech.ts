@@ -30,7 +30,7 @@ class SpeechHelper {
 
   speak(
     text: string,
-    lang: 'en' | 'mr',
+    lang: 'en' | 'hi' | 'mr',
     onStart?: () => void,
     onEnd?: () => void,
     onError?: (err: any) => void
@@ -46,7 +46,7 @@ class SpeechHelper {
     const utterance = new SpeechSynthesisUtterance(cleanText);
 
     // Language target code
-    utterance.lang = lang === 'mr' ? 'mr-IN' : 'en-IN';
+    utterance.lang = lang === 'mr' ? 'mr-IN' : lang === 'hi' ? 'hi-IN' : 'en-IN';
     utterance.rate = 0.92; // Slightly slower for clear rural comprehension
     utterance.pitch = 1.0;
 
@@ -54,8 +54,11 @@ class SpeechHelper {
     const voices = this.synth.getVoices();
     if (voices.length > 0) {
       const match = voices.find(v => 
-        (lang === 'mr' && (v.lang.startsWith('mr') || v.lang.startsWith('hi'))) ||
+        (lang === 'mr' && v.lang.startsWith('mr')) ||
+        (lang === 'hi' && v.lang.startsWith('hi')) ||
         (lang === 'en' && (v.lang === 'en-IN' || v.name.includes('India')))
+      ) || voices.find(v =>
+        (lang === 'mr' || lang === 'hi') && (v.lang.startsWith('mr') || v.lang.startsWith('hi'))
       );
       if (match) utterance.voice = match;
     }
