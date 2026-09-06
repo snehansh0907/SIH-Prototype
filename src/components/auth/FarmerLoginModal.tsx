@@ -9,6 +9,7 @@ export const FarmerLoginModal: React.FC = () => {
 
   const [username, setUsername] = useState('farmer123');
   const [password, setPassword] = useState('farmer123');
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showInlineForm, setShowInlineForm] = useState(false);
 
@@ -16,9 +17,13 @@ export const FarmerLoginModal: React.FC = () => {
 
   const handleFarmerLoginSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setErrorMessage(null);
     setIsSubmitting(true);
-    await login(username, password);
+    const res = await login(username, password);
     setIsSubmitting(false);
+    if (!res.success) {
+      setErrorMessage(res.message || 'Login failed');
+    }
   };
 
   return (
@@ -85,6 +90,11 @@ export const FarmerLoginModal: React.FC = () => {
           ) : (
             /* Fast Inline Farmer Login Form */
             <form onSubmit={handleFarmerLoginSubmit} className="space-y-3">
+              {errorMessage && (
+                <div className="p-2.5 rounded-xl bg-rose-50 border border-rose-200 text-rose-800 text-[11px] font-bold">
+                  {errorMessage}
+                </div>
+              )}
               <div>
                 <label className="block text-[11px] font-bold uppercase text-stone-700 mb-1 font-display">
                   {t.farmerIdLabel}

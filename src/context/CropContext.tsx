@@ -5,6 +5,10 @@ import { diagnosisService } from '../services/diagnosisService';
 import { weatherService } from '../services/weatherService';
 import { riskService } from '../services/riskService';
 
+import { followUpService } from '../services/followUpService';
+import { SEEDED_DEMO_FARM_ID } from '../services/farmService';
+import { useAuth } from './AuthContext';
+
 export type NavigationTab = 'home' | 'check' | 'diagnosis' | 'risk' | 'area' | 'expert';
 
 interface CropContextType {
@@ -19,36 +23,62 @@ interface CropContextType {
   riskForecast: RiskForecast;
   followUpStatus: FollowUpStatus | null;
   setFollowUpStatus: (status: FollowUpStatus | null) => void;
-  performDiagnosis: (cropId: string, imageSource?: string) => Promise<DiagnosisResult>;
+  performDiagnosis: (cropId: string, imageSource?: string | File | Blob) => Promise<DiagnosisResult>;
   resetToHome: () => void;
 }
 
 const CropContext = createContext<CropContextType | undefined>(undefined);
 
 export const CropProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  const { user } = useAuth();
   const [activeTab, setActiveTab] = useState<NavigationTab>('home');
-  const [selectedCropId, setSelectedCropId] = useState<string>('tomato');
+  const [selectedCropId, setSelectedCropId] = useState<string>(
+    user?.monitoredCrop ? user.monitoredCrop.toLowerCase() : 'tomato'
+  );
   const [diagnosis, setDiagnosis] = useState<DiagnosisResult>(DEFAULT_DIAGNOSIS);
   const [isAnalyzing, setIsAnalyzing] = useState<boolean>(false);
   const [weather, setWeather] = useState<WeatherCondition>(MOCK_WEATHER);
   const [riskForecast, setRiskForecast] = useState<RiskForecast>(MOCK_RISK_FORECAST);
-  const [followUpStatus, setFollowUpStatus] = useState<FollowUpStatus | null>(null);
+  const [followUpStatus, setFollowUpStatusState] = useState<FollowUpStatus | null>(null);
 
-  // Initialize fresh weather & risk data
+  // Synchronize active crop with authenticated farmer's registered crop
+  useEffect(() => {
+    if (user?.monitoredCrop) {
+      setSelectedCropId(user.monitoredCrop.toLowerCase());
+    }
+  }, [user?.farmerId, user?.monitoredCrop]);
+
+  // Initialize fresh weather & risk data based on active user's farm
   useEffect(() => {
     weatherService.getWeatherContext().then(setWeather).catch(() => {});
-    riskService.getRiskForecast(selectedCropId).then(setRiskForecast).catch(() => {});
-  }, [selectedCropId]);
+    const targetFarmId = user?.farmId || SEEDED_DEMO_FARM_ID;
+    riskService.getRiskForecast(selectedCropId, targetFarmId).then(setRiskForecast).catch(() => {});
+  }, [selectedCropId, user?.farmId]);
 
-  const performDiagnosis = async (cropId: string, imageSource?: string): Promise<DiagnosisResult> => {
+  const setFollowUpStatus = (status: FollowUpStatus | null) => {
+    setFollowUpStatusState(status);
+    if (status && diagnosis?.id) {
+      // Connect to backend POST /api/follow-ups
+      followUpService.createFollowUp({
+        case_id: diagnosis.id,
+        status,
+      }).catch((err) => console.warn('[CropContext] Follow up submission fallback:', err));
+    }
+  };
+
+  const performDiagnosis = async (cropId: string, imageSource?: string | File | Blob): Promise<DiagnosisResult> => {
     setIsAnalyzing(true);
     setSelectedCropId(cropId);
     
     // Smooth reassuring animation timing for human confidence
-    await new Promise(res => setTimeout(res, 2400));
+    await new Promise(res => setTimeout(res, 2000));
     
     try {
-      const result = await diagnosisService.checkCrop(cropId, imageSource);
+      const result = await diagnosisService.checkCrop(cropId, imageSource, {
+        farmerId: user?.farmerId || user?.id,
+        farmId: user?.farmId,
+        cropCycleId: user?.cropCycleId,
+      });
       setDiagnosis(result);
       setIsAnalyzing(false);
       setActiveTab('diagnosis');

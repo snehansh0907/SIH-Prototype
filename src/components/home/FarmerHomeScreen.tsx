@@ -7,6 +7,7 @@ import { CropStatusHero } from './CropStatusHero';
 import { QuickActionGrid } from './QuickActionGrid';
 import { WeatherAlertCard } from './WeatherAlertCard';
 import { FollowUpBanner } from './FollowUpBanner';
+import { FarmerProfileCard } from './FarmerProfileCard';
 
 export const FarmerHomeScreen: React.FC = () => {
   const { t } = useLanguage();
@@ -15,6 +16,9 @@ export const FarmerHomeScreen: React.FC = () => {
 
   return (
     <div className="animate-fadeIn space-y-4">
+      {/* Authenticated Farmer & Farm Cloud Status */}
+      <FarmerProfileCard />
+
       {/* Primary Question & Top Hero Action */}
       <div className="rounded-3xl bg-gradient-to-br from-forest-800 via-forest-900 to-forest-950 text-white p-5 shadow-elevated relative overflow-hidden border-2 border-forest-600">
         <div className="absolute -right-6 -bottom-6 w-32 h-32 rounded-full bg-amber-400/10 blur-2xl pointer-events-none" />

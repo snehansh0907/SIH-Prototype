@@ -1,18 +1,30 @@
-export type Language = 'en' | 'hi' | 'mr';
+export type Language = 'en' | 'mr';
 
 export type AuthRole = 'unauthenticated' | 'demo' | 'farmer';
 
 export interface FarmerUser {
   id: string;
+  farmerId: string;
   name: string;
-  nameMr: string;
+  nameMr?: string;
+  phone?: string;
+  email?: string;
   emailOrPhone: string;
+  village: string;
+  taluka: string;
+  district: string;
   location: string;
-  locationMr: string;
+  locationMr?: string;
+  userType: 'demo' | 'registered';
+  farmName: string;
+  areaAcres: number | string;
   monitoredCrop: string;
-  monitoredCropMr: string;
+  monitoredCropMr?: string;
+  farmId?: string;
+  cropCycleId?: string;
   avatar?: string;
   isDemo?: boolean;
+  isNewUser?: boolean;
 }
 
 export type SeverityLevel = 'low' | 'moderate' | 'high';

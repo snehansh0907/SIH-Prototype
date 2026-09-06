@@ -2,6 +2,8 @@ import React, { createContext, useContext, useState, useEffect } from 'react';
 import type { AuthRole, FarmerUser } from '../types';
 import { authService } from '../services/authService';
 
+import type { RegisterPayload } from '../services/authService';
+
 interface AuthContextType {
   authState: AuthRole;
   user: FarmerUser | null;
@@ -10,7 +12,8 @@ interface AuthContextType {
   isDemo: boolean;
   isLoginModalOpen: boolean;
   login: (idOrEmail: string, pass: string) => Promise<{ success: boolean; message?: string }>;
-  loginAsDemo: () => void;
+  register: (payload: RegisterPayload) => Promise<{ success: boolean; message?: string; user?: FarmerUser }>;
+  loginAsDemo: (specificKey?: 'ramesh' | 'vikas' | 'anita') => void;
   logout: () => void;
   openLoginModal: () => void;
   closeLoginModal: () => void;
@@ -42,8 +45,19 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     return { success: false, message: res.message || 'Login failed. Please check credentials.' };
   };
 
-  const loginAsDemo = async () => {
-    const res = await authService.loginAsDemo();
+  const register = async (payload: RegisterPayload) => {
+    const res = await authService.register(payload);
+    if (res.success && res.user) {
+      setAuthState('farmer');
+      setUser(res.user);
+      setIsLoginModalOpen(false);
+      return { success: true, user: res.user };
+    }
+    return { success: false, message: res.message || 'Registration failed' };
+  };
+
+  const loginAsDemo = async (specificKey?: 'ramesh' | 'vikas' | 'anita') => {
+    const res = await authService.loginAsDemo(specificKey);
     setAuthState('demo');
     setUser(res.user);
     setIsLoginModalOpen(false);
@@ -85,6 +99,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         isDemo: authState === 'demo',
         isLoginModalOpen,
         login,
+        register,
         loginAsDemo,
         logout,
         openLoginModal,

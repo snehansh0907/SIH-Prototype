@@ -12,6 +12,7 @@ export const ImageUploader: React.FC = () => {
   const { selectedCropId, performDiagnosis, isAnalyzing } = useCrop();
 
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [isSample, setIsSample] = useState<boolean>(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const cameraInputRef = useRef<HTMLInputElement>(null);
@@ -22,6 +23,7 @@ export const ImageUploader: React.FC = () => {
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
+      setSelectedFile(file);
       const reader = new FileReader();
       reader.onloadend = () => {
         setSelectedImage(reader.result as string);
@@ -33,23 +35,27 @@ export const ImageUploader: React.FC = () => {
 
   const handleSelectSample = (url: string) => {
     setSelectedImage(url);
+    setSelectedFile(null);
     setIsSample(true);
   };
 
   const handleRemoveImage = () => {
     setSelectedImage(null);
+    setSelectedFile(null);
     setIsSample(false);
     if (fileInputRef.current) fileInputRef.current.value = '';
     if (cameraInputRef.current) cameraInputRef.current.value = '';
   };
 
   const handleSubmit = async () => {
-    if (!selectedImage) {
+    if (selectedFile) {
+      await performDiagnosis(selectedCropId, selectedFile);
+    } else if (selectedImage) {
+      await performDiagnosis(selectedCropId, selectedImage);
+    } else {
       // Default to sample if user clicks without picking
       const fallbackUrl = currentCrop.sampleImages[0]?.url;
       await performDiagnosis(selectedCropId, fallbackUrl);
-    } else {
-      await performDiagnosis(selectedCropId, selectedImage);
     }
   };
 
