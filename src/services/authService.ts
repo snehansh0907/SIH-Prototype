@@ -15,7 +15,7 @@ export interface RegisterPayload {
   district: string;
   farmName: string;
   areaAcres: number | string;
-  mainCrop: 'Tomato' | 'Cotton' | 'Soybean' | string;
+  mainCrop: 'Tomato' | 'Cotton' | 'Soybean' | 'Sugarcane' | 'Maize' | 'Onion' | 'Rice' | 'Wheat' | string;
 }
 
 interface StoredRegisteredUser {
@@ -309,6 +309,11 @@ export const authService = {
       Tomato: 'टोमॅटो',
       Cotton: 'कापूस',
       Soybean: 'सोयाबीन',
+      Sugarcane: 'ऊस',
+      Maize: 'मका',
+      Onion: 'कांदा',
+      Rice: 'भात',
+      Wheat: 'गहू',
     };
 
     const newUser: FarmerUser = {

@@ -1,4 +1,4 @@
-export type Language = 'en' | 'mr';
+export type Language = 'en' | 'hi' | 'mr';
 
 export type AuthRole = 'unauthenticated' | 'demo' | 'farmer';
 
