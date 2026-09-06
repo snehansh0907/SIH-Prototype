@@ -8,8 +8,18 @@ export const DiagnosisHeader: React.FC = () => {
   const { language, t } = useLanguage();
   const { diagnosis, resetToHome, setActiveTab } = useCrop();
 
-  const cropName = language === 'mr' ? diagnosis.cropNameMr : diagnosis.cropName;
-  const diseaseName = language === 'mr' ? diagnosis.diseaseNameMr : diagnosis.diseaseName;
+  const cropName =
+    language === 'mr'
+      ? diagnosis.cropNameMr
+      : language === 'hi'
+      ? (diagnosis.cropNameHi || diagnosis.cropName)
+      : diagnosis.cropName;
+  const diseaseName =
+    language === 'mr'
+      ? diagnosis.diseaseNameMr
+      : language === 'hi'
+      ? (diagnosis.diseaseNameHi || diagnosis.diseaseName)
+      : diagnosis.diseaseName;
 
   return (
     <div className="mb-4">

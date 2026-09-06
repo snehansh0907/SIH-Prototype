@@ -216,6 +216,93 @@ export const translations = {
     emptyNearby: '🌾 No major crop problems reported nearby.',
     speaking: 'Playing audio advisory...',
     stopAudio: 'Stop Audio',
+
+    // Expert & Chat
+    demoHelplineCall: 'Demo Helpline Call: 1800-000-0000 (Prototype)',
+    aiUncertainExpertHelp: 'AI is not certain → an agricultural expert can help',
+    aiUncertainExpertHelpDesc: 'Photo clarity was low. Send symptoms below for manual expert verification.',
+    chipFungicide: 'What fungicide should I use?',
+    chipSprayBeforeRain: 'Can I spray before rain tomorrow?',
+    chipOrganicAlternative: 'Is there an organic alternative?',
+
+    // Forecast & Weather
+    cropStageFlowering: 'Crop Stage: Flowering & Fruiting',
+    peakOnDay3: 'Peak on Day 3',
+    fiveDayRisk: '5-Day Risk',
+    highHumidity: 'High Humidity',
+    rainSoon: 'Rain Soon',
+    voiceRiskForecastSummary: 'Crop risk forecast: Due to rain and sustained humidity, disease risk will rise to high on day three and four. Apply protective spray today.',
+
+    // Actions & Home
+    quickActionsTitle: 'Quick Actions',
+    tapToStart: 'Tap to start',
+    changeAction: 'Change',
+    recoveryLogged: 'Recovery Logged!',
+    continueMonitoring: 'Continue Monitoring',
+    immediateHelpRecommended: 'Immediate Help Recommended',
+    uploadNewPhoto: 'Upload New Photo',
+    talkToExpertBtn: 'Talk to Expert',
+    newFarmerTag: 'New Farmer',
+    farmProfileReady: 'Your Farm Profile is Ready',
+    registeredFarmAndCrop: 'Registered Farm & Crop',
+    acresUnit: 'Acres',
+    scanFirstLeaf: 'Scan Your First Crop Leaf',
+    monitoredPlot: 'Monitored Plot',
+    viewAdvice: 'View Advice',
+    myFarmDefault: 'My Farm',
+
+    // Profile & Login
+    localProfileActive: 'Local Profile Active',
+    cloudSyncActive: 'Supabase Live Sync',
+    registeredFarmerBadge: 'Registered Farmer',
+    verifiedDemoFarmerBadge: 'Verified Demo Farmer',
+    demoSessionBadge: 'Demo Session',
+    activeCropLabel: 'Active Crop',
+    talukaHubLabel: 'Taluka Hub',
+    guestFarmer: 'Guest Farmer',
+    demoCredentialsAvailable: 'Demo Credentials Available',
+    demoCredentialsSub: 'Use farmer123 / farmer123 for full access.',
+    btnFarmerLogin: 'Farmer Login',
+
+    // Diagnosis & IPM
+    ipmPrioritizedSteps: 'Integrated Pest Management (IPM) prioritized steps',
+    stepLabel: 'Step',
+    riskRising: 'Risk Rising',
+    cameraUploadHelp: 'Take a clear close-up shot of affected leaves or stems',
+    fieldSample: 'Field Sample',
+    photoReady: 'Photo Ready',
+    readyForAnalysis: 'Ready for analysis',
+    oneClickTest: '1-Click Test',
+
+    // Area & Radar
+    highDiseaseActivity: 'High Disease Activity',
+    lowDiseaseActivity: 'Low Disease Activity / Safe',
+    selectRegion: 'Region:',
+    radius5km: '5 km Radius',
+    radarYourFarm: 'Your Farm',
+    updated: 'Updated:',
+    reportedCasesLabel: 'reported disease cases',
+    awayLabel: 'away',
+    legendHigh: 'High',
+    legendMed: 'Med',
+    legendLow: 'Low',
+
+    // Location Selectors
+    selectStatePlaceholder: '-- Select State --',
+    searchStatePlaceholder: 'Search state...',
+    noStateFound: 'No state found',
+    selectStateFirst: '-- Select State First --',
+    selectDistrictPlaceholder: '-- Select District --',
+    searchDistrictPlaceholder: 'Search district...',
+    noDistrictFound: 'No district found',
+    selectDistrictFirst: '-- Select District First --',
+    talukaPlaceholder: 'e.g. Niphad or type tehsil',
+    searchTalukaPlaceholder: 'Search taluka...',
+    noTalukaFound: 'No pre-indexed taluka. You can type directly.',
+    selectTalukaFirst: '-- Select Taluka First --',
+    villagePlaceholder: 'Enter your village name or select',
+    searchVillagePlaceholder: 'Search village...',
+    noVillageFound: 'Not in quick list. You can type directly.',
     defaultAdvisoryText: 'Possible Early Blight detected on tomato leaf with moderate severity. Today you should remove heavily affected lower leaves and avoid excess watering. Fungal risk may increase over the next forty-eight hours due to high humidity. Consider preventive spray during clear morning hours.',
   },
   hi: {
@@ -435,6 +522,93 @@ export const translations = {
     emptyNearby: '🌾 आस-पास किसी बड़ी समस्या की सूचना नहीं है।',
     speaking: 'ऑडियो सलाह चलाई जा रही है...',
     stopAudio: 'ऑडियो रोकें',
+
+    // Expert & Chat
+    demoHelplineCall: 'डेमो हेल्पलाइन कॉल: 1800-000-0000 (प्रोटोटाइप)',
+    aiUncertainExpertHelp: 'AI निदान अनिश्चित → कृषि विशेषज्ञ सहायता उपलब्ध',
+    aiUncertainExpertHelpDesc: 'फोटो स्पष्ट नहीं था। सुरक्षित सलाह के लिए नीचे विशेषज्ञ से लक्षण साझा करें।',
+    chipFungicide: 'मुझे कौन सा कवकनाशी इस्तेमाल करना चाहिए?',
+    chipSprayBeforeRain: 'क्या मैं कल बारिश से पहले छिड़काव कर सकता हूँ?',
+    chipOrganicAlternative: 'क्या कोई जैविक या प्राकृतिक विकल्प है?',
+
+    // Forecast & Weather
+    cropStageFlowering: 'फसल अवस्था: फूल और फल लगने का समय',
+    peakOnDay3: 'तीसरे दिन उच्चतम जोखिम',
+    fiveDayRisk: '५-दिवसीय जोखिम',
+    highHumidity: 'अधिक आर्द्रता',
+    rainSoon: 'शीघ्र बारिश',
+    voiceRiskForecastSummary: 'फसल जोखिम पूर्वानुमान: बारिश और लगातार नमी के कारण, तीसरे और चौथे दिन बीमारी का जोखिम उच्च हो जाएगा। आज ही सुरक्षात्मक छिड़काव करें।',
+
+    // Actions & Home
+    quickActionsTitle: 'त्वरित कार्य',
+    tapToStart: 'शुरू करने के लिए टैप करें',
+    changeAction: 'बदलें',
+    recoveryLogged: 'सुधार दर्ज किया गया!',
+    continueMonitoring: 'निगरानी जारी रखें',
+    immediateHelpRecommended: 'त्वरित सहायता की सिफारिश',
+    uploadNewPhoto: 'नई फोटो लें',
+    talkToExpertBtn: 'विशेषज्ञ से बात करें',
+    newFarmerTag: 'नया किसान',
+    farmProfileReady: 'आपका फार्म प्रोफाइल तैयार है',
+    registeredFarmAndCrop: 'पंजीकृत खेत और फसल',
+    acresUnit: 'एकड़',
+    scanFirstLeaf: 'फसल की पहली पत्ती जांचें',
+    monitoredPlot: 'निगरानी वाला खेत',
+    viewAdvice: 'पूरी सलाह देखें',
+    myFarmDefault: 'मेरा खेत',
+
+    // Profile & Login
+    localProfileActive: 'स्थानीय प्रोफाइल सक्रिय',
+    cloudSyncActive: 'क्लाउड सिंक सक्रिय',
+    registeredFarmerBadge: 'पंजीकृत किसान',
+    verifiedDemoFarmerBadge: 'सत्यापित डेमो किसान',
+    demoSessionBadge: 'डेमो सत्र',
+    activeCropLabel: 'सक्रिय फसल',
+    talukaHubLabel: 'तहसील / तालुका केंद्र',
+    guestFarmer: 'अतिथि किसान',
+    demoCredentialsAvailable: 'डेमो किसान खाता उपलब्ध',
+    demoCredentialsSub: 'पूर्ण उपयोग के लिए farmer123 / farmer123 का उपयोग करें।',
+    btnFarmerLogin: 'किसान लॉगिन',
+
+    // Diagnosis & IPM
+    ipmPrioritizedSteps: 'एकीकृत कीट प्रबंधन (IPM) प्राथमिकता चरण',
+    stepLabel: 'चरण',
+    riskRising: 'जोखिम बढ़ने की संभावना',
+    cameraUploadHelp: 'प्रभावित पत्तियों या तनों की स्पष्ट नजदीकी फोटो लें',
+    fieldSample: 'खेत का नमूना',
+    photoReady: 'फोटो तैयार',
+    readyForAnalysis: 'जांच के लिए तैयार',
+    oneClickTest: '1-क्लिक परीक्षण',
+
+    // Area & Radar
+    highDiseaseActivity: 'उच्च बीमारी गतिविधि',
+    lowDiseaseActivity: 'कम बीमारी गतिविधि / सुरक्षित',
+    selectRegion: 'स्थान चुनें:',
+    radius5km: '५ किमी दायरा',
+    radarYourFarm: 'आपका खेत',
+    updated: 'अपडेट:',
+    reportedCasesLabel: 'बीमारी के दर्ज मामले',
+    awayLabel: 'दूर',
+    legendHigh: 'उच्च',
+    legendMed: 'मध्यम',
+    legendLow: 'कम',
+
+    // Location Selectors
+    selectStatePlaceholder: '-- राज्य चुनें --',
+    searchStatePlaceholder: 'राज्य खोजें...',
+    noStateFound: 'कोई राज्य नहीं मिला',
+    selectStateFirst: '-- पहले राज्य चुनें --',
+    selectDistrictPlaceholder: '-- ज़िला चुनें --',
+    searchDistrictPlaceholder: 'ज़िला खोजें...',
+    noDistrictFound: 'कोई ज़िला नहीं मिला',
+    selectDistrictFirst: '-- पहले ज़िला चुनें --',
+    talukaPlaceholder: 'उदा. निफाड या तहसील लिखें',
+    searchTalukaPlaceholder: 'तहसील / तालुका खोजें...',
+    noTalukaFound: 'तहसील सूची में नहीं है। आप सीधे टाइप कर सकते हैं।',
+    selectTalukaFirst: '-- पहले तहसील चुनें --',
+    villagePlaceholder: 'अपने गाँव का नाम लिखें या चुनें',
+    searchVillagePlaceholder: 'गाँव खोजें...',
+    noVillageFound: 'गाँव सूची में नहीं है। सीधे टाइप करें।',
     defaultAdvisoryText: 'टमाटर की पत्ती पर मध्यम स्तर का अगेती झुलसा रोग पाया गया है। आज ही अधिक प्रभावित निचली पत्तियों को हटा दें और पानी का जमाव न होने दें। अधिक नमी के कारण अगले अड़तालीस घंटों में संक्रमण बढ़ सकता है, इसलिए सुबह के समय उचित छिड़काव करें।',
   },
   mr: {
@@ -654,6 +828,112 @@ export const translations = {
     emptyNearby: '🌾 परिसरात कोणत्याही मोठ्या रोगाची नोंद नाही.',
     speaking: 'ऑडिओ सल्ला वाचला जात आहे...',
     stopAudio: 'थांबवा',
+
+    // Expert & Chat
+    demoHelplineCall: 'डेमो कॉल: १८००-०००-०००० (प्रोटोटाइप)',
+    aiUncertainExpertHelp: 'AI निदान अनिश्चित → तज्ञ मदत उपलब्ध',
+    aiUncertainExpertHelpDesc: 'कॅमेरा फोटोवरून अचूकता कमी आहे. सुरक्षित उपायांसाठी खाली प्रश्न विचारा.',
+    chipFungicide: 'कोणते बुरशीनाशक फवारावे?',
+    chipSprayBeforeRain: 'उद्या पावसापूर्वी फवारणी चालेल का?',
+    chipOrganicAlternative: 'जैविक किंवा सेंद्रिय उपाय काय?',
+
+    // Forecast & Weather
+    cropStageFlowering: 'पीक अवस्था: फुले व फळधारणा काळ',
+    peakOnDay3: '३ऱ्या दिवशी वाढ',
+    fiveDayRisk: '५-दिवस अंदाज',
+    highHumidity: 'जास्त आर्द्रता',
+    rainSoon: 'उद्या पाऊस',
+    voiceRiskForecastSummary: 'पीक धोका अंदाज: पाऊस आणि जास्त आर्द्रतेमुळे पुढील ३ आणि ४ थ्या दिवशी रोगाचा धोका उच्च राहील. आजच प्रतिबंधात्मक फवारणी पूर्ण करा.',
+
+    // Actions & Home
+    quickActionsTitle: 'जलद कृती',
+    tapToStart: 'स्पर्श करून सुरू करा',
+    changeAction: 'बदला',
+    recoveryLogged: 'सुधारणा नोंदवली गेली!',
+    continueMonitoring: 'सतत निरीक्षण सुरू ठेवा',
+    immediateHelpRecommended: 'त्वरित मदत उपलब्ध',
+    uploadNewPhoto: 'नवीन फोटो काढा',
+    talkToExpertBtn: 'तज्ञांशी बोला',
+    newFarmerTag: 'नवीन नोंदणी',
+    farmProfileReady: 'तुमचे शेत प्रोफाइल तयार आहे',
+    registeredFarmAndCrop: 'नोंदणीकृत शेत व पीक',
+    acresUnit: 'एकर',
+    scanFirstLeaf: 'पिकाचा पहिला फोटो काढा (तपासणी)',
+    monitoredPlot: 'सध्याचे पीक',
+    viewAdvice: 'पूर्ण सल्ला पाहा',
+    myFarmDefault: 'माझे शेत',
+
+    // Profile & Login
+    localProfileActive: 'स्थानिक प्रोफाइल सक्रिय',
+    cloudSyncActive: 'डेटाबेस जोडणी सक्रिय',
+    registeredFarmerBadge: 'नोंदणीकृत शेतकरी',
+    verifiedDemoFarmerBadge: 'सत्यापित डेमो शेतकरी',
+    demoSessionBadge: 'डेमो सत्र',
+    activeCropLabel: 'सक्रिय पीक',
+    talukaHubLabel: 'तालुका केंद्र',
+    guestFarmer: 'अतिथी शेतकरी',
+    demoCredentialsAvailable: 'डेमो शेतकरी खाते उपलब्ध',
+    demoCredentialsSub: 'आयडी: farmer123 | पासवर्ड: farmer123',
+    btnFarmerLogin: 'शेतकरी लॉगिन',
+
+    // Diagnosis & IPM
+    ipmPrioritizedSteps: 'एकात्मिक कीड व्यवस्थापन (IPM) शिफारशी क्रमवारीनुसार',
+    stepLabel: 'टप्पा',
+    riskRising: 'धोका वाढण्याची शक्यता',
+    cameraUploadHelp: 'कॅमेरा वापरून थेट फोटो काढा किंवा गॅलरीतून निवडा',
+    fieldSample: 'नमुना फोटो',
+    photoReady: 'फोटो तयार',
+    readyForAnalysis: 'तपासणीसाठी तयार',
+    oneClickTest: '१-क्लिक चाचणी',
+
+    // Area & Radar
+    highDiseaseActivity: 'उच्च रोग प्रादुर्भाव',
+    lowDiseaseActivity: 'कम रोग प्रादुर्भाव / सुरक्षित',
+    selectRegion: 'स्थान निवडा:',
+    radius5km: '५ किमी परिसर',
+    radarYourFarm: 'आपले शेत',
+    updated: 'अद्यतनित:',
+    reportedCasesLabel: 'नोंदवलेली प्रकरणे',
+    awayLabel: 'दूर',
+    legendHigh: 'उच्च',
+    legendMed: 'मध्यम',
+    legendLow: 'कम',
+
+    // Location Selectors
+    selectStatePlaceholder: '-- राज्य निवडा --',
+    searchStatePlaceholder: 'राज्य शोधा...',
+    noStateFound: 'राज्य आढळले नाही',
+    selectStateFirst: '-- आधी राज्य निवडा --',
+    selectDistrictPlaceholder: '-- जिल्हा निवडा --',
+    searchDistrictPlaceholder: 'जिल्हा शोधा...',
+    noDistrictFound: 'जिल्हा आढळला नाही',
+    selectDistrictFirst: '-- आधी जिल्हा निवडा --',
+    talukaPlaceholder: 'उदा. निफाड किंवा टाईप करा',
+    searchTalukaPlaceholder: 'तालुका शोधा...',
+    noTalukaFound: 'तालुका सापडला नाही. स्वतः टाईप करू शकता.',
+    selectTalukaFirst: '-- आधी तालुका निवडा --',
+    villagePlaceholder: 'तुमच्या गावाचे नाव किंवा निवडा',
+    searchVillagePlaceholder: 'गाव शोधा...',
+    noVillageFound: 'गाव यादीत नाही. थेट टाईप करा.',
     defaultAdvisoryText: 'टोमॅटोच्या पानावर मध्यम स्वरूपाचा करपा रोग आढळला आहे. आज लगेच जास्त खराब झालेली पाने तोडून टाका आणि पानांवर पाणी साचू देऊ नका. पुढील दोन दिवसांत जास्त आर्द्रतेमुळे रोग वाढू शकतो, म्हणून योग्य फवारणी करा.',
   }
 };
+
+/**
+ * Dynamic content helper for expert greeting with crop, disease, and severity parameters
+ */
+export const getExpertInitialGreeting = (
+  lang: 'en' | 'hi' | 'mr',
+  cropName: string,
+  diseaseName: string,
+  severity: string
+): string => {
+  if (lang === 'mr') {
+    return `नमस्ते शेतकरी मित्र! (डेमो सल्ला केंद्र). मी तुमच्या ${cropName} पिकाचा अहवाल पाहिला (${diseaseName} - ${severity}). किती क्षेत्र बाधित आहे आणि आपण गेल्या ७ दिवसांत फवारणी केली आहे का?`;
+  }
+  if (lang === 'hi') {
+    return `नमस्ते किसान भाई! (डेमो विशेषज्ञ डेस्क)। मैंने आपके ${cropName} निदान (${diseaseName} - ${severity}) की समीक्षा की है। कितने एकड़ क्षेत्र प्रभावित है, और क्या आपने पिछले 7 दिनों में कोई छिड़काव किया है?`;
+  }
+  return `Namaste Kisan bhai! (Demo Expert Desk). I reviewed your ${cropName} diagnosis (${diseaseName} - ${severity}). How many acres are affected, and have you sprayed in the last 7 days?`;
+};
+

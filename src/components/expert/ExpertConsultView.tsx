@@ -6,6 +6,7 @@ import { StatusBadge } from '../common/StatusBadge';
 import { expertService } from '../../services/expertService';
 import type { ExpertProfile, ChatMessage } from '../../types';
 import { MOCK_EXPERT } from '../../services/mockData';
+import { getExpertInitialGreeting } from '../../i18n/translations';
 
 export const ExpertConsultView: React.FC = () => {
   const { language, t } = useLanguage();
@@ -43,14 +44,40 @@ export const ExpertConsultView: React.FC = () => {
     }, 1200);
   };
 
-  const cropName = language === 'mr' ? diagnosis.cropNameMr : diagnosis.cropName;
-  const diseaseName = language === 'mr' ? diagnosis.diseaseNameMr : diagnosis.diseaseName;
+  const cropName =
+    language === 'mr'
+      ? diagnosis.cropNameMr
+      : language === 'hi'
+      ? (diagnosis.cropNameHi || diagnosis.cropName)
+      : diagnosis.cropName;
+
+  const diseaseName =
+    language === 'mr'
+      ? diagnosis.diseaseNameMr
+      : language === 'hi'
+      ? (diagnosis.diseaseNameHi || diagnosis.diseaseName)
+      : diagnosis.diseaseName;
 
   const quickChips = [
-    { en: 'What fungicide should I use?', mr: 'कोणते बुरशीनाशक फवारावे?' },
-    { en: 'Can I spray before rain tomorrow?', mr: 'उद्या पावसापूर्वी फवारणी चालेल का?' },
-    { en: 'Is there an organic alternative?', mr: 'जैविक किंवा सेंद्रिय उपाय काय?' },
+    t.chipFungicide,
+    t.chipSprayBeforeRain,
+    t.chipOrganicAlternative,
   ];
+
+  const getMessageText = (msg: ChatMessage) => {
+    if (msg.id === 'm1') {
+      const sev =
+        language === 'mr'
+          ? (diagnosis.severity === 'high' ? 'गंभीर' : diagnosis.severity === 'moderate' ? 'मध्यम' : 'कमी')
+          : language === 'hi'
+          ? (diagnosis.severity === 'high' ? 'गंभीर' : diagnosis.severity === 'moderate' ? 'मध्यम' : 'कम')
+          : diagnosis.severity;
+      return getExpertInitialGreeting(language, cropName, diseaseName, sev);
+    }
+    if (language === 'mr' && msg.textMr) return msg.textMr;
+    if (language === 'hi' && msg.textHi) return msg.textHi;
+    return msg.text;
+  };
 
   return (
     <div className="pb-6 animate-fadeIn flex flex-col min-h-[calc(100vh-140px)]">
@@ -68,7 +95,7 @@ export const ExpertConsultView: React.FC = () => {
         {/* Demo Helpline Call Button */}
         <button
           type="button"
-          onClick={() => alert(language === 'mr' ? 'डेमो कॉल: १८००-०००-०००० (प्रोटोटाइप)' : 'Demo Helpline Call: 1800-000-0000 (Prototype)')}
+          onClick={() => alert(t.demoHelplineCall)}
           className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-forest-100 text-forest-900 border border-forest-300 font-bold text-xs hover:bg-forest-200 transition-colors shadow-sm"
         >
           <PhoneCall className="w-3.5 h-3.5 text-forest-700" />
@@ -93,10 +120,10 @@ export const ExpertConsultView: React.FC = () => {
           <AlertTriangle className="w-5 h-5 text-amber-800 shrink-0 mt-0.5" />
           <div>
             <div className="text-xs font-black text-amber-950 font-display">
-              {language === 'mr' ? 'AI निदान अनिश्चित → तज्ञ मदत उपलब्ध' : 'AI is not certain → an agricultural expert can help'}
+              {t.aiUncertainExpertHelp}
             </div>
             <div className="text-[11px] text-stone-700 mt-0.5">
-              {language === 'mr' ? 'कॅमेरा फोटोवरून अचूकता कमी आहे. सुरक्षित उपायांसाठी खाली प्रश्न विचारा.' : 'Photo clarity was low. Send symptoms below for manual expert verification.'}
+              {t.aiUncertainExpertHelpDesc}
             </div>
           </div>
         </div>
@@ -135,10 +162,10 @@ export const ExpertConsultView: React.FC = () => {
 
           <div>
             <div className="text-xs font-black text-stone-900 font-display">
-              {language === 'mr' ? expert.nameMr : expert.name}
+              {language === 'mr' ? expert.nameMr : language === 'hi' ? (expert.nameHi || expert.name) : expert.name}
             </div>
             <div className="text-[11px] text-stone-500 leading-tight">
-              {language === 'mr' ? expert.stationMr : expert.station}
+              {language === 'mr' ? expert.stationMr : language === 'hi' ? (expert.stationHi || expert.station) : expert.station}
             </div>
           </div>
         </div>
@@ -152,7 +179,7 @@ export const ExpertConsultView: React.FC = () => {
       <div className="flex-1 bg-stone-100/70 border border-stone-200/70 rounded-3xl p-3.5 overflow-y-auto space-y-3 mb-3 max-h-[340px]">
         {messages.map((msg) => {
           const isFarmer = msg.sender === 'farmer';
-          const text = language === 'mr' && msg.textMr ? msg.textMr : msg.text;
+          const text = getMessageText(msg);
 
           return (
             <div
@@ -194,19 +221,16 @@ export const ExpertConsultView: React.FC = () => {
         </div>
 
         <div className="flex gap-1.5 overflow-x-auto pb-1 no-scrollbar">
-          {quickChips.map((chip, idx) => {
-            const label = language === 'mr' ? chip.mr : chip.en;
-            return (
-              <button
-                key={idx}
-                type="button"
-                onClick={() => handleSendMessage(label)}
-                className="text-[11px] font-bold text-forest-900 bg-white hover:bg-forest-50 border border-stone-200 px-3 py-1.5 rounded-xl whitespace-nowrap active:scale-95 transition-all shrink-0 shadow-sm"
-              >
-                {label}
-              </button>
-            );
-          })}
+          {quickChips.map((chipLabel, idx) => (
+            <button
+              key={idx}
+              type="button"
+              onClick={() => handleSendMessage(chipLabel)}
+              className="text-[11px] font-bold text-forest-900 bg-white hover:bg-forest-50 border border-stone-200 px-3 py-1.5 rounded-xl whitespace-nowrap active:scale-95 transition-all shrink-0 shadow-sm"
+            >
+              {chipLabel}
+            </button>
+          ))}
         </div>
       </div>
 

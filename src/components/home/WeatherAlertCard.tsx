@@ -16,6 +16,14 @@ export const WeatherAlertCard: React.FC = () => {
     setActiveTab,
   } = useCrop();
 
+<<<<<<< HEAD
+  const impactSummary =
+    language === 'mr'
+      ? weather.cropImpactSummaryMr
+      : language === 'hi'
+      ? (weather.cropImpactSummaryHi || weather.cropImpactSummary)
+      : weather.cropImpactSummary;
+=======
   const isMarathi = language === 'mr';
   const isHindi = language === 'hi';
 
@@ -114,6 +122,7 @@ export const WeatherAlertCard: React.FC = () => {
   const impactSummary = weather
     ? (isMarathi ? weather.cropImpactSummaryMr : weather.cropImpactSummary)
     : '';
+>>>>>>> cc4dc7b5608b36e4ddf546f73263d581f1f3f727
 
   return (
     <div className="rounded-3xl bg-white/95 border border-stone-200/90 p-4 shadow-soft mb-5 transition-all">
@@ -145,11 +154,30 @@ export const WeatherAlertCard: React.FC = () => {
           type="button"
           className="text-xs font-bold text-forest-800 hover:text-forest-900 flex items-center gap-0.5 cursor-pointer"
         >
+<<<<<<< HEAD
+          <span>{t.fiveDayRisk}</span>
+=======
           <span>{isMarathi ? '५-दिवस अंदाज' : isHindi ? '५-दिन जोखिम' : '5-Day Risk'}</span>
+>>>>>>> cc4dc7b5608b36e4ddf546f73263d581f1f3f727
           <ArrowUpRight className="w-3.5 h-3.5" />
         </button>
       </div>
 
+<<<<<<< HEAD
+      {/* Conditions row */}
+      <div className="grid grid-cols-3 gap-2 mb-3">
+        {/* Humidity */}
+        <div className="bg-emerald-50/70 border border-emerald-200/60 rounded-2xl p-2.5 text-center">
+          <div className="flex items-center justify-center text-emerald-700 mb-1">
+            <Droplets className="w-4 h-4" />
+          </div>
+          <div className="text-sm font-extrabold text-emerald-950 font-display">
+            {weather.humidity}%
+          </div>
+          <div className="text-[10px] font-semibold text-emerald-800 uppercase tracking-tight">
+            {t.highHumidity}
+          </div>
+=======
       {/* Multi-Farm Switcher (if farmer has multiple plots) */}
       {availableFarms.length > 1 && (
         <div className="mb-3 pt-1 flex items-center gap-1.5 overflow-x-auto pb-1 scrollbar-none">
@@ -173,9 +201,38 @@ export const WeatherAlertCard: React.FC = () => {
               </button>
             );
           })}
+>>>>>>> cc4dc7b5608b36e4ddf546f73263d581f1f3f727
         </div>
       )}
 
+<<<<<<< HEAD
+        {/* Rain */}
+        <div className="bg-sky-50/70 border border-sky-200/60 rounded-2xl p-2.5 text-center">
+          <div className="flex items-center justify-center text-sky-700 mb-1">
+            <CloudRain className="w-4 h-4" />
+          </div>
+          <div className="text-sm font-extrabold text-sky-950 font-display">
+            {weather.rainfallChance}%
+          </div>
+          <div className="text-[10px] font-semibold text-sky-800 uppercase tracking-tight">
+            {t.rainSoon}
+          </div>
+        </div>
+
+        {/* Temp */}
+        <div className="bg-amber-50/70 border border-amber-200/60 rounded-2xl p-2.5 text-center">
+          <div className="flex items-center justify-center text-amber-700 mb-1">
+            <Thermometer className="w-4 h-4" />
+          </div>
+          <div className="text-sm font-extrabold text-amber-950 font-display">
+            {weather.temp}°C
+          </div>
+          <div className="text-[10px] font-semibold text-amber-800 uppercase tracking-tight">
+            {language === 'mr' ? 'तापमान' : language === 'hi' ? 'तापमान' : 'Temp'}
+          </div>
+        </div>
+      </div>
+=======
       {/* Conditions Row with Live Values */}
       {weather && (
         <>
@@ -209,6 +266,7 @@ export const WeatherAlertCard: React.FC = () => {
                   : (isMarathi ? 'कमी पाऊस' : isHindi ? 'कम बारिश' : 'Low Rain Chance')}
               </div>
             </div>
+>>>>>>> cc4dc7b5608b36e4ddf546f73263d581f1f3f727
 
             {/* Temperature */}
             <div className="bg-amber-50/70 border border-amber-200/60 rounded-2xl p-2.5 text-center">

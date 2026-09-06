@@ -16,7 +16,12 @@ export const CropSelector: React.FC = () => {
       <div className="flex gap-2 overflow-x-auto pb-2 no-scrollbar">
         {MOCK_CROPS.map((crop) => {
           const isSelected = selectedCropId === crop.id;
-          const name = language === 'mr' ? crop.nameMr : crop.name;
+          const name =
+            language === 'mr'
+              ? crop.nameMr
+              : language === 'hi'
+              ? (crop.nameHi || crop.name)
+              : crop.name;
 
           return (
             <button

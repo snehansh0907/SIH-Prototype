@@ -12,19 +12,59 @@ export const CropStatusHero: React.FC = () => {
   const { diagnosis, setActiveTab } = useCrop();
   const { user, requireFarmerAccess } = useAuth();
 
-  const isMarathi = language === 'mr';
-  const isHindi = language === 'hi';
   const isNewUser = user?.isNewUser && user?.userType === 'registered';
 
-  const cropName = isMarathi ? diagnosis.cropNameMr : diagnosis.cropName;
-  const diseaseName = isMarathi ? diagnosis.diseaseNameMr : diagnosis.diseaseName;
+  const cropName =
+    language === 'mr'
+      ? diagnosis.cropNameMr
+      : language === 'hi'
+      ? (diagnosis.cropNameHi || diagnosis.cropName)
+      : diagnosis.cropName;
+
+  const diseaseName =
+    language === 'mr'
+      ? diagnosis.diseaseNameMr
+      : language === 'hi'
+      ? (diagnosis.diseaseNameHi || diagnosis.diseaseName)
+      : diagnosis.diseaseName;
+
+  const userName =
+    language === 'mr'
+      ? (user?.nameMr || user?.name)
+      : language === 'hi'
+      ? (user?.nameHi || user?.name)
+      : user?.name;
+
+  const defaultMyFarm = language === 'mr' ? 'माझे शेत' : language === 'hi' ? 'मेरा खेत' : 'My Farm';
+  const defaultLocal = language === 'mr' ? 'स्थानिक' : language === 'hi' ? 'स्थानीय' : 'Local';
 
   const farmPlotLabel = user
-    ? `${user.farmName || (isMarathi ? 'माझे शेत' : isHindi ? 'मेरा खेत' : 'My Farm')} (${user.village || user.taluka || (isMarathi ? 'स्थानिक' : isHindi ? 'स्थानीय' : 'Local')})`
-    : (isMarathi ? 'शेताचे क्षेत्र' : isHindi ? 'खेत का क्षेत्र' : 'Farm Plot');
+    ? `${user.farmName || defaultMyFarm} (${user.village || user.taluka || defaultLocal})`
+    : (language === 'mr' ? 'शेताचे क्षेत्र' : language === 'hi' ? 'खेत का भूखंड' : 'Farm Plot');
+
+  const monitoredCropName =
+    language === 'mr'
+      ? (user?.monitoredCropMr || user?.monitoredCrop)
+      : language === 'hi'
+      ? (user?.monitoredCropHi || user?.monitoredCrop)
+      : user?.monitoredCrop;
 
   // New User Onboarding State
   if (isNewUser) {
+    const welcomeGreeting =
+      language === 'mr'
+        ? `स्वागत आहे, ${userName}! 👋`
+        : language === 'hi'
+        ? `स्वागत है, ${userName}! 👋`
+        : `Welcome, ${userName}! 👋`;
+
+    const onboardingDesc =
+      language === 'mr'
+        ? `तुमच्या ${user.farmName} मधील ${monitoredCropName} पिकाच्या पानांचा फोटो काढून त्वरित रोग तपासणी आणि तज्ज्ञ सल्ला मिळवा.`
+        : language === 'hi'
+        ? `आपके ${user.farmName} में ${monitoredCropName} फसल की पत्तियों की फोटो खींचकर तुरंत रोग जांच और विशेषज्ञ सलाह प्राप्त करें।`
+        : `Your ${user.farmName} profile is ready for monitoring ${user.monitoredCrop}. Take a quick leaf photo to start smart AI disease detection.`;
+
     return (
       <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-emerald-500/15 via-forest-50 to-amber-500/10 border-2 border-emerald-400/80 p-5 shadow-card mb-5 animate-fadeIn">
         <div className="absolute top-0 right-0 -mr-8 -mt-8 w-32 h-32 rounded-full bg-emerald-400/20 blur-2xl pointer-events-none" />
@@ -33,23 +73,21 @@ export const CropStatusHero: React.FC = () => {
           <div className="flex items-center gap-2">
             <span className="text-xl">🌱</span>
             <h2 className="text-base font-extrabold text-forest-950 font-display tracking-tight">
-              {isMarathi ? `स्वागत आहे, ${user.nameMr || user.name}! 👋` : `Welcome, ${user.name}! 👋`}
+              {welcomeGreeting}
             </h2>
           </div>
           <span className="px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-800 text-[10px] font-bold border border-emerald-300">
-            {isMarathi ? 'नवीन नोंदणी' : 'New Farmer'}
+            {t.newFarmerTag}
           </span>
         </div>
 
         <div className="mb-4">
           <h3 className="text-base font-bold text-stone-900 mb-1 flex items-center gap-1.5 font-display">
             <Sparkles className="w-4 h-4 text-amber-600" />
-            <span>{isMarathi ? 'तुमचे शेत प्रोफाइल तयार आहे' : 'Your Farm Profile is Ready'}</span>
+            <span>{t.farmProfileReady}</span>
           </h3>
           <p className="text-xs text-stone-600 leading-relaxed">
-            {isMarathi
-              ? `तुमच्या ${user.farmName} मधील ${user.monitoredCropMr || user.monitoredCrop} पिकाच्या पानांचा फोटो काढून त्वरित रोग तपासणी आणि तज्ज्ञ सल्ला मिळवा.`
-              : `Your ${user.farmName} profile is ready for monitoring ${user.monitoredCrop}. Take a quick leaf photo to start smart AI disease detection.`}
+            {onboardingDesc}
           </p>
         </div>
 
@@ -61,15 +99,15 @@ export const CropStatusHero: React.FC = () => {
             </div>
             <div>
               <div className="text-[10px] uppercase font-bold text-stone-500">
-                {isMarathi ? 'नोंदणीकृत शेत व पीक' : 'Registered Farm & Crop'}
+                {t.registeredFarmAndCrop}
               </div>
               <div className="text-xs font-black text-forest-950">
-                {farmPlotLabel} • {user.monitoredCrop}
+                {farmPlotLabel} • {monitoredCropName}
               </div>
             </div>
           </div>
           <span className="text-[11px] font-bold text-emerald-700 bg-emerald-50 px-2 py-1 rounded-lg">
-            {user.areaAcres} {isMarathi ? 'एकर' : 'Acres'}
+            {user.areaAcres} {t.acresUnit}
           </span>
         </div>
 
@@ -80,7 +118,7 @@ export const CropStatusHero: React.FC = () => {
           className="w-full py-3.5 px-4 rounded-2xl bg-forest-800 hover:bg-forest-900 active:scale-[0.98] text-white font-extrabold text-xs font-display transition-all shadow-elevated flex items-center justify-center gap-2 cursor-pointer border-2 border-forest-700"
         >
           <Camera className="w-4 h-4 text-amber-300 animate-pulse" />
-          <span>{isMarathi ? 'पिकाचा पहिला फोटो काढा (तपासणी)' : 'Scan Your First Crop Leaf'}</span>
+          <span>{t.scanFirstLeaf}</span>
           <ArrowRight className="w-4 h-4 text-amber-300" />
         </button>
       </div>
@@ -88,6 +126,13 @@ export const CropStatusHero: React.FC = () => {
   }
 
   // Standard Monitored Crop Status
+  const statusQuote =
+    language === 'mr'
+      ? (diagnosis.whatMayHappenNext.textMr.slice(0, 105) + '...')
+      : language === 'hi'
+      ? ((diagnosis.whatMayHappenNext.textHi || diagnosis.whatMayHappenNext.text).slice(0, 105) + '...')
+      : t.cropStatusDesc;
+
   return (
     <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-amber-500/10 via-amber-100/50 to-emerald-500/10 border-2 border-amber-300/80 p-5 shadow-card mb-5">
       {/* Background soft glow */}
@@ -113,7 +158,7 @@ export const CropStatusHero: React.FC = () => {
           </h3>
         </div>
         <p className="text-sm font-semibold text-stone-800 leading-snug pl-7">
-          "{isMarathi ? diagnosis.whatMayHappenNext.textMr.slice(0, 105) + '...' : t.cropStatusDesc}"
+          "{statusQuote}"
         </p>
       </div>
 
@@ -121,7 +166,7 @@ export const CropStatusHero: React.FC = () => {
       <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-3 border border-amber-200/60 mb-4 flex items-center justify-between">
         <div>
           <div className="text-[11px] uppercase tracking-wider font-bold text-stone-500">
-            {isMarathi ? `सध्याचे पीक • ${farmPlotLabel}` : isHindi ? `वर्तमान फसल • ${farmPlotLabel}` : `Monitored Plot • ${farmPlotLabel}`}
+            {`${t.monitoredPlot} • ${farmPlotLabel}`}
           </div>
           <div className="text-sm font-bold text-forest-900 flex items-center gap-1.5">
             <span>🌿</span>
@@ -150,7 +195,7 @@ export const CropStatusHero: React.FC = () => {
           type="button"
           className="flex items-center justify-center gap-1.5 py-2.5 px-3 rounded-xl bg-forest-800 text-white font-bold text-xs hover:bg-forest-900 shadow-sm active:scale-95 transition-transform cursor-pointer"
         >
-          <span>{isMarathi ? 'पूर्ण सल्ला पाहा' : isHindi ? 'पूरी सलाह देखें' : 'View Advice'}</span>
+          <span>{t.viewAdvice}</span>
           <ArrowRight className="w-3.5 h-3.5" />
         </button>
       </div>
