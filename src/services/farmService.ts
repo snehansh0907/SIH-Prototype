@@ -1,4 +1,5 @@
 import { apiClient } from './apiClient';
+import { SUPABASE_URL, SUPABASE_ANON_KEY } from './authService';
 
 export interface BackendFarm {
   id: string;
@@ -49,8 +50,8 @@ export const SEEDED_FARMS: BackendFarm[] = [
     id: 'f2-dindori-plot',
     farmer_id: SEEDED_DEMO_FARMER_ID,
     farm_name: "Ramesh's Dindori Hill Orchard",
-    latitude: 20.174100,
-    longitude: 73.832200,
+    latitude: 20.1741,
+    longitude: 73.8322,
     village: 'Dindori',
     taluka: 'Dindori',
     district: 'Nashik',
@@ -60,8 +61,8 @@ export const SEEDED_FARMS: BackendFarm[] = [
     id: '46b37fe5-aedb-4e2c-bb26-a4e8b1dae26a',
     farmer_id: 'd53fc6d1-cca3-4c91-8c61-b32029cc231e',
     farm_name: "Vikas's Chandori Farm",
-    latitude: 20.079700,
-    longitude: 74.032200,
+    latitude: 20.0797,
+    longitude: 74.0322,
     village: 'Chandori',
     taluka: 'Niphad',
     district: 'Nashik',
@@ -71,8 +72,8 @@ export const SEEDED_FARMS: BackendFarm[] = [
     id: '6e5c646e-53f8-4be4-a731-13ed3de4f3d0',
     farmer_id: '6ecf18a7-f888-4ba6-9b7c-c43253a0409c',
     farm_name: "Anita's Ozar Farm",
-    latitude: 20.092700,
-    longitude: 73.918900,
+    latitude: 20.0927,
+    longitude: 73.9189,
     village: 'Ozar',
     taluka: 'Niphad',
     district: 'Nashik',
@@ -82,13 +83,38 @@ export const SEEDED_FARMS: BackendFarm[] = [
 
 export const farmService = {
   async getFarmsByFarmer(farmerId: string = SEEDED_DEMO_FARMER_ID): Promise<BackendFarm[]> {
+    // 1. Try Backend Express API
     try {
       const res = await apiClient<{ success: boolean; data: BackendFarm[] }>(`/farms/farmer/${farmerId}`);
       if (res.data && res.data.length > 0) return res.data;
     } catch {}
 
+    // 2. Direct Supabase REST Fallback
+    try {
+      const supaRes = await fetch(`${SUPABASE_URL}/rest/v1/farms?farmer_id=eq.${farmerId}&select=*`, {
+        headers: {
+          apikey: SUPABASE_ANON_KEY,
+          Authorization: `Bearer ${SUPABASE_ANON_KEY}`,
+          Accept: 'application/json',
+        },
+      });
+      if (supaRes.ok) {
+        const data = await supaRes.json();
+        if (Array.isArray(data) && data.length > 0) return data;
+      }
+    } catch {}
+
+    // 3. Check seeded demo farms for demo accounts
     const matched = SEEDED_FARMS.filter((f) => f.farmer_id === farmerId);
-    return matched.length > 0 ? matched : [SEEDED_FARMS[0]];
+    if (matched.length > 0) return matched;
+
+    // Only return Ramesh Patil's farm if explicitly requesting Ramesh's demo ID
+    if (farmerId === SEEDED_DEMO_FARMER_ID || farmerId === 'farmer123') {
+      return [SEEDED_FARMS[0]];
+    }
+
+    // For non-demo farmers, never return Ramesh's farm
+    return [];
   },
 
   async getFarmById(id: string = SEEDED_DEMO_FARM_ID): Promise<BackendFarm | null> {
@@ -97,15 +123,53 @@ export const farmService = {
       if (res.data) return res.data;
     } catch {}
 
+    try {
+      const supaRes = await fetch(`${SUPABASE_URL}/rest/v1/farms?id=eq.${id}&select=*`, {
+        headers: {
+          apikey: SUPABASE_ANON_KEY,
+          Authorization: `Bearer ${SUPABASE_ANON_KEY}`,
+          Accept: 'application/json',
+        },
+      });
+      if (supaRes.ok) {
+        const data = await supaRes.json();
+        if (Array.isArray(data) && data.length > 0) return data[0];
+      }
+    } catch {}
+
     const found = SEEDED_FARMS.find((f) => f.id === id);
-    return found || SEEDED_FARMS[0];
+    if (found) return found;
+
+    if (id === SEEDED_DEMO_FARM_ID) {
+      return SEEDED_FARMS[0];
+    }
+    return null;
   },
 
   async getCropCyclesByFarm(farmId: string = SEEDED_DEMO_FARM_ID): Promise<BackendCropCycle[]> {
     try {
       const res = await apiClient<{ success: boolean; data: BackendCropCycle[] }>(`/crop-cycles/farm/${farmId}`);
-      return res.data || [];
-    } catch {
+      if (res.data && res.data.length > 0) return res.data;
+    } catch {}
+
+    try {
+      const supaRes = await fetch(
+        `${SUPABASE_URL}/rest/v1/crop_cycles?farm_id=eq.${farmId}&status=eq.active&select=*`,
+        {
+          headers: {
+            apikey: SUPABASE_ANON_KEY,
+            Authorization: `Bearer ${SUPABASE_ANON_KEY}`,
+            Accept: 'application/json',
+          },
+        }
+      );
+      if (supaRes.ok) {
+        const data = await supaRes.json();
+        if (Array.isArray(data) && data.length > 0) return data;
+      }
+    } catch {}
+
+    if (farmId === SEEDED_DEMO_FARM_ID) {
       return [
         {
           id: SEEDED_DEMO_CROP_CYCLES.tomato,
@@ -117,6 +181,7 @@ export const farmService = {
         },
       ];
     }
+    return [];
   },
 
   async createFarm(payload: {
@@ -136,6 +201,23 @@ export const farmService = {
       });
       return res.data || null;
     } catch {
+      // Fallback: Direct Supabase REST insert
+      try {
+        const supaRes = await fetch(`${SUPABASE_URL}/rest/v1/farms`, {
+          method: 'POST',
+          headers: {
+            apikey: SUPABASE_ANON_KEY,
+            Authorization: `Bearer ${SUPABASE_ANON_KEY}`,
+            'Content-Type': 'application/json',
+            Prefer: 'return=representation',
+          },
+          body: JSON.stringify(payload),
+        });
+        if (supaRes.ok) {
+          const data = await supaRes.json();
+          return Array.isArray(data) ? data[0] : data;
+        }
+      } catch {}
       return null;
     }
   },

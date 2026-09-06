@@ -66,18 +66,24 @@ export const CropProvider: React.FC<{ children: React.ReactNode }> = ({ children
     let isCancelled = false;
 
     async function loadFarms() {
-      const farmerId = user?.farmerId || user?.id || SEEDED_DEMO_FARM_ID;
+      if (!user) {
+        setAvailableFarms([]);
+        setSelectedFarm(null);
+        return;
+      }
+
+      const farmerId = user.id || user.farmerId;
       const farms = await farmService.getFarmsByFarmer(farmerId);
 
       // If user has specific registered coordinates and farmName, ensure it's in the list
       let userFarm: BackendFarm | null = null;
-      if (user?.latitude && user?.longitude) {
+      if (user.farmName || user.village) {
         userFarm = {
-          id: user.farmId || `user-farm-${user.id || 'reg'}`,
+          id: user.farmId || (farms.length > 0 ? farms[0].id : `user-farm-${user.id || 'reg'}`),
           farmer_id: farmerId,
           farm_name: user.farmName || `${user.village || 'My'} Farm`,
-          latitude: user.latitude,
-          longitude: user.longitude,
+          latitude: user.latitude ?? 20.085,
+          longitude: user.longitude ?? 74.11,
           village: user.village,
           taluka: user.taluka,
           district: user.district,
@@ -86,9 +92,11 @@ export const CropProvider: React.FC<{ children: React.ReactNode }> = ({ children
       }
 
       if (!isCancelled) {
-        const combined = userFarm
-          ? [userFarm, ...farms.filter((f) => f.id !== userFarm!.id)]
-          : farms;
+        const combined = farms.length > 0
+          ? farms
+          : userFarm
+          ? [userFarm]
+          : [];
         setAvailableFarms(combined);
         setSelectedFarm(combined[0] || null);
       }
@@ -114,9 +122,9 @@ export const CropProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   // Live Weather & Dynamic Risk Fetcher
   const fetchLiveWeatherAndRisk = useCallback(async () => {
-    const lat = selectedFarm?.latitude ?? user?.latitude ?? 20.156556;
-    const lng = selectedFarm?.longitude ?? user?.longitude ?? 74.117339;
-    const farmId = selectedFarm?.id || user?.farmId || SEEDED_DEMO_FARM_ID;
+    const lat = selectedFarm?.latitude ?? user?.latitude ?? 20.085;
+    const lng = selectedFarm?.longitude ?? user?.longitude ?? 74.11;
+    const farmId = selectedFarm?.id || user?.farmId || (user?.userType === 'demo' ? SEEDED_DEMO_FARM_ID : `farm-${user?.id || 'default'}`);
 
     setIsWeatherLoading(true);
     setWeatherError(null);

@@ -4,8 +4,9 @@
 // Single shared Supabase client used across the whole app.
 // =========================================================
 
+const path = require('path');
+require('dotenv').config({ path: path.resolve(__dirname, '../../.env') });
 const { createClient } = require('@supabase/supabase-js');
-require('dotenv').config();
 
 const SUPABASE_URL = process.env.SUPABASE_URL;
 const SUPABASE_ANON_KEY = process.env.SUPABASE_ANON_KEY;

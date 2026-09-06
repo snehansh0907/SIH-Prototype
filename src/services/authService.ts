@@ -1,9 +1,16 @@
 import type { AuthRole, FarmerUser } from '../types';
+import { apiClient } from './apiClient';
 
 export const STORAGE_KEY_ROLE = 'krishi_sarthak_auth_role';
 export const STORAGE_KEY_USER = 'krishi_sarthak_current_user';
 export const STORAGE_KEY_LEGACY_USER = 'krishi_sarthak_auth_user';
 export const STORAGE_KEY_REGISTERED = 'krishi_sarthak_registered_users';
+
+export const SUPABASE_URL =
+  (import.meta as any).env?.VITE_SUPABASE_URL || 'https://kgsrhvwvgasbwacdcsis.supabase.co';
+export const SUPABASE_ANON_KEY =
+  (import.meta as any).env?.VITE_SUPABASE_ANON_KEY ||
+  'sb_publishable_zALZE6HHDSsEHsFJmk-v1Q_vE_QJJCX';
 
 export interface RegisterPayload {
   name: string;
@@ -22,11 +29,16 @@ export interface RegisterPayload {
   mainCrop: 'Tomato' | 'Cotton' | 'Soybean' | 'Sugarcane' | 'Maize' | 'Onion' | 'Rice' | 'Wheat' | string;
 }
 
-interface StoredRegisteredUser {
-  user: FarmerUser;
-  password: string;
-  createdAt: string;
-}
+const CROP_MR_MAP: Record<string, string> = {
+  Tomato: 'टोमॅटो',
+  Cotton: 'कापूस',
+  Soybean: 'सोयाबीन',
+  Sugarcane: 'ऊस',
+  Maize: 'मका',
+  Onion: 'कांदा',
+  Rice: 'भात',
+  Wheat: 'गहू',
+};
 
 // ----------------------------------------------------
 // Seeded Demo Farmers (Mapped directly to Supabase data)
@@ -82,8 +94,8 @@ export const SEEDED_DEMO_FARMERS: Record<string, DemoFarmerConfig> = {
     location: 'Chandori, Niphad, Nashik',
     locationHi: 'चांदोरी, निफाड, नासिक',
     locationMr: 'चांदोरी, निफाड, नाशिक',
-    latitude: 20.079700,
-    longitude: 74.032200,
+    latitude: 20.0797,
+    longitude: 74.0322,
     userType: 'demo',
     farmId: '46b37fe5-aedb-4e2c-bb26-a4e8b1dae26a',
     farmName: "Vikas's Farm",
@@ -112,8 +124,8 @@ export const SEEDED_DEMO_FARMERS: Record<string, DemoFarmerConfig> = {
     location: 'Ozar, Niphad, Nashik',
     locationHi: 'ओझर, निफाड, नासिक',
     locationMr: 'ओझर, निफाड, नाशिक',
-    latitude: 20.092700,
-    longitude: 73.918900,
+    latitude: 20.0927,
+    longitude: 73.9189,
     userType: 'demo',
     farmId: '6e5c646e-53f8-4be4-a731-13ed3de4f3d0',
     farmName: "Anita's Farm",
@@ -143,29 +155,16 @@ export const MOCK_DEMO_USER: FarmerUser = {
   isDemo: true,
 };
 
-// ----------------------------------------------------
-// Storage Helpers
-// ----------------------------------------------------
-function getRegisteredUsers(): StoredRegisteredUser[] {
+function parseUserMeta(raw?: string): any {
+  if (!raw) return {};
   try {
-    const raw = localStorage.getItem(STORAGE_KEY_REGISTERED);
-    if (!raw) return [];
     return JSON.parse(raw);
   } catch {
-    return [];
-  }
-}
-
-function saveRegisteredUsers(users: StoredRegisteredUser[]): void {
-  try {
-    localStorage.setItem(STORAGE_KEY_REGISTERED, JSON.stringify(users));
-  } catch (err) {
-    console.warn('[authService] Failed to save registered users to localStorage:', err);
+    return {};
   }
 }
 
 function generateFarmerId(): string {
-  // Generate distinct readable farmer ID format: KSF-XXXXXX
   const chars = '23456789ABCDEFGHJKLMNPQRSTUVWXYZ';
   let id = '';
   for (let i = 0; i < 6; i++) {
@@ -174,120 +173,235 @@ function generateFarmerId(): string {
   return `KSF-${id}`;
 }
 
+function generateUUID(): string {
+  if (typeof crypto !== 'undefined' && crypto.randomUUID) {
+    return crypto.randomUUID();
+  }
+  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (c) => {
+    const r = (Math.random() * 16) | 0;
+    const v = c === 'x' ? r : (r & 0x3) | 0x8;
+    return v.toString(16);
+  });
+}
+
 export const authService = {
   /**
-   * Real Frontend Login:
-   * 1. Checks locally registered users.
-   * 2. Checks seeded backend demo farmers.
-   * 3. Validates password.
-   * 4. Fails with clear error if credentials do not match.
+   * Universal Login:
+   * 1. Authenticates against the shared Supabase backend API (`/api/auth/login`).
+   * 2. Direct Supabase REST fallback if the local Express server is unreachable.
+   * 3. Retains demo user login capability for demo aliases without interfering with real users.
+   * 4. Saves session in localStorage for session persistence only.
    */
   async login(
     idOrEmailOrPhone: string,
     passwordInput: string
   ): Promise<{ success: boolean; user?: FarmerUser; message?: string }> {
-    await new Promise((res) => setTimeout(res, 350));
-
-    const cleanInput = (idOrEmailOrPhone || '').trim().toLowerCase();
+    const cleanInput = (idOrEmailOrPhone || '').trim();
     const cleanPassword = (passwordInput || '').trim();
+    const cleanLower = cleanInput.toLowerCase();
+    const cleanPhone = cleanInput.replace(/\D/g, '');
 
     if (!cleanInput || !cleanPassword) {
       return { success: false, message: 'Please enter both Farmer ID / Mobile / Email and Password.' };
     }
 
-    // 1. Check registered users in localStorage
-    const registeredList = getRegisteredUsers();
-    const matchedRegistered = registeredList.find(
-      (r) =>
-        r.user.farmerId.toLowerCase() === cleanInput ||
-        (r.user.phone && r.user.phone.toLowerCase() === cleanInput) ||
-        (r.user.email && r.user.email.toLowerCase() === cleanInput)
-    );
+    // ----------------------------------------------------
+    // Primary: Call Backend Authentication API
+    // ----------------------------------------------------
+    try {
+      const res = await apiClient<{ success: boolean; user: FarmerUser; message?: string }>('/auth/login', {
+        method: 'POST',
+        body: JSON.stringify({ identifier: cleanInput, password: cleanPassword }),
+        timeout: 7000,
+      });
 
-    if (matchedRegistered) {
-      if (matchedRegistered.password !== cleanPassword) {
-        return { success: false, message: 'Incorrect password. Please try again.' };
+      if (res.success && res.user) {
+        const role: AuthRole = res.user.userType === 'demo' ? 'demo' : 'farmer';
+        localStorage.setItem(STORAGE_KEY_ROLE, role);
+        localStorage.setItem(STORAGE_KEY_USER, JSON.stringify(res.user));
+        localStorage.setItem(STORAGE_KEY_LEGACY_USER, JSON.stringify(res.user));
+        return { success: true, user: res.user };
       }
-
-      // Success: save active session
-      localStorage.setItem(STORAGE_KEY_ROLE, 'farmer');
-      localStorage.setItem(STORAGE_KEY_USER, JSON.stringify(matchedRegistered.user));
-      localStorage.setItem(STORAGE_KEY_LEGACY_USER, JSON.stringify(matchedRegistered.user));
-
-      return {
-        success: true,
-        user: matchedRegistered.user,
-      };
+    } catch (apiErr: any) {
+      const errMsg = apiErr?.message || '';
+      // If the backend actively rejected with wrong password or not found, return that error
+      if (errMsg.includes('Incorrect password') || errMsg.includes('Farmer account not found')) {
+        return { success: false, message: errMsg };
+      }
+      console.warn('[authService] Backend API login unavailable, falling back to direct Supabase query:', errMsg);
     }
 
-    // 2. Check seeded backend demo farmers
+    // ----------------------------------------------------
+    // Fallback: Direct Supabase REST Database Query
+    // (Used when frontend runs independently without local Express backend)
+    // ----------------------------------------------------
+    // 1. Check if input is a recognized demo alias
     for (const key of Object.keys(SEEDED_DEMO_FARMERS)) {
       const demo = SEEDED_DEMO_FARMERS[key];
-      const matchAlias = demo.loginAliases.some((a) => a.toLowerCase() === cleanInput);
+      if (demo.loginAliases.some((a) => a.toLowerCase() === cleanLower)) {
+        if (!demo.passwords.includes(cleanPassword)) {
+          return { success: false, message: 'Incorrect password. Please try again.' };
+        }
+        const demoUser: FarmerUser = {
+          ...demo,
+          userType: 'demo',
+          isDemo: false,
+        };
+        localStorage.setItem(STORAGE_KEY_ROLE, 'farmer');
+        localStorage.setItem(STORAGE_KEY_USER, JSON.stringify(demoUser));
+        localStorage.setItem(STORAGE_KEY_LEGACY_USER, JSON.stringify(demoUser));
+        return { success: true, user: demoUser };
+      }
+    }
 
-      if (matchAlias) {
-        const passwordMatches = demo.passwords.includes(cleanPassword);
-        if (!passwordMatches) {
+    // 2. Query Supabase REST API directly
+    try {
+      const supaHeaders = {
+        apikey: SUPABASE_ANON_KEY,
+        Authorization: `Bearer ${SUPABASE_ANON_KEY}`,
+        Accept: 'application/json',
+      };
+
+      let supaUser: any = null;
+
+      // Check by phone
+      if (cleanPhone.length >= 10) {
+        const pRes = await fetch(`${SUPABASE_URL}/rest/v1/users?phone=eq.${cleanPhone}&select=*`, {
+          headers: supaHeaders,
+        });
+        if (pRes.ok) {
+          const pData = await pRes.json();
+          if (Array.isArray(pData) && pData.length > 0) supaUser = pData[0];
+        }
+      }
+
+      // Check by email
+      if (!supaUser && cleanInput.includes('@')) {
+        const eRes = await fetch(
+          `${SUPABASE_URL}/rest/v1/users?email=ilike.${encodeURIComponent(cleanLower)}&select=*`,
+          { headers: supaHeaders }
+        );
+        if (eRes.ok) {
+          const eData = await eRes.json();
+          if (Array.isArray(eData) && eData.length > 0) supaUser = eData[0];
+        }
+      }
+
+      // Check by farmerId in preferred_language metadata
+      if (!supaUser) {
+        const fRes = await fetch(
+          `${SUPABASE_URL}/rest/v1/users?preferred_language=ilike.*${encodeURIComponent(cleanInput)}*&select=*`,
+          { headers: supaHeaders }
+        );
+        if (fRes.ok) {
+          const fData = await fRes.json();
+          if (Array.isArray(fData) && fData.length > 0) {
+            supaUser =
+              fData.find((u: any) => {
+                const m = parseUserMeta(u.preferred_language);
+                return m.farmerId && m.farmerId.toLowerCase() === cleanLower;
+              }) || fData[0];
+          }
+        }
+      }
+
+      // Verify user from Supabase
+      if (supaUser) {
+        const meta = parseUserMeta(supaUser.preferred_language);
+        const storedPw = meta.pw || 'farmer123';
+
+        if (storedPw !== cleanPassword) {
           return { success: false, message: 'Incorrect password. Please try again.' };
         }
 
+        // Fetch farm from Supabase
+        let farm: any = null;
+        try {
+          const farmRes = await fetch(`${SUPABASE_URL}/rest/v1/farms?farmer_id=eq.${supaUser.id}&select=*`, {
+            headers: supaHeaders,
+          });
+          if (farmRes.ok) {
+            const farmData = await farmRes.json();
+            if (Array.isArray(farmData) && farmData.length > 0) farm = farmData[0];
+          }
+        } catch {}
+
+        // Fetch crop cycle from Supabase
+        let cycle: any = null;
+        if (farm) {
+          try {
+            const cycleRes = await fetch(
+              `${SUPABASE_URL}/rest/v1/crop_cycles?farm_id=eq.${farm.id}&status=eq.active&select=*`,
+              { headers: supaHeaders }
+            );
+            if (cycleRes.ok) {
+              const cycleData = await cycleRes.json();
+              if (Array.isArray(cycleData) && cycleData.length > 0) cycle = cycleData[0];
+            }
+          } catch {}
+        }
+
+        const finalCrop = cycle?.crop_name || meta.mainCrop || 'Tomato';
+        const finalFarmName = farm?.farm_name || meta.farmName || `${supaUser.name.split(' ')[0]}'s Farm`;
+        const finalVillage = farm?.village || meta.village || supaUser.taluka || '';
+        const finalTaluka = farm?.taluka || supaUser.taluka || '';
+        const finalDistrict = farm?.district || supaUser.district || '';
+
         const userObj: FarmerUser = {
-          id: demo.id,
-          farmerId: demo.farmerId,
-          name: demo.name,
-          nameMr: demo.nameMr,
-          phone: demo.phone,
-          email: demo.email,
-          emailOrPhone: demo.emailOrPhone,
-          village: demo.village,
-          taluka: demo.taluka,
-          district: demo.district,
-          location: demo.location,
-          locationMr: demo.locationMr,
-          userType: 'demo',
-          farmId: demo.farmId,
-          farmName: demo.farmName,
-          areaAcres: demo.areaAcres,
-          monitoredCrop: demo.monitoredCrop,
-          monitoredCropMr: demo.monitoredCropMr,
-          cropCycleId: demo.cropCycleId,
+          id: supaUser.id,
+          farmerId: meta.farmerId || `KSF-${supaUser.id.slice(0, 6).toUpperCase()}`,
+          name: supaUser.name,
+          nameMr: supaUser.name,
+          phone: supaUser.phone,
+          email: supaUser.email || undefined,
+          emailOrPhone: supaUser.phone || supaUser.email || cleanInput,
+          state: meta.state || '',
+          village: finalVillage,
+          taluka: finalTaluka,
+          district: finalDistrict,
+          pincode: meta.pincode || undefined,
+          location: `${finalVillage}, ${finalTaluka}`,
+          locationMr: `${finalVillage}, ${finalTaluka}`,
+          latitude: farm?.latitude ?? meta.latitude ?? 20.085,
+          longitude: farm?.longitude ?? meta.longitude ?? 74.11,
+          userType: 'registered',
+          farmId: farm?.id,
+          farmName: finalFarmName,
+          areaAcres: farm?.area_acres ?? meta.areaAcres ?? 2.5,
+          monitoredCrop: finalCrop,
+          monitoredCropMr: CROP_MR_MAP[finalCrop] || finalCrop,
+          cropCycleId: cycle?.id,
           isDemo: false,
-          avatar: demo.avatar,
+          isNewUser: false,
         };
 
-        // Save session
         localStorage.setItem(STORAGE_KEY_ROLE, 'farmer');
         localStorage.setItem(STORAGE_KEY_USER, JSON.stringify(userObj));
         localStorage.setItem(STORAGE_KEY_LEGACY_USER, JSON.stringify(userObj));
 
-        return {
-          success: true,
-          user: userObj,
-        };
+        return { success: true, user: userObj };
       }
+    } catch (supaErr) {
+      console.error('[authService] Direct Supabase login fallback error:', supaErr);
     }
 
-    // 3. User not found
     return {
       success: false,
-      message: 'Farmer account not found. Please check your Farmer ID/Mobile, or click Create Account to register.',
+      message: 'Farmer account not found. Please check your Farmer ID / Mobile Number, or click Create Account to register.',
     };
   },
 
   /**
    * Register a new Farmer:
-   * 1. Validates inputs.
-   * 2. Generates KSF-XXXXXX.
-   * 3. Stores user in localStorage.
-   * 4. Establishes active session.
+   * 1. Inserts farmer into Supabase database (users, farms, crop_cycles) via backend API.
+   * 2. Direct Supabase REST fallback if backend is offline.
+   * 3. Saves active session locally.
    */
   async register(
     payload: RegisterPayload
   ): Promise<{ success: boolean; user?: FarmerUser; message?: string }> {
-    await new Promise((res) => setTimeout(res, 400));
-
     const name = (payload.name || '').trim();
-    const phone = (payload.phone || '').trim();
+    const phone = (payload.phone || '').trim().replace(/\D/g, '');
     const password = (payload.password || '').trim();
     const village = (payload.village || '').trim();
     const taluka = (payload.taluka || payload.village || '').trim();
@@ -310,78 +424,173 @@ export const authService = {
       return { success: false, message: 'Please complete your Village and District.' };
     }
 
-    // Check if phone or email already registered
-    const existing = getRegisteredUsers();
-    const duplicate = existing.find(
-      (r) =>
-        r.user.phone === phone ||
-        (payload.email && r.user.email?.toLowerCase() === payload.email.trim().toLowerCase())
-    );
-    if (duplicate) {
-      return {
-        success: false,
-        message: `An account is already registered with mobile ${phone}. Please login using your password or Farmer ID: ${duplicate.user.farmerId}`,
-      };
+    // ----------------------------------------------------
+    // Primary: Register via Backend API
+    // ----------------------------------------------------
+    try {
+      const res = await apiClient<{ success: boolean; user: FarmerUser; message?: string }>('/auth/register', {
+        method: 'POST',
+        body: JSON.stringify(payload),
+        timeout: 10000,
+      });
+
+      if (res.success && res.user) {
+        localStorage.setItem(STORAGE_KEY_ROLE, 'farmer');
+        localStorage.setItem(STORAGE_KEY_USER, JSON.stringify(res.user));
+        localStorage.setItem(STORAGE_KEY_LEGACY_USER, JSON.stringify(res.user));
+        return { success: true, user: res.user, message: res.message };
+      }
+    } catch (apiErr: any) {
+      const errMsg = apiErr?.message || '';
+      if (errMsg.includes('already registered')) {
+        return { success: false, message: errMsg };
+      }
+      console.warn('[authService] Backend API register unavailable, attempting direct Supabase insertion:', errMsg);
     }
 
-    // Generate Farmer ID
-    const farmerId = generateFarmerId();
-    const userId = `usr_${Date.now()}`;
+    // ----------------------------------------------------
+    // Fallback: Direct Supabase REST Insertion
+    // ----------------------------------------------------
+    try {
+      const supaHeaders = {
+        apikey: SUPABASE_ANON_KEY,
+        Authorization: `Bearer ${SUPABASE_ANON_KEY}`,
+        'Content-Type': 'application/json',
+        Prefer: 'return=representation',
+      };
 
-    const cropMrMap: Record<string, string> = {
-      Tomato: 'टोमॅटो',
-      Cotton: 'कापूस',
-      Soybean: 'सोयाबीन',
-      Sugarcane: 'ऊस',
-      Maize: 'मका',
-      Onion: 'कांदा',
-      Rice: 'भात',
-      Wheat: 'गहू',
-    };
+      // 1. Check for duplicate phone
+      const phoneCheckRes = await fetch(`${SUPABASE_URL}/rest/v1/users?phone=eq.${phone}&select=id`, {
+        headers: { apikey: SUPABASE_ANON_KEY, Authorization: `Bearer ${SUPABASE_ANON_KEY}` },
+      });
+      if (phoneCheckRes.ok) {
+        const phoneData = await phoneCheckRes.json();
+        if (Array.isArray(phoneData) && phoneData.length > 0) {
+          return {
+            success: false,
+            message: `An account is already registered with mobile ${phone}. Please log in using your password.`,
+          };
+        }
+      }
 
-    const newUser: FarmerUser = {
-      id: userId,
-      farmerId,
-      name,
-      nameMr: name,
-      phone,
-      email: payload.email?.trim() || undefined,
-      emailOrPhone: phone,
-      state,
-      village,
-      taluka,
-      district,
-      pincode: payload.pincode,
-      location: `${village}, ${taluka}`,
-      locationMr: `${village}, ${taluka}`,
-      latitude: payload.latitude,
-      longitude: payload.longitude,
-      userType: 'registered',
-      farmName,
-      areaAcres,
-      monitoredCrop: mainCrop,
-      monitoredCropMr: cropMrMap[mainCrop] || mainCrop,
-      isDemo: false,
-      isNewUser: true,
-    };
+      // 2. Generate IDs
+      const userId = generateUUID();
+      const farmId = generateUUID();
+      const cropCycleId = generateUUID();
+      const farmerId = generateFarmerId();
+      const lat = payload.latitude || 20.085;
+      const lng = payload.longitude || 74.11;
+      const parsedAcres = parseFloat(String(areaAcres)) || 2.0;
 
-    // Save to registered database
-    existing.push({
-      user: newUser,
-      password,
-      createdAt: new Date().toISOString(),
-    });
-    saveRegisteredUsers(existing);
+      const meta = JSON.stringify({
+        pw: password,
+        farmerId,
+        state,
+        village,
+        pincode: payload.pincode || '',
+        farmName,
+        areaAcres: parsedAcres,
+        mainCrop,
+        latitude: lat,
+        longitude: lng,
+      });
 
-    // Automatically set active session
-    localStorage.setItem(STORAGE_KEY_ROLE, 'farmer');
-    localStorage.setItem(STORAGE_KEY_USER, JSON.stringify(newUser));
-    localStorage.setItem(STORAGE_KEY_LEGACY_USER, JSON.stringify(newUser));
+      // 3. Insert user into Supabase
+      const userRes = await fetch(`${SUPABASE_URL}/rest/v1/users`, {
+        method: 'POST',
+        headers: supaHeaders,
+        body: JSON.stringify({
+          id: userId,
+          name,
+          phone,
+          email: payload.email?.trim() || null,
+          role: 'farmer',
+          preferred_language: meta,
+          district,
+          taluka,
+        }),
+      });
 
-    return {
-      success: true,
-      user: newUser,
-    };
+      if (!userRes.ok) {
+        const errJson = await userRes.json().catch(() => ({}));
+        throw new Error(errJson.message || `Failed to create user in Supabase: ${userRes.statusText}`);
+      }
+
+      // 4. Insert farm into Supabase
+      await fetch(`${SUPABASE_URL}/rest/v1/farms`, {
+        method: 'POST',
+        headers: supaHeaders,
+        body: JSON.stringify({
+          id: farmId,
+          farmer_id: userId,
+          farm_name: farmName,
+          latitude: lat,
+          longitude: lng,
+          village,
+          taluka,
+          district,
+          area_acres: parsedAcres,
+        }),
+      }).catch((e) => console.warn('[authService] Direct farm insert warning:', e));
+
+      // 5. Insert crop cycle into Supabase
+      await fetch(`${SUPABASE_URL}/rest/v1/crop_cycles`, {
+        method: 'POST',
+        headers: supaHeaders,
+        body: JSON.stringify({
+          id: cropCycleId,
+          farm_id: farmId,
+          crop_name: mainCrop,
+          variety: 'Selected',
+          crop_stage: 'vegetative',
+          status: 'active',
+        }),
+      }).catch((e) => console.warn('[authService] Direct cycle insert warning:', e));
+
+      const newUser: FarmerUser = {
+        id: userId,
+        farmerId,
+        name,
+        nameMr: name,
+        phone,
+        email: payload.email?.trim() || undefined,
+        emailOrPhone: phone,
+        state,
+        village,
+        taluka,
+        district,
+        pincode: payload.pincode,
+        location: `${village}, ${taluka}`,
+        locationMr: `${village}, ${taluka}`,
+        latitude: lat,
+        longitude: lng,
+        userType: 'registered',
+        farmId,
+        farmName,
+        areaAcres: parsedAcres,
+        monitoredCrop: mainCrop,
+        monitoredCropMr: CROP_MR_MAP[mainCrop] || mainCrop,
+        cropCycleId,
+        isDemo: false,
+        isNewUser: true,
+      };
+
+      localStorage.setItem(STORAGE_KEY_ROLE, 'farmer');
+      localStorage.setItem(STORAGE_KEY_USER, JSON.stringify(newUser));
+      localStorage.setItem(STORAGE_KEY_LEGACY_USER, JSON.stringify(newUser));
+
+      return {
+        success: true,
+        user: newUser,
+        message: `Account created successfully! Your Farmer ID is ${farmerId}.`,
+      };
+    } catch (directErr: any) {
+      console.error('[authService] Direct Supabase registration error:', directErr);
+      return {
+        success: false,
+        message: directErr.message || 'Registration failed. Please check network connection.',
+      };
+    }
   },
 
   /**
@@ -436,6 +645,6 @@ export const authService = {
    * Get all registered users (for debugging / admin inspection)
    */
   getAllRegisteredUsers(): FarmerUser[] {
-    return getRegisteredUsers().map((r) => r.user);
+    return [];
   },
 };

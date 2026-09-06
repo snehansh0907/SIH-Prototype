@@ -20,6 +20,7 @@ const hotspotRoutes = require('./routes/hotspotRoutes');
 const expertRoutes = require('./routes/expertRoutes');
 const followUpRoutes = require('./routes/followUpRoutes');
 const advisoryRoutes = require('./routes/advisoryRoutes');
+const authRoutes = require('./routes/authRoutes');
 
 const app = express();
 
@@ -63,6 +64,7 @@ app.use('/api/hotspots', hotspotRoutes);
 app.use('/api/expert', expertRoutes);
 app.use('/api/follow-ups', followUpRoutes);
 app.use('/api/advisory', advisoryRoutes);
+app.use('/api/auth', authRoutes);
 
 // ---------------- TTS Streaming Proxy ----------------
 app.get(
