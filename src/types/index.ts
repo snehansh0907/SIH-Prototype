@@ -49,6 +49,7 @@ export interface CropInfo {
     titleMr: string;
     condition: string;
     url: string;
+    fallbackUrl?: string;
     isHealthy?: boolean;
   }[];
 }

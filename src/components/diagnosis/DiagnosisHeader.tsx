@@ -92,11 +92,18 @@ export const DiagnosisHeader: React.FC = () => {
 
             {/* Leaf photo preview thumbnail if present */}
             {diagnosis.imageUrl && (
-              <div className="w-20 h-20 rounded-2xl overflow-hidden border-2 border-white shadow-md shrink-0">
+              <div className="w-20 h-20 rounded-2xl overflow-hidden border-2 border-white shadow-md shrink-0 bg-stone-100">
                 <img
                   src={diagnosis.imageUrl}
                   alt={diseaseName}
                   className="w-full h-full object-cover"
+                  onError={(e) => {
+                    const target = e.currentTarget;
+                    target.onerror = null;
+                    if (diagnosis.imageUrl && !diagnosis.imageUrl.startsWith('data:')) {
+                      target.style.display = 'none';
+                    }
+                  }}
                 />
               </div>
             )}
