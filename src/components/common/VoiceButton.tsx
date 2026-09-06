@@ -18,6 +18,13 @@ export const VoiceButton: React.FC<VoiceButtonProps> = ({
 }) => {
   const { language, t } = useLanguage();
   const [isPlaying, setIsPlaying] = useState(false);
+  const [prevLanguage, setPrevLanguage] = useState(language);
+
+  if (language !== prevLanguage) {
+    setPrevLanguage(language);
+    setIsPlaying(false);
+    speechService.stop();
+  }
 
   useEffect(() => {
     return () => {
@@ -32,12 +39,16 @@ export const VoiceButton: React.FC<VoiceButtonProps> = ({
       speechService.stop();
       setIsPlaying(false);
     } else {
+      const speechText = textToSpeak || t.defaultAdvisoryText;
       speechService.speak(
-        textToSpeak,
+        speechText,
         language,
         () => setIsPlaying(true),
         () => setIsPlaying(false),
-        () => setIsPlaying(false)
+        (err) => {
+          console.warn('[VoiceButton] Speech synthesis error:', err);
+          setIsPlaying(false);
+        }
       );
     }
   };

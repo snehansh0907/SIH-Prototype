@@ -64,6 +64,33 @@ app.use('/api/expert', expertRoutes);
 app.use('/api/follow-ups', followUpRoutes);
 app.use('/api/advisory', advisoryRoutes);
 
+// ---------------- TTS Streaming Proxy ----------------
+app.get(
+  '/api/tts',
+  asyncHandler(async (req, res) => {
+    const { q, tl = 'hi' } = req.query;
+    if (!q) {
+      return res.status(400).json({ success: false, message: 'Missing query parameter "q"' });
+    }
+    const googleUrl = `https://translate.google.com/translate_tts?ie=UTF-8&tl=${encodeURIComponent(
+      tl
+    )}&client=tw-ob&q=${encodeURIComponent(q)}`;
+    const response = await fetch(googleUrl, {
+      headers: {
+        'User-Agent':
+          'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+      },
+    });
+    if (!response.ok) {
+      return res.status(response.status).json({ success: false, message: 'Failed to fetch TTS' });
+    }
+    res.setHeader('Content-Type', 'audio/mpeg');
+    res.setHeader('Cache-Control', 'public, max-age=86400');
+    const arrayBuffer = await response.arrayBuffer();
+    res.send(Buffer.from(arrayBuffer));
+  })
+);
+
 // ---------------- 404 Handler ----------------
 app.use((req, res) => {
   res.status(404).json({ success: false, message: `Route not found: ${req.method} ${req.originalUrl}` });

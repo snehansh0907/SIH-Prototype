@@ -49,6 +49,17 @@ const DISEASE_NAME_MR_MAP: Record<string, string> = {
   'Leaf Spot': 'पानावरील ठिपके (Leaf Spot)',
 };
 
+// Hindi disease name map for standard recognized diseases
+const DISEASE_NAME_HI_MAP: Record<string, string> = {
+  'Early Blight': 'अगेती झुलसा रोग (Early Blight)',
+  'Late Blight': 'पछेती झुलसा रोग (Late Blight)',
+  'Leaf Mold': 'पत्ती फफूंद (Leaf Mold)',
+  'Leaf Curl Disease': 'पत्ती मरोड़ रोग (Leaf Curl)',
+  'Bollworm Related Damage': 'गुलाबी सुंडी नुकसान',
+  'Rust': 'सोयाबीन गेरुआ रोग (Rust)',
+  'Leaf Spot': 'पत्ती धब्बा रोग (Leaf Spot)',
+};
+
 // Category and title parsing for IPM what_to_do_today strings
 function parseAdvisoryActions(items?: string[]): ActionItem[] {
   if (!items || items.length === 0) {
@@ -205,12 +216,14 @@ export const diagnosisService = {
 
       const diseaseName = backendData.disease || 'Undetermined Condition';
       const diseaseNameMr = DISEASE_NAME_MR_MAP[diseaseName] || `${diseaseName} (तपासणी आवश्यक)`;
+      const diseaseNameHi = DISEASE_NAME_HI_MAP[diseaseName] || `${diseaseName} (जांच आवश्यक)`;
 
       const actions = parseAdvisoryActions(advisory?.what_to_do_today);
       const monitors = parseAdvisoryMonitors(advisory?.what_to_monitor);
 
       const voiceScript = `Detected ${diseaseName} on ${backendData.crop} with ${backendData.severity_band} severity and ${backendData.confidence}% confidence. Follow the recommended daily IPM steps and check lower canopy leaves.`;
       const voiceScriptMr = `${backendData.crop} पिकावर ${diseaseNameMr} आढळला आहे. गांभीर्य: ${backendData.severity_band}. त्वरित दिलेल्या उपाययोजना अंमलात आणा.`;
+      const voiceScriptHi = `${backendData.crop} फसल पर ${diseaseNameHi} पाया गया है। गंभीरता: ${backendData.severity_band}। तुरंत दिए गए एकीकृत कीट प्रबंधन (IPM) उपायों का पालन करें।`;
 
       const finalImageUrl =
         serverImageUrl ||
@@ -244,6 +257,7 @@ export const diagnosisService = {
         },
         advisoryVoiceScript: voiceScript,
         advisoryVoiceScriptMr: voiceScriptMr,
+        advisoryVoiceScriptHi: voiceScriptHi,
       };
     } catch (apiError) {
       console.warn('[diagnosisService] Real backend request failed, running rich local engine fallback:', apiError);
@@ -306,6 +320,8 @@ export const diagnosisService = {
             'Diagnosis uncertain due to image clarity. Please take a clearer photo in daylight or consult an agricultural expert before spraying chemicals.',
           advisoryVoiceScriptMr:
             'फोटोच्या अस्पष्टतेमुळे निदान निश्चित नाही. कृपया दिवसा चांगल्या प्रकाशात नवीन फोटो घ्या किंवा फवारणीपूर्वी कृषी तज्ञांशी बोला.',
+          advisoryVoiceScriptHi:
+            'फोटो स्पष्ट न होने के कारण निदान अनिश्चित है। कृपया दिन के उजाले में साफ फोटो लें या कीटनाशक छिड़कने से पहले कृषि विशेषज्ञ से सलाह लें।',
         };
       }
 
@@ -381,6 +397,8 @@ export const diagnosisService = {
             'Possible Cotton Leaf Curl detected with moderate severity. Control whitefly immediately using yellow sticky traps and avoid excess nitrogen fertilizer.',
           advisoryVoiceScriptMr:
             'कापसावर पानांचा चुरमुरडा रोग आढळला आहे. पांढऱ्या माशीच्या नियंत्रणासाठी लगेच पिवळे चिकट सापळे लावा व नत्र खतांचा अतिवापर टाळा.',
+          advisoryVoiceScriptHi:
+            'कपास पर पत्ती मरोड़ रोग के लक्षण पाए गए हैं। सफेद मक्खी के तुरंत नियंत्रण के लिए पीले चिपचिपे ट्रैप लगाएं और अत्यधिक नाइट्रोजन उर्वरक से बचें।',
         };
       }
 
@@ -456,6 +474,8 @@ export const diagnosisService = {
             'Soybean Rust observed. Apply recommended triazole fungicide immediately during dry morning hours.',
           advisoryVoiceScriptMr:
             'सोयाबीनवर तांबेरा रोगाची लक्षणे दिसत आहेत. कोरड्या सकाळच्या वेळेत शिफारस केलेल्या बुरशीनाशकाची फवारणी करा.',
+          advisoryVoiceScriptHi:
+            'सोयाबीन पर गेरुआ रोग के लक्षण देखे गए हैं। शुष्क सुबह के समय अनुशंसित ट्राइएजोल कवकनाशी का तुरंत छिड़काव करें।',
         };
       }
 

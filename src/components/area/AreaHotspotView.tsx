@@ -18,9 +18,12 @@ export const AreaHotspotView: React.FC = () => {
     hotspotService.getAreaReport().then(setReport).catch(() => {});
   }, []);
 
-  const voiceText = language === 'mr'
-    ? `${report.districtMr} परिसरात मध्यम रोग प्रादुर्भाव नोंदवला गेला आहे. ५ किमी परिसरात १४ शेतांमध्ये हा रोग आढळला आहे. कृषी विभागाचा सल्ला ऐका.`
-    : `Moderate disease activity reported across ${report.district}. 14 cases confirmed within 5 kilometers. Follow KVK advisory.`;
+  const voiceText =
+    language === 'mr'
+      ? `${report.districtMr} परिसरात मध्यम रोग प्रादुर्भाव नोंदवला गेला आहे. ५ किमी परिसरात १४ शेतांमध्ये हा रोग आढळला आहे. कृषी विभागाचा सल्ला ऐका.`
+      : language === 'hi'
+      ? `${report.districtHi || report.district} क्षेत्र में मध्यम बीमारी गतिविधि दर्ज की गई है। ५ किमी के दायरे में १४ खेतों में यह बीमारी पाई गई है। कृषि विज्ञान केंद्र की सलाह सुनें।`
+      : `Moderate disease activity reported across ${report.district}. 14 cases confirmed within 5 kilometers. Follow KVK advisory.`;
 
   return (
     <div className="pb-6 animate-fadeIn">

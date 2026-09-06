@@ -5,6 +5,7 @@ import { useCrop } from '../../context/CropContext';
 import { useAuth } from '../../context/AuthContext';
 import { StatusBadge } from '../common/StatusBadge';
 import { VoiceButton } from '../common/VoiceButton';
+import { getLocalizedAdvisoryScript } from '../../utils/speech';
 
 export const CropStatusHero: React.FC = () => {
   const { language, t } = useLanguage();
@@ -12,14 +13,15 @@ export const CropStatusHero: React.FC = () => {
   const { user, requireFarmerAccess } = useAuth();
 
   const isMarathi = language === 'mr';
+  const isHindi = language === 'hi';
   const isNewUser = user?.isNewUser && user?.userType === 'registered';
 
   const cropName = isMarathi ? diagnosis.cropNameMr : diagnosis.cropName;
   const diseaseName = isMarathi ? diagnosis.diseaseNameMr : diagnosis.diseaseName;
 
   const farmPlotLabel = user
-    ? `${user.farmName || (isMarathi ? 'माझे शेत' : 'My Farm')} (${user.village || user.taluka || (isMarathi ? 'स्थानिक' : 'Local')})`
-    : (isMarathi ? 'शेताचे क्षेत्र' : 'Farm Plot');
+    ? `${user.farmName || (isMarathi ? 'माझे शेत' : isHindi ? 'मेरा खेत' : 'My Farm')} (${user.village || user.taluka || (isMarathi ? 'स्थानिक' : isHindi ? 'स्थानीय' : 'Local')})`
+    : (isMarathi ? 'शेताचे क्षेत्र' : isHindi ? 'खेत का क्षेत्र' : 'Farm Plot');
 
   // New User Onboarding State
   if (isNewUser) {
@@ -119,7 +121,7 @@ export const CropStatusHero: React.FC = () => {
       <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-3 border border-amber-200/60 mb-4 flex items-center justify-between">
         <div>
           <div className="text-[11px] uppercase tracking-wider font-bold text-stone-500">
-            {isMarathi ? `सध्याचे पीक • ${farmPlotLabel}` : `Monitored Plot • ${farmPlotLabel}`}
+            {isMarathi ? `सध्याचे पीक • ${farmPlotLabel}` : isHindi ? `वर्तमान फसल • ${farmPlotLabel}` : `Monitored Plot • ${farmPlotLabel}`}
           </div>
           <div className="text-sm font-bold text-forest-900 flex items-center gap-1.5">
             <span>🌿</span>
@@ -138,7 +140,7 @@ export const CropStatusHero: React.FC = () => {
       {/* Dual Actions: Listen + View Full Advisory */}
       <div className="grid grid-cols-2 gap-2.5">
         <VoiceButton
-          textToSpeak={isMarathi ? diagnosis.advisoryVoiceScriptMr : diagnosis.advisoryVoiceScript}
+          textToSpeak={getLocalizedAdvisoryScript(diagnosis, language)}
           variant="secondary"
           className="text-xs py-2.5 px-3 rounded-xl border border-stone-300 font-bold"
         />
@@ -148,7 +150,7 @@ export const CropStatusHero: React.FC = () => {
           type="button"
           className="flex items-center justify-center gap-1.5 py-2.5 px-3 rounded-xl bg-forest-800 text-white font-bold text-xs hover:bg-forest-900 shadow-sm active:scale-95 transition-transform cursor-pointer"
         >
-          <span>{isMarathi ? 'पूर्ण सल्ला पाहा' : 'View Advice'}</span>
+          <span>{isMarathi ? 'पूर्ण सल्ला पाहा' : isHindi ? 'पूरी सलाह देखें' : 'View Advice'}</span>
           <ArrowRight className="w-3.5 h-3.5" />
         </button>
       </div>

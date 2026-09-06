@@ -216,6 +216,7 @@ export const translations = {
     emptyNearby: '🌾 No major crop problems reported nearby.',
     speaking: 'Playing audio advisory...',
     stopAudio: 'Stop Audio',
+    defaultAdvisoryText: 'Possible Early Blight detected on tomato leaf with moderate severity. Today you should remove heavily affected lower leaves and avoid excess watering. Fungal risk may increase over the next forty-eight hours due to high humidity. Consider preventive spray during clear morning hours.',
   },
   hi: {
     // Brand
@@ -434,6 +435,7 @@ export const translations = {
     emptyNearby: '🌾 आस-पास किसी बड़ी समस्या की सूचना नहीं है।',
     speaking: 'ऑडियो सलाह चलाई जा रही है...',
     stopAudio: 'ऑडियो रोकें',
+    defaultAdvisoryText: 'टमाटर की पत्ती पर मध्यम स्तर का अगेती झुलसा रोग पाया गया है। आज ही अधिक प्रभावित निचली पत्तियों को हटा दें और पानी का जमाव न होने दें। अधिक नमी के कारण अगले अड़तालीस घंटों में संक्रमण बढ़ सकता है, इसलिए सुबह के समय उचित छिड़काव करें।',
   },
   mr: {
     // Brand
@@ -652,5 +654,6 @@ export const translations = {
     emptyNearby: '🌾 परिसरात कोणत्याही मोठ्या रोगाची नोंद नाही.',
     speaking: 'ऑडिओ सल्ला वाचला जात आहे...',
     stopAudio: 'थांबवा',
+    defaultAdvisoryText: 'टोमॅटोच्या पानावर मध्यम स्वरूपाचा करपा रोग आढळला आहे. आज लगेच जास्त खराब झालेली पाने तोडून टाका आणि पानांवर पाणी साचू देऊ नका. पुढील दोन दिवसांत जास्त आर्द्रतेमुळे रोग वाढू शकतो, म्हणून योग्य फवारणी करा.',
   }
 };

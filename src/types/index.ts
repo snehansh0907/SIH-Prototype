@@ -7,6 +7,7 @@ export interface FarmerUser {
   farmerId: string;
   name: string;
   nameMr?: string;
+  nameHi?: string;
   phone?: string;
   email?: string;
   emailOrPhone: string;
@@ -15,11 +16,13 @@ export interface FarmerUser {
   district: string;
   location: string;
   locationMr?: string;
+  locationHi?: string;
   userType: 'demo' | 'registered';
   farmName: string;
   areaAcres: number | string;
   monitoredCrop: string;
   monitoredCropMr?: string;
+  monitoredCropHi?: string;
   farmId?: string;
   cropCycleId?: string;
   avatar?: string;
@@ -87,6 +90,7 @@ export interface DiagnosisResult {
   };
   advisoryVoiceScript: string;
   advisoryVoiceScriptMr: string;
+  advisoryVoiceScriptHi?: string;
 }
 
 export interface WeatherCondition {
@@ -143,8 +147,10 @@ export interface HotspotCluster {
 export interface AreaReport {
   district: string;
   districtMr: string;
+  districtHi?: string;
   subDistrict: string;
   subDistrictMr: string;
+  subDistrictHi?: string;
   status: SeverityLevel;
   diseaseTrend: 'increasing' | 'stable' | 'decreasing';
   activeCasesCount: number;
@@ -152,6 +158,7 @@ export interface AreaReport {
   clusters: HotspotCluster[];
   communityAdvisory: string;
   communityAdvisoryMr: string;
+  communityAdvisoryHi?: string;
 }
 
 export interface ExpertProfile {

@@ -22,9 +22,12 @@ export const RiskForecastView: React.FC = () => {
     }
   };
 
-  const voiceSummary = language === 'mr'
-    ? `पीक धोका अंदाज: पाऊस आणि जास्त आर्द्रतेमुळे पुढील ३ आणि ४ थ्या दिवशी रोगाचा धोका उच्च राहील. आजच प्रतिबंधात्मक फवारणी पूर्ण करा.`
-    : `Crop risk forecast: Due to rain and sustained humidity, disease risk will rise to high on day three and four. Apply protective spray today.`;
+  const voiceSummary =
+    language === 'mr'
+      ? `पीक धोका अंदाज: पाऊस आणि जास्त आर्द्रतेमुळे पुढील ३ आणि ४ थ्या दिवशी रोगाचा धोका उच्च राहील. आजच प्रतिबंधात्मक फवारणी पूर्ण करा.`
+      : language === 'hi'
+      ? `फसल जोखिम पूर्वानुमान: बारिश और लगातार नमी के कारण तीसरे और चौथे दिन बीमारी का जोखिम उच्च रहेगा। आज ही सुरक्षात्मक छिड़काव पूरा करें।`
+      : `Crop risk forecast: Due to rain and sustained humidity, disease risk will rise to high on day three and four. Apply protective spray today.`;
 
   return (
     <div className="pb-6 animate-fadeIn">
