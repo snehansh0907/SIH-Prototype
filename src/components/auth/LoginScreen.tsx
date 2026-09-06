@@ -73,13 +73,13 @@ export const LoginScreen: React.FC = () => {
   const [searchDebounceTimer, setSearchDebounceTimer] = useState<any>(null);
 
   // Structured Editable Address Details
-  const [regState, setRegState] = useState('Maharashtra');
-  const [regDistrict, setRegDistrict] = useState('Nashik');
-  const [regTaluka, setRegTaluka] = useState('Niphad');
-  const [regVillage, setRegVillage] = useState('Niphad');
-  const [regPincode, setRegPincode] = useState('422303');
-  const [regLatitude, setRegLatitude] = useState<number | undefined>(20.0797);
-  const [regLongitude, setRegLongitude] = useState<number | undefined>(74.1071);
+  const [regState, setRegState] = useState('');
+  const [regDistrict, setRegDistrict] = useState('');
+  const [regTaluka, setRegTaluka] = useState('');
+  const [regVillage, setRegVillage] = useState('');
+  const [regPincode, setRegPincode] = useState('');
+  const [regLatitude, setRegLatitude] = useState<number | undefined>(undefined);
+  const [regLongitude, setRegLongitude] = useState<number | undefined>(undefined);
 
   // Geolocation & Detection Feedback State
   const [detectStatus, setDetectStatus] = useState<
@@ -144,21 +144,17 @@ export const LoginScreen: React.FC = () => {
         setRegLatitude(result.latitude);
         setRegLongitude(result.longitude);
 
-        const place = result.village || result.taluka || result.district || 'Location';
         setLocationSuccessMsg(
           isMarathi
-            ? `✓ स्थान यशस्वीरित्या आढळले: ${place}, ${result.district}`
-            : `✓ Location detected successfully: ${place}, ${result.district}`
+            ? '✓ स्थान यशस्वीरित्या आढळले'
+            : '✓ Location detected successfully'
         );
         setDetectStatus('success');
       }
     } catch (err: any) {
       setDetectStatus('error');
       setLocationErrorMsg(
-        err.message ||
-        (isMarathi
-          ? 'आम्ही तुमचे स्थान ॲक्सेस करू शकलो नाही. कृपया स्थान मॅन्युअली शोधा.'
-          : "We couldn't access your location. Please search for your location manually.")
+        err.message || 'Unable to detect your location. Please search manually.'
       );
     }
   };
@@ -686,12 +682,12 @@ export const LoginScreen: React.FC = () => {
                     {detectStatus === 'detecting_coords' ? (
                       <>
                         <span className="w-3.5 h-3.5 rounded-full border-2 border-forest-700 border-t-transparent animate-spin" />
-                        <span>{isMarathi ? 'स्थान शोधत आहे...' : 'Detecting your location...'}</span>
+                        <span>{isMarathi ? '⏳ स्थान शोधत आहे...' : '⏳ Detecting your location...'}</span>
                       </>
                     ) : detectStatus === 'finding_address' ? (
                       <>
                         <span className="w-3.5 h-3.5 rounded-full border-2 border-forest-700 border-t-transparent animate-spin" />
-                        <span>{isMarathi ? 'पत्ता शोधत आहे...' : 'Finding your address...'}</span>
+                        <span>{isMarathi ? '📍 स्थान आढळले. पत्ता शोधत आहे...' : '📍 Location detected. Finding your address...'}</span>
                       </>
                     ) : (
                       <>
@@ -823,6 +819,7 @@ export const LoginScreen: React.FC = () => {
                             onChange={(e) => setRegState(e.target.value)}
                             className="w-full px-3 py-2 rounded-xl bg-stone-50 border border-stone-300 text-stone-900 text-xs font-bold focus:outline-none focus:ring-2 focus:ring-forest-600 appearance-none cursor-pointer"
                           >
+                            <option value="">{isMarathi ? '-- राज्य निवडा --' : '-- Select State --'}</option>
                             {ALL_INDIAN_STATES_AND_UTS.map((s) => (
                               <option key={s.code} value={s.name}>
                                 {isMarathi ? (s.nameMr || s.name) : s.name} {s.isUT ? '(UT)' : ''}
