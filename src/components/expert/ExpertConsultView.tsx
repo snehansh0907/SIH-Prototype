@@ -3,14 +3,14 @@ import { ArrowLeft, Send, PhoneCall, Sparkles, CheckCheck, AlertTriangle } from 
 import { useLanguage } from '../../context/LanguageContext';
 import { useCrop } from '../../context/CropContext';
 import { StatusBadge } from '../common/StatusBadge';
-import { expertService } from '../../services/expertService';
+import { expertService, calculateDaysSinceDiagnosis } from '../../services/expertService';
 import type { ExpertProfile, ChatMessage } from '../../types';
 import { MOCK_EXPERT } from '../../services/mockData';
 import { getExpertInitialGreeting } from '../../i18n/translations';
 
 export const ExpertConsultView: React.FC = () => {
   const { language, t } = useLanguage();
-  const { diagnosis, resetToHome } = useCrop();
+  const { diagnosis, weather, riskForecast, resetToHome } = useCrop();
 
   const [expert, setExpert] = useState<ExpertProfile>(MOCK_EXPERT);
   const [messages, setMessages] = useState<ChatMessage[]>([]);
@@ -27,23 +27,6 @@ export const ExpertConsultView: React.FC = () => {
     chatBottomRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages, isTyping]);
 
-  const handleSendMessage = async (textToSend?: string) => {
-    const text = textToSend || inputMessage.trim();
-    if (!text) return;
-
-    setInputMessage('');
-    setIsTyping(true);
-
-    const updated = await expertService.sendMessage(text);
-    setMessages([...updated]);
-
-    setTimeout(async () => {
-      const refreshed = await expertService.getMessages();
-      setMessages([...refreshed]);
-      setIsTyping(false);
-    }, 1200);
-  };
-
   const cropName =
     language === 'mr'
       ? diagnosis.cropNameMr
@@ -57,6 +40,66 @@ export const ExpertConsultView: React.FC = () => {
       : language === 'hi'
       ? (diagnosis.diseaseNameHi || diagnosis.diseaseName)
       : diagnosis.diseaseName;
+
+  const handleSendMessage = async (textToSend?: string) => {
+    const text = textToSend || inputMessage.trim();
+    if (!text || isTyping) return;
+
+    setInputMessage('');
+    setIsTyping(true);
+
+    const messageId = `msg-farmer-${messages.length + 1}`;
+    const farmerMsg: ChatMessage = {
+      id: messageId,
+      sender: 'farmer',
+      text,
+      timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+    };
+
+    // Show farmer message in UI immediately
+    setMessages((prev) => [...prev, farmerMsg]);
+
+    try {
+      const updated = await expertService.sendMessage(
+        text,
+        {
+          cropName,
+          diseaseName,
+          cropNameEn: diagnosis.cropName,
+          diseaseNameEn: diagnosis.diseaseName,
+          pathogen: diagnosis.pathogen,
+          severity: diagnosis.severity,
+          detectedAt: diagnosis.detectedAt,
+          daysSinceDiagnosis: calculateDaysSinceDiagnosis(diagnosis.detectedAt),
+          humidity: weather?.humidity ?? 78,
+          rainChance: weather?.rainfallChance ?? 60,
+          rainfallStatus:
+            language === 'mr'
+              ? weather?.rainfallStatusMr || 'पावसाची शक्यता'
+              : language === 'hi'
+              ? weather?.rainfallStatusHi || 'बारिश की संभावना'
+              : weather?.rainfallStatus || 'Rain expected',
+          temperature: weather?.temp ?? 27,
+          riskSummary:
+            language === 'mr'
+              ? riskForecast?.summaryMr || riskForecast?.summary
+              : language === 'hi'
+              ? riskForecast?.summaryHi || riskForecast?.summary
+              : riskForecast?.summary,
+          riskLevel: riskForecast?.currentLevel || diagnosis.severity,
+          language,
+        },
+        messageId
+      );
+      setMessages([...updated]);
+    } catch (err) {
+      console.warn('[ExpertConsultView] Message send error:', err);
+      const refreshed = await expertService.getMessages();
+      setMessages([...refreshed]);
+    } finally {
+      setIsTyping(false);
+    }
+  };
 
   const quickChips = [
     t.chipFungicide,
@@ -204,10 +247,19 @@ export const ExpertConsultView: React.FC = () => {
         })}
 
         {isTyping && (
-          <div className="flex items-center gap-1.5 bg-white p-2.5 rounded-2xl border border-stone-200 w-24 text-stone-400 text-xs shadow-sm">
-            <span className="w-2 h-2 rounded-full bg-stone-400 animate-bounce"></span>
-            <span className="w-2 h-2 rounded-full bg-stone-400 animate-bounce [animation-delay:0.2s]"></span>
-            <span className="w-2 h-2 rounded-full bg-stone-400 animate-bounce [animation-delay:0.4s]"></span>
+          <div className="flex items-center gap-2 bg-white px-3.5 py-2.5 rounded-2xl rounded-bl-none border border-stone-200 text-stone-600 text-xs shadow-sm w-fit animate-pulse">
+            <div className="flex items-center gap-1 text-forest-700">
+              <span className="w-2 h-2 rounded-full bg-forest-600 animate-bounce"></span>
+              <span className="w-2 h-2 rounded-full bg-forest-600 animate-bounce [animation-delay:0.2s]"></span>
+              <span className="w-2 h-2 rounded-full bg-forest-600 animate-bounce [animation-delay:0.4s]"></span>
+            </div>
+            <span className="text-[11px] font-medium text-stone-600 italic">
+              {language === 'mr'
+                ? 'डॉ. पाटील उत्तर टाईप करत आहेत...'
+                : language === 'hi'
+                ? 'डॉ. पाटिल टाइप कर रहे हैं...'
+                : 'Dr. Patil is typing...'}
+            </span>
           </div>
         )}
         <div ref={chatBottomRef} />
@@ -225,8 +277,9 @@ export const ExpertConsultView: React.FC = () => {
             <button
               key={idx}
               type="button"
+              disabled={isTyping}
               onClick={() => handleSendMessage(chipLabel)}
-              className="text-[11px] font-bold text-forest-900 bg-white hover:bg-forest-50 border border-stone-200 px-3 py-1.5 rounded-xl whitespace-nowrap active:scale-95 transition-all shrink-0 shadow-sm"
+              className="text-[11px] font-bold text-forest-900 bg-white hover:bg-forest-50 border border-stone-200 px-3 py-1.5 rounded-xl whitespace-nowrap active:scale-95 disabled:opacity-50 transition-all shrink-0 shadow-sm cursor-pointer"
             >
               {chipLabel}
             </button>
@@ -247,12 +300,13 @@ export const ExpertConsultView: React.FC = () => {
           value={inputMessage}
           onChange={(e) => setInputMessage(e.target.value)}
           placeholder={t.typeMessagePlaceholder}
-          className="flex-1 px-3 py-2 text-xs text-stone-900 placeholder:text-stone-400 focus:outline-none bg-transparent"
+          disabled={isTyping}
+          className="flex-1 px-3 py-2 text-xs text-stone-900 placeholder:text-stone-400 focus:outline-none bg-transparent disabled:opacity-60"
         />
 
         <button
           type="submit"
-          disabled={!inputMessage.trim()}
+          disabled={!inputMessage.trim() || isTyping}
           className="w-10 h-10 rounded-xl bg-forest-800 text-white hover:bg-forest-900 disabled:opacity-40 disabled:hover:bg-forest-800 flex items-center justify-center transition-all active:scale-95 shadow-sm shrink-0 cursor-pointer"
         >
           <Send className="w-4 h-4 text-amber-300" />

@@ -3,7 +3,9 @@
  * Configurable via environment variable NEXT_PUBLIC_API_URL or VITE_API_URL
  */
 
-export const BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
+export const BASE_URL =
+  (typeof import.meta !== 'undefined' && (import.meta as any).env?.VITE_API_URL) ||
+  'http://localhost:5000/api';
 export const API_ROOT_URL = BASE_URL.replace(/\/api\/?$/, '');
 
 interface RequestOptions extends RequestInit {
