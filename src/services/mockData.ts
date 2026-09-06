@@ -1,5 +1,25 @@
 import type { CropInfo, DiagnosisResult, WeatherCondition, RiskForecast, AreaReport, ExpertProfile, ChatMessage } from '../types';
 
+const SVG_HEALTHY_LEAF = `data:image/svg+xml;charset=UTF-8,<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200" viewBox="0 0 200 200"><rect width="200" height="200" fill="%231b4332"/><path d="M100 15 C55 55 35 105 35 160 C70 145 100 135 100 185 C100 135 130 145 165 160 C165 105 145 55 100 15 Z" fill="%232d6a4f"/><path d="M100 15 L100 185 M100 60 L60 85 M100 90 L140 115 M100 120 L65 145" stroke="%2352b788" stroke-width="3" stroke-linecap="round"/></svg>`;
+
+const SVG_UNCERTAIN_AI = `data:image/svg+xml;charset=UTF-8,<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200" viewBox="0 0 200 200"><rect width="200" height="200" fill="%233a5a40"/><circle cx="100" cy="100" r="70" fill="%23588157" opacity="0.6" filter="blur(8px)"/><path d="M80 40 Q130 90 90 160" stroke="%23a3b18a" stroke-width="12" opacity="0.5"/><text x="100" y="115" text-anchor="middle" fill="%23dad7cd" font-size="28" font-family="sans-serif" font-weight="bold">❓</text></svg>`;
+
+const SVG_EARLY_BLIGHT = `data:image/svg+xml;charset=UTF-8,<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200" viewBox="0 0 200 200"><rect width="200" height="200" fill="%232d5a27"/><path d="M100 20 C60 60 40 100 40 150 C70 140 100 130 100 180 C100 130 130 140 160 150 C160 100 140 60 100 20 Z" fill="%233e7b37"/><circle cx="90" cy="70" r="18" fill="%2378350f" opacity="0.85"/><circle cx="90" cy="70" r="12" fill="%23451a03"/><circle cx="90" cy="70" r="6" fill="%23f59e0b" opacity="0.6"/><circle cx="120" cy="110" r="14" fill="%2378350f" opacity="0.85"/><circle cx="120" cy="110" r="8" fill="%23451a03"/><circle cx="70" cy="120" r="10" fill="%2378350f" opacity="0.8"/></svg>`;
+
+const SVG_COTTON_CURL = `data:image/svg+xml;charset=UTF-8,<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200" viewBox="0 0 200 200"><rect width="200" height="200" fill="%232d4a27"/><path d="M100 20 C50 50 30 110 50 165 C80 140 100 130 100 180 C100 130 120 140 150 165 C170 110 150 50 100 20 Z" fill="%234a7c39"/><path d="M100 20 Q60 80 50 165 M100 20 Q140 80 150 165" stroke="%23eab308" stroke-width="4" fill="none"/><circle cx="85" cy="90" r="12" fill="%23ca8a04" opacity="0.7"/><circle cx="120" cy="115" r="10" fill="%23ca8a04" opacity="0.7"/></svg>`;
+
+const SVG_SOYBEAN_RUST = `data:image/svg+xml;charset=UTF-8,<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200" viewBox="0 0 200 200"><rect width="200" height="200" fill="%233b5229"/><path d="M100 25 C60 65 40 105 40 155 C75 145 100 135 100 180 C100 135 125 145 160 155 C160 105 140 65 100 25 Z" fill="%23567838"/><circle cx="75" cy="80" r="6" fill="%23991b1b"/><circle cx="95" cy="70" r="5" fill="%23991b1b"/><circle cx="115" cy="85" r="7" fill="%23991b1b"/><circle cx="85" cy="110" r="6" fill="%23991b1b"/><circle cx="125" cy="120" r="5" fill="%23991b1b"/><circle cx="105" cy="130" r="6" fill="%23991b1b"/></svg>`;
+
+const SVG_SUGARCANE_RED_ROT = `data:image/svg+xml;charset=UTF-8,<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200" viewBox="0 0 200 200"><rect width="200" height="200" fill="%231e3a1e"/><rect x="75" y="10" width="50" height="180" rx="10" fill="%234d7c0f"/><line x1="75" y1="60" x2="125" y2="60" stroke="%23365314" stroke-width="3"/><line x1="75" y1="120" x2="125" y2="120" stroke="%23365314" stroke-width="3"/><rect x="85" y="70" width="30" height="40" rx="5" fill="%23b91c1c" opacity="0.85"/></svg>`;
+
+const SVG_MAIZE_BLIGHT = `data:image/svg+xml;charset=UTF-8,<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200" viewBox="0 0 200 200"><rect width="200" height="200" fill="%231c3820"/><path d="M40 180 Q100 20 160 180" stroke="%2365a30d" stroke-width="40" fill="none" stroke-linecap="round"/><ellipse cx="90" cy="90" rx="25" ry="8" transform="rotate(-30 90 90)" fill="%23713f12" opacity="0.85"/><ellipse cx="120" cy="130" rx="20" ry="7" transform="rotate(-30 120 130)" fill="%23713f12" opacity="0.85"/></svg>`;
+
+const SVG_ONION_BLOTCH = `data:image/svg+xml;charset=UTF-8,<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200" viewBox="0 0 200 200"><rect width="200" height="200" fill="%2319381f"/><path d="M100 15 C70 60 50 120 50 180 C100 170 100 170 150 180 C150 120 130 60 100 15 Z" fill="%234f772d"/><ellipse cx="95" cy="85" rx="14" ry="22" fill="%23581c87" opacity="0.85"/><ellipse cx="105" cy="135" rx="12" ry="18" fill="%23581c87" opacity="0.85"/></svg>`;
+
+const SVG_RICE_BLAST = `data:image/svg+xml;charset=UTF-8,<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200" viewBox="0 0 200 200"><rect width="200" height="200" fill="%2314381b"/><path d="M30 170 Q100 30 170 170" stroke="%233f6212" stroke-width="25" fill="none"/><path d="M90 80 Q100 70 110 80 Q100 90 90 80 Z" fill="%2378350f"/><path d="M120 120 Q130 110 140 120 Q130 130 120 120 Z" fill="%2378350f"/></svg>`;
+
+const SVG_WHEAT_RUST = `data:image/svg+xml;charset=UTF-8,<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200" viewBox="0 0 200 200"><rect width="200" height="200" fill="%231e3d20"/><path d="M40 180 Q100 20 160 180" stroke="%234d7c0f" stroke-width="30" fill="none"/><circle cx="85" cy="80" r="5" fill="%23d97706"/><circle cx="95" cy="95" r="6" fill="%23d97706"/><circle cx="105" cy="75" r="5" fill="%23d97706"/><circle cx="115" cy="110" r="6" fill="%23d97706"/><circle cx="125" cy="125" r="5" fill="%23d97706"/></svg>`;
+
 export const MOCK_CROPS: CropInfo[] = [
   {
     id: 'tomato',
@@ -13,7 +33,8 @@ export const MOCK_CROPS: CropInfo[] = [
         title: 'Tomato with Dark Concentric Spots (Early Blight)',
         titleMr: 'पानांवर काळपट गोलाकार डाग (करपा रोग)',
         condition: 'Early Blight',
-        url: 'https://images.unsplash.com/photo-1592417817098-8f3d69102a5e?auto=format&fit=crop&w=600&q=80',
+        url: SVG_EARLY_BLIGHT,
+        fallbackUrl: SVG_EARLY_BLIGHT,
         isHealthy: false,
       },
       {
@@ -21,7 +42,8 @@ export const MOCK_CROPS: CropInfo[] = [
         title: 'Healthy Green Tomato Leaf',
         titleMr: 'निरोगी हिरवे टोमॅटोचे पान',
         condition: 'Healthy Leaf',
-        url: 'https://images.unsplash.com/photo-1560493676-04071c5f467b?auto=format&fit=crop&w=600&q=80',
+        url: SVG_HEALTHY_LEAF,
+        fallbackUrl: SVG_HEALTHY_LEAF,
         isHealthy: true,
       },
       {
@@ -29,7 +51,8 @@ export const MOCK_CROPS: CropInfo[] = [
         title: 'Blurry / Unclear Leaf Photo (Uncertain AI)',
         titleMr: 'अंधुक / अस्पष्ट पानाचा फोटो (अनिश्चित)',
         condition: 'Uncertain AI',
-        url: 'https://images.unsplash.com/photo-1530836369250-ef72a3f5cda8?auto=format&fit=crop&w=600&q=80',
+        url: SVG_UNCERTAIN_AI,
+        fallbackUrl: SVG_UNCERTAIN_AI,
         isHealthy: false,
       }
     ]
@@ -46,7 +69,26 @@ export const MOCK_CROPS: CropInfo[] = [
         title: 'Cotton Leaf Curling & Thickening',
         titleMr: 'कापसाच्या पानांचा चुरमुरडा / वाकडी पाने',
         condition: 'Leaf Curl Virus',
-        url: 'https://images.unsplash.com/photo-1605000797499-95a51c5269ae?auto=format&fit=crop&w=600&q=80',
+        url: SVG_COTTON_CURL,
+        fallbackUrl: SVG_COTTON_CURL,
+        isHealthy: false,
+      },
+      {
+        id: 'cotton_healthy',
+        title: 'Healthy Green Cotton Leaf',
+        titleMr: 'निरोगी हिरवे कापसाचे पान',
+        condition: 'Healthy Leaf',
+        url: SVG_HEALTHY_LEAF,
+        fallbackUrl: SVG_HEALTHY_LEAF,
+        isHealthy: true,
+      },
+      {
+        id: 'cotton_uncertain',
+        title: 'Blurry Cotton Leaf Photo',
+        titleMr: 'अस्पष्ट कापसाचा फोटो',
+        condition: 'Uncertain AI',
+        url: SVG_UNCERTAIN_AI,
+        fallbackUrl: SVG_UNCERTAIN_AI,
         isHealthy: false,
       }
     ]
@@ -63,7 +105,206 @@ export const MOCK_CROPS: CropInfo[] = [
         title: 'Soybean Yellow Pustules (Rust)',
         titleMr: 'सोयाबीनवरील पिवळे-तपकिरी तांबेरा डाग',
         condition: 'Soybean Rust',
-        url: 'https://images.unsplash.com/photo-1598170845058-32b9d6a5da37?auto=format&fit=crop&w=600&q=80',
+        url: SVG_SOYBEAN_RUST,
+        fallbackUrl: SVG_SOYBEAN_RUST,
+        isHealthy: false,
+      },
+      {
+        id: 'soybean_healthy',
+        title: 'Healthy Green Soybean Leaf',
+        titleMr: 'निरोगी हिरवे सोयाबीनचे पान',
+        condition: 'Healthy Leaf',
+        url: SVG_HEALTHY_LEAF,
+        fallbackUrl: SVG_HEALTHY_LEAF,
+        isHealthy: true,
+      },
+      {
+        id: 'soybean_uncertain',
+        title: 'Blurry Soybean Photo',
+        titleMr: 'अस्पष्ट सोयाबीनचा फोटो',
+        condition: 'Uncertain AI',
+        url: SVG_UNCERTAIN_AI,
+        fallbackUrl: SVG_UNCERTAIN_AI,
+        isHealthy: false,
+      }
+    ]
+  },
+  {
+    id: 'sugarcane',
+    name: 'Sugarcane',
+    nameMr: 'ऊस',
+    icon: '🎋',
+    scientificName: 'Saccharum officinarum',
+    sampleImages: [
+      {
+        id: 'sugarcane_red_rot',
+        title: 'Sugarcane Red Rot Disease',
+        titleMr: 'उसावरील तांबरा / लाल कुज रोग',
+        condition: 'Red Rot',
+        url: SVG_SUGARCANE_RED_ROT,
+        fallbackUrl: SVG_SUGARCANE_RED_ROT,
+        isHealthy: false,
+      },
+      {
+        id: 'sugarcane_healthy',
+        title: 'Healthy Green Sugarcane Leaf',
+        titleMr: 'निरोगी हिरवे उसाचे पान',
+        condition: 'Healthy Leaf',
+        url: SVG_HEALTHY_LEAF,
+        fallbackUrl: SVG_HEALTHY_LEAF,
+        isHealthy: true,
+      },
+      {
+        id: 'sugarcane_uncertain',
+        title: 'Blurry Sugarcane Photo',
+        titleMr: 'अस्पष्ट उसाचा फोटो',
+        condition: 'Uncertain AI',
+        url: SVG_UNCERTAIN_AI,
+        fallbackUrl: SVG_UNCERTAIN_AI,
+        isHealthy: false,
+      }
+    ]
+  },
+  {
+    id: 'maize',
+    name: 'Maize',
+    nameMr: 'मका',
+    icon: '🌽',
+    scientificName: 'Zea mays',
+    sampleImages: [
+      {
+        id: 'maize_blight',
+        title: 'Maize Northern Leaf Blight',
+        titleMr: 'मक्यावरील तुरा / करपा रोग',
+        condition: 'Leaf Blight',
+        url: SVG_MAIZE_BLIGHT,
+        fallbackUrl: SVG_MAIZE_BLIGHT,
+        isHealthy: false,
+      },
+      {
+        id: 'maize_healthy',
+        title: 'Healthy Green Maize Leaf',
+        titleMr: 'निरोगी हिरवे मक्याचे पान',
+        condition: 'Healthy Leaf',
+        url: SVG_HEALTHY_LEAF,
+        fallbackUrl: SVG_HEALTHY_LEAF,
+        isHealthy: true,
+      },
+      {
+        id: 'maize_uncertain',
+        title: 'Blurry Maize Photo',
+        titleMr: 'अस्पष्ट मक्याचा फोटो',
+        condition: 'Uncertain AI',
+        url: SVG_UNCERTAIN_AI,
+        fallbackUrl: SVG_UNCERTAIN_AI,
+        isHealthy: false,
+      }
+    ]
+  },
+  {
+    id: 'onion',
+    name: 'Onion',
+    nameMr: 'कांदा',
+    icon: '🧅',
+    scientificName: 'Allium cepa',
+    sampleImages: [
+      {
+        id: 'onion_purple_blotch',
+        title: 'Onion Purple Blotch Disease',
+        titleMr: 'कांद्यावरील जांभळा करपा',
+        condition: 'Purple Blotch',
+        url: SVG_ONION_BLOTCH,
+        fallbackUrl: SVG_ONION_BLOTCH,
+        isHealthy: false,
+      },
+      {
+        id: 'onion_healthy',
+        title: 'Healthy Green Onion Foliage',
+        titleMr: 'निरोगी हिरवी कांद्याची पात',
+        condition: 'Healthy Leaf',
+        url: SVG_HEALTHY_LEAF,
+        fallbackUrl: SVG_HEALTHY_LEAF,
+        isHealthy: true,
+      },
+      {
+        id: 'onion_uncertain',
+        title: 'Blurry Onion Photo',
+        titleMr: 'अस्पष्ट कांद्याचा फोटो',
+        condition: 'Uncertain AI',
+        url: SVG_UNCERTAIN_AI,
+        fallbackUrl: SVG_UNCERTAIN_AI,
+        isHealthy: false,
+      }
+    ]
+  },
+  {
+    id: 'rice',
+    name: 'Rice',
+    nameMr: 'भात',
+    icon: '🌾',
+    scientificName: 'Oryza sativa',
+    sampleImages: [
+      {
+        id: 'rice_blast',
+        title: 'Rice Leaf Blast Disease',
+        titleMr: 'भातावरील करपा / ब्लास्ट रोग',
+        condition: 'Rice Blast',
+        url: SVG_RICE_BLAST,
+        fallbackUrl: SVG_RICE_BLAST,
+        isHealthy: false,
+      },
+      {
+        id: 'rice_healthy',
+        title: 'Healthy Green Rice Crop',
+        titleMr: 'निरोगी हिरवे भाताचे रोप',
+        condition: 'Healthy Leaf',
+        url: SVG_HEALTHY_LEAF,
+        fallbackUrl: SVG_HEALTHY_LEAF,
+        isHealthy: true,
+      },
+      {
+        id: 'rice_uncertain',
+        title: 'Blurry Rice Photo',
+        titleMr: 'अस्पष्ट भाताचा फोटो',
+        condition: 'Uncertain AI',
+        url: SVG_UNCERTAIN_AI,
+        fallbackUrl: SVG_UNCERTAIN_AI,
+        isHealthy: false,
+      }
+    ]
+  },
+  {
+    id: 'wheat',
+    name: 'Wheat',
+    nameMr: 'गहू',
+    icon: '🌾',
+    scientificName: 'Triticum aestivum',
+    sampleImages: [
+      {
+        id: 'wheat_rust',
+        title: 'Wheat Yellow Rust Infection',
+        titleMr: 'गव्हावरील तांबेरा / पिवळा तांबेरा',
+        condition: 'Yellow Rust',
+        url: SVG_WHEAT_RUST,
+        fallbackUrl: SVG_WHEAT_RUST,
+        isHealthy: false,
+      },
+      {
+        id: 'wheat_healthy',
+        title: 'Healthy Green Wheat Blade',
+        titleMr: 'निरोगी हिरवे गव्हाचे पान',
+        condition: 'Healthy Leaf',
+        url: SVG_HEALTHY_LEAF,
+        fallbackUrl: SVG_HEALTHY_LEAF,
+        isHealthy: true,
+      },
+      {
+        id: 'wheat_uncertain',
+        title: 'Blurry Wheat Photo',
+        titleMr: 'अस्पष्ट गव्हाचा फोटो',
+        condition: 'Uncertain AI',
+        url: SVG_UNCERTAIN_AI,
+        fallbackUrl: SVG_UNCERTAIN_AI,
         isHealthy: false,
       }
     ]
