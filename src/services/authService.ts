@@ -17,9 +17,13 @@ export interface RegisterPayload {
   pincode?: string;
   farmName: string;
   areaAcres: number | string;
+<<<<<<< HEAD
   mainCrop: 'Tomato' | 'Cotton' | 'Soybean' | string;
   latitude?: number;
   longitude?: number;
+=======
+  mainCrop: 'Tomato' | 'Cotton' | 'Soybean' | 'Sugarcane' | 'Maize' | 'Onion' | 'Rice' | 'Wheat' | string;
+>>>>>>> 17403c2c139852b8cc33a1a1f88a36aa5f817824
 }
 
 interface StoredRegisteredUser {
@@ -314,6 +318,11 @@ export const authService = {
       Tomato: 'टोमॅटो',
       Cotton: 'कापूस',
       Soybean: 'सोयाबीन',
+      Sugarcane: 'ऊस',
+      Maize: 'मका',
+      Onion: 'कांदा',
+      Rice: 'भात',
+      Wheat: 'गहू',
     };
 
     const newUser: FarmerUser = {

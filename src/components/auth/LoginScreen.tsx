@@ -14,23 +14,43 @@ import {
   Copy,
   Check,
   AlertCircle,
+<<<<<<< HEAD
   ChevronDown,
   Navigation,
   Search,
   X,
   Map as MapIcon,
+=======
+  ChevronDown
+>>>>>>> 17403c2c139852b8cc33a1a1f88a36aa5f817824
 } from 'lucide-react';
 import { useLanguage } from '../../context/LanguageContext';
 import { useAuth } from '../../context/AuthContext';
 import { SEEDED_DEMO_FARMERS } from '../../services/authService';
+<<<<<<< HEAD
 import { ALL_INDIAN_STATES_AND_UTS } from '../../data/indianStates';
 import { locationService, type LocationSearchResult } from '../../services/locationService';
+=======
+import type { Language } from '../../types';
+
+const CROPS = [
+  { key: 'Tomato', transKey: 'cropTomato', defaultLabel: 'Tomato', icon: '🍅' },
+  { key: 'Cotton', transKey: 'cropCotton', defaultLabel: 'Cotton', icon: '🌿' },
+  { key: 'Soybean', transKey: 'cropSoybean', defaultLabel: 'Soybean', icon: '🌱' },
+  { key: 'Sugarcane', transKey: 'cropSugarcane', defaultLabel: 'Sugarcane', icon: '🎋' },
+  { key: 'Maize', transKey: 'cropMaize', defaultLabel: 'Maize', icon: '🌽' },
+  { key: 'Onion', transKey: 'cropOnion', defaultLabel: 'Onion', icon: '🧅' },
+  { key: 'Rice', transKey: 'cropRice', defaultLabel: 'Rice', icon: '🌾' },
+  { key: 'Wheat', transKey: 'cropWheat', defaultLabel: 'Wheat', icon: '🌾' },
+];
+>>>>>>> 17403c2c139852b8cc33a1a1f88a36aa5f817824
 
 export const LoginScreen: React.FC = () => {
-  const { language, toggleLanguage, t } = useLanguage();
+  const { language, setLanguage, t } = useLanguage();
   const { login, register, loginAsDemo } = useAuth();
 
-  const isMarathi = language === 'mr';
+  // Language Popover Menu State
+  const [showLangMenu, setShowLangMenu] = useState(false);
 
   // Active Tab: 'login' | 'register'
   const [activeTab, setActiveTab] = useState<'login' | 'register'>('login');
@@ -76,7 +96,7 @@ export const LoginScreen: React.FC = () => {
   // Farm Details
   const [regFarmName, setRegFarmName] = useState('My Green Farm');
   const [regAreaAcres, setRegAreaAcres] = useState<number | string>('2.5');
-  const [regMainCrop, setRegMainCrop] = useState<'Tomato' | 'Cotton' | 'Soybean'>('Tomato');
+  const [regMainCrop, setRegMainCrop] = useState<string>('Tomato');
 
   const [regError, setRegError] = useState<string | null>(null);
   const [isRegistering, setIsRegistering] = useState(false);
@@ -204,7 +224,7 @@ export const LoginScreen: React.FC = () => {
     setLoginError(null);
 
     if (!loginIdentifier.trim() || !loginPassword.trim()) {
-      setLoginError(isMarathi ? 'कृपया शेतकरी आयडी आणि पासवर्ड टाका' : 'Please enter your Farmer ID/Mobile and Password.');
+      setLoginError(t.valEnterIdPass);
       return;
     }
 
@@ -213,7 +233,7 @@ export const LoginScreen: React.FC = () => {
     setIsLoggingIn(false);
 
     if (!res.success) {
-      setLoginError(res.message || (isMarathi ? 'लॉगिन अयशस्वी झाले. कृपया माहिती तपासा.' : 'Login failed. Please check your credentials.'));
+      setLoginError(res.message || t.valLoginFailed);
     }
   };
 
@@ -224,17 +244,18 @@ export const LoginScreen: React.FC = () => {
 
     // Validation
     if (!regName.trim()) {
-      setRegError(isMarathi ? 'कृपया तुमचे पूर्ण नाव प्रविष्ट करा' : 'Please enter your full name.');
+      setRegError(t.valEnterName);
       return;
     }
     if (!regPhone.trim() || regPhone.trim().length < 10) {
-      setRegError(isMarathi ? 'कृपया वैध १० अंकी मोबाईल क्रमांक प्रविष्ट करा' : 'Please enter a valid 10-digit mobile number.');
+      setRegError(t.valValidMobile);
       return;
     }
     if (!regPassword.trim() || regPassword.trim().length < 4) {
-      setRegError(isMarathi ? 'पासवर्ड किमान ४ अक्षरांचा असावा' : 'Password must be at least 4 characters long.');
+      setRegError(t.valPassLength);
       return;
     }
+<<<<<<< HEAD
     if (!regState.trim()) {
       setRegError(isMarathi ? 'कृपया तुमचे राज्य निवडा' : 'Please select your state.');
       return;
@@ -245,10 +266,14 @@ export const LoginScreen: React.FC = () => {
     }
     if (!regVillage.trim()) {
       setRegError(isMarathi ? 'कृपया तुमचे गाव / परिसर प्रविष्ट करा' : 'Please enter your village / locality.');
+=======
+    if (!regVillage.trim() || !regTaluka.trim() || !regDistrict.trim()) {
+      setRegError(t.valLocationFields);
+>>>>>>> 17403c2c139852b8cc33a1a1f88a36aa5f817824
       return;
     }
     if (!regFarmName.trim()) {
-      setRegError(isMarathi ? 'कृपया तुमच्या शेताचे नाव प्रविष्ट करा' : 'Please enter your farm name.');
+      setRegError(t.valFarmName);
       return;
     }
 
@@ -274,7 +299,7 @@ export const LoginScreen: React.FC = () => {
     if (res.success && res.user) {
       setRegisteredFarmerId(res.user.farmerId);
     } else {
-      setRegError(res.message || (isMarathi ? 'नोंदणी अयशस्वी झाली' : 'Registration failed.'));
+      setRegError(res.message || t.valRegFailed);
     }
   };
 
@@ -301,15 +326,16 @@ export const LoginScreen: React.FC = () => {
 
       {/* Main Card Shell */}
       <div className="w-full max-w-md bg-[#F7F4EC] rounded-3xl shadow-2xl overflow-hidden border border-stone-300/80 flex flex-col relative">
-        {/* Header Bar */}
-        <div className="bg-forest-950 text-white px-5 py-3.5 flex items-center justify-between border-b border-forest-800">
+        {/* Header Bar - High Contrast Green with 3-Language Selector */}
+        <div className="bg-forest-950 text-white px-5 py-3 flex items-center justify-between border-b border-forest-800 relative z-30">
           <div className="flex items-center gap-2">
             <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse"></span>
-            <span className="text-xs font-bold uppercase tracking-wider text-amber-300 font-display">
+            <span className="text-xs font-black uppercase tracking-wider text-amber-300 font-display">
               {t.farmerBadge}
             </span>
           </div>
 
+<<<<<<< HEAD
           <button
             type="button"
             onClick={toggleLanguage}
@@ -319,14 +345,56 @@ export const LoginScreen: React.FC = () => {
             <Globe className="w-3.5 h-3.5 text-amber-300" />
             <span>{language === 'en' ? 'English' : language === 'hi' ? 'हिंदी' : 'मराठी'}</span>
           </button>
+=======
+          {/* 3-Language Explicit Selector Dropdown */}
+          <div className="relative">
+            <button
+              type="button"
+              onClick={() => setShowLangMenu(!showLangMenu)}
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-forest-800 hover:bg-forest-700 text-amber-300 border-2 border-amber-400/70 font-bold text-xs transition-all active:scale-95 cursor-pointer shadow-sm"
+              aria-label="Select language (English / हिंदी / मराठी)"
+            >
+              <Globe className="w-3.5 h-3.5 text-amber-300 shrink-0" />
+              <span>{language === 'en' ? '🇬🇧 English' : language === 'hi' ? '🇮🇳 हिन्दी' : '🌾 मराठी'}</span>
+              <ChevronDown className="w-3 h-3 text-amber-300/90 shrink-0" />
+            </button>
+
+            {showLangMenu && (
+              <div className="absolute right-0 mt-2 w-36 bg-forest-950 border-2 border-amber-400/90 rounded-2xl shadow-2xl z-50 overflow-hidden animate-fadeIn py-1">
+                {[
+                  { code: 'en', label: '🇬🇧 English' },
+                  { code: 'hi', label: '🇮🇳 हिन्दी' },
+                  { code: 'mr', label: '🌾 मराठी' },
+                ].map((langItem) => (
+                  <button
+                    key={langItem.code}
+                    type="button"
+                    onClick={() => {
+                      setLanguage(langItem.code as Language);
+                      setShowLangMenu(false);
+                    }}
+                    className={`w-full px-3 py-2 text-left text-xs font-bold flex items-center justify-between transition-colors ${
+                      language === langItem.code
+                        ? 'bg-amber-400 text-forest-950 font-black'
+                        : 'text-stone-200 hover:bg-forest-800'
+                    }`}
+                  >
+                    <span>{langItem.label}</span>
+                    {language === langItem.code && <Check className="w-3.5 h-3.5 text-forest-950" />}
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
+>>>>>>> 17403c2c139852b8cc33a1a1f88a36aa5f817824
         </div>
 
-        {/* Brand Banner Hero */}
+        {/* Brand Banner Hero - Clear High Contrast Contrast */}
         <div className="bg-gradient-to-b from-forest-900 via-forest-800 to-forest-900 text-white px-6 pt-5 pb-6 text-center relative overflow-hidden">
           <div className="absolute top-0 right-0 -mr-10 -mt-10 w-36 h-36 rounded-full bg-amber-400/10 blur-2xl pointer-events-none" />
 
           {/* Logo Icon */}
-          <div className="w-14 h-14 rounded-2xl bg-forest-700/90 border-2 border-forest-500/80 flex items-center justify-center text-3xl mx-auto mb-2.5 shadow-inner">
+          <div className="w-14 h-14 rounded-2xl bg-forest-700/90 border-2 border-amber-400/40 flex items-center justify-center text-3xl mx-auto mb-2.5 shadow-inner">
             🌱
           </div>
 
@@ -338,8 +406,8 @@ export const LoginScreen: React.FC = () => {
             "{t.appTagline}"
           </p>
 
-          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-forest-950/70 border border-forest-700 text-[11px] font-semibold text-wheat-200">
-            <ShieldCheck className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
+          <div className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-forest-950/90 border border-forest-600 text-xs font-bold text-amber-100 shadow-sm">
+            <ShieldCheck className="w-4 h-4 text-emerald-400 shrink-0" />
             <span>{t.trustMessage}</span>
           </div>
         </div>
@@ -359,7 +427,7 @@ export const LoginScreen: React.FC = () => {
                   : 'text-stone-700 hover:text-stone-900'
               }`}
             >
-              <span>🔑 {isMarathi ? 'लॉगिन करा' : 'Login'}</span>
+              <span>🔑 {t.loginTab}</span>
             </button>
 
             <button
@@ -374,7 +442,7 @@ export const LoginScreen: React.FC = () => {
                   : 'text-stone-700 hover:text-stone-900'
               }`}
             >
-              <span>🌾 {isMarathi ? 'नवीन खाते तयार करा' : 'Create Account'}</span>
+              <span>🌾 {t.createAccountTab}</span>
             </button>
           </div>
         </div>
@@ -390,7 +458,7 @@ export const LoginScreen: React.FC = () => {
                   {t.loginTitle}
                 </h2>
                 <p className="text-xs text-stone-500 font-medium mt-0.5">
-                  {isMarathi ? 'आपल्या शेतकरी आयडीने प्रवेश करा' : 'Sign in to access personalized crop monitoring'}
+                  {t.loginSubtitle}
                 </p>
               </div>
 
@@ -407,7 +475,7 @@ export const LoginScreen: React.FC = () => {
                 <div className="flex items-center justify-between mb-2">
                   <div className="flex items-center gap-1.5 text-xs font-extrabold text-amber-950 font-display">
                     <Sparkles className="w-3.5 h-3.5 text-amber-600" />
-                    <span>{isMarathi ? 'डेमो क्रेडेन्शियल्स ऑटो-फिल' : 'Auto-fill Demo Credentials'}</span>
+                    <span>{t.autofillCredentials}</span>
                   </div>
                   <span className="text-[10px] font-bold text-amber-800 bg-amber-200/80 px-2 py-0.5 rounded-full">
                     Evaluator Ready
@@ -442,7 +510,7 @@ export const LoginScreen: React.FC = () => {
                   </button>
                 </div>
                 <p className="text-[10px] text-stone-500 mt-1.5 text-center font-medium">
-                  {isMarathi ? 'माहिती भरण्यासाठी वर टॅप करा, नंतर खाली लॉगिन बटनावर क्लिक करा' : 'Tap above to fill fields, then click Login below'}
+                  {t.autofillPrompt}
                 </p>
               </div>
 
@@ -451,7 +519,7 @@ export const LoginScreen: React.FC = () => {
                 {/* Farmer ID / Email / Mobile Input */}
                 <div>
                   <label className="block text-[11px] font-bold uppercase tracking-wider text-stone-700 mb-1 font-display">
-                    {t.farmerIdLabel} / {isMarathi ? 'मोबाईल' : 'Mobile'}
+                    {t.farmerIdLabel} / {t.mobile}
                   </label>
                   <div className="relative">
                     <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-stone-400">
@@ -461,7 +529,7 @@ export const LoginScreen: React.FC = () => {
                       type="text"
                       value={loginIdentifier}
                       onChange={(e) => setLoginIdentifier(e.target.value)}
-                      placeholder={isMarathi ? 'उदा. farmer123 किंवा KSF-...' : 'e.g. farmer123, KSF-..., or Mobile'}
+                      placeholder={t.loginIdPlaceholder}
                       className="w-full pl-10 pr-3.5 py-3 rounded-2xl bg-white border border-stone-300 text-stone-900 text-xs font-semibold placeholder:text-stone-400 focus:outline-none focus:ring-2 focus:ring-forest-600 focus:border-transparent transition-all shadow-sm"
                       required
                     />
@@ -511,7 +579,7 @@ export const LoginScreen: React.FC = () => {
                 <ArrowRight className="w-3.5 h-3.5 text-stone-500" />
               </button>
               <p className="text-[10px] text-stone-500 font-medium mt-1.5">
-                {isMarathi ? 'लॉगिन न करता थेट मुख्य माहिती पाहण्यासाठी डेमो वापरा' : 'Explore public features without entering credentials'}
+                {t.demoNoticeSub}
               </p>
             </div>
           </div>
@@ -525,10 +593,14 @@ export const LoginScreen: React.FC = () => {
             <div>
               <div className="text-center mb-4">
                 <h2 className="text-base font-black text-stone-900 font-display">
-                  {isMarathi ? 'नवीन शेतकरी नोंदणी' : 'New Farmer Registration'}
+                  {t.newFarmerRegistration}
                 </h2>
                 <p className="text-xs text-stone-500 font-medium mt-0.5">
+<<<<<<< HEAD
                   {isMarathi ? 'भारतातील कोणत्याही भागातील शेतकरी नोंदणी करू शकतात' : 'Register your farm anywhere across India'}
+=======
+                  {t.setupFarmProfileSub}
+>>>>>>> 17403c2c139852b8cc33a1a1f88a36aa5f817824
                 </p>
               </div>
 
@@ -545,19 +617,19 @@ export const LoginScreen: React.FC = () => {
                 <div className="bg-white rounded-2xl p-3.5 border border-stone-300/80 shadow-sm space-y-2.5">
                   <div className="flex items-center gap-1.5 text-xs font-black text-forest-900 font-display pb-1 border-b border-stone-100">
                     <span>👤</span>
-                    <span>{isMarathi ? 'आपल्याविषयी (Personal Details)' : 'About You'}</span>
+                    <span>{t.aboutYou}</span>
                   </div>
 
                   <div>
-                    <label className="block text-[10px] font-bold uppercase text-stone-600 mb-0.5">
-                      {isMarathi ? 'पूर्ण नाव *' : 'Full Name *'}
+                    <label className="block text-[10px] font-bold uppercase tracking-wider text-stone-600 mb-0.5">
+                      {t.fullNameLabel}
                     </label>
                     <div className="relative">
                       <input
                         type="text"
                         value={regName}
                         onChange={(e) => setRegName(e.target.value)}
-                        placeholder={isMarathi ? 'उदा. ज्ञानेश्वर पाटील' : 'e.g. Snehansh Patil'}
+                        placeholder={t.fullNamePlaceholder}
                         className="w-full px-3 py-2 rounded-xl bg-stone-50 border border-stone-300 text-stone-900 text-xs font-semibold focus:outline-none focus:ring-2 focus:ring-forest-600"
                         required
                       />
@@ -566,8 +638,8 @@ export const LoginScreen: React.FC = () => {
 
                   <div className="grid grid-cols-2 gap-2">
                     <div>
-                      <label className="block text-[10px] font-bold uppercase text-stone-600 mb-0.5">
-                        {isMarathi ? 'मोबाईल नंबर *' : 'Mobile Number *'}
+                      <label className="block text-[10px] font-bold uppercase tracking-wider text-stone-600 mb-0.5">
+                        {t.mobileNumberLabel}
                       </label>
                       <div className="relative">
                         <Phone className="w-3.5 h-3.5 absolute left-2.5 top-2.5 text-stone-400" />
@@ -584,8 +656,8 @@ export const LoginScreen: React.FC = () => {
                     </div>
 
                     <div>
-                      <label className="block text-[10px] font-bold uppercase text-stone-600 mb-0.5">
-                        {isMarathi ? 'पासवर्ड *' : 'Password *'}
+                      <label className="block text-[10px] font-bold uppercase tracking-wider text-stone-600 mb-0.5">
+                        {t.passwordLabel}
                       </label>
                       <div className="relative">
                         <Lock className="w-3.5 h-3.5 absolute left-2.5 top-2.5 text-stone-400" />
@@ -602,8 +674,8 @@ export const LoginScreen: React.FC = () => {
                   </div>
 
                   <div>
-                    <label className="block text-[10px] font-bold uppercase text-stone-600 mb-0.5">
-                      {isMarathi ? 'ईमेल (ऐच्छिक)' : 'Email (Optional)'}
+                    <label className="block text-[10px] font-bold uppercase tracking-wider text-stone-600 mb-0.5">
+                      {t.emailOptionalLabel}
                     </label>
                     <div className="relative">
                       <Mail className="w-3.5 h-3.5 absolute left-2.5 top-2.5 text-stone-400" />
@@ -618,6 +690,7 @@ export const LoginScreen: React.FC = () => {
                   </div>
                 </div>
 
+<<<<<<< HEAD
                 {/* SECTION 2: 📍 Your Farm Location (Scalable India-wide System) */}
                 <div className="bg-white rounded-2xl p-4 border border-stone-300/80 shadow-sm space-y-3">
                   <div className="pb-1 border-b border-stone-100">
@@ -698,6 +771,20 @@ export const LoginScreen: React.FC = () => {
                       <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-stone-400">
                         <Search className="w-3.5 h-3.5" />
                       </div>
+=======
+                {/* SECTION 2: 📍 Your Location */}
+                <div className="bg-white rounded-2xl p-3.5 border border-stone-300/80 shadow-sm space-y-2.5">
+                  <div className="flex items-center gap-1.5 text-xs font-black text-forest-900 font-display pb-1 border-b border-stone-100">
+                    <MapPin className="w-3.5 h-3.5 text-forest-700" />
+                    <span>{t.yourLocation}</span>
+                  </div>
+
+                  <div className="grid grid-cols-3 gap-2">
+                    <div>
+                      <label className="block text-[10px] font-bold uppercase tracking-wider text-stone-600 mb-0.5">
+                        {t.villageLabel}
+                      </label>
+>>>>>>> 17403c2c139852b8cc33a1a1f88a36aa5f817824
                       <input
                         type="text"
                         value={searchQuery}
@@ -727,6 +814,7 @@ export const LoginScreen: React.FC = () => {
                       )}
                     </div>
 
+<<<<<<< HEAD
                     {/* Dynamic Auto-Complete Search Results Dropdown */}
                     {showDropdown && (
                       <div className="absolute z-20 w-full mt-1 bg-white rounded-xl shadow-xl border border-stone-300/80 overflow-hidden max-h-56 overflow-y-auto">
@@ -845,6 +933,25 @@ export const LoginScreen: React.FC = () => {
                     <div className="w-full sm:w-1/2">
                       <label className="block text-[10px] font-bold uppercase text-stone-600 mb-0.5 font-display">
                         {isMarathi ? 'पिनकोड (Pincode)' : 'Pincode'}
+=======
+                    <div>
+                      <label className="block text-[10px] font-bold uppercase tracking-wider text-stone-600 mb-0.5">
+                        {t.talukaLabel}
+                      </label>
+                      <input
+                        type="text"
+                        value={regTaluka}
+                        onChange={(e) => setRegTaluka(e.target.value)}
+                        placeholder="Niphad"
+                        className="w-full px-2.5 py-2 rounded-xl bg-stone-50 border border-stone-300 text-stone-900 text-xs font-semibold focus:outline-none focus:ring-2 focus:ring-forest-600"
+                        required
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-[10px] font-bold uppercase tracking-wider text-stone-600 mb-0.5">
+                        {t.districtLabel}
+>>>>>>> 17403c2c139852b8cc33a1a1f88a36aa5f817824
                       </label>
                       <input
                         type="text"
@@ -902,13 +1009,13 @@ export const LoginScreen: React.FC = () => {
                 <div className="bg-white rounded-2xl p-3.5 border border-stone-300/80 shadow-sm space-y-2.5">
                   <div className="flex items-center gap-1.5 text-xs font-black text-forest-900 font-display pb-1 border-b border-stone-100">
                     <Sprout className="w-3.5 h-3.5 text-forest-700" />
-                    <span>{isMarathi ? 'तुमचे शेत (Farm Details)' : 'Your Farm'}</span>
+                    <span>{t.yourFarm}</span>
                   </div>
 
                   <div className="grid grid-cols-2 gap-2">
                     <div>
-                      <label className="block text-[10px] font-bold uppercase text-stone-600 mb-0.5">
-                        {isMarathi ? 'शेताचे नाव *' : 'Farm Name *'}
+                      <label className="block text-[10px] font-bold uppercase tracking-wider text-stone-600 mb-0.5">
+                        {t.farmNameLabel}
                       </label>
                       <input
                         type="text"
@@ -921,8 +1028,8 @@ export const LoginScreen: React.FC = () => {
                     </div>
 
                     <div>
-                      <label className="block text-[10px] font-bold uppercase text-stone-600 mb-0.5">
-                        {isMarathi ? 'क्षेत्र (एकर) *' : 'Area (Acres) *'}
+                      <label className="block text-[10px] font-bold uppercase tracking-wider text-stone-600 mb-0.5">
+                        {t.areaAcresLabel}
                       </label>
                       <input
                         type="number"
@@ -936,29 +1043,32 @@ export const LoginScreen: React.FC = () => {
                     </div>
                   </div>
 
-                  {/* Main Crop Selectable Cards */}
+                  {/* Main Crop Selectable Cards (Expanded to 8 Crops) */}
                   <div>
-                    <label className="block text-[10px] font-bold uppercase text-stone-600 mb-1.5">
-                      {isMarathi ? 'मुख्य पीक निवडा *' : 'Select Main Crop *'}
+                    <label className="block text-[10px] font-bold uppercase tracking-wider text-stone-600 mb-1.5 font-display">
+                      {t.selectMainCrop}
                     </label>
-                    <div className="grid grid-cols-3 gap-2">
-                      {[
-                        { key: 'Tomato', label: isMarathi ? 'टोमॅटो' : 'Tomato', icon: '🍅' },
-                        { key: 'Cotton', label: isMarathi ? 'कापूस' : 'Cotton', icon: '🌿' },
-                        { key: 'Soybean', label: isMarathi ? 'सोयाबीन' : 'Soybean', icon: '🌱' },
-                      ].map((c) => (
+                    <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+                      {CROPS.map((c) => (
                         <button
                           key={c.key}
                           type="button"
+<<<<<<< HEAD
                           onClick={() => setRegMainCrop(c.key as any)}
                           className={`py-2 px-1 rounded-xl border text-xs font-extrabold flex flex-col items-center gap-0.5 transition-all cursor-pointer ${
+=======
+                          onClick={() => setRegMainCrop(c.key)}
+                          className={`py-2 px-1.5 rounded-xl border text-xs font-extrabold flex flex-col items-center justify-center gap-0.5 transition-all cursor-pointer ${
+>>>>>>> 17403c2c139852b8cc33a1a1f88a36aa5f817824
                             regMainCrop === c.key
                               ? 'bg-forest-800 text-white border-forest-900 shadow-md scale-[1.02]'
                               : 'bg-stone-50 text-stone-700 border-stone-300 hover:bg-stone-100'
                           }`}
                         >
                           <span className="text-base">{c.icon}</span>
-                          <span>{c.label}</span>
+                          <span className="truncate max-w-full text-[11px]">
+                            {t[c.transKey as keyof typeof t] || c.defaultLabel}
+                          </span>
                         </button>
                       ))}
                     </div>
@@ -971,6 +1081,7 @@ export const LoginScreen: React.FC = () => {
                   disabled={isRegistering}
                   className="w-full py-3.5 rounded-2xl bg-amber-400 hover:bg-amber-300 active:scale-[0.98] text-forest-950 font-black text-sm font-display transition-all duration-200 shadow-elevated flex items-center justify-center gap-2 cursor-pointer border-2 border-amber-300 disabled:opacity-75"
                 >
+<<<<<<< HEAD
                   <span>
                     {isRegistering
                       ? isMarathi
@@ -980,6 +1091,9 @@ export const LoginScreen: React.FC = () => {
                       ? 'खाते तयार करा व पुढे जा'
                       : 'Create Account & Continue'}
                   </span>
+=======
+                  <span>{isRegistering ? t.creatingAccount : t.btnCreateAccountSubmit}</span>
+>>>>>>> 17403c2c139852b8cc33a1a1f88a36aa5f817824
                   <ArrowRight className="w-4 h-4 text-forest-950" />
                 </button>
               </form>
@@ -1000,10 +1114,10 @@ export const LoginScreen: React.FC = () => {
                 🌱
               </div>
               <h3 className="text-xl font-black font-display tracking-tight text-white mb-1">
-                {isMarathi ? 'कृषी सार्थक मध्ये आपले स्वागत आहे! 🌱' : 'Welcome to Krishi Sarthak! 🌱'}
+                {t.welcomeModalTitle}
               </h3>
               <p className="text-xs text-wheat-200 font-medium">
-                {isMarathi ? 'आपले शेतकरी खाते यशस्वीरित्या तयार झाले आहे.' : 'Your farmer account has been created successfully.'}
+                {t.accountCreatedSub}
               </p>
             </div>
 
@@ -1011,7 +1125,7 @@ export const LoginScreen: React.FC = () => {
             <div className="p-5 space-y-4">
               <div className="bg-white rounded-2xl p-4 border-2 border-forest-600/60 shadow-sm">
                 <div className="text-[11px] uppercase font-bold text-stone-500 mb-1">
-                  {isMarathi ? 'तुमचा कायमस्वरूपी शेतकरी आयडी' : 'Your Permanent Farmer ID'}
+                  {t.permanentFarmerId}
                 </div>
                 <div className="text-2xl font-black font-mono tracking-wider text-forest-900 select-all mb-2">
                   {registeredFarmerId}
@@ -1025,12 +1139,12 @@ export const LoginScreen: React.FC = () => {
                   {hasCopiedId ? (
                     <>
                       <Check className="w-3.5 h-3.5 text-emerald-600" />
-                      <span className="text-emerald-700">{isMarathi ? 'कॉपी झाले!' : 'Copied!'}</span>
+                      <span className="text-emerald-700">{t.copied}</span>
                     </>
                   ) : (
                     <>
                       <Copy className="w-3.5 h-3.5 text-stone-600" />
-                      <span>{isMarathi ? 'आयडी कॉपी करा' : 'Copy Farmer ID'}</span>
+                      <span>{t.btnCopyId}</span>
                     </>
                   )}
                 </button>
@@ -1038,11 +1152,7 @@ export const LoginScreen: React.FC = () => {
 
               <div className="bg-emerald-50 rounded-xl p-3 border border-emerald-200 text-left text-xs text-emerald-900 font-medium flex items-start gap-2">
                 <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
-                <span>
-                  {isMarathi
-                    ? 'हा आयडी किंवा तुमचा मोबाईल नंबर वापरून तुम्ही भविष्यात पुन्हा कधीही लॉगिन करू शकता.'
-                    : 'Save this ID! You can use this ID or your Mobile Number to log in on any device.'}
-                </span>
+                <span>{t.saveIdNotice}</span>
               </div>
 
               {/* Continue to Dashboard CTA */}
@@ -1053,7 +1163,7 @@ export const LoginScreen: React.FC = () => {
                 }}
                 className="w-full py-3.5 px-4 rounded-2xl bg-forest-800 hover:bg-forest-900 active:scale-[0.98] text-white font-black text-xs font-display transition-all shadow-elevated flex items-center justify-center gap-2 cursor-pointer border-2 border-forest-700"
               >
-                <span>{isMarathi ? 'माझ्या डॅशबोर्डवर जा' : 'Continue to Dashboard'}</span>
+                <span>{t.btnContinueToDashboard}</span>
                 <ArrowRight className="w-4 h-4 text-amber-300" />
               </button>
             </div>
