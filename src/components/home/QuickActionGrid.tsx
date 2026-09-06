@@ -1,33 +1,44 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Camera, MapPin, Volume2, VolumeX, UserCheck, Sparkles } from 'lucide-react';
 import { useLanguage } from '../../context/LanguageContext';
 import { useCrop } from '../../context/CropContext';
 import { useAuth } from '../../context/AuthContext';
-import { speechService } from '../../utils/speech';
+import { speechService, getLocalizedAdvisoryScript } from '../../utils/speech';
 
 export const QuickActionGrid: React.FC = () => {
   const { language, t } = useLanguage();
   const { setActiveTab, diagnosis } = useCrop();
   const { requireFarmerAccess } = useAuth();
   const [isPlayingAudio, setIsPlayingAudio] = useState(false);
+  const [prevLanguage, setPrevLanguage] = useState(language);
+
+  if (language !== prevLanguage) {
+    setPrevLanguage(language);
+    setIsPlayingAudio(false);
+    speechService.stop();
+  }
+
+  useEffect(() => {
+    return () => {
+      speechService.stop();
+    };
+  }, []);
 
   const handleListenAdvice = () => {
     if (isPlayingAudio) {
       speechService.stop();
       setIsPlayingAudio(false);
     } else {
-      const script =
-        language === 'mr'
-          ? diagnosis.advisoryVoiceScriptMr
-          : language === 'hi'
-          ? (diagnosis.advisoryVoiceScriptHi || diagnosis.advisoryVoiceScript)
-          : diagnosis.advisoryVoiceScript;
+      const script = getLocalizedAdvisoryScript(diagnosis, language);
       speechService.speak(
         script,
         language,
         () => setIsPlayingAudio(true),
         () => setIsPlayingAudio(false),
-        () => setIsPlayingAudio(false)
+        (err) => {
+          console.warn('[QuickActionGrid] Speech synthesis error:', err);
+          setIsPlayingAudio(false);
+        }
       );
     }
   };

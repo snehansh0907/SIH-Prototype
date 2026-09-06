@@ -4,18 +4,14 @@ import { useLanguage } from '../../context/LanguageContext';
 import { useCrop } from '../../context/CropContext';
 import { useAuth } from '../../context/AuthContext';
 import { VoiceButton } from '../common/VoiceButton';
+import { getLocalizedAdvisoryScript } from '../../utils/speech';
 
 export const DiagnosisActions: React.FC = () => {
   const { language, t } = useLanguage();
   const { diagnosis, setActiveTab } = useCrop();
   const { requireFarmerAccess } = useAuth();
 
-  const script =
-    language === 'mr'
-      ? diagnosis.advisoryVoiceScriptMr
-      : language === 'hi'
-      ? (diagnosis.advisoryVoiceScriptHi || diagnosis.advisoryVoiceScript)
-      : diagnosis.advisoryVoiceScript;
+  const script = getLocalizedAdvisoryScript(diagnosis, language);
 
   return (
     <div className="space-y-3 pt-2">

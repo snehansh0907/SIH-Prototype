@@ -5,6 +5,7 @@ import { useCrop } from '../../context/CropContext';
 import { useAuth } from '../../context/AuthContext';
 import { StatusBadge } from '../common/StatusBadge';
 import { VoiceButton } from '../common/VoiceButton';
+import { getLocalizedAdvisoryScript } from '../../utils/speech';
 
 export const CropStatusHero: React.FC = () => {
   const { language, t } = useLanguage();
@@ -132,13 +133,6 @@ export const CropStatusHero: React.FC = () => {
       ? ((diagnosis.whatMayHappenNext.textHi || diagnosis.whatMayHappenNext.text).slice(0, 105) + '...')
       : t.cropStatusDesc;
 
-  const voiceScript =
-    language === 'mr'
-      ? diagnosis.advisoryVoiceScriptMr
-      : language === 'hi'
-      ? (diagnosis.advisoryVoiceScriptHi || diagnosis.advisoryVoiceScript)
-      : diagnosis.advisoryVoiceScript;
-
   return (
     <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-amber-500/10 via-amber-100/50 to-emerald-500/10 border-2 border-amber-300/80 p-5 shadow-card mb-5">
       {/* Background soft glow */}
@@ -191,7 +185,7 @@ export const CropStatusHero: React.FC = () => {
       {/* Dual Actions: Listen + View Full Advisory */}
       <div className="grid grid-cols-2 gap-2.5">
         <VoiceButton
-          textToSpeak={voiceScript}
+          textToSpeak={getLocalizedAdvisoryScript(diagnosis, language)}
           variant="secondary"
           className="text-xs py-2.5 px-3 rounded-xl border border-stone-300 font-bold"
         />

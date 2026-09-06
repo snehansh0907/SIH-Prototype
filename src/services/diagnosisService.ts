@@ -51,12 +51,12 @@ const DISEASE_NAME_MR_MAP: Record<string, string> = {
 
 // Hindi disease name map for standard recognized diseases
 const DISEASE_NAME_HI_MAP: Record<string, string> = {
-  'Early Blight': 'अगेती झुलसा (करपा रोग)',
-  'Late Blight': 'पिछेती झुलसा (Late Blight)',
+  'Early Blight': 'अगेती झुलसा रोग (Early Blight)',
+  'Late Blight': 'पछेती झुलसा रोग (Late Blight)',
   'Leaf Mold': 'पत्ती फफूंद (Leaf Mold)',
-  'Leaf Curl Disease': 'पर्ण कुंचन रोग (Leaf Curl)',
-  'Bollworm Related Damage': 'सुंडी / इल्ली का प्रकोप',
-  'Rust': 'गेरूई / रस्ट रोग',
+  'Leaf Curl Disease': 'पत्ती मरोड़ / पर्ण कुंचन रोग (Leaf Curl)',
+  'Bollworm Related Damage': 'गुलाबी सुंडी / इल्ली नुकसान',
+  'Rust': 'सोयाबीन गेरुआ रोग (Rust)',
   'Leaf Spot': 'पत्ती धब्बा रोग (Leaf Spot)',
 };
 
@@ -227,7 +227,7 @@ export const diagnosisService = {
 
       const voiceScript = `Detected ${diseaseName} on ${backendData.crop} with ${backendData.severity_band} severity and ${backendData.confidence}% confidence. Follow the recommended daily IPM steps and check lower canopy leaves.`;
       const voiceScriptMr = `${backendData.crop} पिकावर ${diseaseNameMr} आढळला आहे. गांभीर्य: ${backendData.severity_band}. त्वरित दिलेल्या उपाययोजना अंमलात आणा.`;
-      const voiceScriptHi = `${backendData.crop} फसल पर ${diseaseNameHi} पाया गया है। गंभीरता: ${backendData.severity_band}। कृपया अनुशंसित उपायों का तुरंत पालन करें।`;
+      const voiceScriptHi = `${backendData.crop} फसल पर ${diseaseNameHi} पाया गया है। गंभीरता: ${backendData.severity_band}। तुरंत दिए गए एकीकृत कीट प्रबंधन (IPM) उपायों का पालन करें।`;
 
       const finalImageUrl =
         serverImageUrl ||
@@ -341,7 +341,7 @@ export const diagnosisService = {
           advisoryVoiceScriptMr:
             'फोटोच्या अस्पष्टतेमुळे निदान निश्चित नाही. कृपया दिवसा चांगल्या प्रकाशात नवीन फोटो घ्या किंवा फवारणीपूर्वी कृषी तज्ञांशी बोला.',
           advisoryVoiceScriptHi:
-            'फोटो की अस्पष्टता के कारण निदान अनिश्चित है। कृपया दिन के उजाले में नया स्पष्ट फोटो लें या छिड़काव से पहले कृषि विशेषज्ञ से संपर्क करें।',
+            'फोटो स्पष्ट न होने के कारण निदान अनिश्चित है। कृपया दिन के उजाले में साफ फोटो लें या कीटनाशक छिड़कने से पहले कृषि विशेषज्ञ से सलाह लें।',
         };
       }
 
@@ -432,7 +432,7 @@ export const diagnosisService = {
           advisoryVoiceScriptMr:
             'कापसावर पानांचा चुरमुरडा रोग आढळला आहे. पांढऱ्या माशीच्या नियंत्रणासाठी लगेच पिवळे चिकट सापळे लावा व नत्र खतांचा अतिवापर टाळा.',
           advisoryVoiceScriptHi:
-            'कपास में पर्ण कुंचन रोग के लक्षण पाए गए हैं। सफेद मक्खी के नियंत्रण हेतु पीले चिपचिपे जाल लगाएं और अत्यधिक यूरिया के प्रयोग से बचें।',
+            'कपास पर पत्ती मरोड़ / पर्ण कुंचन रोग के लक्षण पाए गए हैं। सफेद मक्खी के तुरंत नियंत्रण के लिए पीले चिपचिपे ट्रैप लगाएं और अत्यधिक नाइट्रोजन उर्वरक से बचें।',
         };
       }
 
@@ -523,7 +523,7 @@ export const diagnosisService = {
           advisoryVoiceScriptMr:
             'सोयाबीनवर तांबेरा रोगाची लक्षणे दिसत आहेत. कोरड्या सकाळच्या वेळेत शिफारस केलेल्या बुरशीनाशकाची फवारणी करा.',
           advisoryVoiceScriptHi:
-            'सोयाबीन में गेरूई रोग के लक्षण देखे गए हैं। शांत और शुष्क सुबह के समय अनुशंसित कवकनाशी का तुरंत छिड़काव करें।',
+            'सोयाबीन पर गेरुआ रोग के लक्षण देखे गए हैं। शांत व शुष्क सुबह के समय अनुशंसित ट्राइएजोल कवकनाशी का तुरंत छिड़काव करें।',
         };
       }
 
