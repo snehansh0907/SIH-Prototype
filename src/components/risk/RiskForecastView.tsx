@@ -45,16 +45,21 @@ export const RiskForecastView: React.FC = () => {
         />
       </div>
 
-      {/* Screen Title */}
+      {/* Primary Question: What might happen next? */}
       <div className="mb-4">
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 mb-1">
           <span className="text-2xl">🌦️</span>
           <h2 className="text-xl font-black text-stone-900 font-display">
-            {t.riskForecastTitle}
+            {t.whatMightHappenNext}
           </h2>
         </div>
-        <p className="text-xs text-stone-600 mt-1 leading-normal font-medium">
-          {language === 'mr' ? riskForecast.summaryMr : riskForecast.summary}
+        <div className="flex items-center gap-2 mb-2">
+          <span className="text-xs font-bold text-forest-800 bg-forest-100 px-2.5 py-0.5 rounded-full border border-forest-300">
+            {language === 'mr' ? 'पीक अवस्था: फुले व फळधारणा काळ' : 'Crop Stage: Flowering & Fruiting'}
+          </span>
+        </div>
+        <p className="text-xs text-stone-700 font-bold bg-amber-50 p-3 rounded-2xl border border-amber-300/80 leading-relaxed">
+          💡 {language === 'mr' ? riskForecast.summaryMr : riskForecast.summary}
         </p>
       </div>
 

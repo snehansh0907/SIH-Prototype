@@ -41,12 +41,12 @@ export const AreaHotspotView: React.FC = () => {
         />
       </div>
 
-      {/* Screen Title */}
+      {/* Primary Question: What is happening around me? */}
       <div className="mb-4">
         <div className="flex items-center gap-2">
           <span className="text-2xl">📍</span>
           <h2 className="text-xl font-black text-stone-900 font-display">
-            {t.areaTitle}
+            {t.whatIsHappeningAroundMe}
           </h2>
         </div>
         <p className="text-xs text-stone-600 mt-0.5 font-medium">

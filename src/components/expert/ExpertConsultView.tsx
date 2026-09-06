@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { ArrowLeft, Send, PhoneCall, Sparkles, CheckCheck } from 'lucide-react';
+import { ArrowLeft, Send, PhoneCall, Sparkles, CheckCheck, AlertTriangle } from 'lucide-react';
 import { useLanguage } from '../../context/LanguageContext';
 import { useCrop } from '../../context/CropContext';
 import { StatusBadge } from '../common/StatusBadge';
@@ -65,25 +65,42 @@ export const ExpertConsultView: React.FC = () => {
           <span>{t.navHome}</span>
         </button>
 
-        <a
-          href="tel:18001801551"
+        {/* Demo Helpline Call Button */}
+        <button
+          type="button"
+          onClick={() => alert(language === 'mr' ? 'डेमो कॉल: १८००-०००-०००० (प्रोटोटाइप)' : 'Demo Helpline Call: 1800-000-0000 (Prototype)')}
           className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-forest-100 text-forest-900 border border-forest-300 font-bold text-xs hover:bg-forest-200 transition-colors shadow-sm"
         >
           <PhoneCall className="w-3.5 h-3.5 text-forest-700" />
-          <span>1800-180-1551</span>
-        </a>
+          <span>1800-000-0000 (Demo)</span>
+        </button>
       </div>
 
       {/* Screen Title */}
       <div className="mb-3">
         <h2 className="text-lg font-black text-stone-900 font-display flex items-center gap-2">
-          <span>👨🌾</span>
+          <span>👨‍🌾</span>
           <span>{t.expertTitle}</span>
         </h2>
         <p className="text-xs text-stone-500 font-medium">
           {t.expertSubtitle}
         </p>
       </div>
+
+      {/* Escalation Banner if AI Diagnosis is Uncertain */}
+      {diagnosis.isUncertain && (
+        <div className="rounded-2xl bg-amber-500/15 border-2 border-amber-500 p-3 mb-3 flex items-start gap-2.5">
+          <AlertTriangle className="w-5 h-5 text-amber-800 shrink-0 mt-0.5" />
+          <div>
+            <div className="text-xs font-black text-amber-950 font-display">
+              {language === 'mr' ? 'AI निदान अनिश्चित → तज्ञ मदत उपलब्ध' : 'AI is not certain → an agricultural expert can help'}
+            </div>
+            <div className="text-[11px] text-stone-700 mt-0.5">
+              {language === 'mr' ? 'कॅमेरा फोटोवरून अचूकता कमी आहे. सुरक्षित उपायांसाठी खाली प्रश्न विचारा.' : 'Photo clarity was low. Send symptoms below for manual expert verification.'}
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* MANDATORY CROP CONTEXT CARD PINNED AT TOP */}
       <div className="rounded-2xl bg-amber-50/90 border border-amber-300 p-3.5 shadow-sm mb-3.5 flex items-center justify-between">
@@ -92,7 +109,7 @@ export const ExpertConsultView: React.FC = () => {
             🌿
           </div>
           <div>
-            <div className="text-[10px] uppercase font-bold tracking-wider text-amber-800">
+            <div className="text-[10px] uppercase font-bold tracking-wider text-amber-800 font-display">
               {t.cropContextTitle}
             </div>
             <div className="text-xs font-black text-stone-900">
@@ -104,7 +121,7 @@ export const ExpertConsultView: React.FC = () => {
         <StatusBadge level={diagnosis.severity} type="severity" size="sm" />
       </div>
 
-      {/* Agronomist Profile Header */}
+      {/* Agronomist Profile Header (Demo Labeled) */}
       <div className="bg-white rounded-2xl p-3 border border-stone-200/90 shadow-soft mb-3 flex items-center justify-between">
         <div className="flex items-center gap-2.5">
           <div className="relative">
@@ -171,7 +188,7 @@ export const ExpertConsultView: React.FC = () => {
 
       {/* Quick Questions Chips */}
       <div className="mb-2">
-        <div className="flex items-center gap-1 text-[10px] uppercase font-bold tracking-wider text-stone-500 mb-1.5 px-1">
+        <div className="flex items-center gap-1 text-[10px] uppercase font-bold tracking-wider text-stone-500 mb-1.5 px-1 font-display">
           <Sparkles className="w-3 h-3 text-amber-500" />
           <span>{t.quickQuestions}</span>
         </div>
@@ -212,7 +229,7 @@ export const ExpertConsultView: React.FC = () => {
         <button
           type="submit"
           disabled={!inputMessage.trim()}
-          className="w-10 h-10 rounded-xl bg-forest-800 text-white hover:bg-forest-900 disabled:opacity-40 disabled:hover:bg-forest-800 flex items-center justify-center transition-all active:scale-95 shadow-sm shrink-0"
+          className="w-10 h-10 rounded-xl bg-forest-800 text-white hover:bg-forest-900 disabled:opacity-40 disabled:hover:bg-forest-800 flex items-center justify-center transition-all active:scale-95 shadow-sm shrink-0 cursor-pointer"
         >
           <Send className="w-4 h-4 text-amber-300" />
         </button>
