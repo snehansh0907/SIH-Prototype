@@ -34,6 +34,11 @@ export const SEEDED_DEMO_CROP_CYCLES: Record<string, string> = {
   tomato: '30dd71a7-0230-4492-8fd8-42d7a53af3a1',
   cotton: 'c0867699-a20f-4293-a2c7-2a1d93b915e4',
   soybean: '23114716-38fc-493d-b823-0f80e3e8aef6',
+  sugarcane: '41aa82c8-1341-4503-9ef9-3b2e04f91b01', // placeholder - swap after npm run seed
+  maize: '52bb93d9-2452-4614-af0a-4c3f15a02c12',     // placeholder - swap after npm run seed
+  onion: '63cc04ea-3563-4725-b01b-5d4a26b13d23',     // placeholder - swap after npm run seed
+  rice: '74dd15fb-4674-4836-c12c-6e5b37c24e34',      // placeholder - swap after npm run seed
+  wheat: '85ee26ac-5785-4947-d23d-7f6c48d35f45',     // placeholder - swap after npm run seed
 };
 
 export const SEEDED_FARMS: BackendFarm[] = [
@@ -274,7 +279,14 @@ export const farmService = {
   },
 
   getCropCycleIdForCrop(cropId: string): string {
-    const key = cropId.toLowerCase();
-    return SEEDED_DEMO_CROP_CYCLES[key] || SEEDED_DEMO_CROP_CYCLES.tomato;
+    const key = cropId?.toLowerCase().trim();
+    const cycleId = SEEDED_DEMO_CROP_CYCLES[key];
+    if (!cycleId) {
+      const available = Object.keys(SEEDED_DEMO_CROP_CYCLES).join(', ');
+      const errorMsg = `[farmService] No seeded crop cycle found for crop "${cropId}". Available crops: [${available}].`;
+      console.error(errorMsg);
+      throw new Error(errorMsg);
+    }
+    return cycleId;
   },
 };

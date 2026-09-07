@@ -216,6 +216,299 @@ const DISEASE_KNOWLEDGE_BASE = [
     safe_dosage: ['Mancozeb 75% WP: 2.5 g/litre of water (only under high severity)'],
     ipm_priority_order: IPM_PRIORITY_ORDER,
   },
+
+  // ---------------------- SUGARCANE ----------------------
+  {
+    crop_name: 'Sugarcane',
+    disease_name: 'Red Rot',
+    scientific_name: 'Colletotrichum falcatum',
+    description:
+      'A destructive fungal disease of sugarcane causing internal reddening of the stalk with characteristic white cross-bands, leaf yellowing, and drying of crowns.',
+    how_it_spreads: [
+      'Primarily through infected seed setts used for planting',
+      'Fungal spores spread via irrigation water and rainwater runoff',
+      'Survives in crop residue and infected soil for multiple seasons',
+    ],
+    prevention_steps: [
+      'Use certified disease-free and heat-treated seed setts',
+      'Grow red-rot resistant varieties recommended for the region',
+      'Ensure proper field drainage and avoid water stagnation',
+      'Practice crop rotation with non-host crops like paddy or legumes',
+    ],
+    remedy_steps: [
+      'Cultural: Uproot and burn infected clumps immediately to prevent spread; avoid ratooning infected fields',
+      'Mechanical: Maintain clean irrigation channels and avoid using runoff water from affected fields',
+      'Biological: Treat setts with Trichoderma viride or Trichoderma harzianum formulation before planting',
+      'Chemical (preventive/sett treatment): Dip seed setts in Carbendazim 50% WP or Thiophanate methyl solution prior to planting',
+    ],
+    safe_dosage: [
+      'Carbendazim 50% WP: 1 g/litre of water for sett soaking for 15-20 minutes before planting',
+      'Always follow label instructions and observe recommended safety intervals',
+    ],
+    ipm_priority_order: IPM_PRIORITY_ORDER,
+  },
+  {
+    crop_name: 'Sugarcane',
+    disease_name: 'Wilt',
+    scientific_name: 'Fusarium sacchari',
+    description:
+      'A fungal vascular disease causing gradual yellowing and withering of crown leaves, pith drying, and hollow stems with reddish-purple discoloration.',
+    how_it_spreads: [
+      'Soil-borne and sett-borne fungal pathogen',
+      'Enters plants through root injuries, nematode wounds, or borer entry holes',
+      'Accelerated by drought stress followed by waterlogging conditions',
+    ],
+    prevention_steps: [
+      'Select healthy, disease-free seed cane from certified nurseries',
+      'Avoid planting in wilt-sick soils or rotate with green manure crops',
+      'Manage root borers and nematodes that facilitate fungal entry',
+      'Avoid moisture stress during peak formative growth stages',
+    ],
+    remedy_steps: [
+      'Cultural: Rogue out and destroy affected clumps early; practice 2-3 year crop rotation',
+      'Mechanical: Prevent root damage during intercultural operations and cultivation',
+      'Biological: Apply Trichoderma viride enriched in well-decomposed farmyard manure (FYM) to soil',
+      'Chemical: Dip setts in Carbendazim 50% WP solution before planting; drench root zone in early stages if infection is localized',
+    ],
+    safe_dosage: [
+      'Carbendazim 50% WP: 1-2 g/litre of water for sett treatment (consult local Krishi Vigyan Kendra)',
+    ],
+    ipm_priority_order: IPM_PRIORITY_ORDER,
+  },
+
+  // ---------------------- MAIZE ----------------------
+  {
+    crop_name: 'Maize',
+    disease_name: 'Turcicum Leaf Blight',
+    scientific_name: 'Exserohilum turcicum',
+    description:
+      'A major fungal leaf blight producing long, elliptical, spindle-shaped greyish-green to tan lesions that coalesce and cause extensive leaf scorching.',
+    how_it_spreads: [
+      'Airborne conidia carried by wind and splashing rain',
+      'Thrives in cool to moderate temperatures (18-27°C) with high relative humidity and heavy dew',
+      'Survives in infected maize residue on the soil surface',
+    ],
+    prevention_steps: [
+      'Plant resistant or tolerant maize hybrids recommended for the zone',
+      'Practice deep summer plowing to bury crop residues',
+      'Avoid high plant density to improve canopy aeration',
+      'Follow balanced fertilization and avoid excessive nitrogen application',
+    ],
+    remedy_steps: [
+      'Cultural: Collect and destroy crop residues after harvest; rogue severely blighted lower leaves',
+      'Mechanical: Maintain optimum plant spacing to reduce leaf wetness duration',
+      'Biological: Apply Pseudomonas fluorescens or Trichoderma viride based bio-fungicide foliar spray',
+      'Chemical (at symptom onset): Spray Mancozeb or Azoxystrobin + Difenoconazole if lesions appear before silking',
+    ],
+    safe_dosage: [
+      'Mancozeb 75% WP: 2-2.5 g/litre of water; or Azoxystrobin 18.2% + Difenoconazole 11.4% SC: 1 ml/litre',
+      'Apply at first sign of disease and repeat after 10-14 days if humid conditions persist',
+    ],
+    ipm_priority_order: IPM_PRIORITY_ORDER,
+  },
+  {
+    crop_name: 'Maize',
+    disease_name: 'Maydis Leaf Blight',
+    scientific_name: 'Bipolaris maydis',
+    description:
+      'A fungal disease producing small, elongated rectangular or diamond-shaped lesions between leaf veins, causing premature leaf drying and lodging.',
+    how_it_spreads: [
+      'Wind-borne spores and rain splash from lower leaves to upper canopy',
+      'Favoured by warm (20-32°C) and humid weather conditions',
+      'Overwinters on infected maize stubble and volunteer host grasses',
+    ],
+    prevention_steps: [
+      'Use certified disease-resistant hybrid seeds',
+      'Rotate crops with pulses or oilseeds for at least one season',
+      'Destroy previous crop stubble by plowing into the soil',
+      'Ensure balanced soil nutrition with adequate potassium',
+    ],
+    remedy_steps: [
+      'Cultural: Remove and burn infected lower leaves in smallholder plots',
+      'Mechanical: Keep field borders free from wild grasses and weed hosts',
+      'Biological: Treat seed with Trichoderma harzianum @ 4 g/kg seed before sowing',
+      'Chemical (only if disease pressure is high): Spray Mancozeb 75% WP or Zineb 75% WP at early lesion formation',
+    ],
+    safe_dosage: [
+      'Mancozeb 75% WP: 2.5 g/litre of water as foliar spray (consult local agriculture officer)',
+    ],
+    ipm_priority_order: IPM_PRIORITY_ORDER,
+  },
+
+  // ---------------------- ONION ----------------------
+  {
+    crop_name: 'Onion',
+    disease_name: 'Purple Blotch',
+    scientific_name: 'Alternaria porri',
+    description:
+      'A common foliar fungal disease causing small water-soaked lesions that turn brown to purplish with distinct yellow halos, blighting leaves and reducing bulb yield.',
+    how_it_spreads: [
+      'Spores spread by wind and rain splash during warm, humid weather',
+      'Requires prolonged leaf wetness (dew or rain) and 21-30°C temperature',
+      'Survives in crop debris and infected onion seed or sets',
+    ],
+    prevention_steps: [
+      'Use certified disease-free seeds or sets from reliable nurseries',
+      'Adopt a 2-3 year crop rotation without allium crops (onion, garlic, leek)',
+      'Avoid excessive overhead irrigation; prefer drip or furrow irrigation',
+      'Maintain proper plant spacing for sunlight penetration and fast foliage drying',
+    ],
+    remedy_steps: [
+      'Cultural: Avoid late-evening irrigations; destroy infected crop residue post harvest',
+      'Mechanical: Hand-pick and remove severely infected leaf tips early in the morning',
+      'Biological: Foliar application of Trichoderma viride or Pseudomonas fluorescens @ 5 g/litre',
+      'Chemical: Foliar spray of Mancozeb 75% WP or Difenoconazole 25% EC with a sticker/spreader agent',
+    ],
+    safe_dosage: [
+      'Mancozeb 75% WP: 2.5 g/litre of water + sticker (0.5 ml/L); or Difenoconazole 25% EC: 1 ml/litre',
+      'Spray at 10-15 day intervals upon first appearance of purple lesions',
+    ],
+    ipm_priority_order: IPM_PRIORITY_ORDER,
+  },
+  {
+    crop_name: 'Onion',
+    disease_name: 'Stemphylium Blight',
+    scientific_name: 'Stemphylium vesicarium',
+    description:
+      'A fungal foliage disease forming small yellow-to-orange flecks that expand into elongated light brown to dark blighted patches, causing leaf dieback from tips downwards.',
+    how_it_spreads: [
+      'Airborne spores carried by wind during cool to warm humid spells',
+      'Frequently attacks leaves already weakened by thrips injury or purple blotch',
+      'Overwinters on infected plant debris and volunteer allium plants',
+    ],
+    prevention_steps: [
+      'Control thrips infestations early, as feeding injuries predispose leaves to infection',
+      'Practice crop rotation and avoid planting contiguous onion fields',
+      'Maintain good soil drainage and avoid waterlogging conditions',
+      'Avoid excess nitrogenous fertilizers which promote soft, susceptible leaf growth',
+    ],
+    remedy_steps: [
+      'Cultural: Rogue out and bury severely blighted foliage; avoid working in wet fields',
+      'Mechanical: Maintain wider spacing between beds to improve airflow',
+      'Biological: Dip seedling roots in Trichoderma viride suspension prior to transplanting',
+      'Chemical: Apply Tebuconazole + Trifloxystrobin or Mancozeb as foliar spray with adhesive sticker',
+    ],
+    safe_dosage: [
+      'Tebuconazole 50% + Trifloxystrobin 25% WG: 0.6-0.8 g/litre of water with agricultural wetting agent',
+    ],
+    ipm_priority_order: IPM_PRIORITY_ORDER,
+  },
+
+  // ---------------------- RICE ----------------------
+  {
+    crop_name: 'Rice',
+    disease_name: 'Rice Blast',
+    scientific_name: 'Magnaporthe oryzae',
+    description:
+      'A highly destructive fungal disease producing spindle-shaped lesions with greyish-white centres and brown margins on leaves, collars, nodes, and panicle necks.',
+    how_it_spreads: [
+      'Airborne fungal spores distributed widely by wind and rain',
+      'Favoured by high relative humidity (>90%), dew, cloudy skies, and cool night temperatures (18-24°C)',
+      'Heavily promoted by excessive nitrogen fertilizer application',
+    ],
+    prevention_steps: [
+      'Cultivate blast-resistant or tolerant paddy varieties',
+      'Treat seeds with bio-agent or fungicide before nursery sowing',
+      'Apply nitrogen fertilizer in split doses rather than large single applications',
+      'Maintain proper water depth in the paddy field; avoid letting the soil dry out',
+    ],
+    remedy_steps: [
+      'Cultural: Avoid excessive urea top-dressing; apply balanced potash to enhance resistance',
+      'Mechanical: Clean field bunds of alternate weed hosts (e.g. Echinochloa grass)',
+      'Biological: Seed treatment and nursery spray with Pseudomonas fluorescens @ 10 g/kg seed',
+      'Chemical (on appearance of lesions): Spray Tricyclazole 75% WP or Isoprothiolane 40% EC at early tillering or panicle emergence',
+    ],
+    safe_dosage: [
+      'Tricyclazole 75% WP: 0.6 g/litre of water (first spray at initial tillering, repeat at boot-leaf stage if needed)',
+    ],
+    ipm_priority_order: IPM_PRIORITY_ORDER,
+  },
+  {
+    crop_name: 'Rice',
+    disease_name: 'Bacterial Leaf Blight',
+    scientific_name: 'Xanthomonas oryzae pv. oryzae',
+    description:
+      'A devastating bacterial disease causing water-soaked to yellowish-white wavy stripes along leaf margins progressing downwards, causing leaf wilting and "kresek" in early stages.',
+    how_it_spreads: [
+      'Bacterial cells spread via irrigation water, rain splash, wind, and typhoons',
+      'Enters plants through hydathodes (leaf margin pores) or wounds caused during transplanting',
+      'Thrives in warm temperatures (25-34°C) and high humidity with severe winds',
+    ],
+    prevention_steps: [
+      'Plant certified disease-free seed and resistant paddy cultivars',
+      'Avoid clipping seedling leaf tips during transplanting',
+      'Ensure proper water management; avoid deep continuous flooding',
+      'Avoid excess nitrogen; ensure split applications along with recommended potassium',
+    ],
+    remedy_steps: [
+      'Cultural: Drain water from the field temporarily for 3-4 days to arrest bacterial spread; stop nitrogen top-dressing during active blight',
+      'Mechanical: Eradicate weed hosts on bunds that harbour the bacterial pathogen',
+      'Biological: Foliar spray of bio-agent Bacillus amyloliquefaciens or Pseudomonas fluorescens',
+      'Chemical: Spray Copper oxychloride 50% WP combined with Streptocycline (or Plantomycin) as per local expert recommendations',
+    ],
+    safe_dosage: [
+      'Copper oxychloride 50% WP (2 g/litre) + Streptocycline (0.1 g/litre of water); spray twice at 10-12 day intervals',
+    ],
+    ipm_priority_order: IPM_PRIORITY_ORDER,
+  },
+
+  // ---------------------- WHEAT ----------------------
+  {
+    crop_name: 'Wheat',
+    disease_name: 'Stripe Rust (Yellow Rust)',
+    scientific_name: 'Puccinia striiformis f. sp. tritici',
+    description:
+      'A major fungal rust forming vivid yellow-orange powdery pustules arranged in prominent linear stripes along leaf blades and sheaths, reducing grain filling.',
+    how_it_spreads: [
+      'Wind-borne urediniospores carried over hundreds of kilometres from Himalayan foothills or cooler zones',
+      'Favoured by cool temperatures (10-15°C), high humidity, intermittent rains, and morning dew',
+      'Rapidly spreads in dense canopies during winter months (December to February)',
+    ],
+    prevention_steps: [
+      'Sow recommended yellow rust-resistant wheat varieties (e.g. DBW / HD series)',
+      'Complete timely sowing before mid-November to avoid peak rust weather at heading stage',
+      'Avoid excessive vegetative growth by balancing nitrogen with adequate phosphorus and potassium',
+      'Scout fields weekly during winter, focusing on shady and humid field edges',
+    ],
+    remedy_steps: [
+      'Cultural: Destroy volunteer wheat plants and alternate grass hosts in surrounding areas',
+      'Mechanical: Monitor microclimates and mark initial foci patches for localized intervention',
+      'Biological: Soil and seed application of Trichoderma viride enriched organic manure',
+      'Chemical (immediately upon detecting yellow stripes): Spray Propiconazole 25% EC or Tebuconazole 25.9% EC on foliage',
+    ],
+    safe_dosage: [
+      'Propiconazole 25% EC: 1 ml/litre of water (approx 200 ml in 200 L water per acre; spray immediately on spotting yellow pustule stripes)',
+    ],
+    ipm_priority_order: IPM_PRIORITY_ORDER,
+  },
+  {
+    crop_name: 'Wheat',
+    disease_name: 'Loose Smut',
+    scientific_name: 'Ustilago tritici',
+    description:
+      'A seed-borne fungal disease that completely converts wheat earheads into a black powdery mass of smut spores covered by a delicate membrane that ruptures, leaving a bare rachis.',
+    how_it_spreads: [
+      'Internally seed-borne pathogen dormant inside the seed embryo',
+      'Wind carries smut spores from infected heads to open florets of healthy wheat during flowering',
+      'Infected seeds appear completely normal and cannot be distinguished visually from healthy seeds',
+    ],
+    prevention_steps: [
+      'Sow only certified smut-free seed procured from recognized agricultural agencies',
+      'Mandatory seed dressing with systemic fungicide before sowing',
+      'Practice solar heat seed treatment: soak seed in water for 4 hours then spread in blazing sun in May-June',
+      'Rogue out smutted heads early before spores disperse',
+    ],
+    remedy_steps: [
+      'Cultural: Practice solar heat or hot water seed treatment (52°C for 10-15 minutes) prior to planting season',
+      'Mechanical: Rogue out infected smutted earheads inside paper or polythene bags early in the morning and burn them to prevent spore release',
+      'Biological: Treat seeds with Trichoderma viride formulation @ 4-5 g/kg seed before sowing',
+      'Chemical (seed treatment - curative only before planting): Mandatory seed dressing with Carboxin 75% WP or Tebuconazole 2% DS',
+    ],
+    safe_dosage: [
+      'Carboxin 37.5% + Thiram 37.5% WS @ 2.5 g/kg seed; or Tebuconazole 2% DS @ 1.5 g/kg seed (strictly seed treatment, no standing crop foliar spray)',
+    ],
+    ipm_priority_order: IPM_PRIORITY_ORDER,
+  },
 ];
 
 // Helper: look up a disease record by crop + disease name (case-insensitive)

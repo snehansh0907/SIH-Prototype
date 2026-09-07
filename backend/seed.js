@@ -100,6 +100,11 @@ async function seed() {
     { crop_name: 'Tomato', variety: 'Abhinav' },
     { crop_name: 'Cotton', variety: 'Bt Cotton' },
     { crop_name: 'Soybean', variety: 'JS-335' },
+    { crop_name: 'Sugarcane', variety: 'Co 86032' },
+    { crop_name: 'Maize', variety: 'Pioneer 3396' },
+    { crop_name: 'Onion', variety: 'Bhima Super' },
+    { crop_name: 'Rice', variety: 'Basmati 1121' },
+    { crop_name: 'Wheat', variety: 'HD 2967' },
   ];
   const stages = ['seedling', 'vegetative', 'flowering', 'fruiting'];
 
@@ -119,6 +124,14 @@ async function seed() {
   const { error: cycleErr } = await supabase.from('crop_cycles').insert(cropCycles);
   if (cycleErr) console.warn('   Warning:', cycleErr.message);
   else console.log(`   Inserted ${cropCycles.length} crop cycles.`);
+  console.log('   Crop Cycle IDs (for SEEDED_DEMO_CROP_CYCLES in farmService.ts):');
+  const uniqueCropsLogged = new Set();
+  cropCycles.forEach((c) => {
+    if (!uniqueCropsLogged.has(c.crop_name.toLowerCase())) {
+      uniqueCropsLogged.add(c.crop_name.toLowerCase());
+      console.log(`     ${c.crop_name.toLowerCase()}: '${c.id}', // ${c.crop_name} (${c.variety})`);
+    }
+  });
 
   // ---------------- 5. Diagnosis Cases ----------------
   console.log('-> Inserting demo diagnosis cases (with a visible hotspot cluster)...');
@@ -127,6 +140,11 @@ async function seed() {
     Tomato: ['Early Blight', 'Late Blight', 'Leaf Mold'],
     Cotton: ['Leaf Curl Disease', 'Bollworm Related Damage'],
     Soybean: ['Rust', 'Leaf Spot'],
+    Sugarcane: ['Red Rot', 'Wilt'],
+    Maize: ['Turcicum Leaf Blight', 'Maydis Leaf Blight'],
+    Onion: ['Purple Blotch', 'Stemphylium Blight'],
+    Rice: ['Rice Blast', 'Bacterial Leaf Blight'],
+    Wheat: ['Stripe Rust (Yellow Rust)', 'Loose Smut'],
   };
 
   const cases = [];
@@ -194,6 +212,33 @@ async function seed() {
       created_at: daysAgo(Math.floor(Math.random() * 10)), // recent, so it affects live risk scores
     });
   }
+
+  // C) Seed representative demo diagnosis cases for new crops across their diseases
+  const newCrops = ['Sugarcane', 'Maize', 'Onion', 'Rice', 'Wheat'];
+  newCrops.forEach((cropName) => {
+    const cycles = cropCycles.filter((c) => c.crop_name === cropName);
+    const diseases = diseasesByCrop[cropName] || [];
+    diseases.forEach((disease, dIdx) => {
+      const cycle = cycles[dIdx % cycles.length] || cropCycles[0];
+      const farm = farms.find((f) => f.id === cycle.farm_id) || farms[0];
+      const farmer = farmers.find((f) => f.id === farm.farmer_id) || farmers[0];
+      cases.push({
+        id: uuidv4(),
+        farmer_id: farmer.id,
+        farm_id: farm.id,
+        crop_cycle_id: cycle.id,
+        image_url: `/uploads/demo_${cropName.toLowerCase()}_${dIdx + 1}.jpg`,
+        predicted_disease: disease,
+        confidence: Math.floor(Math.random() * 15) + 82,
+        severity_band: dIdx % 2 === 0 ? 'Moderate' : 'High',
+        severity_percent: dIdx % 2 === 0 ? 35 + dIdx * 10 : 55 + dIdx * 5,
+        latitude: jitter(farm.latitude, 1),
+        longitude: jitter(farm.longitude, 1),
+        status: dIdx % 2 === 0 ? 'confirmed' : 'suspected',
+        created_at: daysAgo(Math.floor(Math.random() * 15) + 2),
+      });
+    });
+  });
 
   const { error: caseErr } = await supabase.from('diagnosis_cases').insert(cases);
   if (caseErr) console.warn('   Warning:', caseErr.message);
