@@ -43,6 +43,7 @@ export interface CropInfo {
   name: string;
   nameHi?: string;
   nameMr: string;
+  nameHi?: string;
   icon: string;
   scientificName: string;
   sampleImages: {
@@ -50,7 +51,10 @@ export interface CropInfo {
     title: string;
     titleHi?: string;
     titleMr: string;
+    titleHi?: string;
     condition: string;
+    conditionMr?: string;
+    conditionHi?: string;
     url: string;
     fallbackUrl?: string;
     isHealthy?: boolean;
@@ -62,9 +66,11 @@ export interface ActionItem {
   title: string;
   titleHi?: string;
   titleMr: string;
+  titleHi?: string;
   description: string;
   descriptionHi?: string;
   descriptionMr: string;
+  descriptionHi?: string;
   priority: 'critical' | 'important' | 'preventive';
   category?: 'cultural' | 'mechanical' | 'biological' | 'chemical';
 }
@@ -73,9 +79,11 @@ export interface MonitorItem {
   title: string;
   titleHi?: string;
   titleMr: string;
+  titleHi?: string;
   check: string;
   checkHi?: string;
   checkMr: string;
+  checkHi?: string;
 }
 
 export interface DiagnosisResult {
@@ -84,9 +92,11 @@ export interface DiagnosisResult {
   cropName: string;
   cropNameHi?: string;
   cropNameMr: string;
+  cropNameHi?: string;
   diseaseName: string;
   diseaseNameHi?: string;
   diseaseNameMr: string;
+  diseaseNameHi?: string;
   pathogen: string;
   severity: SeverityLevel;
   confidenceLabel: ConfidenceLevel;
@@ -99,9 +109,11 @@ export interface DiagnosisResult {
     title: string;
     titleHi?: string;
     titleMr: string;
+    titleHi?: string;
     text: string;
     textHi?: string;
     textMr: string;
+    textHi?: string;
     riskTrend: 'increasing' | 'stable' | 'decreasing';
   };
   advisoryVoiceScript: string;
@@ -115,17 +127,20 @@ export interface WeatherCondition {
   rainfallStatus: string;
   rainfallStatusHi?: string;
   rainfallStatusMr: string;
+  rainfallStatusHi?: string;
   rainfallChance: number;
   condition: 'sunny' | 'humid' | 'rainy' | 'cloudy';
   cropImpactSummary: string;
   cropImpactSummaryHi?: string;
   cropImpactSummaryMr: string;
+  cropImpactSummaryHi?: string;
 }
 
 export interface RiskDay {
   day: string;
   dayHi?: string;
   dayMr: string;
+  dayHi?: string;
   date: string;
   level: SeverityLevel;
   score: number; // 0 - 100
@@ -136,10 +151,12 @@ export interface RiskReason {
   title: string;
   titleHi?: string;
   titleMr: string;
+  titleHi?: string;
   icon: 'droplet' | 'cloud-rain' | 'map-pin' | 'wind';
   detail: string;
   detailHi?: string;
   detailMr: string;
+  detailHi?: string;
 }
 
 export interface RiskForecast {
@@ -148,11 +165,13 @@ export interface RiskForecast {
   summary: string;
   summaryHi?: string;
   summaryMr: string;
+  summaryHi?: string;
   timeline: RiskDay[];
   reasons: RiskReason[];
   recommendation: string;
   recommendationHi?: string;
   recommendationMr: string;
+  recommendationHi?: string;
 }
 
 export interface HotspotCluster {
@@ -163,6 +182,7 @@ export interface HotspotCluster {
   areaName: string;
   areaNameHi?: string;
   areaNameMr: string;
+  areaNameHi?: string;
   crop: string;
   reportedCases: number;
   distanceKm: number;
@@ -190,12 +210,15 @@ export interface ExpertProfile {
   name: string;
   nameHi?: string;
   nameMr: string;
+  nameHi?: string;
   role: string;
   roleHi?: string;
   roleMr: string;
+  roleHi?: string;
   station: string;
   stationHi?: string;
   stationMr: string;
+  stationHi?: string;
   avatar: string;
   available: boolean;
   phone: string;
