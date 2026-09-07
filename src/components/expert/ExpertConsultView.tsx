@@ -39,7 +39,7 @@ export const ExpertConsultView: React.FC = () => {
   const buildChatContext = useCallback((): ExpertChatContext => {
     return {
       farmerName: user?.name,
-      farmName: selectedFarm?.name || user?.farmName,
+      farmName: selectedFarm?.farm_name || user?.farmName,
       cropName,
       diseaseName,
       cropNameEn: diagnosis.cropName,

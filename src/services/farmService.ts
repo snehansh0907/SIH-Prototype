@@ -11,6 +11,8 @@ export interface BackendFarm {
   taluka?: string;
   district?: string;
   area_acres?: number;
+  variety?: string;
+  crop_stage?: string;
   created_at?: string;
 }
 
