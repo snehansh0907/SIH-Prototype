@@ -48,20 +48,37 @@ export async function apiClient<T>(endpoint: string, options: RequestOptions = {
   }
 
   try {
-    const url = endpoint.startsWith('http') ? endpoint : `${BASE_URL}${endpoint}`;
+    const cleanBase = BASE_URL.replace(/\/+$/, '');
+    const cleanEndpoint = endpoint.startsWith('/') ? endpoint : `/${endpoint}`;
+    const url = endpoint.startsWith('http') ? endpoint : `${cleanBase}${cleanEndpoint}`;
     const response = await fetch(url, config);
     clearTimeout(id);
 
     if (!response.ok) {
       const errorData = await response.json().catch(() => ({}));
-      throw new Error(errorData.message || `API error: ${response.statusText} (${response.status})`);
+      const errorMsg = errorData.message || `API error: ${response.statusText} (${response.status})`;
+      const err: any = new Error(errorMsg);
+      err.status = response.status;
+      err.data = errorData;
+      err.isApiError = true;
+      throw err;
     }
 
     return (await response.json()) as T;
   } catch (error: any) {
     clearTimeout(id);
-    // If backend is unreachable or timed out, log and rethrow so services can safely fallback to rich mock data
-    console.warn(`[Krishi Sarthak API] Request to ${endpoint} failed, falling back to local agricultural engine:`, error.message);
+    const isNetworkError =
+      !error.status &&
+      (error.name === 'AbortError' ||
+        error.name === 'TypeError' ||
+        /NetworkError|Failed to fetch|network|aborted/i.test(error.message || ''));
+    error.isNetworkError = isNetworkError;
+
+    if (!endpoint.includes('/auth')) {
+      console.warn(`[Krishi Sarthak API] Request to ${endpoint} failed, falling back to local agricultural engine:`, error.message);
+    } else {
+      console.warn(`[Krishi Sarthak API] Authentication request to ${endpoint} failed:`, error.message);
+    }
     throw error;
   }
 }

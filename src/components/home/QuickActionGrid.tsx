@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Camera, MapPin, Volume2, VolumeX, UserCheck, Sparkles } from 'lucide-react';
+import { Camera, MapPin, Volume2, VolumeX, UserCheck, Sparkles, ArrowRight } from 'lucide-react';
 import { useLanguage } from '../../context/LanguageContext';
 import { useCrop } from '../../context/CropContext';
 import { useAuth } from '../../context/AuthContext';
@@ -43,64 +43,10 @@ export const QuickActionGrid: React.FC = () => {
     }
   };
 
-  const actions = [
-    {
-      id: 'check',
-      title: t.actionCheckCrop,
-      subtitle: t.actionCheckCropSub,
-      icon: <Camera className="w-7 h-7 text-white" />,
-      bg: 'bg-gradient-to-br from-forest-800 to-forest-900',
-      iconBg: 'bg-forest-700/70 text-white',
-      textColor: 'text-white',
-      subColor: 'text-wheat-200/90',
-      badge: 'AI Scan',
-      onClick: () => requireFarmerAccess(() => setActiveTab('check')),
-    },
-    {
-      id: 'area',
-      title: t.actionMyArea,
-      subtitle: t.actionMyAreaSub,
-      icon: <MapPin className="w-7 h-7 text-emerald-800" />,
-      bg: 'bg-white',
-      iconBg: 'bg-emerald-100 text-emerald-800',
-      textColor: 'text-stone-900',
-      subColor: 'text-stone-500',
-      border: 'border border-stone-200',
-      badge: language === 'hi' ? 'क्षेत्र रडार' : language === 'mr' ? 'परिसर रडार' : 'Area Radar',
-      onClick: () => requireFarmerAccess(() => setActiveTab('area')),
-    },
-    {
-      id: 'listen',
-      title: isPlayingAudio ? t.stopAudio : t.actionListen,
-      subtitle: t.actionListenSub,
-      icon: isPlayingAudio ? <VolumeX className="w-7 h-7 text-amber-900 animate-bounce" /> : <Volume2 className="w-7 h-7 text-amber-800" />,
-      bg: isPlayingAudio ? 'bg-amber-100 ring-2 ring-amber-500' : 'bg-white',
-      iconBg: 'bg-amber-100 text-amber-800',
-      textColor: 'text-stone-900',
-      subColor: 'text-stone-500',
-      border: 'border border-stone-200',
-      badge: language === 'hi' ? 'आवाज़ में सुनें' : language === 'mr' ? 'ध्वनी सल्ला' : 'Audio TTS',
-      onClick: handleListenAdvice,
-    },
-    {
-      id: 'expert',
-      title: t.actionExpert,
-      subtitle: t.actionExpertSub,
-      icon: <UserCheck className="w-7 h-7 text-forest-800" />,
-      bg: 'bg-white',
-      iconBg: 'bg-forest-100 text-forest-800',
-      textColor: 'text-stone-900',
-      subColor: 'text-stone-500',
-      border: 'border border-stone-200',
-      badge: language === 'hi' ? 'कृषि विशेषज्ञ' : language === 'mr' ? 'तज्ञ सल्ला' : 'Agri Expert',
-      onClick: () => requireFarmerAccess(() => setActiveTab('expert')),
-    },
-  ];
-
   return (
-    <div className="mb-5">
-      <div className="flex items-center justify-between mb-3 px-1">
-        <h3 className="text-xs uppercase tracking-wider font-extrabold text-stone-500 font-display">
+    <div>
+      <div className="flex items-center justify-between mb-2 px-1">
+        <h3 className="text-xs uppercase tracking-wider font-bold text-stone-500 font-display">
           {t.quickActionsTitle}
         </h3>
         <span className="text-[11px] font-semibold text-forest-800 flex items-center gap-1">
@@ -109,39 +55,100 @@ export const QuickActionGrid: React.FC = () => {
         </span>
       </div>
 
-      <div className="grid grid-cols-2 gap-3">
-        {actions.map((act) => (
-          <button
-            key={act.id}
-            onClick={act.onClick}
-            type="button"
-            className={`${act.bg} ${act.border || ''} rounded-3xl p-4 text-left shadow-soft hover:shadow-card active:scale-[0.97] transition-all duration-200 flex flex-col justify-between min-h-[140px] relative overflow-hidden group`}
-          >
-            {/* Top row: Icon + optional badge */}
-            <div className="flex items-start justify-between w-full mb-3">
-              <div className={`w-12 h-12 rounded-2xl flex items-center justify-center shadow-inner ${act.iconBg} group-hover:scale-105 transition-transform`}>
-                {act.icon}
-              </div>
-              {act.badge && (
-                <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${
-                  act.id === 'check' ? 'bg-amber-400 text-stone-900' : 'bg-stone-100 text-stone-600 border border-stone-200'
-                }`}>
-                  {act.badge}
-                </span>
-              )}
+      {/* PRIMARY FEATURED ACTION: Check My Crop (Large, Premium, Dark Green Card) */}
+      <button
+        onClick={() => requireFarmerAccess(() => setActiveTab('check'))}
+        type="button"
+        className="w-full rounded-2xl bg-forest-800 hover:bg-forest-850 active:scale-[0.99] text-white p-4 shadow-sm hover:shadow-md transition-all duration-200 cursor-pointer flex items-center justify-between border border-forest-700/80 group text-left relative overflow-hidden"
+      >
+        <div className="flex items-center gap-3.5">
+          <div className="w-11 h-11 rounded-xl bg-forest-700/80 flex items-center justify-center text-white shrink-0 group-hover:scale-105 transition-transform shadow-inner">
+            <Camera className="w-6 h-6 text-white" />
+          </div>
+          <div>
+            <div className="flex items-center gap-2 mb-0.5">
+              <span className="text-base font-bold font-display text-white tracking-tight">
+                {t.actionCheckCrop}
+              </span>
+              <span className="text-[9px] font-bold px-1.5 py-0.5 rounded-full bg-amber-400 text-stone-900 leading-none">
+                AI Scan
+              </span>
             </div>
+            <p className="text-xs text-forest-200/90 font-medium">
+              {t.actionCheckCropSub}
+            </p>
+          </div>
+        </div>
 
-            {/* Bottom: Title & Subtitle */}
-            <div>
-              <div className={`text-base font-extrabold font-display leading-tight ${act.textColor}`}>
-                {act.title}
-              </div>
-              <div className={`text-xs mt-0.5 line-clamp-1 font-medium ${act.subColor}`}>
-                {act.subtitle}
-              </div>
+        <div className="w-8 h-8 rounded-lg bg-forest-700/60 flex items-center justify-center text-amber-300 shrink-0 group-hover:translate-x-1 transition-transform">
+          <ArrowRight className="w-4 h-4" />
+        </div>
+      </button>
+
+      {/* SECONDARY ACTIONS ROW: My Area, Listen to Advice, Talk to Expert */}
+      <div className="grid grid-cols-3 gap-2 mt-2">
+        {/* My Area */}
+        <button
+          onClick={() => requireFarmerAccess(() => setActiveTab('area'))}
+          type="button"
+          className="bg-white hover:bg-stone-50 rounded-xl p-3 border border-stone-200/80 text-left transition-all active:scale-95 shadow-xs flex flex-col justify-between min-h-[92px] group cursor-pointer"
+        >
+          <div className="w-8 h-8 rounded-lg bg-emerald-50 text-emerald-800 flex items-center justify-center mb-1.5 group-hover:scale-105 transition-transform">
+            <MapPin className="w-4 h-4" />
+          </div>
+          <div>
+            <div className="text-xs font-bold text-stone-800 font-display line-clamp-1 leading-tight">
+              {t.actionMyArea}
             </div>
-          </button>
-        ))}
+            <div className="text-[10px] text-stone-400 font-medium line-clamp-1 mt-0.5">
+              {language === 'hi' ? 'क्षेत्र रडार' : language === 'mr' ? 'परिसर रडार' : 'Area Radar'}
+            </div>
+          </div>
+        </button>
+
+        {/* Listen to Advice */}
+        <button
+          onClick={handleListenAdvice}
+          type="button"
+          className={`rounded-xl p-3 border text-left transition-all active:scale-95 shadow-xs flex flex-col justify-between min-h-[92px] group cursor-pointer ${
+            isPlayingAudio
+              ? 'bg-amber-50/80 border-amber-300 ring-2 ring-amber-400/50'
+              : 'bg-white hover:bg-stone-50 border-stone-200/80'
+          }`}
+        >
+          <div className={`w-8 h-8 rounded-lg flex items-center justify-center mb-1.5 group-hover:scale-105 transition-transform ${
+            isPlayingAudio ? 'bg-amber-200 text-amber-900 animate-pulse' : 'bg-amber-50 text-amber-800'
+          }`}>
+            {isPlayingAudio ? <VolumeX className="w-4 h-4 text-amber-900" /> : <Volume2 className="w-4 h-4 text-amber-800" />}
+          </div>
+          <div>
+            <div className="text-xs font-bold text-stone-800 font-display line-clamp-1 leading-tight">
+              {isPlayingAudio ? t.stopAudio : t.actionListen}
+            </div>
+            <div className="text-[10px] text-stone-400 font-medium line-clamp-1 mt-0.5">
+              {language === 'hi' ? 'ऑडियो' : language === 'mr' ? 'ऑडिओ' : 'Audio TTS'}
+            </div>
+          </div>
+        </button>
+
+        {/* Talk to Expert */}
+        <button
+          onClick={() => requireFarmerAccess(() => setActiveTab('expert'))}
+          type="button"
+          className="bg-white hover:bg-stone-50 rounded-xl p-3 border border-stone-200/80 text-left transition-all active:scale-95 shadow-xs flex flex-col justify-between min-h-[92px] group cursor-pointer"
+        >
+          <div className="w-8 h-8 rounded-lg bg-forest-50 text-forest-800 flex items-center justify-center mb-1.5 group-hover:scale-105 transition-transform">
+            <UserCheck className="w-4 h-4 text-forest-800" />
+          </div>
+          <div>
+            <div className="text-xs font-bold text-stone-800 font-display line-clamp-1 leading-tight">
+              {t.actionExpert}
+            </div>
+            <div className="text-[10px] text-stone-400 font-medium line-clamp-1 mt-0.5">
+              {language === 'hi' ? 'विशेषज्ञ' : language === 'mr' ? 'तज्ज्ञ सल्ला' : 'Agri Expert'}
+            </div>
+          </div>
+        </button>
       </div>
     </div>
   );

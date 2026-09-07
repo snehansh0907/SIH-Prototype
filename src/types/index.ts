@@ -10,6 +10,7 @@ export interface FarmerUser {
   nameMr?: string;
   phone?: string;
   email?: string;
+  password?: string;
   emailOrPhone: string;
   village: string;
   taluka: string;

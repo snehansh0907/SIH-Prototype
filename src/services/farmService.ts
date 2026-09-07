@@ -1,5 +1,5 @@
 import { apiClient } from './apiClient';
-import { SUPABASE_URL, SUPABASE_ANON_KEY } from './authService';
+import { SUPABASE_URL, SUPABASE_ANON_KEY, getLocalRegisteredUsers } from './authService';
 
 export interface BackendFarm {
   id: string;
@@ -104,7 +104,23 @@ export const farmService = {
       }
     } catch {}
 
-    // 3. Check seeded demo farms for demo accounts
+    // 3. Check locally registered users for real farmer profile
+    const localUser = getLocalRegisteredUsers().find((u) => u.id === farmerId || u.farmerId === farmerId);
+    if (localUser && localUser.farmName) {
+      return [{
+        id: localUser.farmId || `farm-${localUser.id}`,
+        farmer_id: localUser.id,
+        farm_name: localUser.farmName,
+        latitude: localUser.latitude ?? 20.085,
+        longitude: localUser.longitude ?? 74.11,
+        village: localUser.village,
+        taluka: localUser.taluka,
+        district: localUser.district,
+        area_acres: typeof localUser.areaAcres === 'number' ? localUser.areaAcres : parseFloat(String(localUser.areaAcres || '2.5')),
+      }];
+    }
+
+    // 4. Check seeded demo farms for demo accounts
     const matched = SEEDED_FARMS.filter((f) => f.farmer_id === farmerId);
     if (matched.length > 0) return matched;
 
@@ -118,6 +134,22 @@ export const farmService = {
   },
 
   async getFarmById(id: string = SEEDED_DEMO_FARM_ID): Promise<BackendFarm | null> {
+    // 1. Check locally registered users
+    const localUserWithFarm = getLocalRegisteredUsers().find((u) => u.farmId === id || `farm-${u.id}` === id);
+    if (localUserWithFarm && localUserWithFarm.farmName) {
+      return {
+        id: localUserWithFarm.farmId || id,
+        farmer_id: localUserWithFarm.id,
+        farm_name: localUserWithFarm.farmName,
+        latitude: localUserWithFarm.latitude ?? 20.085,
+        longitude: localUserWithFarm.longitude ?? 74.11,
+        village: localUserWithFarm.village,
+        taluka: localUserWithFarm.taluka,
+        district: localUserWithFarm.district,
+        area_acres: typeof localUserWithFarm.areaAcres === 'number' ? localUserWithFarm.areaAcres : parseFloat(String(localUserWithFarm.areaAcres || '2.5')),
+      };
+    }
+
     try {
       const res = await apiClient<{ success: boolean; data: BackendFarm }>(`/farms/${id}`);
       if (res.data) return res.data;
@@ -147,6 +179,23 @@ export const farmService = {
   },
 
   async getCropCyclesByFarm(farmId: string = SEEDED_DEMO_FARM_ID): Promise<BackendCropCycle[]> {
+    // 1. Check locally registered users for active crop cycle
+    const localUserWithFarm = getLocalRegisteredUsers().find(
+      (u) => u.farmId === farmId || `farm-${u.id}` === farmId || u.id === farmId
+    );
+    if (localUserWithFarm && localUserWithFarm.monitoredCrop) {
+      return [
+        {
+          id: localUserWithFarm.cropCycleId || `cycle-${localUserWithFarm.id}`,
+          farm_id: farmId,
+          crop_name: localUserWithFarm.monitoredCrop,
+          variety: 'Selected',
+          crop_stage: 'vegetative',
+          status: 'active',
+        },
+      ];
+    }
+
     try {
       const res = await apiClient<{ success: boolean; data: BackendCropCycle[] }>(`/crop-cycles/farm/${farmId}`);
       if (res.data && res.data.length > 0) return res.data;

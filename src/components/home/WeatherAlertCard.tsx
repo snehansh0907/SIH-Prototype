@@ -28,36 +28,33 @@ export const WeatherAlertCard: React.FC = () => {
   // Loading skeleton state
   if (isWeatherLoading && !weather) {
     return (
-      <div className="rounded-3xl bg-white/95 border border-stone-200/90 p-4 shadow-soft mb-5 animate-pulse">
+      <div className="rounded-2xl bg-white border border-stone-200/70 p-4 shadow-sm mb-4 animate-pulse">
         {/* Header skeleton */}
         <div className="flex items-center justify-between mb-3">
-          <div className="flex items-center gap-2">
-            <span className="text-xl">🌦️</span>
-            <div>
-              <div className="h-4 w-32 bg-stone-200 rounded-md" />
-              <div className="h-2.5 w-24 bg-stone-100 rounded-md mt-1" />
-            </div>
+          <div className="space-y-1">
+            <div className="h-3 w-28 bg-stone-200 rounded" />
+            <div className="h-2.5 w-40 bg-stone-100 rounded" />
           </div>
-          <div className="h-4 w-20 bg-stone-200 rounded-md" />
+          <div className="h-3 w-16 bg-stone-200 rounded" />
         </div>
 
         {/* 3 cards skeleton */}
-        <div className="grid grid-cols-3 gap-2 mb-3">
+        <div className="grid grid-cols-3 gap-2 my-2.5">
           {[1, 2, 3].map((i) => (
-            <div key={i} className="bg-stone-100/80 rounded-2xl p-3 text-center flex flex-col items-center">
-              <div className="w-5 h-5 bg-stone-200 rounded-full mb-2" />
-              <div className="h-4 w-12 bg-stone-300 rounded mb-1" />
-              <div className="h-2.5 w-16 bg-stone-200 rounded" />
+            <div key={i} className="bg-stone-50 rounded-xl p-2.5 text-center flex flex-col items-center border border-stone-200/50">
+              <div className="w-4 h-4 bg-stone-200 rounded-full mb-1.5" />
+              <div className="h-3.5 w-10 bg-stone-300 rounded mb-1" />
+              <div className="h-2 w-14 bg-stone-200 rounded" />
             </div>
           ))}
         </div>
 
         {/* Advisory banner skeleton */}
-        <div className="bg-stone-100 rounded-2xl p-3 flex items-start gap-2.5">
-          <div className="w-5 h-5 bg-stone-200 rounded-full shrink-0" />
-          <div className="flex-1 space-y-1.5">
-            <div className="h-3 w-full bg-stone-200 rounded" />
-            <div className="h-3 w-3/4 bg-stone-200 rounded" />
+        <div className="bg-amber-50/50 rounded-xl p-2.5 flex items-start gap-2 border border-amber-200/40">
+          <div className="w-4 h-4 bg-amber-200 rounded-full shrink-0" />
+          <div className="flex-1 space-y-1">
+            <div className="h-2.5 w-full bg-amber-200/60 rounded" />
+            <div className="h-2.5 w-3/4 bg-amber-200/60 rounded" />
           </div>
         </div>
 
@@ -78,13 +75,13 @@ export const WeatherAlertCard: React.FC = () => {
   // Graceful error state with Retry action (no silent fake numbers)
   if (weatherError && !weather) {
     return (
-      <div className="rounded-3xl bg-rose-50/90 border border-rose-200 p-4 shadow-soft mb-5 animate-fadeIn">
+      <div className="rounded-2xl bg-rose-50/70 border border-rose-200/80 p-4 shadow-sm mb-4 animate-fadeIn">
         <div className="flex items-start gap-3">
-          <div className="w-8 h-8 rounded-xl bg-rose-100 flex items-center justify-center text-rose-700 shrink-0 mt-0.5">
-            <AlertCircle className="w-5 h-5" />
+          <div className="w-7 h-7 rounded-lg bg-rose-100 flex items-center justify-center text-rose-700 shrink-0 mt-0.5">
+            <AlertCircle className="w-4 h-4" />
           </div>
           <div className="flex-1">
-            <h3 className="text-xs font-black text-rose-950 font-display">
+            <h3 className="text-xs font-bold text-rose-950 font-display">
               {isMarathi
                 ? 'हवामान माहिती उपलब्ध नाही'
                 : isHindi
@@ -98,13 +95,13 @@ export const WeatherAlertCard: React.FC = () => {
                 ? 'इस खेत के लिए मौसम डेटा प्राप्त नहीं हो सका। कृपया पुनः प्रयास करें।'
                 : 'Could not connect to live weather feed for this farm. Please check your network and try again.'}
             </p>
-            <div className="mt-2.5 flex items-center gap-2">
+            <div className="mt-2 flex items-center gap-2">
               <button
                 type="button"
                 onClick={() => refetchWeather()}
-                className="px-3 py-1.5 rounded-xl bg-rose-700 hover:bg-rose-800 text-white font-extrabold text-[11px] flex items-center gap-1.5 cursor-pointer shadow-sm active:scale-95 transition-all"
+                className="px-3 py-1 rounded-lg bg-rose-700 hover:bg-rose-800 text-white font-bold text-[11px] flex items-center gap-1.5 cursor-pointer shadow-xs active:scale-95 transition-all"
               >
-                <RefreshCw className="w-3.5 h-3.5" />
+                <RefreshCw className="w-3 h-3" />
                 <span>{isMarathi ? 'पुन्हा प्रयत्न करा' : isHindi ? 'पुनः प्रयास करें' : 'Try Again'}</span>
               </button>
             </div>
@@ -124,34 +121,29 @@ export const WeatherAlertCard: React.FC = () => {
     : '';
 
   return (
-    <div className="rounded-3xl bg-white/95 border border-stone-200/90 p-4 shadow-soft mb-5 transition-all">
-      {/* Top Header with Live Badge & 5-Day Risk Link */}
-      <div className="flex items-center justify-between mb-2">
-        <div className="flex items-center gap-2">
-          <span className="text-xl">🌦️</span>
-          <div>
-            <div className="flex items-center gap-1.5">
-              <h3 className="text-sm font-extrabold text-stone-900 font-display">
-                {t.todaysConditions}
-              </h3>
-              <span className="inline-flex items-center gap-1 px-1.5 py-0.2 rounded-full bg-emerald-100 text-emerald-900 border border-emerald-300/80 text-[9px] font-black uppercase tracking-wider">
-                <span className="w-1.5 h-1.5 rounded-full bg-emerald-600 animate-pulse" />
-                <span>Live</span>
-              </span>
-            </div>
-            <div className="flex items-center gap-1 text-[10px] text-stone-500 font-semibold mt-0.5">
-              <MapPin className="w-3 h-3 text-forest-700 shrink-0" />
-              <span className="truncate max-w-[180px] sm:max-w-[240px]">
-                {farmName} ({latDisplay}°N, {lngDisplay}°E)
-              </span>
-            </div>
+    <div className="rounded-2xl bg-white border border-stone-200/70 p-4 shadow-sm transition-all">
+      {/* Top Header: Title, Location + LIVE badge & 5-Day Risk */}
+      <div className="flex items-start justify-between gap-2 mb-2.5">
+        <div>
+          <h3 className="text-xs uppercase tracking-wider font-bold text-stone-500 font-display">
+            {t.todaysConditions}
+          </h3>
+          <div className="flex items-center gap-1.5 text-xs text-stone-600 font-medium mt-0.5">
+            <MapPin className="w-3.5 h-3.5 text-forest-700 shrink-0" />
+            <span className="truncate max-w-[190px] sm:max-w-[240px]">
+              {farmName} ({latDisplay}°N, {lngDisplay}°E)
+            </span>
+            <span className="inline-flex items-center gap-1 px-1.5 py-0.2 rounded-full bg-emerald-50 text-emerald-800 border border-emerald-200/60 text-[9px] font-bold uppercase tracking-wider shrink-0">
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-600 animate-pulse" />
+              <span>Live</span>
+            </span>
           </div>
         </div>
 
         <button
           onClick={() => setActiveTab('risk')}
           type="button"
-          className="text-xs font-bold text-forest-800 hover:text-forest-900 flex items-center gap-0.5 cursor-pointer"
+          className="text-xs font-semibold text-forest-800 hover:text-forest-900 flex items-center gap-0.5 cursor-pointer shrink-0 pt-0.5"
         >
           <span>{t.fiveDayRisk}</span>
           <ArrowUpRight className="w-3.5 h-3.5" />
@@ -160,7 +152,7 @@ export const WeatherAlertCard: React.FC = () => {
 
       {/* Multi-Farm Switcher (if farmer has multiple plots) */}
       {availableFarms.length > 1 && (
-        <div className="mb-3 pt-1 flex items-center gap-1.5 overflow-x-auto pb-1 scrollbar-none">
+        <div className="mb-2.5 flex items-center gap-1.5 overflow-x-auto pb-1 scrollbar-none text-xs">
           <span className="text-[10px] font-bold text-stone-400 shrink-0 uppercase tracking-tight">
             {isMarathi ? 'शेत निवडा:' : isHindi ? 'खेत चुनें:' : 'Farm Plot:'}
           </span>
@@ -171,10 +163,10 @@ export const WeatherAlertCard: React.FC = () => {
                 key={f.id}
                 type="button"
                 onClick={() => setSelectedFarm(f)}
-                className={`px-2 py-0.5 rounded-full text-[10px] font-bold transition-all cursor-pointer whitespace-nowrap flex items-center gap-1 border ${
+                className={`px-2 py-0.5 rounded-full text-[10px] font-semibold transition-all cursor-pointer whitespace-nowrap flex items-center gap-1 border ${
                   isSelected
-                    ? 'bg-forest-800 text-white border-forest-900 shadow-sm'
-                    : 'bg-stone-50 text-stone-700 hover:bg-stone-100 border-stone-200'
+                    ? 'bg-forest-800 text-white border-forest-900 shadow-xs'
+                    : 'bg-stone-50 text-stone-600 hover:bg-stone-100 border-stone-200'
                 }`}
               >
                 <span>🌱 {f.farm_name}</span>
@@ -184,65 +176,63 @@ export const WeatherAlertCard: React.FC = () => {
         </div>
       )}
 
-      {/* Conditions Row with Live Values */}
+      {/* Lightweight Horizontal Metrics Row */}
       {weather && (
         <>
-          <div className="grid grid-cols-3 gap-2 mb-3">
+          <div className="grid grid-cols-3 gap-2 my-2.5">
             {/* Humidity */}
-            <div className="bg-emerald-50/70 border border-emerald-200/60 rounded-2xl p-2.5 text-center">
-              <div className="flex items-center justify-center text-emerald-700 mb-1">
-                <Droplets className="w-4 h-4" />
+            <div className="bg-stone-50 rounded-xl p-2.5 text-center border border-stone-200/50">
+              <div className="flex items-center justify-center text-emerald-700 mb-0.5">
+                <Droplets className="w-3.5 h-3.5" />
               </div>
-              <div className="text-sm font-extrabold text-emerald-950 font-display">
+              <div className="text-sm font-bold text-stone-900 font-display">
                 {weather.humidity}%
               </div>
-              <div className="text-[10px] font-semibold text-emerald-800 uppercase tracking-tight">
+              <div className="text-[10px] font-medium text-stone-500 truncate">
                 {weather.humidity >= 75
                   ? (isMarathi ? 'जास्त आर्द्रता' : isHindi ? 'उच्च आर्द्रता' : 'High Humidity')
-                  : (isMarathi ? 'सामान्य आर्द्रता' : isHindi ? 'सामान्य आर्द्रता' : 'Normal Humidity')}
+                  : (isMarathi ? 'सामान्य' : isHindi ? 'सामान्य' : 'Normal')}
               </div>
             </div>
 
             {/* Rain Probability */}
-            <div className="bg-sky-50/70 border border-sky-200/60 rounded-2xl p-2.5 text-center">
-              <div className="flex items-center justify-center text-sky-700 mb-1">
-                <CloudRain className="w-4 h-4" />
+            <div className="bg-stone-50 rounded-xl p-2.5 text-center border border-stone-200/50">
+              <div className="flex items-center justify-center text-sky-700 mb-0.5">
+                <CloudRain className="w-3.5 h-3.5" />
               </div>
-              <div className="text-sm font-extrabold text-sky-950 font-display">
+              <div className="text-sm font-bold text-stone-900 font-display">
                 {weather.rainfallChance}%
               </div>
-              <div className="text-[10px] font-semibold text-sky-800 uppercase tracking-tight">
+              <div className="text-[10px] font-medium text-stone-500 truncate">
                 {weather.rainfallChance >= 50
-                  ? (isMarathi ? 'पावसाची शक्यता' : isHindi ? 'बारिश की संभावना' : 'Rain Likely')
-                  : (isMarathi ? 'कमी पाऊस' : isHindi ? 'कम बारिश' : 'Low Rain Chance')}
+                  ? (isMarathi ? 'पावसाची शक्यता' : isHindi ? 'बारिश संभव' : 'Rain Likely')
+                  : (isMarathi ? 'कमी पाऊस' : isHindi ? 'कम बारिश' : 'Low Rain')}
               </div>
             </div>
 
             {/* Temperature */}
-            <div className="bg-amber-50/70 border border-amber-200/60 rounded-2xl p-2.5 text-center">
-              <div className="flex items-center justify-center text-amber-700 mb-1">
-                <Thermometer className="w-4 h-4" />
+            <div className="bg-stone-50 rounded-xl p-2.5 text-center border border-stone-200/50">
+              <div className="flex items-center justify-center text-amber-700 mb-0.5">
+                <Thermometer className="w-3.5 h-3.5" />
               </div>
-              <div className="text-sm font-extrabold text-amber-950 font-display">
+              <div className="text-sm font-bold text-stone-900 font-display">
                 {weather.temp}°C
               </div>
-              <div className="text-[10px] font-semibold text-amber-800 uppercase tracking-tight">
+              <div className="text-[10px] font-medium text-stone-500 truncate">
                 {isMarathi ? 'तापमान' : isHindi ? 'तापमान' : 'Temp'}
               </div>
             </div>
           </div>
 
-          {/* Direct Connection to Crop Health (Driven by Live Data) */}
-          <div className="bg-amber-50/90 border-l-4 border-amber-500 rounded-r-2xl p-3 flex items-start gap-2.5">
-            <span className="text-base shrink-0">⚠️</span>
-            <div>
-              <p className="text-xs font-semibold text-amber-950 leading-relaxed">
-                {impactSummary}
-              </p>
-              <div className="text-[11px] font-bold text-amber-800 mt-1">
-                ➔ {t.weatherCropImpact}
-              </div>
-            </div>
+          {/* Clean Lightweight Advisory Strip */}
+          <div className="bg-amber-50/70 border-l-2 border-amber-500 rounded-r-xl px-3 py-2 flex items-start gap-2 text-xs">
+            <span className="text-xs shrink-0 mt-0.5">⚠️</span>
+            <p className="text-amber-950 font-medium leading-relaxed">
+              <strong className="font-bold text-amber-900 mr-1">
+                {isMarathi ? 'सल्ला:' : isHindi ? 'सलाह:' : 'Advisory:'}
+              </strong>
+              {impactSummary}
+            </p>
           </div>
         </>
       )}

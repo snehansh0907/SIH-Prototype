@@ -1,31 +1,24 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { ArrowLeft, Send, PhoneCall, Sparkles, CheckCheck, AlertTriangle } from 'lucide-react';
 import { useLanguage } from '../../context/LanguageContext';
 import { useCrop } from '../../context/CropContext';
+import { useAuth } from '../../context/AuthContext';
 import { StatusBadge } from '../common/StatusBadge';
-import { expertService, calculateDaysSinceDiagnosis } from '../../services/expertService';
+import { expertService, calculateDaysSinceDiagnosis, type ExpertChatContext } from '../../services/expertService';
 import type { ExpertProfile, ChatMessage } from '../../types';
 import { MOCK_EXPERT } from '../../services/mockData';
 import { getExpertInitialGreeting } from '../../i18n/translations';
 
 export const ExpertConsultView: React.FC = () => {
   const { language, t } = useLanguage();
-  const { diagnosis, weather, riskForecast, resetToHome } = useCrop();
+  const { diagnosis, weather, riskForecast, resetToHome, selectedFarm } = useCrop();
+  const { user } = useAuth();
 
   const [expert, setExpert] = useState<ExpertProfile>(MOCK_EXPERT);
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [inputMessage, setInputMessage] = useState('');
   const [isTyping, setIsTyping] = useState(false);
   const chatBottomRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    expertService.getExpertProfile().then(setExpert).catch(() => {});
-    expertService.getMessages().then(setMessages).catch(() => {});
-  }, []);
-
-  useEffect(() => {
-    chatBottomRef.current?.scrollIntoView({ behavior: 'smooth' });
-  }, [messages, isTyping]);
 
   const cropName =
     language === 'mr'
@@ -40,6 +33,62 @@ export const ExpertConsultView: React.FC = () => {
       : language === 'hi'
       ? (diagnosis.diseaseNameHi || diagnosis.diseaseName)
       : diagnosis.diseaseName;
+
+  const userKey = user?.id || user?.farmerId || 'demo-user';
+
+  const buildChatContext = useCallback((): ExpertChatContext => {
+    return {
+      farmerName: user?.name,
+      farmName: selectedFarm?.name || user?.farmName,
+      cropName,
+      diseaseName,
+      cropNameEn: diagnosis.cropName,
+      cropNameHi: diagnosis.cropNameHi,
+      cropNameMr: diagnosis.cropNameMr,
+      diseaseNameEn: diagnosis.diseaseName,
+      diseaseNameHi: diagnosis.diseaseNameHi,
+      diseaseNameMr: diagnosis.diseaseNameMr,
+      pathogen: diagnosis.pathogen,
+      severity: diagnosis.severity,
+      detectedAt: diagnosis.detectedAt,
+      daysSinceDiagnosis: calculateDaysSinceDiagnosis(diagnosis.detectedAt),
+      humidity: weather?.humidity ?? 78,
+      rainChance: weather?.rainfallChance ?? 60,
+      rainfallStatus:
+        language === 'mr'
+          ? weather?.rainfallStatusMr || 'पावसाची शक्यता'
+          : language === 'hi'
+          ? weather?.rainfallStatusHi || 'बारिश की संभावना'
+          : weather?.rainfallStatus || 'Rain expected',
+      temperature: weather?.temp ?? 27,
+      riskSummary:
+        language === 'mr'
+          ? riskForecast?.summaryMr || riskForecast?.summary
+          : language === 'hi'
+          ? riskForecast?.summaryHi || riskForecast?.summary
+          : riskForecast?.summary,
+      riskLevel: riskForecast?.currentLevel || diagnosis.severity,
+      variety: selectedFarm?.variety || 'Local / Hybrid',
+      cropStage: selectedFarm?.crop_stage || 'Active growth',
+      village: user?.village,
+      district: user?.district,
+      state: user?.state,
+      whatToDoToday: diagnosis.whatToDoToday,
+      language,
+    };
+  }, [user, selectedFarm, diagnosis, weather, riskForecast, cropName, diseaseName, language]);
+
+  // Load isolated messages for the active user & crop upon mount or account switch
+  useEffect(() => {
+    expertService.getExpertProfile().then(setExpert).catch(() => {});
+    const ctx = buildChatContext();
+    const userMsgs = expertService.getMessagesForUser(userKey, ctx);
+    setMessages(userMsgs);
+  }, [userKey, diagnosis.cropId, diagnosis.diseaseName, buildChatContext]);
+
+  useEffect(() => {
+    chatBottomRef.current?.scrollIntoView({ behavior: 'smooth' });
+  }, [messages, isTyping]);
 
   const handleSendMessage = async (textToSend?: string) => {
     const text = textToSend || inputMessage.trim();
@@ -60,41 +109,17 @@ export const ExpertConsultView: React.FC = () => {
     setMessages((prev) => [...prev, farmerMsg]);
 
     try {
+      const ctx = buildChatContext();
       const updated = await expertService.sendMessage(
         text,
-        {
-          cropName,
-          diseaseName,
-          cropNameEn: diagnosis.cropName,
-          diseaseNameEn: diagnosis.diseaseName,
-          pathogen: diagnosis.pathogen,
-          severity: diagnosis.severity,
-          detectedAt: diagnosis.detectedAt,
-          daysSinceDiagnosis: calculateDaysSinceDiagnosis(diagnosis.detectedAt),
-          humidity: weather?.humidity ?? 78,
-          rainChance: weather?.rainfallChance ?? 60,
-          rainfallStatus:
-            language === 'mr'
-              ? weather?.rainfallStatusMr || 'पावसाची शक्यता'
-              : language === 'hi'
-              ? weather?.rainfallStatusHi || 'बारिश की संभावना'
-              : weather?.rainfallStatus || 'Rain expected',
-          temperature: weather?.temp ?? 27,
-          riskSummary:
-            language === 'mr'
-              ? riskForecast?.summaryMr || riskForecast?.summary
-              : language === 'hi'
-              ? riskForecast?.summaryHi || riskForecast?.summary
-              : riskForecast?.summary,
-          riskLevel: riskForecast?.currentLevel || diagnosis.severity,
-          language,
-        },
-        messageId
+        ctx,
+        messageId,
+        userKey
       );
       setMessages([...updated]);
     } catch (err) {
       console.warn('[ExpertConsultView] Message send error:', err);
-      const refreshed = await expertService.getMessages();
+      const refreshed = expertService.getMessagesForUser(userKey, buildChatContext());
       setMessages([...refreshed]);
     } finally {
       setIsTyping(false);
@@ -108,17 +133,17 @@ export const ExpertConsultView: React.FC = () => {
   ];
 
   const getMessageText = (msg: ChatMessage) => {
-    if (msg.id === 'm1') {
-      const sev =
-        language === 'mr'
-          ? (diagnosis.severity === 'high' ? 'गंभीर' : diagnosis.severity === 'moderate' ? 'मध्यम' : 'कमी')
-          : language === 'hi'
-          ? (diagnosis.severity === 'high' ? 'गंभीर' : diagnosis.severity === 'moderate' ? 'मध्यम' : 'कम')
-          : diagnosis.severity;
-      return getExpertInitialGreeting(language, cropName, diseaseName, sev);
-    }
     if (language === 'mr' && msg.textMr) return msg.textMr;
     if (language === 'hi' && msg.textHi) return msg.textHi;
+    if (msg.id === 'm1') {
+      if (language === 'mr' || language === 'hi') {
+        const sev =
+          language === 'mr'
+            ? (diagnosis.severity === 'high' ? 'गंभीर' : diagnosis.severity === 'moderate' ? 'मध्यम' : 'कमी')
+            : (diagnosis.severity === 'high' ? 'गंभीर' : diagnosis.severity === 'moderate' ? 'मध्यम' : 'कम');
+        return getExpertInitialGreeting(language, cropName, diseaseName, sev);
+      }
+    }
     return msg.text;
   };
 

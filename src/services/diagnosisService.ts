@@ -1,8 +1,29 @@
 import type { DiagnosisResult, ActionItem, MonitorItem, SeverityLevel, ConfidenceLevel } from '../types';
 import { apiClient, API_ROOT_URL } from './apiClient';
+import { SUPABASE_URL, SUPABASE_ANON_KEY } from './authService';
 import { advisoryService, type BackendAdvisory } from './advisoryService';
 import { farmService, SEEDED_DEMO_FARMER_ID, SEEDED_DEMO_FARM_ID } from './farmService';
-import { DEFAULT_DIAGNOSIS, MOCK_CROPS } from './mockData';
+import { DEFAULT_DIAGNOSIS, getDefaultDiagnosisForCrop, MOCK_CROPS } from './mockData';
+
+export const CROP_COMPATIBLE_DISEASES: Record<string, string[]> = {
+  tomato: ['Early Blight', 'Late Blight', 'Leaf Mold', 'Healthy Leaf', 'Uncertain Image / Low AI Confidence'],
+  soybean: ['Soybean Rust', 'Rust', 'Leaf Spot', 'Healthy Leaf', 'Uncertain Image / Low AI Confidence'],
+  cotton: ['Leaf Curl Virus', 'Leaf Curl Disease', 'Bollworm Related Damage', 'Healthy Leaf', 'Uncertain Image / Low AI Confidence'],
+  sugarcane: ['Red Rot', 'Healthy Leaf', 'Uncertain Image / Low AI Confidence'],
+  maize: ['Turcicum Leaf Blight', 'Leaf Blight', 'Healthy Leaf', 'Uncertain Image / Low AI Confidence'],
+  onion: ['Purple Blotch', 'Healthy Leaf', 'Uncertain Image / Low AI Confidence'],
+  rice: ['Rice Blast', 'Blast', 'Healthy Leaf', 'Uncertain Image / Low AI Confidence'],
+  wheat: ['Stripe Rust (Yellow Rust)', 'Stripe Rust', 'Yellow Rust', 'Healthy Leaf', 'Uncertain Image / Low AI Confidence'],
+};
+
+export function isDiseaseCompatibleWithCrop(diseaseName: string, cropIdOrName: string): boolean {
+  if (!diseaseName) return true;
+  const cropKey = (cropIdOrName || '').toLowerCase().trim();
+  const allowed = CROP_COMPATIBLE_DISEASES[cropKey];
+  if (!allowed) return true;
+  const dLower = diseaseName.toLowerCase().trim();
+  return allowed.some((a) => a.toLowerCase() === dLower || dLower.includes(a.toLowerCase()));
+}
 
 // Helper to convert base64 data URL to Blob
 function dataURLtoBlob(dataUrl: string): Blob {
@@ -65,9 +86,16 @@ const DISEASE_NAME_MR_MAP: Record<string, string> = {
   'Late Blight': 'उशिरा येणारा करपा (Late Blight)',
   'Leaf Mold': 'पानावरील बुरशी (Leaf Mold)',
   'Leaf Curl Disease': 'पानांचा चुरमुरडा / लीफ कर्ल',
+  'Leaf Curl Virus': 'पानांचा चुरमुरडा / लीफ कर्ल',
   'Bollworm Related Damage': 'बोंडअळी नुकसान',
   'Rust': 'सोयाबीन तांबेरा रोग (Rust)',
+  'Soybean Rust': 'सोयाबीन तांबेरा रोग (Rust)',
   'Leaf Spot': 'पानावरील ठिपके (Leaf Spot)',
+  'Red Rot': 'ऊस लाल कुजव्या रोग (Red Rot)',
+  'Turcicum Leaf Blight': 'मका करपा रोग (Leaf Blight)',
+  'Purple Blotch': 'कांदा जांभळा करपा (Purple Blotch)',
+  'Rice Blast': 'भात कडा करपा / ब्लास्ट (Blast)',
+  'Stripe Rust (Yellow Rust)': 'पिवळा तांबेरा (Yellow Rust)',
 };
 
 // Hindi disease name map for standard recognized diseases
@@ -76,15 +104,22 @@ const DISEASE_NAME_HI_MAP: Record<string, string> = {
   'Late Blight': 'पछेती झुलसा रोग (Late Blight)',
   'Leaf Mold': 'पत्ती फफूंद (Leaf Mold)',
   'Leaf Curl Disease': 'पत्ती मरोड़ / पर्ण कुंचन रोग (Leaf Curl)',
+  'Leaf Curl Virus': 'पत्ती मरोड़ / पर्ण कुंचन रोग (Leaf Curl)',
   'Bollworm Related Damage': 'गुलाबी सुंडी / इल्ली नुकसान',
   'Rust': 'सोयाबीन गेरुआ रोग (Rust)',
+  'Soybean Rust': 'सोयाबीन गेरुआ रोग (Rust)',
   'Leaf Spot': 'पत्ती धब्बा रोग (Leaf Spot)',
+  'Red Rot': 'लाल सड़न रोग (Red Rot)',
+  'Turcicum Leaf Blight': 'मक्का पत्ती झुलसा (Leaf Blight)',
+  'Purple Blotch': 'बैंगनी धब्बा रोग (Purple Blotch)',
+  'Rice Blast': 'धान का झोंका रोग (Rice Blast)',
+  'Stripe Rust (Yellow Rust)': 'पीला रतुआ / गेरुआ रोग (Yellow Rust)',
 };
 
 // Category and title parsing for IPM what_to_do_today strings
-function parseAdvisoryActions(items?: string[]): ActionItem[] {
+function parseAdvisoryActions(items?: string[], fallback?: ActionItem[]): ActionItem[] {
   if (!items || items.length === 0) {
-    return DEFAULT_DIAGNOSIS.whatToDoToday;
+    return fallback || DEFAULT_DIAGNOSIS.whatToDoToday;
   }
 
   return items.map((raw, idx) => {
@@ -109,7 +144,6 @@ function parseAdvisoryActions(items?: string[]): ActionItem[] {
     const priority: 'critical' | 'important' | 'preventive' =
       idx === 0 ? 'critical' : idx === 1 ? 'important' : 'preventive';
 
-    // Generate trilingual titles and descriptions
     return {
       step: idx + 1,
       title: text.length > 50 ? `${text.slice(0, 48)}...` : text,
@@ -124,9 +158,9 @@ function parseAdvisoryActions(items?: string[]): ActionItem[] {
   });
 }
 
-function parseAdvisoryMonitors(items?: string[]): MonitorItem[] {
+function parseAdvisoryMonitors(items?: string[], fallback?: MonitorItem[]): MonitorItem[] {
   if (!items || items.length === 0) {
-    return DEFAULT_DIAGNOSIS.whatToMonitor;
+    return fallback || DEFAULT_DIAGNOSIS.whatToMonitor;
   }
 
   return items.map((item) => ({
@@ -137,6 +171,78 @@ function parseAdvisoryMonitors(items?: string[]): MonitorItem[] {
     checkMr: item,
     checkHi: item,
   }));
+}
+
+/**
+ * Maps a backend diagnosis record or API response into a frontend DiagnosisResult.
+ */
+function mapBackendCaseToDiagnosisResult(data: any, expectedCropIdOrName?: string): DiagnosisResult {
+  const cropRaw = data.crop || data.crop_name || data.crop_cycle?.crop_name || expectedCropIdOrName || 'tomato';
+  const cropId = cropRaw.toLowerCase().trim();
+  const defaultDiag = getDefaultDiagnosisForCrop(cropId);
+  const selectedCrop = MOCK_CROPS.find((c) => c.id === cropId) || MOCK_CROPS[0];
+
+  const severityMap: Record<string, SeverityLevel> = {
+    low: 'low',
+    moderate: 'moderate',
+    high: 'high',
+    severe: 'high',
+  };
+  const mappedSeverity: SeverityLevel =
+    severityMap[(data.severity_band || '').toLowerCase()] || defaultDiag.severity;
+
+  let confidenceLabel: ConfidenceLevel = defaultDiag.confidenceLabel;
+  const conf = typeof data.confidence === 'number' ? data.confidence : 85;
+  if (conf < 75) {
+    confidenceLabel = 'review';
+  } else if (conf < 85) {
+    confidenceLabel = 'monitor';
+  }
+
+  const rawDisease = data.predicted_disease || data.disease || defaultDiag.diseaseName;
+  const diseaseName = isDiseaseCompatibleWithCrop(rawDisease, cropId) ? rawDisease : defaultDiag.diseaseName;
+  const diseaseNameMr = DISEASE_NAME_MR_MAP[diseaseName] || defaultDiag.diseaseNameMr;
+  const diseaseNameHi = DISEASE_NAME_HI_MAP[diseaseName] || defaultDiag.diseaseNameHi;
+
+  const advisory = data.advisory;
+  const actions = parseAdvisoryActions(advisory?.what_to_do_today, defaultDiag.whatToDoToday);
+  const monitors = parseAdvisoryMonitors(advisory?.what_to_monitor, defaultDiag.whatToMonitor);
+
+  let finalImageUrl = defaultDiag.imageUrl;
+  if (data.image_url) {
+    finalImageUrl = data.image_url.startsWith('http')
+      ? data.image_url
+      : `${API_ROOT_URL}${data.image_url}`;
+  }
+
+  const voiceScript = `Detected ${diseaseName} on ${selectedCrop.name} with ${data.severity_band || 'moderate'} severity. Follow the recommended daily IPM steps.`;
+  const voiceScriptMr = `${selectedCrop.nameMr} पिकावर ${diseaseNameMr} आढळला आहे. दिलेल्या उपाययोजना अंमलात आणा.`;
+  const voiceScriptHi = `${selectedCrop.nameHi || selectedCrop.name} फसल पर ${diseaseNameHi || diseaseName} पाया गया है। दिए गए उपायों का पालन करें।`;
+
+  return {
+    id: data.id || data.case_id || defaultDiag.id,
+    cropId,
+    cropName: selectedCrop.name,
+    cropNameMr: selectedCrop.nameMr,
+    cropNameHi: selectedCrop.nameHi || selectedCrop.name,
+    diseaseName,
+    diseaseNameMr,
+    diseaseNameHi,
+    pathogen: advisory?.disease_info?.scientific_name || defaultDiag.pathogen,
+    severity: mappedSeverity,
+    confidenceLabel,
+    isUncertain: data.requires_expert_review && conf < 80,
+    detectedAt: data.created_at
+      ? `Detected ${new Date(data.created_at).toLocaleDateString([], { month: 'short', day: 'numeric' })}`
+      : defaultDiag.detectedAt,
+    imageUrl: finalImageUrl,
+    whatToDoToday: actions,
+    whatToMonitor: monitors,
+    whatMayHappenNext: defaultDiag.whatMayHappenNext,
+    advisoryVoiceScript: defaultDiag.advisoryVoiceScript || voiceScript,
+    advisoryVoiceScriptMr: defaultDiag.advisoryVoiceScriptMr || voiceScriptMr,
+    advisoryVoiceScriptHi: defaultDiag.advisoryVoiceScriptHi || voiceScriptHi,
+  };
 }
 
 export const diagnosisService = {
@@ -155,6 +261,7 @@ export const diagnosisService = {
     const farmerId = options?.farmerId || SEEDED_DEMO_FARMER_ID;
     const farmId = options?.farmId || SEEDED_DEMO_FARM_ID;
     const cropCycleId = options?.cropCycleId || farmService.getCropCycleIdForCrop(cropId);
+    const defaultDiag = getDefaultDiagnosisForCrop(cropId);
 
     try {
       // 1. Resolve renderable display URL for image
@@ -179,14 +286,14 @@ export const diagnosisService = {
         imageBlob = await new Promise<Blob>((res) => canvas.toBlob((b) => res(b || new Blob()), 'image/jpeg'));
       }
 
-      // 2. Build FormData for POST /api/diagnosis
+      // 3. Build FormData for POST /api/diagnosis
       const formData = new FormData();
       formData.append('image', imageBlob, 'crop_diagnosis.jpg');
       formData.append('farmer_id', farmerId);
       formData.append('farm_id', farmId);
       formData.append('crop_cycle_id', cropCycleId);
 
-      // 3. Send request to backend
+      // 4. Send request to backend
       const diagResponse = await apiClient<{
         success: boolean;
         data: {
@@ -205,7 +312,7 @@ export const diagnosisService = {
 
       const backendData = diagResponse.data;
 
-      // 4. Fetch structured advisory for this case from backend
+      // 5. Fetch structured advisory for this case from backend
       let advisory: BackendAdvisory | null = null;
       try {
         advisory = await advisoryService.getAdvisory(backendData.case_id);
@@ -213,7 +320,7 @@ export const diagnosisService = {
         console.warn('[diagnosisService] Advisory fetch failed, using built-in IPM advice:', err);
       }
 
-      // 5. Fetch case record to get backend-served image URL
+      // 6. Fetch case record to get backend-served image URL
       let serverImageUrl: string | undefined;
       try {
         const caseRecord = await this.getDiagnosisById(backendData.case_id);
@@ -226,7 +333,6 @@ export const diagnosisService = {
         // Safe to ignore, fallback to imageSource
       }
 
-      // 6. Map to frontend DiagnosisResult interface
       const severityMap: Record<string, SeverityLevel> = {
         low: 'low',
         moderate: 'moderate',
@@ -242,32 +348,32 @@ export const diagnosisService = {
         confidenceLabel = 'monitor';
       }
 
-      const diseaseName = backendData.disease || 'Undetermined Condition';
-      const diseaseNameMr = DISEASE_NAME_MR_MAP[diseaseName] || `${diseaseName} (तपासणी आवश्यक)`;
-      const diseaseNameHi = DISEASE_NAME_HI_MAP[diseaseName] || `${diseaseName} (जांच आवश्यक)`;
+      const diseaseName = backendData.disease || defaultDiag.diseaseName;
+      const diseaseNameMr = DISEASE_NAME_MR_MAP[diseaseName] || defaultDiag.diseaseNameMr;
+      const diseaseNameHi = DISEASE_NAME_HI_MAP[diseaseName] || defaultDiag.diseaseNameHi;
 
-      const actions = parseAdvisoryActions(advisory?.what_to_do_today);
-      const monitors = parseAdvisoryMonitors(advisory?.what_to_monitor);
+      const actions = parseAdvisoryActions(advisory?.what_to_do_today, defaultDiag.whatToDoToday);
+      const monitors = parseAdvisoryMonitors(advisory?.what_to_monitor, defaultDiag.whatToMonitor);
 
-      const voiceScript = `Detected ${diseaseName} on ${backendData.crop} with ${backendData.severity_band} severity and ${backendData.confidence}% confidence. Follow the recommended daily IPM steps and check lower canopy leaves.`;
+      const voiceScript = `Detected ${diseaseName} on ${backendData.crop} with ${backendData.severity_band} severity and ${backendData.confidence}% confidence. Follow the recommended daily IPM steps.`;
       const voiceScriptMr = `${backendData.crop} पिकावर ${diseaseNameMr} आढळला आहे. गांभीर्य: ${backendData.severity_band}. त्वरित दिलेल्या उपाययोजना अंमलात आणा.`;
       const voiceScriptHi = `${backendData.crop} फसल पर ${diseaseNameHi} पाया गया है। गंभीरता: ${backendData.severity_band}। तुरंत दिए गए एकीकृत कीट प्रबंधन (IPM) उपायों का पालन करें।`;
 
       const finalImageUrl =
         serverImageUrl ||
         displayImageUrl ||
-        (selectedCrop?.sampleImages?.[0]?.url || DEFAULT_DIAGNOSIS.imageUrl);
+        (selectedCrop?.sampleImages?.[0]?.url || defaultDiag.imageUrl);
 
       return {
         id: backendData.case_id,
         cropId: cropId.toLowerCase(),
         cropName: backendData.crop || selectedCrop.name,
         cropNameMr: selectedCrop.nameMr,
-        cropNameHi: selectedCrop.nameHi,
+        cropNameHi: selectedCrop.nameHi || selectedCrop.name,
         diseaseName,
         diseaseNameMr,
         diseaseNameHi,
-        pathogen: advisory?.disease_info?.scientific_name || 'Agricultural pathogen',
+        pathogen: advisory?.disease_info?.scientific_name || defaultDiag.pathogen,
         severity: mappedSeverity,
         confidenceLabel,
         isUncertain: backendData.requires_expert_review && backendData.confidence < 80,
@@ -275,21 +381,7 @@ export const diagnosisService = {
         imageUrl: finalImageUrl,
         whatToDoToday: actions,
         whatToMonitor: monitors,
-        whatMayHappenNext: {
-          title: backendData.requires_expert_review ? 'Expert Consultation Recommended' : 'Weather Risk Outlook',
-          titleMr: backendData.requires_expert_review ? 'तज्ञांचा सल्ला आवश्यक' : 'हवामान व रोग अंदाज',
-          titleHi: backendData.requires_expert_review ? 'विशेषज्ञ सलाह आवश्यक' : 'मौसम एवं रोग पूर्वानुमान',
-          text: backendData.requires_expert_review
-            ? 'Due to disease severity and environmental humidity, human expert verification is safest before spraying chemical fungicides.'
-            : 'Fungal spores spread rapidly under sustained humidity. Follow protective cultural and biological steps today.',
-          textMr: backendData.requires_expert_review
-            ? 'रोगाचे प्रमाण जास्त असल्याने फवारणीपूर्वी कृषी तज्ञांचा सल्ला घेणे हितावह ठरेल.'
-            : 'दमट हवेमुळे बुरशीचा प्रसार वाढू नये म्हणून योग्य वेळी प्रतिबंधात्मक उपाय करा.',
-          textHi: backendData.requires_expert_review
-            ? 'रोग की गंभीरता को देखते हुए रासायनिक कीटनाशक छिड़काव से पहले कृषि विशेषज्ञ की सलाह लेना सुरक्षित है।'
-            : 'नमी के कारण फंगल बीजाणु तेजी से फैल सकते हैं। आज ही सुरक्षात्मक जैविक उपाय अपनाएं।',
-          riskTrend: backendData.severity_percent > 50 ? 'increasing' : 'stable',
-        },
+        whatMayHappenNext: defaultDiag.whatMayHappenNext,
         advisoryVoiceScript: voiceScript,
         advisoryVoiceScriptMr: voiceScriptMr,
         advisoryVoiceScriptHi: voiceScriptHi,
@@ -297,21 +389,20 @@ export const diagnosisService = {
     } catch (apiError) {
       console.warn('[diagnosisService] Real backend request failed, running rich local engine fallback:', apiError);
 
-      // Resolve display URL for fallback engine
       const displayImageUrl = await resolveImageDisplayUrl(imageSource);
-      const resolvedImageUrl = displayImageUrl || selectedCrop?.sampleImages?.[0]?.url || DEFAULT_DIAGNOSIS.imageUrl;
+      const resolvedImageUrl = displayImageUrl || selectedCrop?.sampleImages?.[0]?.url || defaultDiag.imageUrl;
       const isString = typeof imageSource === 'string';
       const imageStr = isString ? (imageSource as string) : '';
 
       // Check for uncertain / low confidence demo image
       if (imageStr && (imageStr.includes('530836369250') || imageStr.includes('blurry') || imageStr.includes('uncertain'))) {
         return {
-          ...DEFAULT_DIAGNOSIS,
+          ...defaultDiag,
           id: `diag-uncertain-${Date.now()}`,
           cropId,
           cropName: selectedCrop.name,
           cropNameMr: selectedCrop.nameMr,
-          cropNameHi: selectedCrop.nameHi,
+          cropNameHi: selectedCrop.nameHi || selectedCrop.name,
           diseaseName: 'Uncertain Image / Low AI Confidence',
           diseaseNameMr: 'अस्पष्ट फोटो / AI निदान अनिश्चित',
           diseaseNameHi: 'अस्पष्ट फोटो / AI निदान अनिश्चित',
@@ -360,7 +451,7 @@ export const diagnosisService = {
             titleHi: 'विशेषज्ञ समीक्षा अनुशंसित',
             text: 'AI could not confirm the exact disease due to image clarity. Human expert review is safest before spraying chemical fungicides.',
             textMr: 'फोटो अस्पष्ट असल्याने AI निदान अनिश्चित आहे. कोणतीही औषध फवारणी करण्यापूर्वी कृषी तज्ञांचा सल्ला घ्या.',
-            textHi: 'फोटो अस्पष्ट होने के कारण AI निदान अनिश्चित है। किसी भी रासायनिक छिड़काव से पहले कृषि विशेषज्ञ से सलाह लेना सुरक्षित है।',
+            textHi: 'फोटो स्पष्ट न होने के कारण AI निदान अनिश्चित है। किसी भी रासायनिक छिड़काव से पहले कृषि विशेषज्ञ से सलाह लेना सुरक्षित है।',
             riskTrend: 'stable',
           },
           advisoryVoiceScript:
@@ -372,211 +463,10 @@ export const diagnosisService = {
         };
       }
 
-      if (cropId === 'cotton') {
-        return {
-          ...DEFAULT_DIAGNOSIS,
-          id: `diag-${cropId}-${Date.now()}`,
-          cropId: 'cotton',
-          cropName: 'Cotton',
-          cropNameMr: 'कापूस',
-          cropNameHi: 'कपास',
-          diseaseName: 'Leaf Curl Virus',
-          diseaseNameMr: 'पानांचा चुरमुरडा / लीफ कर्ल व्हायरस',
-          diseaseNameHi: 'पर्ण कुंचन विषाणु (Leaf Curl Virus)',
-          pathogen: 'Begomovirus (Whitefly-transmitted)',
-          severity: 'moderate',
-          confidenceLabel: 'reliable',
-          isUncertain: false,
-          imageUrl: resolvedImageUrl,
-          whatToDoToday: [
-            {
-              step: 1,
-              title: 'Avoid excessive nitrogen & balance irrigation',
-              titleMr: 'नत्र खतांचा अतिवापर टाळा व पाणी नियंत्रण ठेवा',
-              titleHi: 'अत्यधिक नाइट्रोजन से बचें और संतुलित सिंचाई करें',
-              description: 'Excess nitrogen produces tender foliage attractive to whiteflies.',
-              descriptionMr: 'नत्र खतांमुळे पाने मऊ होऊन किडींचा प्रादुर्भाव वाढतो.',
-              descriptionHi: 'अधिक नाइट्रोजन से कोमल पत्तियां बनती हैं जो सफेद मक्खी को आकर्षित करती हैं।',
-              priority: 'critical',
-              category: 'cultural',
-            },
-            {
-              step: 2,
-              title: 'Install Yellow Sticky Traps & rogue infected plants',
-              titleMr: 'पिवळे चिकट सापळे लावा व अतिबाधित झाडे नष्ट करा',
-              titleHi: 'पीले चिपचिपे जाल लगाएं व प्रभावित पौधे नष्ट करें',
-              description: 'Install 15-20 yellow sticky traps per acre to trap whiteflies. Uproot heavily stunted plants.',
-              descriptionMr: 'एकरी १५ ते २० पिवळे चिकट सापळे लावा आणि अतिबाधित झाडे उपटून नष्ट करा.',
-              descriptionHi: 'सफेद मक्खी को फंसाने के लिए प्रति एकड़ 15-20 पीले चिपचिपे जाल लगाएं और अति प्रभावित पौधे उखाड़कर नष्ट करें।',
-              priority: 'critical',
-              category: 'mechanical',
-            },
-            {
-              step: 3,
-              title: 'Spray Neem Seed Kernel Extract (NSKE 5%)',
-              titleMr: 'निमार्क ५% किंवा कडुनिंब तेल फवारणी',
-              titleHi: 'नीम के बीज का अर्क (NSKE 5%) का छिड़काव करें',
-              description: 'Spray Azadirachtin 10,000 ppm @ 1ml/L water to deter sucking vectors naturally.',
-              descriptionMr: 'रसशोषक किडींचा प्रादुर्भाव रोखण्यासाठी निमार्कची फवारणी करा.',
-              descriptionHi: 'रस चूसक कीटों को प्राकृतिक रूप से रोकने के लिए एजाडिरैक्टिन का छिड़काव करें।',
-              priority: 'important',
-              category: 'biological',
-            },
-            {
-              step: 4,
-              title: 'Targeted Insecticide Spray (If vector threshold is high)',
-              titleMr: 'नियंत्रित कीटकनाशक फवारणी (प्रादुर्भाव जास्त असल्यास)',
-              titleHi: 'लक्षित कीटनाशक छिड़काव (यदि कीट स्तर अधिक हो)',
-              description:
-                'If whitefly count > 8-10 per leaf, spray Diafenthiuron 50% WP @ 1.2g/L or Flonicamid 50% WG @ 0.3g/L.',
-              descriptionMr: 'पांढरी माशी जास्त असल्यास शिफारशीनुसार डायफेन्थ्युरॉन किंवा फ्लोनिकॅमिडची फवारणी करा.',
-              descriptionHi: 'सफेद मक्खी की संख्या अधिक होने पर अनुशंसित डायफेनथियुरॉन या फ्लोनिकैमिड का छिड़काव करें।',
-              priority: 'preventive',
-              category: 'chemical',
-            },
-          ],
-          whatToMonitor: [
-            {
-              title: 'Upward curling & vein thickening',
-              titleMr: 'पानांचा वरच्या बाजूला पडलेला सुरकुत्या',
-              titleHi: 'पत्तियों का ऊपर की ओर मुड़ना व मोटा होना',
-              check: 'Check if new shoots show upward cup-shaped leaves.',
-              checkMr: 'नवीन फुटव्यांवर वाटीसारखी पाने तयार होत आहेत का ते तपासा.',
-              checkHi: 'जांचें कि क्या नई पत्तियों में ऊपर की ओर कटोरी जैसी सिलवटें बन रही हैं।',
-            },
-          ],
-          whatMayHappenNext: {
-            title: 'Vector Migration Projection',
-            titleMr: 'किडींचा संभाव्य प्रसार अंदाज',
-            titleHi: 'कीट प्रसार का अनुमान',
-            text: 'Dry afternoon winds favor whitefly movement. Early intervention on field borders will protect inner acreage.',
-            textMr: 'दुपारच्या कोरड्या वाऱ्यामुळे पांढरी माशी वेगाने इतर भागात पसरू शकते. शेताच्या बांधावर आधी फवारणी करा.',
-            textHi: 'दोपहर की शुष्क हवा सफेद मक्खी के फैलाव में सहायक होती है। खेत की मेड़ों पर पहले छिड़काव करें।',
-            riskTrend: 'increasing',
-          },
-          advisoryVoiceScript:
-            'Possible Cotton Leaf Curl detected with moderate severity. Control whitefly immediately using yellow sticky traps and avoid excess nitrogen fertilizer.',
-          advisoryVoiceScriptMr:
-            'कापसावर पानांचा चुरमुरडा रोग आढळला आहे. पांढऱ्या माशीच्या नियंत्रणासाठी लगेच पिवळे चिकट सापळे लावा व नत्र खतांचा अतिवापर टाळा.',
-          advisoryVoiceScriptHi:
-            'कपास पर पत्ती मरोड़ / पर्ण कुंचन रोग के लक्षण पाए गए हैं। सफेद मक्खी के तुरंत नियंत्रण के लिए पीले चिपचिपे ट्रैप लगाएं और अत्यधिक नाइट्रोजन उर्वरक से बचें।',
-        };
-      }
-
-      if (cropId === 'soybean') {
-        return {
-          ...DEFAULT_DIAGNOSIS,
-          id: `diag-${cropId}-${Date.now()}`,
-          cropId: 'soybean',
-          cropName: 'Soybean',
-          cropNameMr: 'सोयाबीन',
-          cropNameHi: 'सोयाबीन',
-          diseaseName: 'Soybean Rust',
-          diseaseNameMr: 'सोयाबीन तांबेरा रोग',
-          diseaseNameHi: 'सोयाबीन गेरूई / रस्ट रोग',
-          pathogen: 'Phakopsora pachyrhizi',
-          severity: 'moderate',
-          confidenceLabel: 'reliable',
-          isUncertain: false,
-          imageUrl: resolvedImageUrl,
-          whatToDoToday: [
-            {
-              step: 1,
-              title: 'Avoid late evening irrigation',
-              titleMr: 'संध्याकाळी उशिरा पाणी देणे टाळा',
-              titleHi: 'देर शाम सिंचाई करने से बचें',
-              description: 'Ensure canopy leaves dry quickly after sunrise to inhibit rust spore germination.',
-              descriptionMr: 'रात्रीच्या वेळी पानांवर ओलावा राहणार नाही याची खबरदारी घ्या.',
-              descriptionHi: 'सुनिश्चित करें कि सूर्योदय के बाद पत्तियों की नमी जल्दी सूख जाए ताकि कवक के बीजाणु न पनपें।',
-              priority: 'critical',
-              category: 'cultural',
-            },
-            {
-              step: 2,
-              title: 'Strip diseased lower leaves with pustules',
-              titleMr: 'तांबूस फोड असलेली खालची पाने काढून टाका',
-              titleHi: 'रोगग्रस्त निचली पत्तियों को तोड़कर नष्ट करें',
-              description: 'Remove and destroy lower leaf canopy showing dense brown rust spots.',
-              descriptionMr: 'तांबेरा डाग असलेली खालची पाने तोडून नष्ट करा.',
-              descriptionHi: 'घने भूरे रंग के धब्बों वाली निचली पत्तियों को हटाकर नष्ट कर दें।',
-              priority: 'critical',
-              category: 'mechanical',
-            },
-            {
-              step: 3,
-              title: 'Spray Bio-Fungicide (Trichoderma viride)',
-              titleMr: 'ट्रायकोडर्मा व्हिरिडी (जैविक बुरशीनाशक)',
-              titleHi: 'जैविक कवकनाशी (ट्राइकोडर्मा विरिडी) का छिड़काव करें',
-              description: 'Spray Trichoderma viride @ 5g/L water during late afternoon hours.',
-              descriptionMr: 'जैविक नियंत्रणासाठी ट्रायकोडर्मा व्हिरिडीची फवारणी करा.',
-              descriptionHi: 'दोपहर बाद ट्राइकोडर्मा विरिडी का 5 ग्राम प्रति लीटर पानी में छिड़काव करें।',
-              priority: 'important',
-              category: 'biological',
-            },
-            {
-              step: 4,
-              title: 'Triazole Fungicide Spray (If rust > 5% leaf area)',
-              titleMr: 'टेब्युकोनॅझोल किंवा हेक्झाकोनॅझोल फवारणी',
-              titleHi: 'ट्राईजोल कवकनाशी का छिड़काव (यदि रस्ट 5% से अधिक हो)',
-              description:
-                'Spray Hexaconazole 5% EC @ 1ml/L or Tebuconazole 25.9% EC @ 1.5ml/L during calm dry morning.',
-              descriptionMr: 'सकाळच्या शांत हवेत हेक्झाकोनॅझोल (१ मिली प्रति लिटर) औषधाची फवारणी करा.',
-              descriptionHi: 'शांत सुबह के समय हेक्साकोनाजोल या टेबुकोनाजोल का छिड़काव करें।',
-              priority: 'preventive',
-              category: 'chemical',
-            },
-          ],
-          whatToMonitor: [
-            {
-              title: 'Pustules on leaf undersides',
-              titleMr: 'पानाच्या पाठीमागील पिवळे-तपकिरी फोड',
-              titleHi: 'पत्ती की निचली सतह पर फफोले',
-              check: 'Observe if reddish-brown pustules appear on lower canopies.',
-              checkMr: 'खालच्या पानांच्या उलट्या बाजूला तांबूस फोड वाढतात का ते पाहा.',
-              checkHi: 'देखें कि क्या निचली पत्तियों की उल्टी सतह पर लाल-भूरे फफोले बढ़ रहे हैं।',
-            },
-          ],
-          whatMayHappenNext: {
-            title: 'Spore Spread Projection',
-            titleMr: 'बुरशी प्रसार अंदाज',
-            titleHi: 'बीजाणु प्रसार का पूर्वानुमान',
-            text: 'Wet weather conditions are ideal for rust propagation. Complete protective spray before rains.',
-            textMr: 'दमट हवामानामुळे तांबेरा वेगाने पसरू शकतो. पावसापूर्वी तातडीने फवारणी पूर्ण करा.',
-            textHi: 'नम मौसम गेरूई रोग के प्रसार के लिए अनुकूल है। बारिश से पहले अनुशंसित छिड़काव पूरा करें।',
-            riskTrend: 'increasing',
-          },
-          advisoryVoiceScript:
-            'Soybean Rust observed. Apply recommended triazole fungicide immediately during dry morning hours.',
-          advisoryVoiceScriptMr:
-            'सोयाबीनवर तांबेरा रोगाची लक्षणे दिसत आहेत. कोरड्या सकाळच्या वेळेत शिफारस केलेल्या बुरशीनाशकाची फवारणी करा.',
-          advisoryVoiceScriptHi:
-            'सोयाबीन पर गेरुआ रोग के लक्षण देखे गए हैं। शांत व शुष्क सुबह के समय अनुशंसित ट्राइएजोल कवकनाशी का तुरंत छिड़काव करें।',
-        };
-      }
-
-      // Dynamic crop name and metadata resolution for all 8 crops
-      const cropNameMap: Record<string, { name: string; nameMr: string }> = {
-        tomato: { name: 'Tomato', nameMr: 'टोमॅटो' },
-        cotton: { name: 'Cotton', nameMr: 'कापूस' },
-        soybean: { name: 'Soybean', nameMr: 'सोयाबीन' },
-        sugarcane: { name: 'Sugarcane', nameMr: 'ऊस' },
-        maize: { name: 'Maize', nameMr: 'मका' },
-        onion: { name: 'Onion', nameMr: 'कांदा' },
-        rice: { name: 'Rice', nameMr: 'भात' },
-        wheat: { name: 'Wheat', nameMr: 'गहू' },
-      };
-
-      const cropMeta = cropNameMap[cropId.toLowerCase()] || {
-        name: selectedCrop?.name || cropId.charAt(0).toUpperCase() + cropId.slice(1),
-        nameMr: selectedCrop?.nameMr || cropId,
-      };
-
+      // Return dynamic crop-specific default with resolved image
       return {
-        ...DEFAULT_DIAGNOSIS,
+        ...defaultDiag,
         id: `diag-${cropId}-${Date.now()}`,
-        cropId: cropId.toLowerCase(),
-        cropName: cropMeta.name,
-        cropNameMr: cropMeta.nameMr,
         imageUrl: resolvedImageUrl,
       };
     }
@@ -591,11 +481,140 @@ export const diagnosisService = {
     }
   },
 
-  async getLatestDiagnosis(): Promise<DiagnosisResult> {
+  /**
+   * Fetch latest diagnosis case for a specific farm, filtered by crop.
+   */
+  async getLatestDiagnosisForFarm(farmId: string, cropName?: string): Promise<DiagnosisResult | null> {
+    if (!farmId) return null;
+    const targetCrop = (cropName || '').toLowerCase().trim();
+
+    // 1. Try Backend API with fast 2500ms timeout
     try {
-      return await apiClient<DiagnosisResult>('/diagnosis/latest');
-    } catch {
-      return DEFAULT_DIAGNOSIS;
+      const cropQuery = cropName ? `?crop=${encodeURIComponent(cropName)}` : '';
+      const res = await apiClient<{ success: boolean; data: any }>(`/diagnosis/farm/${farmId}/latest${cropQuery}`, {
+        timeout: 2500,
+      });
+      if (res?.data) {
+        const diag = mapBackendCaseToDiagnosisResult(res.data, cropName);
+        if ((!targetCrop || diag.cropId === targetCrop) && isDiseaseCompatibleWithCrop(diag.diseaseName, diag.cropId)) {
+          return diag;
+        }
+      }
+    } catch {}
+
+    // 2. Direct Supabase REST Fallback
+    try {
+      const supaHeaders = {
+        apikey: SUPABASE_ANON_KEY,
+        Authorization: `Bearer ${SUPABASE_ANON_KEY}`,
+        Accept: 'application/json',
+      };
+      const res = await fetch(
+        `${SUPABASE_URL}/rest/v1/diagnosis_cases?farm_id=eq.${farmId}&select=*,crop_cycle:crop_cycle_id(id,crop_name,variety,crop_stage)&order=created_at.desc&limit=15`,
+        { headers: supaHeaders }
+      );
+      if (res.ok) {
+        const list = await res.json();
+        if (Array.isArray(list) && list.length > 0) {
+          const matched = list.find((c) => {
+            const cCrop = (c.crop_cycle?.crop_name || c.crop || '').toLowerCase().trim();
+            const disease = c.predicted_disease || c.disease || '';
+            const cropMatches = !targetCrop || cCrop === targetCrop;
+            return cropMatches && isDiseaseCompatibleWithCrop(disease, targetCrop || cCrop);
+          });
+          if (matched) {
+            return mapBackendCaseToDiagnosisResult(matched, cropName);
+          }
+        }
+      }
+    } catch {}
+
+    return null;
+  },
+
+  /**
+   * Fetch latest diagnosis case for a specific farmer, filtered by crop.
+   */
+  async getLatestDiagnosisForFarmer(farmerId: string, cropName?: string): Promise<DiagnosisResult | null> {
+    if (!farmerId) return null;
+    const targetCrop = (cropName || '').toLowerCase().trim();
+
+    // 1. Try Backend API with fast 2500ms timeout
+    try {
+      const cropQuery = cropName ? `?crop=${encodeURIComponent(cropName)}` : '';
+      const res = await apiClient<{ success: boolean; data: any }>(`/diagnosis/farmer/${farmerId}/latest${cropQuery}`, {
+        timeout: 2500,
+      });
+      if (res?.data) {
+        const diag = mapBackendCaseToDiagnosisResult(res.data, cropName);
+        if ((!targetCrop || diag.cropId === targetCrop) && isDiseaseCompatibleWithCrop(diag.diseaseName, diag.cropId)) {
+          return diag;
+        }
+      }
+    } catch {}
+
+    // 2. Direct Supabase REST Fallback
+    try {
+      const supaHeaders = {
+        apikey: SUPABASE_ANON_KEY,
+        Authorization: `Bearer ${SUPABASE_ANON_KEY}`,
+        Accept: 'application/json',
+      };
+      const res = await fetch(
+        `${SUPABASE_URL}/rest/v1/diagnosis_cases?farmer_id=eq.${farmerId}&select=*,crop_cycle:crop_cycle_id(id,crop_name,variety,crop_stage)&order=created_at.desc&limit=15`,
+        { headers: supaHeaders }
+      );
+      if (res.ok) {
+        const list = await res.json();
+        if (Array.isArray(list) && list.length > 0) {
+          const matched = list.find((c) => {
+            const cCrop = (c.crop_cycle?.crop_name || c.crop || '').toLowerCase().trim();
+            const disease = c.predicted_disease || c.disease || '';
+            const cropMatches = !targetCrop || cCrop === targetCrop;
+            return cropMatches && isDiseaseCompatibleWithCrop(disease, targetCrop || cCrop);
+          });
+          if (matched) {
+            return mapBackendCaseToDiagnosisResult(matched, cropName);
+          }
+        }
+      }
+    } catch {}
+
+    return null;
+  },
+
+  /**
+   * Master context resolver: gets latest diagnosis strictly for the active farmer/farm/crop context.
+   * If no existing diagnosis case exists for this specific crop, returns the dynamic crop-specific default.
+   */
+  async getDiagnosisForActiveContext(options: {
+    farmId?: string;
+    farmerId?: string;
+    cropName?: string;
+  }): Promise<DiagnosisResult> {
+    const cropId = (options.cropName || 'tomato').toLowerCase().trim();
+
+    // 1. Try farm latest for this crop
+    if (options.farmId) {
+      const farmCase = await this.getLatestDiagnosisForFarm(options.farmId, options.cropName);
+      if (farmCase && farmCase.cropId === cropId && isDiseaseCompatibleWithCrop(farmCase.diseaseName, cropId)) {
+        return farmCase;
+      }
     }
+
+    // 2. Try farmer latest for this crop
+    if (options.farmerId) {
+      const farmerCase = await this.getLatestDiagnosisForFarmer(options.farmerId, options.cropName);
+      if (farmerCase && farmerCase.cropId === cropId && isDiseaseCompatibleWithCrop(farmerCase.diseaseName, cropId)) {
+        return farmerCase;
+      }
+    }
+
+    // 3. Dynamic crop-specific default (strictly matches active crop)
+    return getDefaultDiagnosisForCrop(cropId);
+  },
+
+  async getLatestDiagnosis(cropId?: string): Promise<DiagnosisResult> {
+    return getDefaultDiagnosisForCrop(cropId || 'tomato');
   },
 };

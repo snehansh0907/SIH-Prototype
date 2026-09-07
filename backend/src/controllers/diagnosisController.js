@@ -149,6 +149,8 @@ const createDiagnosis = asyncHandler(async (req, res) => {
   });
 });
 
+const { buildAdvisory } = require('../services/advisoryService');
+
 /**
  * GET /api/diagnosis/:caseId
  */
@@ -157,7 +159,7 @@ const getDiagnosisById = asyncHandler(async (req, res) => {
 
   const { data, error } = await supabase
     .from('diagnosis_cases')
-    .select('*')
+    .select('*, crop_cycle:crop_cycle_id ( id, crop_name, variety, crop_stage )')
     .eq('id', caseId)
     .single();
 
@@ -165,7 +167,127 @@ const getDiagnosisById = asyncHandler(async (req, res) => {
     throw new ApiError(404, 'Diagnosis case not found.');
   }
 
-  res.json({ success: true, data });
+  const cropName = data.crop_cycle?.crop_name || null;
+  const advisory = buildAdvisory(data, cropName);
+
+  res.json({
+    success: true,
+    data: {
+      ...data,
+      crop_name: cropName,
+      advisory,
+    },
+  });
 });
 
-module.exports = { createDiagnosis, getDiagnosisById, runMockDiagnosis };
+const UUID_REGEX = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+
+/**
+ * GET /api/diagnosis/farm/:farmId/latest
+ */
+const getLatestDiagnosisByFarm = asyncHandler(async (req, res) => {
+  const { farmId } = req.params;
+  const { crop } = req.query;
+
+  if (!farmId || !UUID_REGEX.test(farmId)) {
+    return res.json({ success: true, data: null });
+  }
+
+  const { data, error } = await supabase
+    .from('diagnosis_cases')
+    .select('*, crop_cycle:crop_cycle_id ( id, crop_name, variety, crop_stage )')
+    .eq('farm_id', farmId)
+    .order('created_at', { ascending: false });
+
+  if (error) {
+    throw new ApiError(500, `Failed to fetch farm diagnosis cases: ${error.message}`);
+  }
+
+  if (!data || data.length === 0) {
+    return res.json({ success: true, data: null });
+  }
+
+  let matchingCase = data[0];
+  if (crop) {
+    const cropLower = crop.toLowerCase().trim();
+    const found = data.find((c) => {
+      const caseCrop = (c.crop_cycle?.crop_name || c.crop_name || '').toLowerCase().trim();
+      return caseCrop === cropLower || caseCrop.includes(cropLower) || cropLower.includes(caseCrop);
+    });
+    if (!found) {
+      return res.json({ success: true, data: null });
+    }
+    matchingCase = found;
+  }
+
+  const cropName = matchingCase.crop_cycle?.crop_name || (crop || 'Unknown');
+  const advisory = buildAdvisory(matchingCase, cropName);
+
+  res.json({
+    success: true,
+    data: {
+      ...matchingCase,
+      crop_name: cropName,
+      advisory,
+    },
+  });
+});
+
+/**
+ * GET /api/diagnosis/farmer/:farmerId/latest
+ */
+const getLatestDiagnosisByFarmer = asyncHandler(async (req, res) => {
+  const { farmerId } = req.params;
+  const { crop } = req.query;
+
+  if (!farmerId || !UUID_REGEX.test(farmerId)) {
+    return res.json({ success: true, data: null });
+  }
+
+  const { data, error } = await supabase
+    .from('diagnosis_cases')
+    .select('*, crop_cycle:crop_cycle_id ( id, crop_name, variety, crop_stage )')
+    .eq('farmer_id', farmerId)
+    .order('created_at', { ascending: false });
+
+  if (error) {
+    throw new ApiError(500, `Failed to fetch farmer diagnosis cases: ${error.message}`);
+  }
+
+  if (!data || data.length === 0) {
+    return res.json({ success: true, data: null });
+  }
+
+  let matchingCase = data[0];
+  if (crop) {
+    const cropLower = crop.toLowerCase().trim();
+    const found = data.find((c) => {
+      const caseCrop = (c.crop_cycle?.crop_name || c.crop_name || '').toLowerCase().trim();
+      return caseCrop === cropLower || caseCrop.includes(cropLower) || cropLower.includes(caseCrop);
+    });
+    if (!found) {
+      return res.json({ success: true, data: null });
+    }
+    matchingCase = found;
+  }
+
+  const cropName = matchingCase.crop_cycle?.crop_name || (crop || 'Unknown');
+  const advisory = buildAdvisory(matchingCase, cropName);
+
+  res.json({
+    success: true,
+    data: {
+      ...matchingCase,
+      crop_name: cropName,
+      advisory,
+    },
+  });
+});
+
+module.exports = {
+  createDiagnosis,
+  getDiagnosisById,
+  getLatestDiagnosisByFarm,
+  getLatestDiagnosisByFarmer,
+  runMockDiagnosis,
+};

@@ -23,15 +23,17 @@ interface AuthContextType {
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [authState, setAuthState] = useState<AuthRole>('unauthenticated');
-  const [user, setUser] = useState<FarmerUser | null>(null);
+  const [authState, setAuthState] = useState<AuthRole>(() => authService.getStoredSession().role);
+  const [user, setUser] = useState<FarmerUser | null>(() => authService.getStoredSession().user);
   const [isLoginModalOpen, setIsLoginModalOpen] = useState<boolean>(false);
 
-  // Initialize session from localStorage
+  // Synchronize session from localStorage on mount and window focus/storage events
   useEffect(() => {
     const session = authService.getStoredSession();
-    setAuthState(session.role);
-    setUser(session.user);
+    if (session.user?.id !== user?.id || session.role !== authState) {
+      setAuthState(session.role);
+      setUser(session.user);
+    }
   }, []);
 
   const login = async (idOrEmail: string, pass: string) => {

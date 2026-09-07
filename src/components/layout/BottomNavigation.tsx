@@ -45,8 +45,8 @@ export const BottomNavigation: React.FC = () => {
   ];
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 z-40 bg-white/95 backdrop-blur-lg border-t border-stone-200/80 shadow-float">
-      <div className="max-w-md mx-auto px-4 h-16 flex items-center justify-around">
+    <nav className="fixed bottom-0 left-0 right-0 z-40 bg-white/95 backdrop-blur-md border-t border-stone-200/70 shadow-sm">
+      <div className="max-w-md mx-auto px-4 h-15 flex items-center justify-around">
         {navItems.map((item) => {
           const isActive = activeTab === item.id || (item.id === 'check' && (activeTab === 'check' || activeTab === 'diagnosis'));
 
@@ -56,17 +56,17 @@ export const BottomNavigation: React.FC = () => {
                 key={item.id}
                 onClick={() => handleNavClick(item.id)}
                 type="button"
-                className="relative -top-4 flex flex-col items-center group focus:outline-none cursor-pointer"
+                className="relative -top-3 flex flex-col items-center group focus:outline-none cursor-pointer"
                 aria-label={item.label}
               >
-                <div className={`w-14 h-14 rounded-full flex items-center justify-center transition-all duration-300 shadow-elevated ${
+                <div className={`w-12 h-12 rounded-full flex items-center justify-center transition-all duration-200 shadow-md ${
                   isActive
-                    ? 'bg-forest-800 ring-4 ring-forest-200 scale-105'
-                    : 'bg-forest-700 hover:bg-forest-800 active:scale-95'
+                    ? 'bg-forest-800 ring-3 ring-forest-200 scale-105'
+                    : 'bg-forest-800 hover:bg-forest-900 active:scale-95'
                 }`}>
-                  {item.icon}
+                  <Camera className="w-5 h-5 text-white" />
                 </div>
-                <span className={`text-[11px] font-bold mt-1 tracking-tight transition-colors ${
+                <span className={`text-[10px] font-bold mt-1 tracking-tight transition-colors ${
                   isActive ? 'text-forest-800' : 'text-stone-600'
                 }`}>
                   {item.label}
@@ -80,8 +80,8 @@ export const BottomNavigation: React.FC = () => {
               key={item.id}
               onClick={() => handleNavClick(item.id)}
               type="button"
-              className={`flex flex-col items-center justify-center w-16 py-1 rounded-xl transition-all duration-200 active:scale-95 cursor-pointer ${
-                isActive ? 'text-forest-800 font-bold' : 'text-stone-500 hover:text-stone-700'
+              className={`flex flex-col items-center justify-center w-16 py-1 rounded-xl transition-all duration-150 active:scale-95 cursor-pointer ${
+                isActive ? 'text-forest-800 font-bold' : 'text-stone-400 hover:text-stone-600'
               }`}
             >
               <div className={`p-1 rounded-lg transition-colors ${
@@ -89,7 +89,9 @@ export const BottomNavigation: React.FC = () => {
               }`}>
                 {item.icon}
               </div>
-              <span className="text-[11px] mt-0.5 tracking-tight font-medium">
+              <span className={`text-[10px] mt-0.5 tracking-tight font-medium ${
+                isActive ? 'text-forest-800 font-bold' : 'text-stone-500'
+              }`}>
                 {item.label}
               </span>
             </button>

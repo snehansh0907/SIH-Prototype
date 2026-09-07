@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { ArrowLeft, Clock, Layers, MapPin, ChevronRight } from 'lucide-react';
 import { useLanguage } from '../../context/LanguageContext';
 import { useCrop } from '../../context/CropContext';
@@ -6,6 +6,11 @@ import { useAuth } from '../../context/AuthContext';
 import { StatusBadge } from '../common/StatusBadge';
 import type { SeverityLevel } from '../../types';
 import { VoiceButton } from '../common/VoiceButton';
+import {
+  getNearbyRegionsForLocation,
+  generateRegionalHotspotDataset,
+  type NearbyRegion,
+} from '../../services/locationRegionService';
 
 interface HeatZone {
   id: string;
@@ -322,23 +327,73 @@ const MAHARASHTRA_DEMO_LOCATIONS: Record<string, LocationHeatDataset> = {
 
 export const AreaHotspotView: React.FC = () => {
   const { language, t } = useLanguage();
-  const { resetToHome, setActiveTab } = useCrop();
+  const { resetToHome, setActiveTab, selectedFarm } = useCrop();
   const { user } = useAuth();
 
-  // Determine initial location based on logged in user or default to 'niphad'
-  const initialLocKey = (() => {
-    if (user?.village || user?.taluka || user?.location) {
-      const locStr = `${user.village} ${user.taluka} ${user.location}`.toLowerCase();
-      if (locStr.includes('dindori')) return 'dindori';
-      if (locStr.includes('chandori')) return 'chandori';
-      if (locStr.includes('pimpalgaon') || locStr.includes('ozar')) return 'pimpalgaon';
-      if (locStr.includes('satara') || locStr.includes('baramati')) return 'satara';
-    }
-    return 'niphad';
-  })();
+  const isDemoSession = user?.userType === 'demo' || Boolean(user?.isDemo);
 
-  const [selectedLocId, setSelectedLocId] = useState<string>(initialLocKey);
-  const activeDataset = MAHARASHTRA_DEMO_LOCATIONS[selectedLocId] || MAHARASHTRA_DEMO_LOCATIONS.niphad;
+  // Dynamically resolve genuine nearby regions based on authenticated user's farm profile
+  const nearbyRegions = useMemo<NearbyRegion[]>(() => {
+    // If demo session in Nashik / Niphad, offer demo regions
+    if (isDemoSession && (!user?.district || user.district.toLowerCase() === 'nashik')) {
+      return [
+        { id: 'niphad', name: 'Niphad', nameHi: 'निफाड़', nameMr: 'निफाड', taluka: 'Niphad', district: 'Nashik', districtHi: 'नासिक', districtMr: 'नाशिक', state: 'Maharashtra', isHomeLocation: true },
+        { id: 'dindori', name: 'Dindori', nameHi: 'दिंडोरी', nameMr: 'दिंडोरी', taluka: 'Dindori', district: 'Nashik', districtHi: 'नासिक', districtMr: 'नाशिक', state: 'Maharashtra' },
+        { id: 'chandori', name: 'Chandori', nameHi: 'चांदोरी', nameMr: 'चांदोरी', taluka: 'Niphad', district: 'Nashik', districtHi: 'नासिक', districtMr: 'नाशिक', state: 'Maharashtra' },
+        { id: 'pimpalgaon', name: 'Pimpalgaon', nameHi: 'पिंपलगांव', nameMr: 'पिंपळगाव', taluka: 'Niphad', district: 'Nashik', districtHi: 'नासिक', districtMr: 'नाशिक', state: 'Maharashtra' },
+        { id: 'satara', name: 'Satara', nameHi: 'सातारा', nameMr: 'सातारा', taluka: 'Satara', district: 'Satara', districtHi: 'सातारा', districtMr: 'सातारा', state: 'Maharashtra' },
+      ];
+    }
+
+    return getNearbyRegionsForLocation(user, selectedFarm);
+  }, [
+    user?.id,
+    user?.farmerId,
+    user?.userType,
+    user?.isDemo,
+    user?.village,
+    user?.taluka,
+    user?.district,
+    user?.state,
+    user?.latitude,
+    user?.longitude,
+    user?.monitoredCrop,
+    selectedFarm?.id,
+    selectedFarm?.village,
+    selectedFarm?.taluka,
+    selectedFarm?.district,
+    selectedFarm?.latitude,
+    selectedFarm?.longitude,
+  ]);
+
+  // Map of datasets for all available regions
+  const datasetsMap = useMemo<Record<string, LocationHeatDataset>>(() => {
+    const map: Record<string, LocationHeatDataset> = {};
+
+    for (const region of nearbyRegions) {
+      if (isDemoSession && MAHARASHTRA_DEMO_LOCATIONS[region.id]) {
+        map[region.id] = MAHARASHTRA_DEMO_LOCATIONS[region.id];
+      } else {
+        const crop = user?.monitoredCrop || 'Tomato';
+        map[region.id] = generateRegionalHotspotDataset(region, crop);
+      }
+    }
+
+    return map;
+  }, [nearbyRegions, isDemoSession, user?.monitoredCrop]);
+
+  const defaultLocId = nearbyRegions[0]?.id || 'niphad';
+  const [selectedLocId, setSelectedLocId] = useState<string>(defaultLocId);
+
+  // Immediately refresh location data when user account or selected farm changes (zero stale cache)
+  useEffect(() => {
+    if (nearbyRegions.length > 0) {
+      setSelectedLocId(nearbyRegions[0].id);
+    }
+  }, [user?.id, user?.farmerId, selectedFarm?.id, nearbyRegions]);
+
+  const activeDataset =
+    datasetsMap[selectedLocId] || datasetsMap[defaultLocId] || Object.values(datasetsMap)[0] || MAHARASHTRA_DEMO_LOCATIONS.niphad;
 
   const [selectedZoneId, setSelectedZoneId] = useState<string>(
     activeDataset.heatZones[0]?.id || 'c1'
@@ -349,7 +404,7 @@ export const AreaHotspotView: React.FC = () => {
     if (activeDataset.heatZones.length > 0) {
       setSelectedZoneId(activeDataset.heatZones[0].id);
     }
-  }, [selectedLocId]);
+  }, [selectedLocId, activeDataset]);
 
   const activeZone =
     activeDataset.heatZones.find((z) => z.id === selectedZoneId) || activeDataset.heatZones[0];
@@ -409,12 +464,12 @@ export const AreaHotspotView: React.FC = () => {
           </div>
         </div>
 
-        {/* Demo Maharashtra Location Selector Pills */}
+        {/* Dynamic Location-Aware Nearby Region Selector Pills */}
         <div className="mt-3 flex items-center gap-1.5 overflow-x-auto pb-1 scrollbar-none">
           <span className="text-[10px] font-black uppercase text-stone-400 shrink-0 font-display mr-1">
             {t.selectRegion}
           </span>
-          {Object.values(MAHARASHTRA_DEMO_LOCATIONS).map((loc) => {
+          {nearbyRegions.map((loc) => {
             const isCurrent = selectedLocId === loc.id;
             return (
               <button

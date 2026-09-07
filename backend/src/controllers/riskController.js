@@ -9,10 +9,25 @@
 //   5. Calculate risk (via riskService)
 // =========================================================
 
+const fs = require('fs');
+const path = require('path');
 const { v4: uuidv4 } = require('uuid');
 const supabase = require('../config/supabase');
 const { asyncHandler, ApiError } = require('../middleware/errorHandler');
 const { calculateRisk } = require('../services/riskService');
+
+const REGISTERED_USERS_FILE = path.resolve(__dirname, '../data/registered_users.json');
+
+function readLocalUsers() {
+  try {
+    if (!fs.existsSync(REGISTERED_USERS_FILE)) return [];
+    const data = fs.readFileSync(REGISTERED_USERS_FILE, 'utf8');
+    const list = JSON.parse(data);
+    return Array.isArray(list) ? list : [];
+  } catch {
+    return [];
+  }
+}
 
 /**
  * GET /api/risk/:farmId
@@ -21,26 +36,58 @@ const getRiskForFarm = asyncHandler(async (req, res) => {
   const { farmId } = req.params;
 
   // 1. Get farm location
-  const { data: farm, error: farmError } = await supabase
-    .from('farms')
-    .select('id, latitude, longitude, farm_name, taluka, district')
-    .eq('id', farmId)
-    .single();
+  let farm = null;
+  try {
+    const { data: supaFarm, error: farmError } = await supabase
+      .from('farms')
+      .select('id, latitude, longitude, farm_name, taluka, district')
+      .eq('id', farmId)
+      .single();
+    if (!farmError && supaFarm) farm = supaFarm;
+  } catch {}
 
-  if (farmError || !farm) {
+  let matchedLocalUser = null;
+  if (!farm) {
+    const localUsers = readLocalUsers();
+    matchedLocalUser = localUsers.find((u) => u.farmId === farmId || `farm-${u.id}` === farmId || u.id === farmId);
+    if (matchedLocalUser) {
+      farm = {
+        id: matchedLocalUser.farmId || `farm-${matchedLocalUser.id}`,
+        farm_name: matchedLocalUser.farmName || `${matchedLocalUser.name.split(' ')[0]}'s Farm`,
+        latitude: matchedLocalUser.latitude ?? 20.085,
+        longitude: matchedLocalUser.longitude ?? 74.11,
+        taluka: matchedLocalUser.taluka || '',
+        district: matchedLocalUser.district || '',
+      };
+    }
+  }
+
+  if (!farm) {
     throw new ApiError(404, 'Farm not found.');
   }
 
   // 2. Get active crop cycle for this farm (most recently created active one)
-  const { data: cropCycles } = await supabase
-    .from('crop_cycles')
-    .select('*')
-    .eq('farm_id', farmId)
-    .eq('status', 'active')
-    .order('created_at', { ascending: false })
-    .limit(1);
+  let activeCropCycle = null;
+  try {
+    const { data: cropCycles } = await supabase
+      .from('crop_cycles')
+      .select('*')
+      .eq('farm_id', farmId)
+      .eq('status', 'active')
+      .order('created_at', { ascending: false })
+      .limit(1);
+    if (cropCycles && cropCycles.length > 0) activeCropCycle = cropCycles[0];
+  } catch {}
 
-  const activeCropCycle = cropCycles && cropCycles.length > 0 ? cropCycles[0] : null;
+  if (!activeCropCycle && matchedLocalUser && matchedLocalUser.monitoredCrop) {
+    activeCropCycle = {
+      id: matchedLocalUser.cropCycleId || `cycle-${matchedLocalUser.id}`,
+      crop_name: matchedLocalUser.monitoredCrop,
+      variety: 'Selected',
+      crop_stage: 'vegetative',
+      status: 'active',
+    };
+  }
 
   // 3 + 4 + 5: weather, nearby cases, risk calculation (all handled in riskService)
   const risk = await calculateRisk(farm, activeCropCycle);

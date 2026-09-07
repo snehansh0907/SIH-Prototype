@@ -25,11 +25,11 @@ export const FollowUpBanner: React.FC = () => {
   };
 
   return (
-    <div className="rounded-3xl bg-gradient-to-b from-white to-stone-50 border border-stone-200/90 p-4 shadow-soft mb-5">
-      <div className="flex items-center justify-between mb-2">
-        <div className="flex items-center gap-2">
-          <span className="text-xl">🌱</span>
-          <h3 className="text-sm font-extrabold text-stone-900 font-display">
+    <div className="rounded-2xl bg-white border border-stone-200/70 p-4 shadow-sm mb-4">
+      <div className="flex items-center justify-between mb-1.5">
+        <div className="flex items-center gap-1.5">
+          <span className="text-base">🌱</span>
+          <h3 className="text-xs uppercase tracking-wider font-bold text-stone-500 font-display">
             {t.followUpTitle}
           </h3>
         </div>
@@ -37,7 +37,7 @@ export const FollowUpBanner: React.FC = () => {
           <button
             onClick={() => setFollowUpStatus(null)}
             type="button"
-            className="text-[11px] font-semibold text-stone-500 hover:text-stone-700 flex items-center gap-1"
+            className="text-[11px] font-semibold text-stone-400 hover:text-stone-700 flex items-center gap-1 cursor-pointer"
           >
             <RotateCcw className="w-3 h-3" />
             <span>{t.changeAction}</span>
@@ -45,7 +45,7 @@ export const FollowUpBanner: React.FC = () => {
         )}
       </div>
 
-      <p className="text-xs text-stone-600 mb-3.5 leading-normal">
+      <p className="text-xs text-stone-600 mb-3 leading-relaxed">
         {t.followUpSubtitle}
       </p>
 
@@ -55,40 +55,40 @@ export const FollowUpBanner: React.FC = () => {
           <button
             onClick={() => handleSelect('better')}
             type="button"
-            className="py-3 px-2 rounded-2xl bg-emerald-50 hover:bg-emerald-100 border border-emerald-300/80 text-emerald-900 font-bold text-xs flex flex-col items-center gap-1 transition-all active:scale-95 shadow-sm"
+            className="py-2.5 px-2 rounded-xl bg-emerald-50/70 hover:bg-emerald-100/70 border border-emerald-200/70 text-emerald-900 font-semibold text-xs flex flex-col items-center gap-1 transition-all active:scale-95 shadow-xs cursor-pointer"
           >
-            <span className="text-2xl">😊</span>
+            <span className="text-xl">😊</span>
             <span>{t.btnBetter.split(' ')[0]}</span>
           </button>
 
           <button
             onClick={() => handleSelect('same')}
             type="button"
-            className="py-3 px-2 rounded-2xl bg-amber-50 hover:bg-amber-100 border border-amber-300/80 text-amber-900 font-bold text-xs flex flex-col items-center gap-1 transition-all active:scale-95 shadow-sm"
+            className="py-2.5 px-2 rounded-xl bg-amber-50/70 hover:bg-amber-100/70 border border-amber-200/70 text-amber-900 font-semibold text-xs flex flex-col items-center gap-1 transition-all active:scale-95 shadow-xs cursor-pointer"
           >
-            <span className="text-2xl">😐</span>
+            <span className="text-xl">😐</span>
             <span>{t.btnSame.split(' ')[0]}</span>
           </button>
 
           <button
             onClick={() => handleSelect('worse')}
             type="button"
-            className="py-3 px-2 rounded-2xl bg-rose-50 hover:bg-rose-100 border border-rose-300/80 text-rose-900 font-bold text-xs flex flex-col items-center gap-1 transition-all active:scale-95 shadow-sm"
+            className="py-2.5 px-2 rounded-xl bg-rose-50/70 hover:bg-rose-100/70 border border-rose-200/70 text-rose-900 font-semibold text-xs flex flex-col items-center gap-1 transition-all active:scale-95 shadow-xs cursor-pointer"
           >
-            <span className="text-2xl">😟</span>
+            <span className="text-xl">😟</span>
             <span>{t.btnWorse.split(' ')[0]}</span>
           </button>
         </div>
       ) : (
         <div className="animate-fadeIn">
           {followUpStatus === 'better' && (
-            <div className="bg-emerald-50 border border-emerald-200 rounded-2xl p-3.5 flex items-start gap-2.5">
-              <CheckCircle2 className="w-5 h-5 text-emerald-700 shrink-0 mt-0.5" />
+            <div className="bg-emerald-50/80 border border-emerald-200 rounded-xl p-3 flex items-start gap-2.5">
+              <CheckCircle2 className="w-4 h-4 text-emerald-700 shrink-0 mt-0.5" />
               <div>
                 <div className="text-xs font-bold text-emerald-950 mb-0.5">
                   {t.recoveryLogged}
                 </div>
-                <p className="text-xs text-emerald-900 leading-relaxed">
+                <p className="text-xs text-emerald-900 leading-relaxed font-medium">
                   {t.feedbackBetter}
                 </p>
               </div>
@@ -96,13 +96,13 @@ export const FollowUpBanner: React.FC = () => {
           )}
 
           {followUpStatus === 'same' && (
-            <div className="bg-amber-50 border border-amber-200 rounded-2xl p-3.5 flex items-start gap-2.5">
-              <span className="text-lg">ℹ️</span>
+            <div className="bg-amber-50/80 border border-amber-200 rounded-xl p-3 flex items-start gap-2.5">
+              <span className="text-base">ℹ️</span>
               <div>
                 <div className="text-xs font-bold text-amber-950 mb-0.5">
                   {t.continueMonitoring}
                 </div>
-                <p className="text-xs text-amber-900 leading-relaxed">
+                <p className="text-xs text-amber-900 leading-relaxed font-medium">
                   {t.feedbackSame}
                 </p>
               </div>
@@ -110,25 +110,25 @@ export const FollowUpBanner: React.FC = () => {
           )}
 
           {followUpStatus === 'worse' && (
-            <div className="bg-rose-50 border border-rose-300 rounded-2xl p-3.5">
+            <div className="bg-rose-50/80 border border-rose-200 rounded-xl p-3">
               <div className="flex items-start gap-2 mb-2.5">
-                <span className="text-lg">⚠️</span>
+                <span className="text-base shrink-0">⚠️</span>
                 <div>
                   <div className="text-xs font-bold text-rose-950">
                     {t.immediateHelpRecommended}
                   </div>
-                  <p className="text-xs text-rose-900 leading-relaxed">
+                  <p className="text-xs text-rose-900 leading-relaxed font-medium">
                     {t.feedbackWorse}
                   </p>
                 </div>
               </div>
 
               {/* Action buttons specifically requested for Worse */}
-              <div className="grid grid-cols-2 gap-2 mt-3 pt-2.5 border-t border-rose-200/80">
+              <div className="grid grid-cols-2 gap-2 mt-2.5 pt-2.5 border-t border-rose-200/70">
                 <button
                   onClick={() => setActiveTab('check')}
                   type="button"
-                  className="flex items-center justify-center gap-1.5 py-2.5 px-3 rounded-xl bg-forest-800 text-white font-bold text-xs hover:bg-forest-900 active:scale-95 transition-transform shadow-sm"
+                  className="flex items-center justify-center gap-1.5 py-2 px-3 rounded-lg bg-forest-800 text-white font-semibold text-xs hover:bg-forest-900 active:scale-95 transition-transform shadow-xs cursor-pointer"
                 >
                   <Camera className="w-3.5 h-3.5" />
                   <span>{t.uploadNewPhoto}</span>
@@ -137,7 +137,7 @@ export const FollowUpBanner: React.FC = () => {
                 <button
                   onClick={() => setActiveTab('expert')}
                   type="button"
-                  className="flex items-center justify-center gap-1.5 py-2.5 px-3 rounded-xl bg-amber-600 text-white font-bold text-xs hover:bg-amber-700 active:scale-95 transition-transform shadow-sm"
+                  className="flex items-center justify-center gap-1.5 py-2 px-3 rounded-lg bg-amber-600 text-white font-semibold text-xs hover:bg-amber-700 active:scale-95 transition-transform shadow-xs cursor-pointer"
                 >
                   <UserCheck className="w-3.5 h-3.5" />
                   <span>{t.talkToExpertBtn}</span>

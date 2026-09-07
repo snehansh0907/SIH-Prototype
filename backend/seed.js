@@ -134,8 +134,8 @@ async function seed() {
   // A) General scattered cases across all farms/crop cycles (mix of statuses)
   cropCycles.forEach((cycle, i) => {
     const farm = farms.find((f) => f.id === cycle.farm_id);
-    const farmer = farmers[i % farmers.length];
-    const diseaseList = diseasesByCrop[cycle.crop_name];
+    const farmer = farmers.find((f) => f.id === farm.farmer_id) || farmers[i % farmers.length];
+    const diseaseList = diseasesByCrop[cycle.crop_name] || ['Healthy Leaf'];
     const disease = diseaseList[i % diseaseList.length];
 
     const severityPercent = Math.floor(Math.random() * 80) + 10;
@@ -166,18 +166,22 @@ async function seed() {
   });
 
   // B) A tight geographic cluster of CONFIRMED Tomato Early Blight cases near
-  //    one farm, so the hotspot heatmap visibly clusters on the demo map.
+  //    tomato farms, so the hotspot heatmap visibly clusters on the demo map.
   const clusterCenterLat = jitter(BASE_LAT, 2);
   const clusterCenterLng = jitter(BASE_LNG, 2);
 
+  const tomatoCycles = cropCycles.filter((c) => c.crop_name === 'Tomato');
+  const tomatoFarms = farms.filter((f) => tomatoCycles.some((c) => c.farm_id === f.id));
+
   for (let i = 0; i < 8; i++) {
-    const farmer = farmers[i % farmers.length];
-    const farm = farms[i % farms.length];
+    const cycle = tomatoCycles[i % tomatoCycles.length];
+    const farm = tomatoFarms.find((f) => f.id === cycle.farm_id) || tomatoFarms[0];
+    const farmer = farmers.find((f) => f.id === farm.farmer_id) || farmers[0];
     cases.push({
       id: uuidv4(),
       farmer_id: farmer.id,
       farm_id: farm.id,
-      crop_cycle_id: cropCycles[i % cropCycles.length].id,
+      crop_cycle_id: cycle.id,
       image_url: `/uploads/demo_cluster_${i}.jpg`,
       predicted_disease: 'Early Blight',
       confidence: Math.floor(Math.random() * 15) + 82,

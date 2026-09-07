@@ -6,6 +6,8 @@ import { useAuth } from '../../context/AuthContext';
 import { StatusBadge } from '../common/StatusBadge';
 import { VoiceButton } from '../common/VoiceButton';
 import { getLocalizedAdvisoryScript } from '../../utils/speech';
+import { isDiseaseCompatibleWithCrop } from '../../services/diagnosisService';
+import { getDefaultDiagnosisForCrop } from '../../services/mockData';
 
 export const CropStatusHero: React.FC = () => {
   const { language, t } = useLanguage();
@@ -14,19 +16,27 @@ export const CropStatusHero: React.FC = () => {
 
   const isNewUser = user?.isNewUser && user?.userType === 'registered';
 
+  const activeCropKey = (user?.monitoredCrop || diagnosis?.cropId || 'tomato').toLowerCase().trim();
+  const isCropMatched = (diagnosis?.cropId || '').toLowerCase().trim() === activeCropKey;
+  const isDiseaseValid = diagnosis?.diseaseName ? isDiseaseCompatibleWithCrop(diagnosis.diseaseName, activeCropKey) : true;
+
+  const currentDiagnosis = (isCropMatched && isDiseaseValid)
+    ? diagnosis
+    : getDefaultDiagnosisForCrop(activeCropKey);
+
   const cropName =
     language === 'mr'
-      ? diagnosis.cropNameMr
+      ? currentDiagnosis.cropNameMr
       : language === 'hi'
-      ? (diagnosis.cropNameHi || diagnosis.cropName)
-      : diagnosis.cropName;
+      ? (currentDiagnosis.cropNameHi || currentDiagnosis.cropName)
+      : currentDiagnosis.cropName;
 
   const diseaseName =
     language === 'mr'
-      ? diagnosis.diseaseNameMr
+      ? currentDiagnosis.diseaseNameMr
       : language === 'hi'
-      ? (diagnosis.diseaseNameHi || diagnosis.diseaseName)
-      : diagnosis.diseaseName;
+      ? (currentDiagnosis.diseaseNameHi || currentDiagnosis.diseaseName)
+      : currentDiagnosis.diseaseName;
 
   const userName =
     language === 'mr'
@@ -66,24 +76,22 @@ export const CropStatusHero: React.FC = () => {
         : `Your ${user.farmName} profile is ready for monitoring ${user.monitoredCrop}. Take a quick leaf photo to start smart AI disease detection.`;
 
     return (
-      <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-emerald-500/15 via-forest-50 to-amber-500/10 border-2 border-emerald-400/80 p-5 shadow-card mb-5 animate-fadeIn">
-        <div className="absolute top-0 right-0 -mr-8 -mt-8 w-32 h-32 rounded-full bg-emerald-400/20 blur-2xl pointer-events-none" />
-
-        <div className="flex items-center justify-between mb-3">
+      <div className="relative overflow-hidden rounded-2xl bg-gradient-to-b from-emerald-50/60 to-white border border-emerald-200/80 p-4 shadow-sm animate-fadeIn">
+        <div className="flex items-center justify-between mb-2.5">
           <div className="flex items-center gap-2">
-            <span className="text-xl">🌱</span>
-            <h2 className="text-base font-extrabold text-forest-950 font-display tracking-tight">
+            <span className="text-lg">🌱</span>
+            <h2 className="text-sm font-bold text-forest-950 font-display">
               {welcomeGreeting}
             </h2>
           </div>
-          <span className="px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-800 text-[10px] font-bold border border-emerald-300">
+          <span className="px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 text-[10px] font-semibold border border-emerald-200/60">
             {t.newFarmerTag}
           </span>
         </div>
 
-        <div className="mb-4">
-          <h3 className="text-base font-bold text-stone-900 mb-1 flex items-center gap-1.5 font-display">
-            <Sparkles className="w-4 h-4 text-amber-600" />
+        <div className="mb-3">
+          <h3 className="text-xs font-bold text-stone-800 mb-1 flex items-center gap-1.5 font-display">
+            <Sparkles className="w-3.5 h-3.5 text-amber-500" />
             <span>{t.farmProfileReady}</span>
           </h3>
           <p className="text-xs text-stone-600 leading-relaxed">
@@ -92,21 +100,14 @@ export const CropStatusHero: React.FC = () => {
         </div>
 
         {/* Farm & Crop Summary Chip */}
-        <div className="bg-white/90 rounded-2xl p-3 border border-emerald-200/80 mb-4 flex items-center justify-between">
-          <div className="flex items-center gap-2.5">
-            <div className="w-10 h-10 rounded-xl bg-forest-100 text-forest-800 flex items-center justify-center font-bold text-lg">
-              <Sprout className="w-5 h-5 text-forest-700" />
-            </div>
-            <div>
-              <div className="text-[10px] uppercase font-bold text-stone-500">
-                {t.registeredFarmAndCrop}
-              </div>
-              <div className="text-xs font-black text-forest-950">
-                {farmPlotLabel} • {monitoredCropName}
-              </div>
-            </div>
+        <div className="bg-stone-50 rounded-xl px-3 py-2 border border-stone-200/60 mb-3 flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <Sprout className="w-4 h-4 text-emerald-700 shrink-0" />
+            <span className="text-xs font-bold text-stone-800">
+              {farmPlotLabel} • {monitoredCropName}
+            </span>
           </div>
-          <span className="text-[11px] font-bold text-emerald-700 bg-emerald-50 px-2 py-1 rounded-lg">
+          <span className="text-[10px] font-semibold text-stone-500">
             {user.areaAcres} {t.acresUnit}
           </span>
         </div>
@@ -115,11 +116,11 @@ export const CropStatusHero: React.FC = () => {
         <button
           onClick={() => setActiveTab('check')}
           type="button"
-          className="w-full py-3.5 px-4 rounded-2xl bg-forest-800 hover:bg-forest-900 active:scale-[0.98] text-white font-extrabold text-xs font-display transition-all shadow-elevated flex items-center justify-center gap-2 cursor-pointer border-2 border-forest-700"
+          className="w-full py-2.5 px-4 rounded-xl bg-forest-800 hover:bg-forest-900 active:scale-[0.98] text-white font-bold text-xs font-display transition-all shadow-sm flex items-center justify-center gap-2 cursor-pointer"
         >
           <Camera className="w-4 h-4 text-amber-300 animate-pulse" />
           <span>{t.scanFirstLeaf}</span>
-          <ArrowRight className="w-4 h-4 text-amber-300" />
+          <ArrowRight className="w-3.5 h-3.5 text-amber-300" />
         </button>
       </div>
     );
@@ -128,72 +129,60 @@ export const CropStatusHero: React.FC = () => {
   // Standard Monitored Crop Status
   const statusQuote =
     language === 'mr'
-      ? (diagnosis.whatMayHappenNext.textMr.slice(0, 105) + '...')
+      ? (currentDiagnosis.whatMayHappenNext.textMr.slice(0, 110) + '...')
       : language === 'hi'
-      ? ((diagnosis.whatMayHappenNext.textHi || diagnosis.whatMayHappenNext.text).slice(0, 105) + '...')
-      : t.cropStatusDesc;
+      ? ((currentDiagnosis.whatMayHappenNext.textHi || currentDiagnosis.whatMayHappenNext.text).slice(0, 110) + '...')
+      : (activeCropKey === 'soybean' && currentDiagnosis.whatMayHappenNext?.text
+          ? (currentDiagnosis.whatMayHappenNext.text.slice(0, 110) + '...')
+          : t.cropStatusDesc);
 
   return (
-    <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-amber-500/10 via-amber-100/50 to-emerald-500/10 border-2 border-amber-300/80 p-5 shadow-card mb-5">
-      {/* Background soft glow */}
-      <div className="absolute top-0 right-0 -mr-8 -mt-8 w-32 h-32 rounded-full bg-amber-300/30 blur-2xl pointer-events-none" />
-
+    <div className="relative overflow-hidden rounded-2xl bg-gradient-to-b from-amber-50/50 via-white to-white border border-amber-200/70 p-4 shadow-sm">
       {/* Top Header */}
-      <div className="flex items-center justify-between mb-3">
-        <div className="flex items-center gap-2">
-          <span className="text-xl">🌱</span>
-          <h2 className="text-base font-extrabold text-stone-900 font-display tracking-tight">
+      <div className="flex items-center justify-between mb-2.5">
+        <div className="flex items-center gap-1.5">
+          <span className="text-base">🌱</span>
+          <h2 className="text-sm font-bold text-stone-800 font-display tracking-tight">
             {t.myCropStatus}
           </h2>
         </div>
-        <StatusBadge level={diagnosis.severity} type="severity" size="sm" />
+        <StatusBadge level={currentDiagnosis.severity} type="severity" size="sm" />
       </div>
 
       {/* Main Focus: Status Message */}
-      <div className="mb-4">
-        <div className="flex items-start gap-2.5 mb-1.5">
-          <AlertTriangle className="w-5 h-5 text-amber-700 shrink-0 mt-0.5" />
-          <h3 className="text-lg font-extrabold text-amber-950 font-display leading-tight">
-            {t.statusAttention}
-          </h3>
-        </div>
-        <p className="text-sm font-semibold text-stone-800 leading-snug pl-7">
-          "{statusQuote}"
+      <div className="flex items-start gap-2 mb-3">
+        <AlertTriangle className="w-4 h-4 text-amber-600 shrink-0 mt-0.5" />
+        <p className="text-xs font-semibold text-stone-800 leading-relaxed">
+          {statusQuote}
         </p>
       </div>
 
-      {/* Crop detail chip & scan time */}
-      <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-3 border border-amber-200/60 mb-4 flex items-center justify-between">
-        <div>
-          <div className="text-[11px] uppercase tracking-wider font-bold text-stone-500">
-            {`${t.monitoredPlot} • ${farmPlotLabel}`}
-          </div>
-          <div className="text-sm font-bold text-forest-900 flex items-center gap-1.5">
-            <span>🌿</span>
-            <span>{cropName} ({diseaseName})</span>
-          </div>
+      {/* Crop detail strip & scan time */}
+      <div className="py-2 px-3 rounded-xl bg-stone-50 border border-stone-200/60 mb-3 flex items-center justify-between text-xs">
+        <div className="flex items-center gap-1.5 truncate">
+          <span className="text-forest-800 font-bold">{cropName}</span>
+          <span className="text-stone-400">•</span>
+          <span className="text-stone-600 font-medium truncate">{diseaseName}</span>
         </div>
 
-        <div className="text-right">
-          <div className="flex items-center gap-1 text-[11px] text-stone-500 font-medium">
-            <Clock className="w-3 h-3 text-stone-400" />
-            <span>{t.lastScanned.split(':')[1] || 'Today'}</span>
-          </div>
+        <div className="flex items-center gap-1 text-[10px] text-stone-400 font-medium shrink-0 ml-2">
+          <Clock className="w-3 h-3 text-stone-400" />
+          <span>{t.lastScanned.split(':')[1] || 'Today'}</span>
         </div>
       </div>
 
       {/* Dual Actions: Listen + View Full Advisory */}
-      <div className="grid grid-cols-2 gap-2.5">
+      <div className="grid grid-cols-2 gap-2">
         <VoiceButton
-          textToSpeak={getLocalizedAdvisoryScript(diagnosis, language)}
+          textToSpeak={getLocalizedAdvisoryScript(currentDiagnosis, language)}
           variant="secondary"
-          className="text-xs py-2.5 px-3 rounded-xl border border-stone-300 font-bold"
+          className="text-xs py-2 px-3 rounded-xl border border-stone-300 font-semibold"
         />
 
         <button
           onClick={() => requireFarmerAccess(() => setActiveTab('diagnosis'))}
           type="button"
-          className="flex items-center justify-center gap-1.5 py-2.5 px-3 rounded-xl bg-forest-800 text-white font-bold text-xs hover:bg-forest-900 shadow-sm active:scale-95 transition-transform cursor-pointer"
+          className="flex items-center justify-center gap-1.5 py-2 px-3 rounded-xl bg-forest-800 text-white font-semibold text-xs hover:bg-forest-900 shadow-xs active:scale-95 transition-transform cursor-pointer"
         >
           <span>{t.viewAdvice}</span>
           <ArrowRight className="w-3.5 h-3.5" />

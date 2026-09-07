@@ -25,11 +25,37 @@ const authRoutes = require('./routes/authRoutes');
 const app = express();
 
 // ---------------- Global Middleware ----------------
-app.use(
-  cors({
-    origin: process.env.FRONTEND_URL || '*',
-  })
-);
+const allowedOrigins = [
+  process.env.FRONTEND_URL,
+  'http://localhost:5173',
+  'http://localhost:5174',
+  'http://127.0.0.1:5173',
+  'http://127.0.0.1:5174',
+  'http://localhost:3000',
+  'http://127.0.0.1:3000',
+].filter(Boolean);
+
+const corsOptions = {
+  origin: (origin, callback) => {
+    // Allow requests with no origin (e.g. mobile apps, curl, Postman)
+    if (!origin) return callback(null, true);
+    // Allow any localhost or 127.0.0.1 port or configured frontend URL
+    if (
+      /^http:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/.test(origin) ||
+      allowedOrigins.includes(origin)
+    ) {
+      return callback(null, true);
+    }
+    // Fallback in dev: allow origin so frontend is never blocked
+    return callback(null, true);
+  },
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'Accept'],
+};
+
+app.use(cors(corsOptions));
+app.options('*', cors(corsOptions));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
