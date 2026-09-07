@@ -416,12 +416,13 @@ Krishi Sarthak can be expanded with:
 
 **TEAM CYPHER**\
 Smart India Hackathon (SIH) Prototype
-Lakshya Vadera
-Snehansh Tripathy
-Lau Kumar Singh
-Maahi Arora
-Utsav Kumar
-Parth Upadhyay
+
+- **Lakshya Vadera**
+- **Snehansh Tripathy**
+- **Lau Kumar Singh**
+- **Maahi Arora**
+- **Utsav Kumar**
+- **Parth Upadhyay**
 
 Built with the goal of making **smart crop care more accessible to every
 farmer**. 🌾
