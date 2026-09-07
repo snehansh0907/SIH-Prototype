@@ -1,7 +1,7 @@
 import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
 import type { DiagnosisResult, WeatherCondition, RiskForecast, FollowUpStatus } from '../types';
 import { getDefaultDiagnosisForCrop, getDefaultRiskForecastForCrop } from '../services/mockData';
-import { diagnosisService } from '../services/diagnosisService';
+import { diagnosisService, InvalidCropImageError } from '../services/diagnosisService';
 import { weatherService } from '../services/weatherService';
 import { riskService } from '../services/riskService';
 
@@ -233,8 +233,11 @@ export const CropProvider: React.FC<{ children: React.ReactNode }> = ({ children
       setIsAnalyzing(false);
       setActiveTab('diagnosis');
       return result;
-    } catch {
+    } catch (err) {
       setIsAnalyzing(false);
+      if (err instanceof InvalidCropImageError || (err as Error)?.name === 'InvalidCropImageError') {
+        throw err;
+      }
       const fallback = getDefaultDiagnosisForCrop(cropId);
       setDiagnosis(fallback);
       setActiveTab('diagnosis');

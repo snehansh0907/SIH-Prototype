@@ -6,119 +6,11 @@ import { CropSelector } from './CropSelector';
 import { PhotoGuidance } from './PhotoGuidance';
 import { ProcessingModal } from './ProcessingModal';
 import { MOCK_CROPS } from '../../services/mockData';
+import { validatePlantImage, InvalidCropImageError } from '../../services/imageValidationService';
 
-export function validateCropImage(imageSource: string | File): Promise<boolean> {
-  if (typeof imageSource === 'string') {
-    if (imageSource.startsWith('data:image/svg') || imageSource.includes('data:image/svg')) {
-      return Promise.resolve(true);
-    }
-  }
-
-  return new Promise<boolean>((resolve) => {
-    const img = new Image();
-    img.crossOrigin = 'anonymous';
-
-    const getSrc = (): Promise<string> => {
-      if (typeof imageSource === 'string') return Promise.resolve(imageSource);
-      return new Promise<string>((res) => {
-        const reader = new FileReader();
-        reader.onloadend = () => res((reader.result as string) || '');
-        reader.onerror = () => res('');
-        reader.readAsDataURL(imageSource);
-      });
-    };
-
-    getSrc().then((src) => {
-      if (!src) return resolve(false);
-
-      img.onload = () => {
-        try {
-          const size = 80;
-          const canvas = document.createElement('canvas');
-          canvas.width = size;
-          canvas.height = size;
-          const ctx = canvas.getContext('2d', { willReadFrequently: true });
-          if (!ctx) return resolve(true);
-
-          ctx.drawImage(img, 0, 0, size, size);
-          const imgData = ctx.getImageData(0, 0, size, size);
-          const data = imgData.data;
-
-          let plantPixels = 0;
-          let whiteDocumentPixels = 0;
-          let monochromePixels = 0;
-          let blueSkyPixels = 0;
-          const totalPixels = size * size;
-
-          for (let i = 0; i < data.length; i += 4) {
-            const r = data[i];
-            const g = data[i + 1];
-            const b = data[i + 2];
-
-            const max = Math.max(r, g, b);
-            const min = Math.min(r, g, b);
-            const delta = max - min;
-            const lightness = (max + min) / 2 / 255;
-            const saturation = max === 0 ? 0 : delta / max;
-
-            let hue = 0;
-            if (delta !== 0) {
-              if (max === r) hue = ((g - b) / delta) % 6;
-              else if (max === g) hue = (b - r) / delta + 2;
-              else hue = (r - g) / delta + 4;
-              hue = Math.round(hue * 60);
-              if (hue < 0) hue += 360;
-            }
-
-            // White paper / document / bright screen check
-            if (lightness > 0.80 && saturation < 0.20) {
-              whiteDocumentPixels++;
-            }
-            // Monochrome / gray / metallic / indoor dark background
-            if (saturation < 0.12) {
-              monochromePixels++;
-            }
-            // Blue sky / screen blues (hue 180° to 260°)
-            if (hue >= 180 && hue <= 260 && saturation > 0.25) {
-              blueSkyPixels++;
-            }
-
-            // Plant / Crop / Leaf vegetation criteria:
-            // 1. Green hues (yellow-green to dark green, hue 35° - 165°)
-            const isGreenHue = (hue >= 35 && hue <= 165) && saturation >= 0.08 && lightness >= 0.08 && lightness <= 0.92;
-            // 2. Excess Green / RGB green dominance
-            const isGreenDominated = (g > r * 0.85) && (g > b * 1.05) && (g > 25);
-            // 3. Yellowish / brownish diseased plant tissue (hue 20° - 55°)
-            const isDiseasedPlantTissue = (hue >= 20 && hue < 55) && saturation >= 0.12 && (g >= b) && (r >= b);
-
-            if (isGreenHue || isGreenDominated || isDiseasedPlantTissue) {
-              plantPixels++;
-            }
-          }
-
-          const plantRatio = plantPixels / totalPixels;
-          const whiteRatio = whiteDocumentPixels / totalPixels;
-          const monoRatio = monochromePixels / totalPixels;
-          const blueRatio = blueSkyPixels / totalPixels;
-
-          if (whiteRatio > 0.65 || monoRatio > 0.80 || blueRatio > 0.50) {
-            return resolve(false);
-          }
-
-          if (plantRatio >= 0.06) {
-            return resolve(true);
-          }
-
-          return resolve(false);
-        } catch {
-          resolve(true);
-        }
-      };
-
-      img.onerror = () => resolve(false);
-      img.src = src;
-    });
-  });
+export async function validateCropImage(imageSource: string | File): Promise<boolean> {
+  const res = await validatePlantImage(imageSource);
+  return res.isValid;
 }
 
 export const ImageUploader: React.FC = () => {
@@ -188,14 +80,25 @@ export const ImageUploader: React.FC = () => {
       }
     }
 
-    if (selectedImage) {
-      await performDiagnosis(selectedCropId, selectedImage);
-    } else if (selectedFile) {
-      await performDiagnosis(selectedCropId, selectedFile);
-    } else {
-      // Default to sample if user clicks without picking
-      const fallbackUrl = currentCrop?.sampleImages?.[0]?.url || MOCK_CROPS[0].sampleImages[0].url;
-      await performDiagnosis(selectedCropId, fallbackUrl);
+    try {
+      if (selectedImage) {
+        await performDiagnosis(selectedCropId, selectedImage);
+      } else if (selectedFile) {
+        await performDiagnosis(selectedCropId, selectedFile);
+      } else {
+        // Default to sample if user clicks without picking
+        const fallbackUrl = currentCrop?.sampleImages?.[0]?.url || MOCK_CROPS[0].sampleImages[0].url;
+        await performDiagnosis(selectedCropId, fallbackUrl);
+      }
+    } catch (err) {
+      if (err instanceof InvalidCropImageError || (err as Error)?.name === 'InvalidCropImageError') {
+        setShowInvalidModal(true);
+        setSelectedImage(null);
+        setSelectedFile(null);
+        setIsSample(false);
+        if (fileInputRef.current) fileInputRef.current.value = '';
+        if (cameraInputRef.current) cameraInputRef.current.value = '';
+      }
     }
   };
 

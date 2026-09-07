@@ -4,6 +4,9 @@ import { SUPABASE_URL, SUPABASE_ANON_KEY } from './authService';
 import { advisoryService, type BackendAdvisory } from './advisoryService';
 import { farmService, SEEDED_DEMO_FARMER_ID, SEEDED_DEMO_FARM_ID } from './farmService';
 import { DEFAULT_DIAGNOSIS, getDefaultDiagnosisForCrop, MOCK_CROPS } from './mockData';
+import { validatePlantImage, InvalidCropImageError } from './imageValidationService';
+
+export { InvalidCropImageError };
 
 export const CROP_COMPATIBLE_DISEASES: Record<string, string[]> = {
   tomato: ['Early Blight', 'Late Blight', 'Leaf Mold', 'Healthy Leaf', 'Uncertain Image / Low AI Confidence'],
@@ -263,6 +266,16 @@ export const diagnosisService = {
     const cropCycleId = options?.cropCycleId || farmService.getCropCycleIdForCrop(cropId);
     const defaultDiag = getDefaultDiagnosisForCrop(cropId);
 
+    // Validate image content before processing and sending to backend
+    const validation = await validatePlantImage(imageSource);
+    if (!validation.isValid) {
+      console.warn('[diagnosisService] Image rejected by plant validation:', validation.predictions);
+      throw new InvalidCropImageError(
+        'Invalid crop image — please upload a clear photo of a leaf/plant',
+        validation.predictions
+      );
+    }
+
     try {
       // 1. Resolve renderable display URL for image
       const displayImageUrl = await resolveImageDisplayUrl(imageSource);
@@ -387,6 +400,9 @@ export const diagnosisService = {
         advisoryVoiceScriptHi: voiceScriptHi,
       };
     } catch (apiError) {
+      if (apiError instanceof InvalidCropImageError || (apiError as Error)?.name === 'InvalidCropImageError') {
+        throw apiError;
+      }
       console.warn('[diagnosisService] Real backend request failed, running rich local engine fallback:', apiError);
 
       const displayImageUrl = await resolveImageDisplayUrl(imageSource);
