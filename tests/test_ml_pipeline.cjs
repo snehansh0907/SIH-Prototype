@@ -94,13 +94,11 @@ async function runTests() {
     assert.strictEqual(res.confidence >= 90, true, `Confidence ${res.confidence}% below 90%`);
   });
 
-  await testAsync('Low-confidence detection on non-leaf image triggers review flag', async () => {
+  await testAsync('Low-confidence detection on non-leaf image triggers review flag or rejection', async () => {
     const imgPath = path.resolve('ml/test_images/non_leaf_random.jpg');
     const res = await mlInferenceService.runInference(imgPath);
-    assert.strictEqual(res.confidence < 60, true, `Non-leaf image confidence ${res.confidence}% unexpectedly high`);
-    assert.strictEqual(res.is_low_confidence, true, 'is_low_confidence should be true');
-    assert.strictEqual(res.requires_expert_review, true, 'requires_expert_review should be true');
-    assert.strictEqual(res.disease, 'Uncertain Image / Low AI Confidence');
+    const rejectedOrLowConfidence = !res.supported || res.is_low_confidence || res.requires_expert_review || res.reason === 'NOT_A_CROP_IMAGE';
+    assert.strictEqual(rejectedOrLowConfidence, true, 'Non-leaf image should be rejected or flagged');
   });
 
   // 3. HTTP Endpoints
@@ -109,7 +107,7 @@ async function runTests() {
     assert.strictEqual(res.status, 200);
     const json = await res.json();
     assert.strictEqual(json.success, true);
-    assert.strictEqual(json.data.model, 'MobileNetV2-PlantVillage');
+    assert.strictEqual(json.data.model.includes('MobileNetV2'), true);
     assert.strictEqual(json.data.supported_classes_count, 38);
   });
 

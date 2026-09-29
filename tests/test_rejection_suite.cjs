@@ -20,11 +20,18 @@ async function sendDiagnosisRequest(filePath, cropName = 'Tomato') {
   formData.append('farm_id', 'a1b2c3d4-e5f6-7a8b-9c0d-1e2f3a4b5c6d');
   formData.append('crop', cropName);
 
-  const res = await fetch(`${API_BASE}/diagnosis`, {
-    method: 'POST',
-    body: formData,
-  });
-  return await res.json();
+  for (let attempt = 0; attempt < 3; attempt++) {
+    try {
+      const res = await fetch(`${API_BASE}/diagnosis`, {
+        method: 'POST',
+        body: formData,
+      });
+      return await res.json();
+    } catch (e) {
+      if (attempt === 2) throw e;
+      await new Promise((r) => setTimeout(r, 500));
+    }
+  }
 }
 
 async function runTestSuite() {
