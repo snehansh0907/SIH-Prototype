@@ -23,7 +23,7 @@ export const RiskForecastView: React.FC = () => {
     }
   };
 
-  const voiceSummary = t.voiceRiskForecastSummary;
+  const summary = language === 'mr' ? riskForecast.summaryMr : language === 'hi' ? (riskForecast.summaryHi || riskForecast.summary) : riskForecast.summary;
 
   return (
     <div className="pb-6 animate-fadeIn">
@@ -32,14 +32,14 @@ export const RiskForecastView: React.FC = () => {
         <button
           onClick={resetToHome}
           type="button"
-          className="flex items-center gap-1.5 text-xs font-bold text-forest-800 hover:text-forest-900 active:scale-95 transition-transform"
+          className="flex items-center gap-1.5 text-xs font-bold text-emerald-800 hover:text-emerald-900 active:scale-95 transition-transform"
         >
           <ArrowLeft className="w-4 h-4" />
           <span>{t.navHome}</span>
         </button>
 
         <VoiceButton
-          textToSpeak={voiceSummary}
+          textToSpeak={summary}
           variant="pill"
         />
       </div>
@@ -49,27 +49,27 @@ export const RiskForecastView: React.FC = () => {
         <div className="flex items-center gap-2 mb-1">
           <span className="text-2xl">🌦️</span>
           <h2 className="text-xl font-black text-stone-900 font-display">
-            {t.whatMightHappenNext}
+            {t.whatMayHappenNext}
           </h2>
         </div>
         <div className="flex items-center gap-2 mb-2">
-          <span className="text-xs font-bold text-forest-800 bg-forest-100 px-2.5 py-0.5 rounded-full border border-forest-300">
-            {t.cropStageFlowering}
+          <span className="text-xs font-bold text-emerald-800 bg-emerald-100 px-2.5 py-0.5 rounded-full border border-emerald-300">
+            {language === 'mr' ? 'पशुधन पर्यावरण व हवामान ताण' : language === 'hi' ? 'पशुधन पर्यावरणीय एवं मौसम तनाव' : 'Livestock Environmental Stress'}
           </span>
         </div>
         <p className="text-xs text-stone-700 font-bold bg-amber-50 p-3 rounded-2xl border border-amber-300/80 leading-relaxed">
-          💡 {language === 'mr' ? riskForecast.summaryMr : language === 'hi' ? (riskForecast.summaryHi || riskForecast.summary) : riskForecast.summary}
+          💡 {summary}
         </p>
       </div>
 
-      {/* 5-Day Visual Risk Trajectory (Simple, agricultural, NOT financial) */}
+      {/* 5-Day Visual Risk Trajectory */}
       <div className="rounded-3xl bg-white border-2 border-stone-200/90 p-5 shadow-card mb-5">
         <div className="flex items-center justify-between mb-4">
           <span className="text-xs font-extrabold uppercase tracking-wider text-stone-600">
             {t.riskTrendSubtitle}
           </span>
           <span className="text-[11px] font-bold text-amber-800 bg-amber-100 px-2 py-0.5 rounded-full">
-            {t.peakOnDay3}
+            {language === 'mr' ? 'कमाल ताण ३ ऱ्या दिवशी' : language === 'hi' ? 'तीसरे दिन अधिकतम तनाव' : 'Peak stress on Day 3'}
           </span>
         </div>
 
@@ -103,12 +103,12 @@ export const RiskForecastView: React.FC = () => {
                   </div>
                 </div>
 
-                {/* Visual Risk Indicator Bar (Organic) */}
+                {/* Visual Risk Indicator Bar */}
                 <div className="flex-1 px-2">
                   <div className="w-full h-2.5 bg-stone-200 rounded-full overflow-hidden flex">
                     <div
                       className={`h-full rounded-full transition-all duration-500 ${
-                        isHigh ? 'bg-rose-600' : isModerate ? 'bg-amber-500' : 'bg-forest-600'
+                        isHigh ? 'bg-rose-600' : isModerate ? 'bg-amber-500' : 'bg-emerald-600'
                       }`}
                       style={{ width: `${dayItem.score}%` }}
                     />
@@ -126,96 +126,91 @@ export const RiskForecastView: React.FC = () => {
       </div>
 
       {/* WHY IS MY RISK HIGH? (Expandable Factor Breakdown directly from Risk Engine) */}
-      <div className="mb-5 bg-white rounded-3xl border-2 border-stone-200/90 shadow-card overflow-hidden">
-        <button
-          type="button"
-          onClick={() => setIsBreakdownOpen(!isBreakdownOpen)}
-          className="w-full p-4 flex items-center justify-between text-left hover:bg-stone-50/80 transition-colors"
-        >
-          <div className="flex items-center gap-2.5">
-            <span className="p-2 rounded-xl bg-amber-100 text-amber-900">
-              <BarChart2 className="w-4 h-4" />
-            </span>
-            <div>
-              <h4 className="text-xs font-black uppercase tracking-wider text-stone-900 font-display">
-                {t.riskBreakdownTitle}
-              </h4>
-              <p className="text-[11px] text-stone-500 font-medium">
-                {t.whyIsRiskHigh}
-              </p>
-            </div>
-          </div>
-          <div className="flex items-center gap-2">
-            <span className="text-xs font-black px-2.5 py-1 rounded-full bg-stone-100 text-stone-800 border border-stone-200">
-              {riskForecast.breakdown?.overallRisk || `${riskForecast.score || 78} / 100`}
-            </span>
-            {isBreakdownOpen ? (
-              <ChevronUp className="w-4 h-4 text-stone-500" />
-            ) : (
-              <ChevronDown className="w-4 h-4 text-stone-500" />
-            )}
-          </div>
-        </button>
-
-        {isBreakdownOpen && (
-          <div className="px-4 pb-4 pt-1 border-t border-stone-100">
-            <div className="divide-y divide-stone-100 text-xs">
-              <div className="py-2.5 flex items-center justify-between">
-                <span className="font-semibold text-stone-600">{t.temperatureLabel}</span>
-                <span className="font-bold text-stone-900 flex items-center gap-1.5">
-                  <span className="text-stone-400 font-normal">({riskForecast.breakdown?.temperatureValue || '26°C'})</span>
-                  <span className="px-2 py-0.5 rounded-md bg-stone-100 text-stone-800 font-extrabold text-[11px]">
-                    {riskForecast.breakdown?.temperature || 'Suitable'}
-                  </span>
-                </span>
-              </div>
-
-              <div className="py-2.5 flex items-center justify-between">
-                <span className="font-semibold text-stone-600">{t.humidityLabel}</span>
-                <span className="font-bold text-stone-900 flex items-center gap-1.5">
-                  <span className="text-stone-400 font-normal">({riskForecast.breakdown?.humidityValue || '84%'})</span>
-                  <span className="px-2 py-0.5 rounded-md bg-rose-100 text-rose-800 font-extrabold text-[11px]">
-                    {riskForecast.breakdown?.humidity || 'High'}
-                  </span>
-                </span>
-              </div>
-
-              <div className="py-2.5 flex items-center justify-between">
-                <span className="font-semibold text-stone-600">{t.rainfallLabel}</span>
-                <span className="font-bold text-stone-900 flex items-center gap-1.5">
-                  <span className="text-stone-400 font-normal">({riskForecast.breakdown?.rainfallValue || '70% chance'})</span>
-                  <span className="px-2 py-0.5 rounded-md bg-rose-100 text-rose-800 font-extrabold text-[11px]">
-                    {riskForecast.breakdown?.rainfall || 'High'}
-                  </span>
-                </span>
-              </div>
-
-              <div className="py-2.5 flex items-center justify-between">
-                <span className="font-semibold text-stone-600">{t.nearbyReportsLabel}</span>
-                <span className="font-extrabold text-stone-900 px-2 py-0.5 rounded-md bg-amber-100 text-amber-900 text-[11px]">
-                  {riskForecast.breakdown?.nearbyReports ?? 7}
-                </span>
-              </div>
-
-              <div className="py-2.5 flex items-center justify-between">
-                <span className="font-semibold text-stone-600">{t.cropStageLabel}</span>
-                <span className="font-bold text-stone-800">
-                  {riskForecast.breakdown?.cropStage || 'Susceptible'}
-                </span>
-              </div>
-
-              <div className="pt-3 pb-1 flex items-center justify-between font-black text-stone-900">
-                <span className="uppercase tracking-wider text-xs">{t.overallRiskLabel}</span>
-                <span className="text-base text-forest-800 font-black">
-                  {riskForecast.breakdown?.overallRisk || `${riskForecast.score || 78} / 100`}
-                </span>
+      {riskForecast.breakdown && (
+        <div className="mb-5 bg-white rounded-3xl border-2 border-stone-200/90 shadow-card overflow-hidden">
+          <button
+            type="button"
+            onClick={() => setIsBreakdownOpen(!isBreakdownOpen)}
+            className="w-full p-4 flex items-center justify-between text-left hover:bg-stone-50/80 transition-colors"
+          >
+            <div className="flex items-center gap-2.5">
+              <span className="p-2 rounded-xl bg-amber-100 text-amber-900">
+                <BarChart2 className="w-4 h-4" />
+              </span>
+              <div>
+                <h4 className="text-xs font-black uppercase tracking-wider text-stone-900 font-display">
+                  {t.riskBreakdownTitle || 'Risk Factors Breakdown'}
+                </h4>
+                <p className="text-[11px] text-stone-500 font-medium">
+                  {t.whyIsRiskHigh || 'Key environmental & disease transmission drivers'}
+                </p>
               </div>
             </div>
-          </div>
-        )}
-      </div>
+            <div className="flex items-center gap-2">
+              <span className="text-xs font-black px-2.5 py-1 rounded-full bg-stone-100 text-stone-800 border border-stone-200">
+                {riskForecast.breakdown?.overallRisk || `${riskForecast.score || 78} / 100`}
+              </span>
+              {isBreakdownOpen ? (
+                <ChevronUp className="w-4 h-4 text-stone-500" />
+              ) : (
+                <ChevronDown className="w-4 h-4 text-stone-500" />
+              )}
+            </div>
+          </button>
 
-      {/* WHY IS RISK INCREASING? (Clear Reason Cards) */}
+          {isBreakdownOpen && (
+            <div className="px-4 pb-4 pt-1 border-t border-stone-100">
+              <div className="divide-y divide-stone-100 text-xs">
+                <div className="py-2.5 flex items-center justify-between">
+                  <span className="font-semibold text-stone-600">{t.temperatureLabel || 'Temperature'}</span>
+                  <span className="font-bold text-stone-900 flex items-center gap-1.5">
+                    <span className="text-stone-400 font-normal">({riskForecast.breakdown?.temperatureValue || '26°C'})</span>
+                    <span className="px-2 py-0.5 rounded-md bg-stone-100 text-stone-800 font-extrabold text-[11px]">
+                      {riskForecast.breakdown?.temperature || 'Suitable'}
+                    </span>
+                  </span>
+                </div>
+
+                <div className="py-2.5 flex items-center justify-between">
+                  <span className="font-semibold text-stone-600">{t.humidityLabel || 'Humidity'}</span>
+                  <span className="font-bold text-stone-900 flex items-center gap-1.5">
+                    <span className="text-stone-400 font-normal">({riskForecast.breakdown?.humidityValue || '84%'})</span>
+                    <span className="px-2 py-0.5 rounded-md bg-rose-100 text-rose-800 font-extrabold text-[11px]">
+                      {riskForecast.breakdown?.humidity || 'High'}
+                    </span>
+                  </span>
+                </div>
+
+                <div className="py-2.5 flex items-center justify-between">
+                  <span className="font-semibold text-stone-600">{t.rainfallLabel || 'Rainfall'}</span>
+                  <span className="font-bold text-stone-900 flex items-center gap-1.5">
+                    <span className="text-stone-400 font-normal">({riskForecast.breakdown?.rainfallValue || '70% chance'})</span>
+                    <span className="px-2 py-0.5 rounded-md bg-rose-100 text-rose-800 font-extrabold text-[11px]">
+                      {riskForecast.breakdown?.rainfall || 'High'}
+                    </span>
+                  </span>
+                </div>
+
+                <div className="py-2.5 flex items-center justify-between">
+                  <span className="font-semibold text-stone-600">{t.nearbyReportsLabel || 'Nearby Cases'}</span>
+                  <span className="font-extrabold text-stone-900 px-2 py-0.5 rounded-md bg-amber-100 text-amber-900 text-[11px]">
+                    {riskForecast.breakdown?.nearbyReports ?? 7}
+                  </span>
+                </div>
+
+                <div className="pt-3 pb-1 flex items-center justify-between font-black text-stone-900">
+                  <span className="uppercase tracking-wider text-xs">{t.overallRiskLabel || 'Overall Risk Score'}</span>
+                  <span className="text-base text-forest-800 font-black">
+                    {riskForecast.breakdown?.overallRisk || `${riskForecast.score || 78} / 100`}
+                  </span>
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* WHY IS RISK INCREASING? */}
       <div className="mb-5">
         <h3 className="text-xs font-black uppercase tracking-wider text-stone-600 mb-3 px-1 font-display">
           {t.whyRiskIncreasing}
@@ -248,11 +243,11 @@ export const RiskForecastView: React.FC = () => {
         </div>
       </div>
 
-      {/* WHAT SHOULD YOU DO? (Simple Actionable Recommendation) */}
-      <div className="rounded-3xl bg-forest-800 text-white p-5 shadow-elevated mb-5 relative overflow-hidden">
+      {/* WHAT SHOULD YOU DO? */}
+      <div className="rounded-3xl bg-emerald-900 text-white p-5 shadow-elevated mb-5 relative overflow-hidden">
         <div className="flex items-center gap-2 mb-2">
           <ShieldAlert className="w-5 h-5 text-amber-300" />
-          <h3 className="text-sm font-black uppercase tracking-wide text-wheat-200 font-display">
+          <h3 className="text-sm font-black uppercase tracking-wide text-amber-200 font-display">
             {t.whatShouldYouDo}
           </h3>
         </div>
@@ -265,7 +260,7 @@ export const RiskForecastView: React.FC = () => {
           <button
             onClick={() => setActiveTab('area')}
             type="button"
-            className="py-2.5 px-3 rounded-xl bg-forest-700 hover:bg-forest-600 text-white font-bold text-xs active:scale-95 transition-all text-center border border-forest-600"
+            className="py-2.5 px-3 rounded-xl bg-emerald-800 hover:bg-emerald-700 text-white font-bold text-xs active:scale-95 transition-all text-center border border-emerald-700"
           >
             {t.btnViewAreaRisk}
           </button>
@@ -273,7 +268,7 @@ export const RiskForecastView: React.FC = () => {
           <button
             onClick={() => setActiveTab('expert')}
             type="button"
-            className="py-2.5 px-3 rounded-xl bg-amber-400 hover:bg-amber-300 text-forest-950 font-extrabold text-xs active:scale-95 transition-all text-center shadow-sm"
+            className="py-2.5 px-3 rounded-xl bg-amber-400 hover:bg-amber-300 text-emerald-950 font-extrabold text-xs active:scale-95 transition-all text-center shadow-sm"
           >
             {t.btnAskExpert}
           </button>

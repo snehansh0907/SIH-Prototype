@@ -1,5 +1,5 @@
 import React from 'react';
-import { AlertTriangle, Clock, ArrowRight, Camera, Sparkles, Sprout } from 'lucide-react';
+import { AlertTriangle, Clock, ArrowRight, Camera, Sparkles } from 'lucide-react';
 import { useLanguage } from '../../context/LanguageContext';
 import { useCrop } from '../../context/CropContext';
 import { useAuth } from '../../context/AuthContext';
@@ -16,70 +16,49 @@ export const CropStatusHero: React.FC = () => {
 
   const isNewUser = user?.isNewUser && user?.userType === 'registered';
 
-  const activeCropKey = (user?.monitoredCrop || diagnosis?.cropId || 'onion').toLowerCase().trim();
-  const isCropMatched = (diagnosis?.cropId || '').toLowerCase().trim() === activeCropKey;
-  const isDiseaseValid = diagnosis?.diseaseName ? isDiseaseCompatibleWithCrop(diagnosis.diseaseName, activeCropKey) : true;
+  const activeSpeciesKey = (user?.monitoredCrop || diagnosis?.cropId || 'cattle').toLowerCase().trim();
+  const isCropMatched = (diagnosis?.cropId || '').toLowerCase().trim() === activeSpeciesKey;
+  const isDiseaseValid = diagnosis?.diseaseName ? isDiseaseCompatibleWithCrop(diagnosis.diseaseName, activeSpeciesKey) : true;
 
-  const currentDiagnosis = (isCropMatched && isDiseaseValid)
-    ? diagnosis
-    : getDefaultDiagnosisForCrop(activeCropKey);
-
-  const cropName =
-    language === 'mr'
-      ? currentDiagnosis.cropNameMr
-      : language === 'hi'
-      ? (currentDiagnosis.cropNameHi || currentDiagnosis.cropName)
-      : currentDiagnosis.cropName;
+  const currentDiagnosis = isCropMatched && isDiseaseValid ? diagnosis : getDefaultDiagnosisForCrop(activeSpeciesKey);
 
   const diseaseName =
     language === 'mr'
       ? currentDiagnosis.diseaseNameMr
       : language === 'hi'
-      ? (currentDiagnosis.diseaseNameHi || currentDiagnosis.diseaseName)
+      ? currentDiagnosis.diseaseNameHi || currentDiagnosis.diseaseName
       : currentDiagnosis.diseaseName;
 
   const userName =
     language === 'mr'
-      ? (user?.nameMr || user?.name)
+      ? user?.nameMr || user?.name
       : language === 'hi'
-      ? (user?.nameHi || user?.name)
+      ? user?.nameHi || user?.name
       : user?.name;
 
-  const defaultMyFarm = language === 'mr' ? 'माझे शेत' : language === 'hi' ? 'मेरा खेत' : 'My Farm';
-  const defaultLocal = language === 'mr' ? 'स्थानिक' : language === 'hi' ? 'स्थानीय' : 'Local';
-
-  const farmPlotLabel = user
-    ? `${user.farmName || defaultMyFarm} (${user.village || user.taluka || defaultLocal})`
-    : (language === 'mr' ? 'शेताचे क्षेत्र' : language === 'hi' ? 'खेत का भूखंड' : 'Farm Plot');
-
-  const monitoredCropName =
-    language === 'mr'
-      ? (user?.monitoredCropMr || user?.monitoredCrop)
-      : language === 'hi'
-      ? (user?.monitoredCropHi || user?.monitoredCrop)
-      : user?.monitoredCrop;
+  const animalDisplayName = currentDiagnosis.animalName || (language === 'mr' ? 'गीर गाय (गौरी)' : language === 'hi' ? 'गीर गाय (गौरी)' : 'Gir Cow (Gauri)');
 
   // New User Onboarding State
   if (isNewUser) {
     const welcomeGreeting =
       language === 'mr'
-        ? `स्वागत आहे, ${userName}! 👋`
+        ? `नमस्कार, ${userName}! 👋`
         : language === 'hi'
-        ? `स्वागत है, ${userName}! 👋`
-        : `Welcome, ${userName}! 👋`;
+        ? `नमस्ते, ${userName}! 👋`
+        : `Namaste, ${userName}! 👋`;
 
     const onboardingDesc =
       language === 'mr'
-        ? `तुमच्या ${user.farmName} मधील ${monitoredCropName} पिकाच्या पानांचा फोटो काढून त्वरित रोग तपासणी आणि तज्ज्ञ सल्ला मिळवा.`
+        ? `तुमच्या ${user.farmName} गोठ्यातील जनावरांची लक्षणे, कास, खूर किंवा त्वचेचा फोटो काढून त्वरित पशु आरोग्य तपासणी व तज्ज्ञ पशुवैद्यकीय सल्ला मिळवा.`
         : language === 'hi'
-        ? `आपके ${user.farmName} में ${monitoredCropName} फसल की पत्तियों की फोटो खींचकर तुरंत रोग जांच और विशेषज्ञ सलाह प्राप्त करें।`
-        : `Your ${user.farmName} profile is ready for monitoring ${user.monitoredCrop}. Take a quick leaf photo to start smart AI disease detection.`;
+        ? `आपकी ${user.farmName} पशुशाला में पशुओं के लक्षण, थन, खुर या त्वचा की फोटो खींचकर तुरंत प्राथमिक जांच व पशु चिकित्सक सलाह प्राप्त करें।`
+        : `Your ${user.farmName} profile is ready for livestock monitoring. Take a symptom photo of your animal to start preliminary health triage.`;
 
     return (
-      <div className="relative overflow-hidden rounded-2xl bg-gradient-to-b from-emerald-50/60 to-white border border-emerald-200/80 p-4 shadow-sm animate-fadeIn">
+      <div className="relative overflow-hidden rounded-2xl bg-gradient-to-b from-amber-50/60 to-white border border-amber-200/80 p-4 shadow-sm animate-fadeIn text-left">
         <div className="flex items-center justify-between mb-2.5">
           <div className="flex items-center gap-2">
-            <span className="text-lg">🌱</span>
+            <span className="text-lg">🐮</span>
             <h2 className="text-sm font-bold text-forest-950 font-display">
               {welcomeGreeting}
             </h2>
@@ -99,20 +78,7 @@ export const CropStatusHero: React.FC = () => {
           </p>
         </div>
 
-        {/* Farm & Crop Summary Chip */}
-        <div className="bg-stone-50 rounded-xl px-3 py-2 border border-stone-200/60 mb-3 flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <Sprout className="w-4 h-4 text-emerald-700 shrink-0" />
-            <span className="text-xs font-bold text-stone-800">
-              {farmPlotLabel} • {monitoredCropName}
-            </span>
-          </div>
-          <span className="text-[10px] font-semibold text-stone-500">
-            {user.areaAcres} {t.acresUnit}
-          </span>
-        </div>
-
-        {/* Primary CTA for New User: Take First Scan */}
+        {/* Primary CTA for New User: Take First Animal Health Scan */}
         <button
           onClick={() => setActiveTab('check')}
           type="button"
@@ -126,29 +92,26 @@ export const CropStatusHero: React.FC = () => {
     );
   }
 
-  // Standard Monitored Crop Status
-  // Dynamic non-contradictory risk explanation from the unified risk engine
-  const riskExplanation =
+  // Standard Monitored Animal Status
+  const statusQuote =
     language === 'mr'
-      ? (riskForecast?.summaryMr || riskForecast?.reasons?.[0]?.detailMr || currentDiagnosis.whatMayHappenNext?.textMr)
+      ? (currentDiagnosis.whatMayHappenNext?.textMr?.slice(0, 115) || '') + '...'
       : language === 'hi'
-      ? (riskForecast?.summaryHi || riskForecast?.reasons?.[0]?.detailHi || currentDiagnosis.whatMayHappenNext?.textHi)
-      : (riskForecast?.summary || riskForecast?.reasons?.[0]?.detail || currentDiagnosis.whatMayHappenNext?.text);
-
-  const statusQuote = riskExplanation || t.cropStatusDesc;
+      ? ((currentDiagnosis.whatMayHappenNext?.textHi || currentDiagnosis.whatMayHappenNext?.text)?.slice(0, 115) || '') + '...'
+      : (currentDiagnosis.whatMayHappenNext?.text?.slice(0, 115) || '') + '...';
 
   const confPercent = Math.round(
-    (currentDiagnosis.confidence ?? 0.91) <= 1
-      ? (currentDiagnosis.confidence ?? 0.91) * 100
-      : (currentDiagnosis.confidence ?? 91)
+    (currentDiagnosis.confidenceScore ?? 88) <= 1
+      ? (currentDiagnosis.confidenceScore ?? 0.88) * 100
+      : (currentDiagnosis.confidenceScore ?? 88)
   );
 
   return (
-    <div className="relative overflow-hidden rounded-2xl bg-gradient-to-b from-amber-50/50 via-white to-white border border-amber-200/70 p-4 shadow-sm">
+    <div className="relative overflow-hidden rounded-2xl bg-gradient-to-b from-amber-50/50 via-white to-white border border-amber-200/70 p-4 shadow-sm text-left">
       {/* Top Header */}
       <div className="flex items-center justify-between mb-2.5">
         <div className="flex items-center gap-1.5">
-          <span className="text-base">🌱</span>
+          <span className="text-base">🩺</span>
           <h2 className="text-sm font-bold text-stone-800 font-display tracking-tight">
             {t.myCropStatus}
           </h2>
@@ -169,10 +132,10 @@ export const CropStatusHero: React.FC = () => {
         </p>
       </div>
 
-      {/* Crop detail strip & scan time */}
+      {/* Animal detail strip & scan time */}
       <div className="py-2 px-3 rounded-xl bg-stone-50 border border-stone-200/60 mb-3 flex items-center justify-between text-xs">
         <div className="flex items-center gap-1.5 truncate">
-          <span className="text-forest-800 font-bold">{cropName}</span>
+          <span className="text-forest-800 font-bold">{animalDisplayName}</span>
           <span className="text-stone-400">•</span>
           <span className="text-stone-600 font-medium truncate">{diseaseName}</span>
         </div>
@@ -201,7 +164,7 @@ export const CropStatusHero: React.FC = () => {
           type="button"
           className="flex items-center justify-center gap-1.5 py-2 px-3 rounded-xl bg-forest-800 text-white font-semibold text-xs hover:bg-forest-900 shadow-xs active:scale-95 transition-transform cursor-pointer"
         >
-          <span>{t.viewAdvice}</span>
+          <span>{language === 'mr' ? 'पूर्ण सल्ला पहा' : language === 'hi' ? 'सलाह देखें' : 'View Advice'}</span>
           <ArrowRight className="w-3.5 h-3.5" />
         </button>
       </div>

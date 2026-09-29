@@ -1,5 +1,5 @@
 import React from 'react';
-import { MapPin, UserCheck, RefreshCw } from 'lucide-react';
+import { MapPin, UserCheck, RefreshCw, BookmarkCheck } from 'lucide-react';
 import { useLanguage } from '../../context/LanguageContext';
 import { useCrop } from '../../context/CropContext';
 import { useAuth } from '../../context/AuthContext';
@@ -14,7 +14,7 @@ export const DiagnosisActions: React.FC = () => {
   const script = getLocalizedAdvisoryScript(diagnosis, language);
 
   return (
-    <div className="space-y-3 pt-2">
+    <div className="space-y-3 pt-2 text-left">
       {/* 🔊 Listen to Advice (Primary Voice Button) */}
       <VoiceButton
         textToSpeak={script}
@@ -44,15 +44,26 @@ export const DiagnosisActions: React.FC = () => {
         </button>
       </div>
 
-      {/* Retake / Check Another Leaf */}
-      <button
-        onClick={() => requireFarmerAccess(() => setActiveTab('check'))}
-        type="button"
-        className="w-full py-2.5 text-center text-xs font-bold text-stone-500 hover:text-stone-800 flex items-center justify-center gap-1.5 transition-colors cursor-pointer"
-      >
-        <RefreshCw className="w-3.5 h-3.5" />
-        <span>{t.btnRetake}</span>
-      </button>
+      {/* Secondary Actions: Record Vaccination & Retake */}
+      <div className="grid grid-cols-2 gap-2">
+        <button
+          onClick={() => requireFarmerAccess(() => setActiveTab('herd'))}
+          type="button"
+          className="py-2.5 px-3 rounded-xl bg-stone-100 hover:bg-stone-200 text-stone-800 font-bold text-xs flex items-center justify-center gap-1.5 transition-colors cursor-pointer"
+        >
+          <BookmarkCheck className="w-4 h-4 text-forest-700" />
+          <span>{t.btnAddToHistory || 'Save to Records'}</span>
+        </button>
+
+        <button
+          onClick={() => requireFarmerAccess(() => setActiveTab('check'))}
+          type="button"
+          className="py-2.5 px-3 rounded-xl bg-stone-100 hover:bg-stone-200 text-stone-800 font-bold text-xs flex items-center justify-center gap-1.5 transition-colors cursor-pointer"
+        >
+          <RefreshCw className="w-3.5 h-3.5" />
+          <span>{t.btnRetake}</span>
+        </button>
+      </div>
     </div>
   );
 };

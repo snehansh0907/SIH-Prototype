@@ -1,5 +1,6 @@
 import type { AuthRole, FarmerUser } from '../types';
 import { apiClient } from './apiClient';
+import { DISTRICT_COORDINATES } from './locationRegionService';
 
 export const STORAGE_KEY_ROLE = 'krishi_sarthak_auth_role';
 export const STORAGE_KEY_USER = 'krishi_sarthak_current_user';
@@ -569,8 +570,35 @@ export const authService = {
     const farmId = generateUUID();
     const cropCycleId = generateUUID();
     const farmerId = generateFarmerId();
-    const lat = payload.latitude || 20.085;
-    const lng = payload.longitude || 74.11;
+
+    // Preserve exact GPS coordinates if provided; fallback to district centroid if registered manually
+    let lat = typeof payload.latitude === 'number' && !isNaN(payload.latitude) ? payload.latitude : undefined;
+    let lng = typeof payload.longitude === 'number' && !isNaN(payload.longitude) ? payload.longitude : undefined;
+
+    if (lat === undefined || lng === undefined) {
+      const distKey = (district || '').toLowerCase();
+      const villKey = (village || '').toLowerCase();
+      const talKey = (taluka || '').toLowerCase();
+      const stateKey = (state || '').toLowerCase();
+
+      if (DISTRICT_COORDINATES[villKey]) {
+        lat = DISTRICT_COORDINATES[villKey].lat;
+        lng = DISTRICT_COORDINATES[villKey].lng;
+      } else if (DISTRICT_COORDINATES[talKey]) {
+        lat = DISTRICT_COORDINATES[talKey].lat;
+        lng = DISTRICT_COORDINATES[talKey].lng;
+      } else if (DISTRICT_COORDINATES[distKey]) {
+        lat = DISTRICT_COORDINATES[distKey].lat;
+        lng = DISTRICT_COORDINATES[distKey].lng;
+      } else if (DISTRICT_COORDINATES[stateKey]) {
+        lat = DISTRICT_COORDINATES[stateKey].lat;
+        lng = DISTRICT_COORDINATES[stateKey].lng;
+      } else {
+        lat = 20.085;
+        lng = 74.11;
+      }
+    }
+
     const parsedAcres = parseFloat(String(areaAcres)) || 2.0;
 
     // Call Backend API Registration

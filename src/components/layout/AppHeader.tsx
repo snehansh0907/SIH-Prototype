@@ -26,7 +26,7 @@ export const AppHeader: React.FC = () => {
           className="flex items-center gap-2.5 cursor-pointer select-none group"
         >
           <div className="w-8 h-8 rounded-xl bg-forest-700/80 border border-forest-600/60 flex items-center justify-center text-base shadow-sm group-hover:scale-105 transition-transform shrink-0">
-            🌾
+            🐄
           </div>
           <div>
             <div className="flex items-center gap-1.5">
@@ -34,7 +34,7 @@ export const AppHeader: React.FC = () => {
                 {t.appName}
               </h1>
               <span className="text-[9px] uppercase font-bold tracking-wider px-1.5 py-0.5 rounded-md bg-white/15 text-amber-300 border border-white/10 leading-none">
-                SIH
+                {t.sihBadge || 'SIH26128'}
               </span>
             </div>
             <p className="text-[10px] text-forest-200/80 font-medium leading-tight mt-0.5">

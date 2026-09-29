@@ -1,1187 +1,861 @@
-import type { CropInfo, DiagnosisResult, WeatherCondition, RiskForecast, AreaReport, ExpertProfile, ChatMessage } from '../types';
+import type {
+  CropInfo,
+  DiagnosisResult,
+  WeatherCondition,
+  RiskForecast,
+  AreaReport,
+  ExpertProfile,
+  ChatMessage,
+  LivestockAnimal,
+  VaccinationRecord,
+} from '../types';
 
-export const SVG_HEALTHY_LEAF = `data:image/svg+xml;charset=UTF-8,<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200" viewBox="0 0 200 200"><rect width="200" height="200" fill="%231b4332"/><path d="M100 15 C55 55 35 105 35 160 C70 145 100 135 100 185 C100 135 130 145 165 160 C165 105 145 55 100 15 Z" fill="%232d6a4f"/><path d="M100 15 L100 185 M100 60 L60 85 M100 90 L140 115 M100 120 L65 145" stroke="%2352b788" stroke-width="3" stroke-linecap="round"/></svg>`;
+// =========================================================================
+// SVG TEST VISUALS FOR LIVESTOCK DEMO & EVALUATION
+// =========================================================================
 
-export const SVG_UNCERTAIN_AI = `data:image/svg+xml;charset=UTF-8,<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200" viewBox="0 0 200 200"><rect width="200" height="200" fill="%233a5a40"/><circle cx="100" cy="100" r="70" fill="%23588157" opacity="0.6" filter="blur(8px)"/><path d="M80 40 Q130 90 90 160" stroke="%23a3b18a" stroke-width="12" opacity="0.5"/><text x="100" y="115" text-anchor="middle" fill="%23dad7cd" font-size="28" font-family="sans-serif" font-weight="bold">❓</text></svg>`;
+export const SVG_HEALTHY_CATTLE = `data:image/svg+xml;charset=UTF-8,<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200" viewBox="0 0 200 200"><rect width="200" height="200" fill="%231b4332"/><circle cx="100" cy="100" r="70" fill="%232d6a4f"/><path d="M60 90 Q100 60 140 90 Q120 140 80 140 Z" fill="%2352b788" opacity="0.8"/><circle cx="85" cy="85" r="5" fill="%23ffffff"/><circle cx="115" cy="85" r="5" fill="%23ffffff"/><text x="100" y="165" text-anchor="middle" fill="%23d8f3dc" font-size="14" font-family="sans-serif" font-weight="bold">🟢 Healthy Skin / Udder</text></svg>`;
 
-export const SVG_EARLY_BLIGHT = `data:image/svg+xml;charset=UTF-8,<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200" viewBox="0 0 200 200"><rect width="200" height="200" fill="%232d5a27"/><path d="M100 20 C60 60 40 100 40 150 C70 140 100 130 100 180 C100 130 130 140 160 150 C160 100 140 60 100 20 Z" fill="%233e7b37"/><circle cx="90" cy="70" r="18" fill="%2378350f" opacity="0.85"/><circle cx="90" cy="70" r="12" fill="%23451a03"/><circle cx="90" cy="70" r="6" fill="%23f59e0b" opacity="0.6"/><circle cx="120" cy="110" r="14" fill="%2378350f" opacity="0.85"/><circle cx="120" cy="110" r="8" fill="%23451a03"/><circle cx="70" cy="120" r="10" fill="%2378350f" opacity="0.8"/></svg>`;
+export const SVG_LUMPY_SKIN_DISEASE = `data:image/svg+xml;charset=UTF-8,<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200" viewBox="0 0 200 200"><rect width="200" height="200" fill="%23451a03"/><circle cx="100" cy="100" r="75" fill="%2378350f"/><circle cx="70" cy="70" r="16" fill="%23f97316" stroke="%23ea580c" stroke-width="4"/><circle cx="130" cy="80" r="18" fill="%23f97316" stroke="%23ea580c" stroke-width="4"/><circle cx="95" cy="115" r="22" fill="%23f97316" stroke="%23ea580c" stroke-width="5"/><circle cx="60" cy="130" r="14" fill="%23f97316" stroke="%23ea580c" stroke-width="3"/><circle cx="140" cy="135" r="15" fill="%23f97316" stroke="%23ea580c" stroke-width="3"/><text x="100" y="180" text-anchor="middle" fill="%23fed7aa" font-size="12" font-family="sans-serif" font-weight="bold">🔴 Lumpy Skin Nodules (LSD)</text></svg>`;
 
-export const SVG_COTTON_CURL = `data:image/svg+xml;charset=UTF-8,<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200" viewBox="0 0 200 200"><rect width="200" height="200" fill="%232d4a27"/><path d="M100 20 C50 50 30 110 50 165 C80 140 100 130 100 180 C100 130 120 140 150 165 C170 110 150 50 100 20 Z" fill="%234a7c39"/><path d="M100 20 Q60 80 50 165 M100 20 Q140 80 150 165" stroke="%23eab308" stroke-width="4" fill="none"/><circle cx="85" cy="90" r="12" fill="%23ca8a04" opacity="0.7"/><circle cx="120" cy="115" r="10" fill="%23ca8a04" opacity="0.7"/></svg>`;
+export const SVG_MASTITIS_UDDER = `data:image/svg+xml;charset=UTF-8,<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200" viewBox="0 0 200 200"><rect width="200" height="200" fill="%237f1d1d"/><ellipse cx="100" cy="90" rx="65" ry="50" fill="%23dc2626"/><ellipse cx="100" cy="85" rx="45" ry="30" fill="%23ef4444"/><line x1="75" y1="120" x2="75" y2="150" stroke="%23b91c1c" stroke-width="12" stroke-linecap="round"/><line x1="92" y1="125" x2="92" y2="158" stroke="%23ef4444" stroke-width="14" stroke-linecap="round"/><line x1="108" y1="125" x2="108" y2="158" stroke="%23ef4444" stroke-width="14" stroke-linecap="round"/><line x1="125" y1="120" x2="125" y2="150" stroke="%23b91c1c" stroke-width="12" stroke-linecap="round"/><text x="100" y="182" text-anchor="middle" fill="%23fecaca" font-size="12" font-family="sans-serif" font-weight="bold">🔴 Udder Swelling (Mastitis)</text></svg>`;
 
-export const SVG_SOYBEAN_RUST = `data:image/svg+xml;charset=UTF-8,<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200" viewBox="0 0 200 200"><rect width="200" height="200" fill="%233b5229"/><path d="M100 25 C60 65 40 105 40 155 C75 145 100 135 100 180 C100 135 125 145 160 155 C160 105 140 65 100 25 Z" fill="%23567838"/><circle cx="75" cy="80" r="6" fill="%23991b1b"/><circle cx="95" cy="70" r="5" fill="%23991b1b"/><circle cx="115" cy="85" r="7" fill="%23991b1b"/><circle cx="85" cy="110" r="6" fill="%23991b1b"/><circle cx="125" cy="120" r="5" fill="%23991b1b"/><circle cx="105" cy="130" r="6" fill="%23991b1b"/></svg>`;
+export const SVG_FMD_LESIONS = `data:image/svg+xml;charset=UTF-8,<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200" viewBox="0 0 200 200"><rect width="200" height="200" fill="%233f2c00"/><path d="M50 140 Q100 40 150 140 Q100 160 50 140 Z" fill="%23a16207"/><circle cx="80" cy="90" r="12" fill="%23ef4444" stroke="%23ffffff" stroke-width="2"/><circle cx="115" cy="95" r="14" fill="%23ef4444" stroke="%23ffffff" stroke-width="2"/><circle cx="100" cy="125" r="10" fill="%23ef4444" stroke="%23ffffff" stroke-width="2"/><path d="M90 145 Q95 175 90 185 M105 145 Q110 175 105 185" stroke="%2338bdf8" stroke-width="3"/><text x="100" y="30" text-anchor="middle" fill="%23fef08a" font-size="12" font-family="sans-serif" font-weight="bold">⚠️ FMD Blisters & Drooling</text></svg>`;
 
-export const SVG_SUGARCANE_RED_ROT = `data:image/svg+xml;charset=UTF-8,<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200" viewBox="0 0 200 200"><rect width="200" height="200" fill="%231e3a1e"/><rect x="75" y="10" width="50" height="180" rx="10" fill="%234d7c0f"/><line x1="75" y1="60" x2="125" y2="60" stroke="%23365314" stroke-width="3"/><line x1="75" y1="120" x2="125" y2="120" stroke="%23365314" stroke-width="3"/><rect x="85" y="70" width="30" height="40" rx="5" fill="%23b91c1c" opacity="0.85"/></svg>`;
+export const SVG_UNCERTAIN_AI = `data:image/svg+xml;charset=UTF-8,<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200" viewBox="0 0 200 200"><rect width="200" height="200" fill="%233a5a40"/><circle cx="100" cy="100" r="70" fill="%23588157" opacity="0.6" filter="blur(8px)"/><text x="100" y="115" text-anchor="middle" fill="%23dad7cd" font-size="36" font-family="sans-serif" font-weight="bold">❓</text><text x="100" y="160" text-anchor="middle" fill="%23dad7cd" font-size="12" font-family="sans-serif">Uncertain / Blurry Image</text></svg>`;
 
-export const SVG_MAIZE_BLIGHT = `data:image/svg+xml;charset=UTF-8,<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200" viewBox="0 0 200 200"><rect width="200" height="200" fill="%231c3820"/><path d="M40 180 Q100 20 160 180" stroke="%2365a30d" stroke-width="40" fill="none" stroke-linecap="round"/><ellipse cx="90" cy="90" rx="25" ry="8" transform="rotate(-30 90 90)" fill="%23713f12" opacity="0.85"/><ellipse cx="120" cy="130" rx="20" ry="7" transform="rotate(-30 120 130)" fill="%23713f12" opacity="0.85"/></svg>`;
+export const SVG_GOAT_PPR = `data:image/svg+xml;charset=UTF-8,<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200" viewBox="0 0 200 200"><rect width="200" height="200" fill="%232c1810"/><circle cx="100" cy="95" r="60" fill="%236b4226"/><circle cx="80" cy="80" r="6" fill="%23ffffff"/><circle cx="120" cy="80" r="6" fill="%23ffffff"/><ellipse cx="100" cy="115" rx="18" ry="10" fill="%23e11d48"/><path d="M90 120 Q100 150 95 165" stroke="%2394a3b8" stroke-width="4"/><text x="100" y="185" text-anchor="middle" fill="%23fecdd3" font-size="12" font-family="sans-serif" font-weight="bold">🔴 PPR Mouth Ulcers & Mucus</text></svg>`;
 
-export const SVG_ONION_BLOTCH = `data:image/svg+xml;charset=UTF-8,<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200" viewBox="0 0 200 200"><rect width="200" height="200" fill="%2319381f"/><path d="M100 15 C70 60 50 120 50 180 C100 170 100 170 150 180 C150 120 130 60 100 15 Z" fill="%234f772d"/><ellipse cx="95" cy="85" rx="14" ry="22" fill="%23581c87" opacity="0.85"/><ellipse cx="105" cy="135" rx="12" ry="18" fill="%23581c87" opacity="0.85"/></svg>`;
+export const SVG_POULTRY_RANIKHET = `data:image/svg+xml;charset=UTF-8,<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200" viewBox="0 0 200 200"><rect width="200" height="200" fill="%231e293b"/><circle cx="100" cy="90" r="55" fill="%230f766e"/><polygon points="90,40 100,20 110,40 100,50" fill="%23e11d48"/><polygon points="100,85 130,95 100,105" fill="%23f59e0b"/><circle cx="85" cy="75" r="7" fill="%23cbd5e1"/><text x="100" y="175" text-anchor="middle" fill="%2399f6e4" font-size="12" font-family="sans-serif" font-weight="bold">⚠️ Poultry Respiratory / Newcastle</text></svg>`;
 
-export const SVG_RICE_BLAST = `data:image/svg+xml;charset=UTF-8,<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200" viewBox="0 0 200 200"><rect width="200" height="200" fill="%2314381b"/><path d="M30 170 Q100 30 170 170" stroke="%233f6212" stroke-width="25" fill="none"/><path d="M90 80 Q100 70 110 80 Q100 90 90 80 Z" fill="%2378350f"/><path d="M120 120 Q130 110 140 120 Q130 130 120 120 Z" fill="%2378350f"/></svg>`;
-
-export const SVG_WHEAT_RUST = `data:image/svg+xml;charset=UTF-8,<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200" viewBox="0 0 200 200"><rect width="200" height="200" fill="%231e3d20"/><path d="M40 180 Q100 20 160 180" stroke="%234d7c0f" stroke-width="30" fill="none"/><circle cx="85" cy="80" r="5" fill="%23d97706"/><circle cx="95" cy="95" r="6" fill="%23d97706"/><circle cx="105" cy="75" r="5" fill="%23d97706"/><circle cx="115" cy="110" r="6" fill="%23d97706"/><circle cx="125" cy="125" r="5" fill="%23d97706"/></svg>`;
+// =========================================================================
+// SPECIES CATALOGUE (Mapped to CropInfo for compatibility)
+// =========================================================================
 
 export const MOCK_CROPS: CropInfo[] = [
   {
-    id: 'tomato',
-    name: 'Tomato',
-    nameHi: 'टमाटर',
-    nameMr: 'टोमॅटो',
-    icon: '🍅',
-    scientificName: 'Solanum lycopersicum',
+    id: 'cattle',
+    name: 'Cattle (Cow / Bull)',
+    nameHi: 'गाय / बैल (गोवंश)',
+    nameMr: 'गाय / बैल (गोवंश)',
+    icon: '🐄',
+    scientificName: 'Bos indicus / Bos taurus',
     sampleImages: [
       {
-        id: 'tomato_early_blight',
-        title: 'Tomato with Dark Concentric Spots (Early Blight)',
-        titleHi: 'पत्तियों पर गहरे संकेंद्रित धब्बे (अगेती झुलसा)',
-        titleMr: 'पानांवर काळपट गोलाकार डाग (करपा रोग)',
-        condition: 'Early Blight',
-        url: SVG_EARLY_BLIGHT,
-        fallbackUrl: SVG_EARLY_BLIGHT,
+        id: 'cattle_lsd_sample',
+        title: 'Skin Nodules & Eruptions (Lumpy Skin Disease)',
+        titleHi: 'त्वचा पर उभरी हुई गांठें (लंपी त्वचा रोग)',
+        titleMr: 'अंगावर आलेल्या गाठी व फोड (लंपी रोग)',
+        condition: 'Lumpy Skin Disease (LSD)',
+        url: SVG_LUMPY_SKIN_DISEASE,
+        fallbackUrl: SVG_LUMPY_SKIN_DISEASE,
         isHealthy: false,
+        bodyArea: 'skin',
       },
       {
-        id: 'tomato_healthy',
-        title: 'Healthy Green Tomato Leaf',
-        titleHi: 'स्वस्थ हरी टमाटर की पत्ती',
-        titleMr: 'निरोगी हिरवे टोमॅटोचे पान',
-        condition: 'Healthy Leaf',
-        url: SVG_HEALTHY_LEAF,
-        fallbackUrl: SVG_HEALTHY_LEAF,
+        id: 'cattle_mastitis_sample',
+        title: 'Swollen & Hardened Udder (Bovine Mastitis)',
+        titleHi: 'थन में सूजन, कड़ापन व दर्द (थनैला रोग)',
+        titleMr: 'कासेला सूज, गरम व कडक कास (स्तनदाह/मस्टायटिस)',
+        condition: 'Bovine Mastitis (थनैला)',
+        url: SVG_MASTITIS_UDDER,
+        fallbackUrl: SVG_MASTITIS_UDDER,
+        isHealthy: false,
+        bodyArea: 'udder',
+      },
+      {
+        id: 'cattle_fmd_sample',
+        title: 'Mouth Ulcers & Excessive Drooling (FMD)',
+        titleHi: 'मुंह में छाले व लगातार लार गिरना (खुरपका-मुंहपका)',
+        titleMr: 'तोंडात फोड व सतत लाळ गळणे (लाळ्या खुरकूत)',
+        condition: 'Foot and Mouth Disease (FMD)',
+        url: SVG_FMD_LESIONS,
+        fallbackUrl: SVG_FMD_LESIONS,
+        isHealthy: false,
+        bodyArea: 'mouth',
+      },
+      {
+        id: 'cattle_healthy_sample',
+        title: 'Healthy Cattle Coat & Udder',
+        titleHi: 'स्वस्थ गाय की सामान्य त्वचा व थन',
+        titleMr: 'निरोगी गायीची त्वचा व सामान्य कास',
+        condition: 'Healthy Cattle',
+        url: SVG_HEALTHY_CATTLE,
+        fallbackUrl: SVG_HEALTHY_CATTLE,
         isHealthy: true,
+        bodyArea: 'skin',
       },
       {
-        id: 'tomato_blurry_uncertain',
-        title: 'Blurry / Unclear Leaf Photo (Uncertain AI)',
-        titleHi: 'धुंधली / अस्पष्ट पत्ती की फोटो (अनिश्चित AI)',
-        titleMr: 'अंधुक / अस्पष्ट पानाचा फोटो (अनिश्चित)',
-        condition: 'Uncertain AI',
+        id: 'cattle_uncertain_sample',
+        title: 'Blurry / Unclear Photo (Low Quality Test)',
+        titleHi: 'धुंधली व अस्पष्ट फोटो (क्वालिटी टेस्ट)',
+        titleMr: 'अंधुक किंवा न उलगडणारा फोटो',
+        condition: 'Uncertain Image / Low Confidence',
         url: SVG_UNCERTAIN_AI,
         fallbackUrl: SVG_UNCERTAIN_AI,
         isHealthy: false,
-      }
-    ]
+        bodyArea: 'general',
+      },
+    ],
   },
   {
-    id: 'cotton',
-    name: 'Cotton',
-    nameHi: 'कपास',
-    nameMr: 'कापूस',
-    icon: '🌱',
-    scientificName: 'Gossypium hirsutum',
+    id: 'buffalo',
+    name: 'Buffalo',
+    nameHi: 'भैंस (महिष वंश)',
+    nameMr: 'म्हैस / रेडा',
+    icon: '🐃',
+    scientificName: 'Bubalus bubalis',
     sampleImages: [
       {
-        id: 'cotton_leaf_curl',
-        title: 'Cotton Leaf Curling & Thickening',
-        titleHi: 'कपास की मुड़ी और मोटी पत्तियां (लीफ कर्ल)',
-        titleMr: 'कापसाच्या पानांचा चुरमुरडा / वाकडी पाने',
-        condition: 'Leaf Curl Virus',
-        url: SVG_COTTON_CURL,
-        fallbackUrl: SVG_COTTON_CURL,
+        id: 'buffalo_mastitis',
+        title: 'Hard Udder & Blood/Flakes in Milk (Mastitis)',
+        titleHi: 'थन में कड़ापन और दूध में छीछड़े (थनैला)',
+        titleMr: 'कास कडक होणे व दुधात रक्ताच्या गाठी (स्तनदाह)',
+        condition: 'Bovine Mastitis',
+        url: SVG_MASTITIS_UDDER,
+        fallbackUrl: SVG_MASTITIS_UDDER,
         isHealthy: false,
+        bodyArea: 'udder',
       },
       {
-        id: 'cotton_healthy',
-        title: 'Healthy Green Cotton Leaf',
-        titleMr: 'निरोगी हिरवे कापसाचे पान',
-        condition: 'Healthy Leaf',
-        url: SVG_HEALTHY_LEAF,
-        fallbackUrl: SVG_HEALTHY_LEAF,
+        id: 'buffalo_fmd',
+        title: 'Foot Lesions & Salivation (FMD in Buffalo)',
+        titleHi: 'खुर में घाव व लार (खुरपका-मुंहपका)',
+        titleMr: 'खुरांमध्ये जखमा व लाळ (खुरकूत)',
+        condition: 'Foot and Mouth Disease',
+        url: SVG_FMD_LESIONS,
+        fallbackUrl: SVG_FMD_LESIONS,
+        isHealthy: false,
+        bodyArea: 'hooves',
+      },
+      {
+        id: 'buffalo_healthy',
+        title: 'Healthy Buffalo',
+        titleHi: 'स्वस्थ भैंस',
+        titleMr: 'निरोगी म्हैस',
+        condition: 'Healthy Buffalo',
+        url: SVG_HEALTHY_CATTLE,
+        fallbackUrl: SVG_HEALTHY_CATTLE,
         isHealthy: true,
+        bodyArea: 'skin',
       },
-      {
-        id: 'cotton_uncertain',
-        title: 'Blurry Cotton Leaf Photo',
-        titleMr: 'अस्पष्ट कापसाचा फोटो',
-        condition: 'Uncertain AI',
-        url: SVG_UNCERTAIN_AI,
-        fallbackUrl: SVG_UNCERTAIN_AI,
-        isHealthy: false,
-      }
-    ]
+    ],
   },
   {
-    id: 'soybean',
-    name: 'Soybean',
-    nameHi: 'सोयाबीन',
-    nameMr: 'सोयाबीन',
-    icon: '🌿',
-    scientificName: 'Glycine max',
+    id: 'goat',
+    name: 'Goat',
+    nameHi: 'बकरी',
+    nameMr: 'शेळी',
+    icon: '🐐',
+    scientificName: 'Capra hircus',
     sampleImages: [
       {
-        id: 'soybean_rust',
-        title: 'Soybean Yellow Pustules (Rust)',
-        titleHi: 'सोयाबीन पर पीले-भूरे धब्बे (रस्ट/गेरुआ)',
-        titleMr: 'सोयाबीनवरील पिवळे-तपकिरी तांबेरा डाग',
-        condition: 'Soybean Rust',
-        url: SVG_SOYBEAN_RUST,
-        fallbackUrl: SVG_SOYBEAN_RUST,
+        id: 'goat_ppr_sample',
+        title: 'PPR Mouth Sores, Discharge & Fever (Goat Plague)',
+        titleHi: 'मुंह में घाव, दस्त व बुखार (बकरी प्लेग / पीपीआर)',
+        titleMr: 'तोंडात जखमा, हगवण व ताप (पीपीआर / शेळी प्लेग)',
+        condition: 'Peste des Petits Ruminants (PPR)',
+        url: SVG_GOAT_PPR,
+        fallbackUrl: SVG_GOAT_PPR,
         isHealthy: false,
+        bodyArea: 'mouth',
       },
       {
-        id: 'soybean_healthy',
-        title: 'Healthy Green Soybean Leaf',
-        titleMr: 'निरोगी हिरवे सोयाबीनचे पान',
-        condition: 'Healthy Leaf',
-        url: SVG_HEALTHY_LEAF,
-        fallbackUrl: SVG_HEALTHY_LEAF,
+        id: 'goat_healthy_sample',
+        title: 'Healthy Active Goat',
+        titleHi: 'स्वस्थ व चुस्त बकरी',
+        titleMr: 'निरोगी व चपळ शेळी',
+        condition: 'Healthy Goat',
+        url: SVG_HEALTHY_CATTLE,
+        fallbackUrl: SVG_HEALTHY_CATTLE,
         isHealthy: true,
+        bodyArea: 'skin',
       },
-      {
-        id: 'soybean_uncertain',
-        title: 'Blurry Soybean Photo',
-        titleMr: 'अस्पष्ट सोयाबीनचा फोटो',
-        condition: 'Uncertain AI',
-        url: SVG_UNCERTAIN_AI,
-        fallbackUrl: SVG_UNCERTAIN_AI,
-        isHealthy: false,
-      }
-    ]
+    ],
   },
   {
-    id: 'sugarcane',
-    name: 'Sugarcane',
-    nameHi: 'गन्ना',
-    nameMr: 'ऊस',
-    icon: '🎋',
-    scientificName: 'Saccharum officinarum',
+    id: 'sheep',
+    name: 'Sheep',
+    nameHi: 'भेड़',
+    nameMr: 'मेंढी',
+    icon: '🐑',
+    scientificName: 'Ovis aries',
     sampleImages: [
       {
-        id: 'sugarcane_red_rot',
-        title: 'Sugarcane Red Rot Disease',
-        titleHi: 'गन्ने का लाल सड़न रोग (रेड रॉट)',
-        titleMr: 'उसावरील तांबरा / लाल कुज रोग',
-        condition: 'Red Rot',
-        url: SVG_SUGARCANE_RED_ROT,
-        fallbackUrl: SVG_SUGARCANE_RED_ROT,
+        id: 'sheep_footrot',
+        title: 'Foot Rot & Interdigital Lesions',
+        titleHi: 'खुरों में सड़ांध व लंगड़ापन (फुट रॉट)',
+        titleMr: 'खुरांमध्ये घाण व लंगडणे (खूर कुजणे)',
+        condition: 'Ovine Foot Rot',
+        url: SVG_FMD_LESIONS,
+        fallbackUrl: SVG_FMD_LESIONS,
         isHealthy: false,
+        bodyArea: 'hooves',
       },
       {
-        id: 'sugarcane_healthy',
-        title: 'Healthy Green Sugarcane Leaf',
-        titleHi: 'स्वस्थ हरी गन्ने की पत्ती',
-        titleMr: 'निरोगी हिरवे उसाचे पान',
-        condition: 'Healthy Leaf',
-        url: SVG_HEALTHY_LEAF,
-        fallbackUrl: SVG_HEALTHY_LEAF,
+        id: 'sheep_healthy',
+        title: 'Healthy Sheep',
+        titleHi: 'स्वस्थ भेड़',
+        titleMr: 'निरोगी मेंढी',
+        condition: 'Healthy Sheep',
+        url: SVG_HEALTHY_CATTLE,
+        fallbackUrl: SVG_HEALTHY_CATTLE,
         isHealthy: true,
+        bodyArea: 'skin',
       },
-      {
-        id: 'sugarcane_uncertain',
-        title: 'Blurry Sugarcane Photo',
-        titleHi: 'अस्पष्ट गन्ने का फोटो',
-        titleMr: 'अस्पष्ट उसाचा फोटो',
-        condition: 'Uncertain AI',
-        url: SVG_UNCERTAIN_AI,
-        fallbackUrl: SVG_UNCERTAIN_AI,
-        isHealthy: false,
-      }
-    ]
+    ],
   },
   {
-    id: 'maize',
-    name: 'Maize',
-    nameHi: 'मक्का',
-    nameMr: 'मका',
-    icon: '🌽',
-    scientificName: 'Zea mays',
+    id: 'poultry',
+    name: 'Poultry',
+    nameHi: 'मुर्गी पालन',
+    nameMr: 'कुक्कुटपालन',
+    icon: '🐔',
+    scientificName: 'Gallus gallus domesticus',
     sampleImages: [
       {
-        id: 'maize_blight',
-        title: 'Maize Northern Leaf Blight',
-        titleHi: 'मक्के का तुर्सिकम लीफ ब्लाइट रोग',
-        titleMr: 'मक्यावरील तुरा / करपा रोग',
-        condition: 'Leaf Blight',
-        url: SVG_MAIZE_BLIGHT,
-        fallbackUrl: SVG_MAIZE_BLIGHT,
+        id: 'poultry_ranikhet_sample',
+        title: 'Gasping, Twisted Neck & Drop in Eggs (Ranikhet / Newcastle)',
+        titleHi: 'सांस लेने में तकलीफ, गर्दन मुड़ना (रानीखेत रोग)',
+        titleMr: 'श्वासास त्रास, मान फिरणे व अंडी घट (राणीखेत आजार)',
+        condition: 'Ranikhet / Newcastle Disease',
+        url: SVG_POULTRY_RANIKHET,
+        fallbackUrl: SVG_POULTRY_RANIKHET,
         isHealthy: false,
+        bodyArea: 'general',
       },
       {
-        id: 'maize_healthy',
-        title: 'Healthy Green Maize Leaf',
-        titleHi: 'स्वस्थ हरी मक्के की पत्ती',
-        titleMr: 'निरोगी हिरवे मक्याचे पान',
-        condition: 'Healthy Leaf',
-        url: SVG_HEALTHY_LEAF,
-        fallbackUrl: SVG_HEALTHY_LEAF,
+        id: 'poultry_healthy_sample',
+        title: 'Healthy Active Broiler / Layer',
+        titleHi: 'स्वस्थ मुर्गी',
+        titleMr: 'निरोगी कुक्कुट',
+        condition: 'Healthy Poultry',
+        url: SVG_HEALTHY_CATTLE,
+        fallbackUrl: SVG_HEALTHY_CATTLE,
         isHealthy: true,
+        bodyArea: 'skin',
       },
-      {
-        id: 'maize_uncertain',
-        title: 'Blurry Maize Photo',
-        titleHi: 'अस्पष्ट मक्के का फोटो',
-        titleMr: 'अस्पष्ट मक्याचा फोटो',
-        condition: 'Uncertain AI',
-        url: SVG_UNCERTAIN_AI,
-        fallbackUrl: SVG_UNCERTAIN_AI,
-        isHealthy: false,
-      }
-    ]
+    ],
   },
-  {
-    id: 'onion',
-    name: 'Onion',
-    nameHi: 'प्याज',
-    nameMr: 'कांदा',
-    icon: '🧅',
-    scientificName: 'Allium cepa',
-    sampleImages: [
-      {
-        id: 'onion_purple_blotch',
-        title: 'Onion Purple Blotch Disease',
-        titleHi: 'प्याज का बैंगनी धब्बा रोग (पर्पल ब्लॉच)',
-        titleMr: 'कांद्यावरील जांभळा करपा',
-        condition: 'Purple Blotch',
-        url: SVG_ONION_BLOTCH,
-        fallbackUrl: SVG_ONION_BLOTCH,
-        isHealthy: false,
-      },
-      {
-        id: 'onion_healthy',
-        title: 'Healthy Green Onion Foliage',
-        titleHi: 'स्वस्थ हरी प्याज की पत्तियां',
-        titleMr: 'निरोगी हिरवी कांद्याची पात',
-        condition: 'Healthy Leaf',
-        url: SVG_HEALTHY_LEAF,
-        fallbackUrl: SVG_HEALTHY_LEAF,
-        isHealthy: true,
-      },
-      {
-        id: 'onion_uncertain',
-        title: 'Blurry Onion Photo',
-        titleHi: 'अस्पष्ट प्याज का फोटो',
-        titleMr: 'अस्पष्ट कांद्याचा फोटो',
-        condition: 'Uncertain AI',
-        url: SVG_UNCERTAIN_AI,
-        fallbackUrl: SVG_UNCERTAIN_AI,
-        isHealthy: false,
-      }
-    ]
-  },
-  {
-    id: 'rice',
-    name: 'Rice',
-    nameHi: 'चावल / धान',
-    nameMr: 'भात',
-    icon: '🌾',
-    scientificName: 'Oryza sativa',
-    sampleImages: [
-      {
-        id: 'rice_blast',
-        title: 'Rice Leaf Blast Disease',
-        titleHi: 'धान का झुलसा रोग (राइस ब्लास्ट)',
-        titleMr: 'भातावरील करपा / ब्लास्ट रोग',
-        condition: 'Rice Blast',
-        url: SVG_RICE_BLAST,
-        fallbackUrl: SVG_RICE_BLAST,
-        isHealthy: false,
-      },
-      {
-        id: 'rice_healthy',
-        title: 'Healthy Green Rice Crop',
-        titleHi: 'स्वस्थ हरी धान की फसल',
-        titleMr: 'निरोगी हिरवे भाताचे रोप',
-        condition: 'Healthy Leaf',
-        url: SVG_HEALTHY_LEAF,
-        fallbackUrl: SVG_HEALTHY_LEAF,
-        isHealthy: true,
-      },
-      {
-        id: 'rice_uncertain',
-        title: 'Blurry Rice Photo',
-        titleHi: 'अस्पष्ट धान का फोटो',
-        titleMr: 'अस्पष्ट भाताचा फोटो',
-        condition: 'Uncertain AI',
-        url: SVG_UNCERTAIN_AI,
-        fallbackUrl: SVG_UNCERTAIN_AI,
-        isHealthy: false,
-      }
-    ]
-  },
-  {
-    id: 'wheat',
-    name: 'Wheat',
-    nameHi: 'गेहूं',
-    nameMr: 'गहू',
-    icon: '🌾',
-    scientificName: 'Triticum aestivum',
-    sampleImages: [
-      {
-        id: 'wheat_rust',
-        title: 'Wheat Yellow Rust Infection',
-        titleHi: 'गेहूं का पीला रतुआ / रस्ट रोग',
-        titleMr: 'गव्हावरील तांबेरा / पिवळा तांबेरा',
-        condition: 'Yellow Rust',
-        url: SVG_WHEAT_RUST,
-        fallbackUrl: SVG_WHEAT_RUST,
-        isHealthy: false,
-      },
-      {
-        id: 'wheat_healthy',
-        title: 'Healthy Green Wheat Blade',
-        titleHi: 'स्वस्थ हरी गेहूं की पत्ती',
-        titleMr: 'निरोगी हिरवे गव्हाचे पान',
-        condition: 'Healthy Leaf',
-        url: SVG_HEALTHY_LEAF,
-        fallbackUrl: SVG_HEALTHY_LEAF,
-        isHealthy: true,
-      },
-      {
-        id: 'wheat_uncertain',
-        title: 'Blurry Wheat Photo',
-        titleHi: 'अस्पष्ट गेहूं का फोटो',
-        titleMr: 'अस्पष्ट गव्हाचा फोटो',
-        condition: 'Uncertain AI',
-        url: SVG_UNCERTAIN_AI,
-        fallbackUrl: SVG_UNCERTAIN_AI,
-        isHealthy: false,
-      }
-    ]
-  }
 ];
 
-export function getDefaultDiagnosisForCrop(cropIdOrName: string = 'tomato'): DiagnosisResult {
-  const key = (cropIdOrName || 'tomato').toLowerCase().trim();
+// =========================================================================
+// REGISTERED DEMO HERD (My Herd Data)
+// =========================================================================
 
-  if (key === 'soybean') {
-    return {
-      id: 'diag-soybean-default',
-      cropId: 'soybean',
-      cropName: 'Soybean',
-      cropNameHi: 'सोयाबीन',
-      cropNameMr: 'सोयाबीन',
-      diseaseName: 'Soybean Rust',
-      diseaseNameHi: 'सोयाबीन गेरुआ रोग (Rust)',
-      diseaseNameMr: 'सोयाबीन तांबेरा रोग (Rust)',
-      pathogen: 'Phakopsora pachyrhizi (Fungal Pathogen)',
-      severity: 'moderate',
-      confidenceLabel: 'reliable',
-      isUncertain: false,
-      detectedAt: 'Today, 10:15 AM',
-      imageUrl: SVG_SOYBEAN_RUST,
-      whatToDoToday: [
-        {
-          step: 1,
-          title: 'Avoid late evening irrigation & clear ridges',
-          titleHi: 'देर शाम सिंचाई से बचें और क्यारियों में जल निकासी रखें',
-          titleMr: 'संध्याकाळी उशिरा पाणी देणे टाळा व वाफ्यांमध्ये निचरा ठेवा',
-          description: 'Ensure canopy foliage dries quickly after sunrise to prevent rust spore germination.',
-          descriptionHi: 'सूर्योदय के बाद पत्तियों की नमी जल्दी सूखने दें ताकि गेरुआ कवक के बीजाणु अंकुरित न हों।',
-          descriptionMr: 'पानांवर रात्रभर ओलावा साचू देऊ नका. शेतातील पाण्याचा निचरा सुरळीत करा.',
-          priority: 'critical',
-          category: 'cultural'
-        },
-        {
-          step: 2,
-          title: 'Prune & destroy lower leaves with rust pustules',
-          titleHi: 'भूरे फफोले वाली निचली पत्तियों को तोड़कर नष्ट करें',
-          titleMr: 'तांबूस फोड असलेली खालची पाने तोडून नष्ट करा',
-          description: 'Remove and deeply bury lower leaf canopy showing dense reddish-brown pustules.',
-          descriptionHi: 'घने लाल-भूरे फफोलों वाली निचली पत्तियों को हटाकर खेत से दूर गहरा दबाएं।',
-          descriptionMr: 'तांबेरा डाग असलेली खालची पाने कापून शेताबाहेर नष्ट करा.',
-          priority: 'critical',
-          category: 'mechanical'
-        },
-        {
-          step: 3,
-          title: 'Apply Bio-Fungicide (Trichoderma viride 5g/L)',
-          titleHi: 'जैविक कवकनाशी (ट्राइकोडर्मा विरिडी 5 ग्राम/ली.) का छिड़काव करें',
-          titleMr: 'ट्रायकोडर्मा व्हिरिडी (५ ग्रॅम/लिटर) जैविक बुरशीनाशक फवारणी',
-          description: 'Spray Trichoderma viride @ 5g/L or NSKE 5% in the evening for natural suppression.',
-          descriptionHi: 'शाम के समय ट्राइकोडर्मा विरिडी 5 ग्राम/लीटर या निमार्क 5% का छिड़काव करें।',
-          descriptionMr: 'बुरशीची वाढ नैसर्गिकरीत्या रोखण्यासाठी ट्रायकोडर्मा व्हिरिडी किंवा निमार्क ५% फवारा.',
-          priority: 'important',
-          category: 'biological'
-        },
-        {
-          step: 4,
-          title: 'Targeted Triazole Fungicide (If rust > 5% leaf area)',
-          titleHi: 'लक्षित ट्राइएजोल कवकनाशी छिड़काव (यदि रस्ट > 5% हो)',
-          titleMr: 'शिफारशीत बुरशीनाशक फवारणी (प्रादुर्भाव ५% पेक्षा जास्त असल्यास)',
-          description: 'Spray Hexaconazole 5% EC @ 1ml/L or Tebuconazole 25.9% EC @ 1.5ml/L during calm morning hours.',
-          descriptionHi: 'सुबह के शांत मौसम में हेक्साकोनाजोल 5% ईसी @ 1 मिली/ली या टेबुकोनाजोल 25.9% ईसी @ 1.5 मिली/ली का छिड़काव करें।',
-          descriptionMr: 'सकाळच्या वेळी हेक्झाकोनॅझोल ५% EC (१ मिली/लिटर) किंवा टेब्युकोनॅझोलची नियंत्रित फवारणी करा.',
-          priority: 'preventive',
-          category: 'chemical'
-        }
-      ],
-      whatToMonitor: [
-        {
-          title: 'Pustules on leaf undersides',
-          titleHi: 'पत्तियों की निचली सतह पर फफोले',
-          titleMr: 'पानाच्या उलट्या बाजूवरील तांबूस फोड',
-          check: 'Monitor if brown pustules increase on lower and middle canopy leaves over 48 hours.',
-          checkHi: 'निगरानी रखें कि क्या अगले 48 घंटों में निचली पत्तियों पर भूरे फफोले बढ़ रहे हैं।',
-          checkMr: 'पुढील ४८ तासांत खालच्या पानांवर तांबूस फोड वाढतात का ते तपासा.'
-        },
-        {
-          title: 'Premature yellowing and leaf drop',
-          titleHi: 'पत्तियों का पीला पड़ना और गिरना',
-          titleMr: 'पाने पिवळी पडून गळणे',
-          check: 'Check if infected leaves yellow rapidly and drop before pod filling.',
-          checkHi: 'जांचें कि क्या फलियों के भरने से पहले पत्तियां पीली होकर गिर रही हैं।',
-          checkMr: 'शेंगा भरण्यापूर्वी पाने पिवळी पडून गळत नाहीत ना यावर लक्ष ठेवा.'
-        }
-      ],
-      whatMayHappenNext: {
-        title: 'Rust Spore Spread Projection',
-        titleHi: 'गेरुआ रोग प्रसार पूर्वानुमान',
-        titleMr: 'तांबेरा रोग प्रसार अंदाज',
-        text: 'High humidity (>80%) and cloudy conditions accelerate Soybean Rust multiplication. Disease pressure will elevate rapidly unless preventive cultural and bio-fungicide measures are implemented today.',
-        textHi: 'उच्च आर्द्रता (>80%) और बादलों वाला मौसम सोयाबीन रस्ट के फैलाव को तेज करता है। यदि आज जैविक उपाय नहीं किए गए तो रोग का दबाव तेजी से बढ़ेगा।',
-        textMr: 'हवेतील जास्त आर्द्रता (८०%+) व ढगाळ वातावरणामुळे सोयाबीन तांबेरा रोगाचा प्रसार वेगाने होऊ शकतो. आज प्रतिबंधात्मक उपाययोजना करणे अत्यंत आवश्यक आहे.',
-        riskTrend: 'increasing'
-      },
-      advisoryVoiceScript: 'Possible Soybean Rust detected with moderate severity. Avoid evening overhead watering and prune heavily affected lower leaves. Apply recommended bio-fungicide or triazole spray during clear morning hours.',
-      advisoryVoiceScriptHi: 'सोयाबीन की फसल पर मध्यम गंभीरता का गेरुआ (रस्ट) रोग पाया गया है। शाम को अतिरिक्त पानी न दें और संक्रमित निचली पत्तियां हटा दें। सुबह के समय अनुशंसित कवकनाशी का छिड़काव करें।',
-      advisoryVoiceScriptMr: 'सोयाबीन पिकावर मध्यम स्वरूपाचा तांबेरा रोग आढळला आहे. संध्याकाळी पाणी साचू देऊ नका व जास्त बाधित पाने काढून टाका. सकाळच्या वेळेत योग्य बुरशीनाशकाची फवारणी करा.'
-    };
-  }
+export const SEEDED_DEMO_HERD: LivestockAnimal[] = [
+  {
+    id: 'animal-001',
+    ownerId: '542d3fbc-f0f7-4e82-84b9-f8394659b61b',
+    tagNumber: 'MH-1042-88',
+    name: 'Gauri (गौरी)',
+    species: 'cattle',
+    breed: 'Gir (गीर गाय)',
+    ageYears: 4,
+    ageMonths: 2,
+    gender: 'female',
+    count: 1,
+    healthStatus: 'treatment',
+    lastVaccinationDate: '2026-04-15',
+    nextVaccinationDue: '2026-10-15',
+    recentCondition: 'Bovine Mastitis (Mild)',
+    notes: 'High milker (14 L/day). Right quarter mildly swollen, under herbal fomentation.',
+    createdAt: '2025-01-10',
+  },
+  {
+    id: 'animal-002',
+    ownerId: '542d3fbc-f0f7-4e82-84b9-f8394659b61b',
+    tagNumber: 'MH-1042-89',
+    name: 'Kapila (कपिली)',
+    species: 'cattle',
+    breed: 'Sahiwal (साहिवाल)',
+    ageYears: 3,
+    ageMonths: 6,
+    gender: 'female',
+    count: 1,
+    healthStatus: 'healthy',
+    lastVaccinationDate: '2026-05-20',
+    nextVaccinationDue: '2026-11-20',
+    recentCondition: 'Healthy',
+    notes: 'Vaccinated for LSD and FMD. Feed intake normal.',
+    createdAt: '2025-02-14',
+  },
+  {
+    id: 'animal-003',
+    ownerId: '542d3fbc-f0f7-4e82-84b9-f8394659b61b',
+    tagNumber: 'MH-2088-12',
+    name: 'Kaali (काळी)',
+    species: 'buffalo',
+    breed: 'Murrah (मुर्राह)',
+    ageYears: 5,
+    ageMonths: 0,
+    gender: 'female',
+    count: 1,
+    healthStatus: 'healthy',
+    lastVaccinationDate: '2026-03-10',
+    nextVaccinationDue: '2026-09-10',
+    recentCondition: 'Healthy',
+    notes: 'Due for HS+BQ booster dose this month.',
+    createdAt: '2025-01-20',
+  },
+  {
+    id: 'animal-004',
+    ownerId: '542d3fbc-f0f7-4e82-84b9-f8394659b61b',
+    tagNumber: 'MH-3041-05',
+    name: 'Rani (राणी)',
+    species: 'goat',
+    breed: 'Osmanabadi (उस्मानाबादी)',
+    ageYears: 2,
+    ageMonths: 1,
+    gender: 'female',
+    count: 6,
+    healthStatus: 'healthy',
+    lastVaccinationDate: '2026-06-01',
+    nextVaccinationDue: '2027-06-01',
+    recentCondition: 'Healthy Flock',
+    notes: 'PPR vaccination completed in June. Deworming scheduled.',
+    createdAt: '2025-03-01',
+  },
+];
 
-  if (key === 'cotton') {
-    return {
-      id: 'diag-cotton-default',
-      cropId: 'cotton',
-      cropName: 'Cotton',
-      cropNameHi: 'कपास',
-      cropNameMr: 'कापूस',
-      diseaseName: 'Leaf Curl Virus',
-      diseaseNameHi: 'पत्ती मरोड़ रोग (Leaf Curl Virus)',
-      diseaseNameMr: 'पानांचा चुरमुरडा (Leaf Curl)',
-      pathogen: 'Begomovirus / Whitefly-transmitted',
-      severity: 'moderate',
-      confidenceLabel: 'reliable',
-      isUncertain: false,
-      detectedAt: 'Today, 10:15 AM',
-      imageUrl: SVG_COTTON_CURL,
-      whatToDoToday: [
-        {
-          step: 1,
-          title: 'Avoid excess nitrogen & balance irrigation',
-          titleHi: 'अत्यधिक नाइट्रोजन से बचें और संतुलित सिंचाई करें',
-          titleMr: 'नत्र खतांचा अतिवापर टाळा व पाणी नियंत्रण ठेवा',
-          description: 'Excess nitrogen produces succulent foliage attractive to whitefly vectors.',
-          descriptionHi: 'अधिक नाइट्रोजन से कोमल पत्तियां बनती हैं जो सफेद मक्खी को आकर्षित करती हैं।',
-          descriptionMr: 'नत्र खतांमुळे पाने मऊ होऊन रसशोषक किडींचा प्रादुर्भाव वाढतो.',
-          priority: 'critical',
-          category: 'cultural'
-        },
-        {
-          step: 2,
-          title: 'Install Yellow Sticky Traps & rogue stunted plants',
-          titleHi: 'पीले चिपचिपे जाल लगाएं व प्रभावित पौधे हटाएं',
-          titleMr: 'पिवळे चिकट सापळे लावा व अतिबाधित झाडे नष्ट करा',
-          description: 'Install 15-20 yellow sticky traps per acre to trap whiteflies. Uproot heavily infected plants.',
-          descriptionHi: 'प्रति एकड़ 15-20 पीले चिपचिपे ट्रैप लगाएं और अत्यधिक प्रभावित पौधे उखाड़कर नष्ट करें।',
-          descriptionMr: 'एकरी १५-२० पिवळे चिकट सापळे लावा आणि अतिबाधित झाडे शेतातून नष्ट करा.',
-          priority: 'critical',
-          category: 'mechanical'
-        },
-        {
-          step: 3,
-          title: 'Spray Neem Extract (NSKE 5% or Azadirachtin)',
-          titleHi: 'नीम बीज अर्क (एनएसकेई 5%) का छिड़काव करें',
-          titleMr: 'निमार्क ५% किंवा कडुनिंब अर्काची फवारणी',
-          description: 'Spray Azadirachtin 10,000 ppm @ 1ml/L to deter sucking pests naturally.',
-          descriptionHi: 'रस चूसक कीटों को रोकने के लिए एजाडिरैक्टिन 10000 पीपीएम @ 1 मिली/लीटर का छिड़काव करें।',
-          descriptionMr: 'रसशोषक किडींचा प्रादुर्भाव रोखण्यासाठी निमार्क ५% ची फवारणी करा.',
-          priority: 'important',
-          category: 'biological'
-        },
-        {
-          step: 4,
-          title: 'Targeted Vector Control (If whitefly > 8-10 per leaf)',
-          titleHi: 'लक्षित कीटनाशक छिड़काव (यदि सफेद मक्खी > 8/पत्ती हो)',
-          titleMr: 'नियंत्रित कीटकनाशक फवारणी (पांढरी माशी जास्त असल्यास)',
-          description: 'Spray Diafenthiuron 50% WP @ 1.2g/L or Flonicamid 50% WG @ 0.3g/L during early morning.',
-          descriptionHi: 'सफेद मक्खी अधिक होने पर डायफेनथियुरॉन 50% डब्ल्यूपी @ 1.2 ग्राम/ली या फ्लोनिकैमिड 50% डब्ल्यूजी @ 0.3 ग्राम/ली का छिड़काव करें।',
-          descriptionMr: 'पांढरी माशी जास्त असल्यास शिफारशीनुसार डायफेन्थ्युरॉन किंवा फ्लोनिकॅमिडची फवारणी करा.',
-          priority: 'preventive',
-          category: 'chemical'
-        }
-      ],
-      whatToMonitor: [
-        {
-          title: 'Upward curling & vein thickening',
-          titleHi: 'पत्तियों का ऊपर मुड़ना व नसों का मोटा होना',
-          titleMr: 'पानांचा वरच्या बाजूला पडलेला चुरमुरडा',
-          check: 'Check if new upper leaves show upward curling and enations.',
-          checkHi: 'जांचें कि क्या ऊपरी नई पत्तियां ऊपर की ओर मुड़ रही हैं।',
-          checkMr: 'नवीन फुटव्यांवर वाटीसारखी पाने तयार होत आहेत का ते तपासा.'
-        },
-        {
-          title: 'Whitefly vector counts',
-          titleHi: 'सफेद मक्खी की संख्या',
-          titleMr: 'पांढऱ्या माशीचे प्रमाण',
-          check: 'Inspect undersides of top 3 leaves across 20 random plants.',
-          checkHi: '20 पौधों की ऊपरी 3 पत्तियों के नीचे सफेद मक्खी की जांच करें।',
-          checkMr: 'वरच्या पानांच्या खाली पांढऱ्या माशीचे प्रमाण तपासा.'
-        }
-      ],
-      whatMayHappenNext: {
-        title: 'Vector Dispersal Forecast',
-        titleHi: 'कीट प्रसार पूर्वानुमान',
-        titleMr: 'किडींचा संभाव्य प्रसार अंदाज',
-        text: 'Warm dry afternoon winds favor whitefly vector flight. Border trap crops and sticky traps reduce transmission to healthy inner rows.',
-        textHi: 'दोपहर की शुष्क हवा सफेद मक्खी के फैलाव में सहायक होती है। पीले चिपचिपे जाल लगाने से आंतरिक फसल सुरक्षित रहती है।',
-        textMr: 'दुपारच्या कोरड्या वाऱ्यामुळे पांढरी माशी वेगाने इतर भागात पसरू शकते. शेताच्या बांधावर आधी नियंत्रण करा.',
-        riskTrend: 'increasing'
-      },
-      advisoryVoiceScript: 'Possible Cotton Leaf Curl detected with moderate severity. Control whitefly immediately using yellow sticky traps and avoid excess nitrogen fertilizer.',
-      advisoryVoiceScriptHi: 'कपास पर पत्ती मरोड़ रोग के लक्षण पाए गए हैं। सफेद मक्खी के तुरंत नियंत्रण के लिए पीले चिपचिपे ट्रैप लगाएं और अत्यधिक नाइट्रोजन से बचें।',
-      advisoryVoiceScriptMr: 'कापसावर पानांचा चुरमुरडा रोग आढळला आहे. पांढऱ्या माशीच्या नियंत्रणासाठी लगेच पिवळे चिकट सापळे लावा व नत्र खतांचा अतिवापर टाळा.'
-    };
-  }
+// =========================================================================
+// DEMO VACCINATION SCHEDULE
+// =========================================================================
 
-  if (key === 'sugarcane') {
-    return {
-      id: 'diag-sugarcane-default',
-      cropId: 'sugarcane',
-      cropName: 'Sugarcane',
-      cropNameHi: 'गन्ना',
-      cropNameMr: 'ऊस',
-      diseaseName: 'Red Rot',
-      diseaseNameHi: 'लाल सड़न रोग (Red Rot)',
-      diseaseNameMr: 'ऊस लाल कुजव्या रोग (Red Rot)',
-      pathogen: 'Colletotrichum falcatum (Fungal Pathogen)',
-      severity: 'moderate',
-      confidenceLabel: 'reliable',
-      isUncertain: false,
-      detectedAt: 'Today, 10:15 AM',
-      imageUrl: SVG_SUGARCANE_RED_ROT,
-      whatToDoToday: [
-        {
-          step: 1,
-          title: 'Drain stagnant field water immediately',
-          titleHi: 'खेत में जमा पानी को तुरंत निकालें',
-          titleMr: 'शेतात साचलेले पाणी तातडीने बाहेर काढा',
-          description: 'Stagnant water accelerates fungal dissemination across sugarcane setts and root zones.',
-          descriptionHi: 'खेत में रुका हुआ पानी कवक को गन्ने की जड़ों और तनों में तेजी से फैलाता है।',
-          descriptionMr: 'साचलेल्या पाण्यामुळे उसाच्या मुळांमध्ये बुरशी वेगाने पसरते. चर खोदून निचरा करा.',
-          priority: 'critical',
-          category: 'cultural'
-        },
-        {
-          step: 2,
-          title: 'Uproot & burn drying affected clumps',
-          titleHi: 'सूख रहे प्रभावित गन्ने के झुरमुटों को उखाड़कर जलाएं',
-          titleMr: 'वाळलेले व बाधित उसाचे बेट मुळासकट उपटून नष्ट करा',
-          description: 'Remove dying clumps with third and fourth leaves yellowing. Destroy outside field perimeter.',
-          descriptionHi: 'तीसरी और चौथी पत्ती पीली पड़ने वाले सूखते पौधों को उखाड़कर खेत से बाहर नष्ट करें।',
-          descriptionMr: 'रोगट उसाचे बेट उपटून शेताबाहेर नष्ट करा जेणेकरून इतर बेटांना संसर्ग होणार नाही.',
-          priority: 'critical',
-          category: 'mechanical'
-        },
-        {
-          step: 3,
-          title: 'Bio-Control Root Drenching (Trichoderma)',
-          titleHi: 'जड़ों में ट्राइकोडर्मा विरिडी का जैविक उपचार करें',
-          titleMr: 'ट्रायकोडर्मा व्हिरिडीची आळवणी (Drenching)',
-          description: 'Drench root zones with Trichoderma viride enriched farmyard manure @ 10kg/acre.',
-          descriptionHi: 'प्रति एकड़ 10 किग्रा ट्राइकोडर्मा समृद्ध गोबर की खाद से जड़ों के पास उपचार करें।',
-          descriptionMr: 'शेणखतात मिसळून ट्रायकोडर्माची उसाच्या मुळांजवळ आळवणी करा.',
-          priority: 'important',
-          category: 'biological'
-        },
-        {
-          step: 4,
-          title: 'Sett Treatment Guidance for future replanting',
-          titleHi: 'भावी बुवाई के लिए बीज उपचार मार्गदर्शन',
-          titleMr: 'पुढील लागवडीसाठी बेणेप्रक्रिया मार्गदर्शन',
-          description: 'Dip seed setts in Carbendazim 50% WP @ 1g/L for 15 minutes before any future planting.',
-          descriptionHi: 'भविष्य में बुवाई से पहले गन्ने के टुकड़ों को कार्बेन्डाजिम 1 ग्राम/लीटर के घोल में 15 मिनट डुबोएं।',
-          descriptionMr: 'पुढील लागवडीवेळी कार्बेन्डाझिम द्रावणात १५ मिनिटे बेणे बुडवून बेणेप्रक्रिया करा.',
-          priority: 'preventive',
-          category: 'chemical'
-        }
-      ],
-      whatToMonitor: [
-        {
-          title: 'Midrib reddening & white patches in pith',
-          titleHi: 'पत्तियों की मध्य शिरा का लाल होना व तने में सफेद चकत्ते',
-          titleMr: 'पानाच्या मुख्य शिरेवरील लाल डाग व आतील गाभ्याचा रंग',
-          check: 'Split affected stalks and observe if internal pith has crosswise white bands.',
-          checkHi: 'प्रभावित गन्ने को चीरकर देखें कि क्या अंदर सफेद अनुप्रस्थ पट्टियां हैं।',
-          checkMr: 'उस कापून आत पांढरे पट्टे व लाल रंग दिसतो का ते तपासा.'
-        }
-      ],
-      whatMayHappenNext: {
-        title: 'Crop Deterioration Risk',
-        titleHi: 'फसल क्षरण जोखिम',
-        titleMr: 'उसाचे नुकसान अंदाज',
-        text: 'Red Rot can cause severe stalk drying and sucrose inversion. Strict field sanitation and drainage protect healthy standing cane.',
-        textHi: 'लाल सड़न से गन्ने का तना सूख सकता है और सुक्रोज घट सकती है। जल निकासी और स्वच्छता बनाए रखें।',
-        textMr: 'लाल कुजव्या रोगामुळे उस आतून पोकळ होऊन सुकतो. शेतातील स्वच्छता व पाण्याचा निचरा त्वरित करा.',
-        riskTrend: 'increasing'
-      },
-      advisoryVoiceScript: 'Red Rot symptoms detected on sugarcane. Ensure proper drainage and rogue out dried clumps to prevent spread.',
-      advisoryVoiceScriptHi: 'गन्ने की फसल पर लाल सड़न के लक्षण देखे गए हैं। जल निकासी सुनिश्चित करें और सूख रहे पौधों को तुरंत हटा दें।',
-      advisoryVoiceScriptMr: 'उसावर लाल कुजव्या रोगाची लक्षणे आढळली आहेत. पाण्याचा त्वरित निचरा करा व रोगट बेट उपटून नष्ट करा.'
-    };
-  }
+export const SEEDED_DEMO_VACCINATIONS: VaccinationRecord[] = [
+  {
+    id: 'vac-001',
+    animalId: 'animal-001',
+    animalName: 'Gauri (Gir Cow)',
+    species: 'cattle',
+    vaccineName: 'FMD Vaccine (Raksha-Ovac)',
+    diseaseTarget: 'Foot and Mouth Disease (खुरपका-मुंहपका)',
+    administeredDate: '2026-04-15',
+    nextDueDate: '2026-10-15',
+    status: 'due_soon',
+    batchNumber: 'RO-2026-B8',
+    veterinarian: 'Dr. A. Deshmukh (LDO Niphad)',
+    notes: 'Bi-annual mandatory booster due in 15 days.',
+  },
+  {
+    id: 'vac-002',
+    animalId: 'animal-001',
+    animalName: 'Gauri (Gir Cow)',
+    species: 'cattle',
+    vaccineName: 'LSD Goat Pox Heterologous',
+    diseaseTarget: 'Lumpy Skin Disease (लंपी त्वचा रोग)',
+    administeredDate: '2026-02-10',
+    nextDueDate: '2027-02-10',
+    status: 'completed',
+    batchNumber: 'LSD-GP-99',
+    veterinarian: 'Dr. A. Deshmukh (LDO Niphad)',
+    notes: 'Annual immunity active.',
+  },
+  {
+    id: 'vac-003',
+    animalId: 'animal-003',
+    animalName: 'Kaali (Murrah Buffalo)',
+    species: 'buffalo',
+    vaccineName: 'HS + BQ Combined Vaccine',
+    diseaseTarget: 'Hemorrhagic Septicemia & Black Quarter',
+    administeredDate: '2025-09-05',
+    nextDueDate: '2026-09-05',
+    status: 'overdue',
+    batchNumber: 'HSBQ-441',
+    veterinarian: 'Dr. Priya Sharma',
+    notes: 'Pre-monsoon booster overdue by 25 days. Administer urgently.',
+  },
+  {
+    id: 'vac-004',
+    animalId: 'animal-004',
+    animalName: 'Rani & Flock (Osmanabadi Goats)',
+    species: 'goat',
+    vaccineName: 'Raksha PPR Vaccine',
+    diseaseTarget: 'Peste des Petits Ruminants (बकरी प्लेग)',
+    administeredDate: '2026-06-01',
+    nextDueDate: '2029-06-01',
+    status: 'completed',
+    batchNumber: 'PPR-8812',
+    veterinarian: 'KVK Mobile Unit',
+    notes: '3-year immunity valid across all 6 goats.',
+  },
+];
 
-  if (key === 'maize') {
-    return {
-      id: 'diag-maize-default',
-      cropId: 'maize',
-      cropName: 'Maize',
-      cropNameHi: 'मक्का',
-      cropNameMr: 'मका',
-      diseaseName: 'Turcicum Leaf Blight',
-      diseaseNameHi: 'पत्ती झुलसा (Leaf Blight)',
-      diseaseNameMr: 'मका करपा रोग (Leaf Blight)',
-      pathogen: 'Exserohilum turcicum (Fungal Pathogen)',
-      severity: 'moderate',
-      confidenceLabel: 'reliable',
-      isUncertain: false,
-      detectedAt: 'Today, 10:15 AM',
-      imageUrl: SVG_MAIZE_BLIGHT,
-      whatToDoToday: [
-        {
-          step: 1,
-          title: 'Clear lower decaying foliage & weeds',
-          titleHi: 'निचली सड़ी पत्तियां व खरपतवार हटाएं',
-          titleMr: 'खालची सुकलेली पाने व तण काढा',
-          description: 'Improve air circulation around lower stalk canopy to lower leaf wetness duration.',
-          descriptionHi: 'हवा के संचार को बेहतर बनाने और पत्तियों की नमी कम करने के लिए निचली पत्तियां हटाएं।',
-          descriptionMr: 'हवा खेळती राहण्यासाठी खालची सुकलेली पाने काढून टाका.',
-          priority: 'critical',
-          category: 'cultural'
-        },
-        {
-          step: 2,
-          title: 'Apply Bio-Fungicide (Pseudomonas fluorescens)',
-          titleHi: 'स्यूडोमोनास फ्लोरोसेंस का जैविक छिड़काव करें',
-          titleMr: 'स्यूडोमोनास फ्लोरोसेन्स जैविक फवारणी',
-          description: 'Spray Pseudomonas fluorescens @ 5g/L water during afternoon hours.',
-          descriptionHi: 'दोपहर के समय 5 ग्राम प्रति लीटर पानी में स्यूडोमोनास का छिड़काव करें।',
-          descriptionMr: 'जैविक नियंत्रणासाठी स्यूडोमोनास फ्लोरोसेन्सची फवारणी करा.',
-          priority: 'important',
-          category: 'biological'
-        },
-        {
-          step: 3,
-          title: 'Protective Fungicide Spray (Mancozeb 75% WP)',
-          titleHi: 'सुरक्षात्मक कवकनाशी (मैन्कोजेब 75% डब्ल्यूपी) का छिड़काव',
-          titleMr: 'मॅन्कोझेब ७५% WP बुरशीनाशक फवारणी',
-          description: 'Spray Mancozeb 75% WP @ 2.5g/L or Azoxystrobin 23% SC @ 1ml/L during clear morning.',
-          descriptionHi: 'सुबह साफ मौसम में मैन्कोजेब 2.5 ग्राम/लीटर या एजोक्सीस्ट्रोबिन 1 मिली/लीटर का छिड़काव करें।',
-          descriptionMr: 'सकाळच्या वेळेत मॅन्कोझेब (२.५ ग्रॅम/लिटर) ची फवारणी करा.',
-          priority: 'preventive',
-          category: 'chemical'
-        }
-      ],
-      whatToMonitor: [
-        {
-          title: 'Boat-shaped elliptical lesions',
-          titleHi: 'पत्तियों पर नाव के आकार के लंबे धब्बे',
-          titleMr: 'पानांवरील लांबट करडे डाग',
-          check: 'Inspect if grey-green spindle lesions expand along leaf veins.',
-          checkHi: 'जांचें कि क्या पत्तियों पर नाव के आकार के लंबे धब्बे बढ़ रहे हैं।',
-          checkMr: 'पानांवर लांबट डाग वाढतात का ते तपासा.'
-        }
-      ],
-      whatMayHappenNext: {
-        title: 'Canopy Blight Projection',
-        titleHi: 'झुलसा रोग प्रसार अनुमान',
-        titleMr: 'करपा रोग प्रसार अंदाज',
-        text: 'Cool humid conditions favor spore coalescence, leading to premature leaf scorch.',
-        textHi: 'आर्द्र मौसम में धब्बे आपस में मिलकर पत्तियों को झुलसा सकते हैं।',
-        textMr: 'दमट हवेत डाग एकमेकांत मिसळून पाने करपण्याचा धोका वाढतो.',
-        riskTrend: 'increasing'
-      },
-      advisoryVoiceScript: 'Turcicum leaf blight observed on maize. Apply protective Mancozeb spray and improve field aeration.',
-      advisoryVoiceScriptHi: 'मक्का पर पत्ती झुलसा के लक्षण देखे गए हैं। सुरक्षात्मक कवकनाशी का छिड़काव करें।',
-      advisoryVoiceScriptMr: 'मका पिकावर करपा रोगाची लक्षणे दिसत आहेत. योग्य बुरशीनाशकाची फवारणी करा.'
-    };
-  }
+// =========================================================================
+// DEFAULT DIAGNOSIS RESULTS FOR EACH SPECIES
+// =========================================================================
 
-  if (key === 'onion') {
-    return {
-      id: 'diag-onion-default',
-      cropId: 'onion',
-      cropName: 'Onion',
-      cropNameHi: 'प्याज',
-      cropNameMr: 'कांदा',
-      diseaseName: 'Purple Blotch',
-      diseaseNameHi: 'बैंगनी धब्बा रोग (Purple Blotch)',
-      diseaseNameMr: 'कांदा जांभळा करपा (Purple Blotch)',
-      pathogen: 'Alternaria porri (Fungal Pathogen)',
-      severity: 'moderate',
-      confidenceLabel: 'reliable',
-      confidence: 0.91,
-      isUncertain: false,
-      detectedAt: 'Today, 10:15 AM',
-      imageUrl: SVG_ONION_BLOTCH,
-      whatToDoToday: [
-        {
-          step: 1,
-          title: 'Regulate irrigation & avoid overhead sprinklers in afternoon',
-          titleHi: 'सिंचाई नियंत्रित करें व दोपहर में स्प्रिंकलर न चलाएं',
-          titleMr: 'पाणी व्यवस्थापन सुधारा व दुपारी तुषार सिंचन टाळा',
-          description: 'Prolonged leaf dampness triggers fast Alternaria spore germination.',
-          descriptionHi: 'पत्तियों पर लंबे समय तक नमी रहने से बैंगनी धब्बे के बीजाणु तेजी से पनपते हैं।',
-          descriptionMr: 'पातीवर ओलावा जास्त वेळ राहू देऊ नका. सकाळी किंवा ठिबकने पाणी द्या.',
-          priority: 'critical',
-          category: 'cultural'
-        },
-        {
-          step: 2,
-          title: 'Prune & clear purple blighted leaves',
-          titleHi: 'बैंगनी धब्बों वाली खराब पत्तियां हटाएं',
-          titleMr: 'जांभळे डाग पडलेली पाती कापा व नष्ट करा',
-          description: 'Remove severely blighted foliage from field borders.',
-          descriptionHi: 'खेत की मेड़ों और क्यारियों से अत्यधिक खराब पत्तियों को हटाएं।',
-          descriptionMr: 'बाधित पाती कापून शेताबाहेर नष्ट करा.',
-          priority: 'critical',
-          category: 'mechanical'
-        },
-        {
-          step: 3,
-          title: 'Spray Mancozeb 75% WP + Sticker (Spreader)',
-          titleHi: 'मैन्कोजेब 75% डब्ल्यूपी + स्टीकर (चिपको) का छिड़काव',
-          titleMr: 'मॅन्कोझेब ७५% WP + स्टिकर फवारणी',
-          description: 'Spray Mancozeb @ 2.5g/L or Tebuconazole + Trifloxystrobin @ 1g/L with non-ionic sticker.',
-          descriptionHi: 'मैन्कोजेब 2.5 ग्राम/लीटर के साथ स्टीकर मिलाकर सुबह के समय छिड़काव करें।',
-          descriptionMr: 'कांद्याच्या निसरड्या पातीवर औषध टिकण्यासाठी स्टिकर मिसळून मॅन्कोझेब फवारा.',
-          priority: 'preventive',
-          category: 'chemical'
-        }
-      ],
-      whatToMonitor: [
-        {
-          title: 'Purplish concentric rings on foliage',
-          titleHi: 'पत्तियों पर बैंगनी छल्लेदार धब्बे',
-          titleMr: 'पातीवरील जांभळे व तपकिरी डाग',
-          check: 'Check if sunken purple lesions with yellow borders expand downwards.',
-          checkHi: 'जांचें कि क्या पीले घेरे वाले बैंगनी धब्बे नीचे की ओर फैल रहे हैं।',
-          checkMr: 'जांभळे डाग खाली मानेकडे पसरत आहेत का ते तपासा.'
-        }
-      ],
-      whatMayHappenNext: {
-        title: 'Purple Blotch Severity Risk',
-        titleHi: 'बैंगनी धब्बा जोखिम पूर्वानुमान',
-        titleMr: 'जांभळा करपा धोका अंदाज',
-        text: 'Morning dew and warm days accelerate Purple Blotch spread, causing foliage collapse.',
-        textHi: 'सुबह की ओस और दिन की धूप से बैंगनी धब्बा तेजी से फैल सकता है।',
-        textMr: 'सकाळचे दव आणि दमट वातावरणामुळे जांभळा करपा वेगाने वाढू शकतो.',
-        riskTrend: 'increasing'
-      },
-      advisoryVoiceScript: 'Purple Blotch detected on onion. Spray Mancozeb with sticker and avoid overhead watering.',
-      advisoryVoiceScriptHi: 'प्याज की फसल पर बैंगनी धब्बा रोग पाया गया है। स्टीकर मिलाकर मैन्कोजेब का छिड़काव करें।',
-      advisoryVoiceScriptMr: 'कांद्यावर जांभळा करपा रोग आढळला आहे. स्टिकर मिसळून योग्य बुरशीनाशकाची फवारणी करा.'
-    };
-  }
-
-  if (key === 'rice') {
-    return {
-      id: 'diag-rice-default',
-      cropId: 'rice',
-      cropName: 'Rice',
-      cropNameHi: 'धान / चावल',
-      cropNameMr: 'भात / धान',
-      diseaseName: 'Rice Blast',
-      diseaseNameHi: 'धान का झोंका रोग (Rice Blast)',
-      diseaseNameMr: 'भात कडा करपा / ब्लास्ट (Blast)',
-      pathogen: 'Magnaporthe oryzae (Fungal Pathogen)',
-      severity: 'moderate',
-      confidenceLabel: 'reliable',
-      isUncertain: false,
-      detectedAt: 'Today, 10:15 AM',
-      imageUrl: SVG_RICE_BLAST,
-      whatToDoToday: [
-        {
-          step: 1,
-          title: 'Split nitrogen application & avoid excessive top-dressing',
-          titleHi: 'नाइट्रोजन को किस्तों में दें और अधिक यूरिया से बचें',
-          titleMr: 'युरिया खताचा एकाच वेळी अतिवापर टाळा',
-          description: 'Excessive nitrogen increases leaf susceptibility to blast fungal infection.',
-          descriptionHi: 'अधिक यूरिया से पत्तियां कोमल होकर झोंका रोग के प्रति संवेदनशील हो जाती हैं।',
-          descriptionMr: 'नत्र खतांच्या अतिवापरामुळे ब्लास्ट बुरशीचा प्रादुर्भाव वाढतो.',
-          priority: 'critical',
-          category: 'cultural'
-        },
-        {
-          step: 2,
-          title: 'Apply Bio-Agent (Pseudomonas fluorescens 5g/L)',
-          titleHi: 'स्यूडोमोनास फ्लोरोसेंस का जैविक छिड़काव करें',
-          titleMr: 'स्यूडोमोनास फ्लोरोसेन्स जैविक फवारणी',
-          description: 'Foliar spray Pseudomonas fluorescens @ 5g/L water during late afternoon.',
-          descriptionHi: 'दोपहर बाद 5 ग्राम प्रति लीटर पानी में स्यूडोमोनास का छिड़काव करें।',
-          descriptionMr: 'दुपारी स्यूडोमोनास फ्लोरोसेन्सची जैविक फवारणी करा.',
-          priority: 'important',
-          category: 'biological'
-        },
-        {
-          step: 3,
-          title: 'Targeted Blast Fungicide (Tricyclazole 75% WP)',
-          titleHi: 'झोंका रोधी कवकनाशी (ट्राइसाइक्लाजोल 75% डब्ल्यूपी) का छिड़काव',
-          titleMr: 'ट्रायसायक्लॅझोल ७५% WP बुरशीनाशक फवारणी',
-          description: 'Spray Tricyclazole 75% WP @ 0.6g/L or Isoprothiolane 40% EC @ 1.5ml/L.',
-          descriptionHi: 'ट्राइसाइक्लाजोल 0.6 ग्राम/लीटर या इसोप्रोथियोलेन 1.5 मिली/लीटर का छिड़काव करें।',
-          descriptionMr: 'सकाळच्या वेळी ट्रायसायक्लॅझोल (०.६ ग्रॅम/लिटर) ची फवारणी करा.',
-          priority: 'preventive',
-          category: 'chemical'
-        }
-      ],
-      whatToMonitor: [
-        {
-          title: 'Spindle-shaped diamond lesions on leaves',
-          titleHi: 'पत्तियों पर धुरी के आकार के धब्बे (ग्रे केंद्र)',
-          titleMr: 'पानांवरील डोळ्याच्या आकाराचे करडे डाग',
-          check: 'Observe if spindle lesions with grey centers and brown borders multiply.',
-          checkHi: 'जांचें कि क्या भूरे किनारों वाले धुरी आकार के धब्बे बढ़ रहे हैं।',
-          checkMr: 'पानांवर करड्या रंगाचे लांबट डाग वाढतात का ते तपासा.'
-        }
-      ],
-      whatMayHappenNext: {
-        title: 'Blast Transmission Risk',
-        titleHi: 'झोंका रोग प्रसार जोखिम',
-        titleMr: 'ब्लास्ट रोग प्रसार अंदाज',
-        text: 'Night dew and cloudy days create optimal conditions for neck and leaf blast expansion.',
-        textHi: 'रात की ओस और बादलों वाले मौसम में झोंका रोग तेजी से फैल सकता है।',
-        textMr: 'ढगाळ वातावरण व रात्रीच्या दवामुळे करपा रोगाचा प्रसार वाढू शकतो.',
-        riskTrend: 'increasing'
-      },
-      advisoryVoiceScript: 'Rice Blast detected on paddy foliage. Avoid excess urea and spray Tricyclazole promptly.',
-      advisoryVoiceScriptHi: 'धान की फसल पर झोंका रोग (ब्लास्ट) पाया गया है। अधिक यूरिया से बचें और ट्राइसाइक्लाजोल का छिड़काव करें।',
-      advisoryVoiceScriptMr: 'भातावर कडा करपा (ब्लास्ट) रोग आढळला आहे. युरिया खत कमी करा व ट्रायसायक्लॅझोलची फवारणी करा.'
-    };
-  }
-
-  if (key === 'wheat') {
-    return {
-      id: 'diag-wheat-default',
-      cropId: 'wheat',
-      cropName: 'Wheat',
-      cropNameHi: 'गेहूं',
-      cropNameMr: 'गहू',
-      diseaseName: 'Stripe Rust (Yellow Rust)',
-      diseaseNameHi: 'पीला रतुआ / गेरुआ रोग (Yellow Rust)',
-      diseaseNameMr: 'पिवळा तांबेरा (Yellow Rust)',
-      pathogen: 'Puccinia striiformis (Fungal Pathogen)',
-      severity: 'moderate',
-      confidenceLabel: 'reliable',
-      isUncertain: false,
-      detectedAt: 'Today, 10:15 AM',
-      imageUrl: SVG_WHEAT_RUST,
-      whatToDoToday: [
-        {
-          step: 1,
-          title: 'Regulate irrigation & avoid canopy standing water',
-          titleHi: 'सिंचाई नियंत्रित करें व खेत में पानी न रुकने दें',
-          titleMr: 'पाणी व्यवस्थापन योग्य ठेवा व शेतात ओलावा जास्त साचू देऊ नका',
-          description: 'Over-irrigation in cool weather promotes stripe rust spore development.',
-          descriptionHi: 'ठंडे मौसम में अधिक पानी से पीले रतुआ के कवक तेजी से बढ़ते हैं।',
-          descriptionMr: 'थंड हवेत जास्त पाणी दिल्यास पिवळ्या तांबेऱ्याची वाढ वेगाने होते.',
-          priority: 'critical',
-          category: 'cultural'
-        },
-        {
-          step: 2,
-          title: 'Rogue & destroy initial yellow rust foci spots',
-          titleHi: 'शुरुआती पीले रतुआ वाले पौधों को नष्ट करें',
-          titleMr: 'सुरुवातीची तांबेरा बाधित पाने नष्ट करा',
-          description: 'Uproot early infected focus patches to prevent field-wide wind dispersal.',
-          descriptionHi: 'शुरुआती संक्रमित पौधों को उखाड़कर नष्ट करें ताकि हवा से फैलाव रुके।',
-          descriptionMr: 'हवेमुळे रोग इतर भागात पसरू नये म्हणून सुरुवातीची बाधित पाने नष्ट करा.',
-          priority: 'critical',
-          category: 'mechanical'
-        },
-        {
-          step: 3,
-          title: 'Targeted Triazole Spray (Propiconazole 25% EC)',
-          titleHi: 'लक्षित कवकनाशी (प्रोपिकोनाजोल 25% ईसी) का छिड़काव',
-          titleMr: 'प्रोपिकोनॅझोल २५% EC बुरशीनाशक फवारणी',
-          description: 'Spray Propiconazole 25% EC @ 1ml/L or Tebuconazole 25.9% EC @ 1.2ml/L.',
-          descriptionHi: 'सुबह शांत मौसम में प्रोपिकोनाजोल 1 मिली/लीटर पानी में घोलकर छिड़काव करें।',
-          descriptionMr: 'सकाळच्या वेळेत प्रोपिकोनॅझोल (१ मिली/लिटर) ची फवारणी करा.',
-          priority: 'preventive',
-          category: 'chemical'
-        }
-      ],
-      whatToMonitor: [
-        {
-          title: 'Linear yellow pustule stripes on leaf blades',
-          titleHi: 'पत्तियों पर पीले फफोलों की लंबी धारियां',
-          titleMr: 'पानांवर पिवळ्या फोडांच्या लांब पट्ट्या',
-          check: 'Check if bright yellow powdery stripes develop parallel to leaf veins.',
-          checkHi: 'जांचें कि क्या पत्तियों पर नसों के समानांतर चमकीले पीले फफोले बन रहे हैं।',
-          checkMr: 'पानांच्या शिरांना समांतर पिवळे पट्टे वाढतात का ते तपासा.'
-        }
-      ],
-      whatMayHappenNext: {
-        title: 'Yellow Rust Wind Dispersion Forecast',
-        titleHi: 'पीला रतुआ फैलाव पूर्वानुमान',
-        titleMr: 'पिवळा तांबेरा प्रसार अंदाज',
-        text: 'Cool humid breezes can disperse yellow rust spores rapidly across neighbouring fields.',
-        textHi: 'ठंडी नम हवा के कारण पीला रतुआ तेजी से आसपास के खेतों में फैल सकता है।',
-        textMr: 'थंड वाऱ्यामुळे पिवळा तांबेरा वेगाने शेजारच्या शेतांमध्ये पसरू शकतो.',
-        riskTrend: 'increasing'
-      },
-      advisoryVoiceScript: 'Yellow rust stripes detected on wheat. Spray Propiconazole immediately to protect crop yield.',
-      advisoryVoiceScriptHi: 'गेहूं पर पीला रतुआ के लक्षण पाए गए हैं। तुरंत प्रोपिकोनाजोल का छिड़काव करें।',
-      advisoryVoiceScriptMr: 'गव्हावर पिवळा तांबेरा आढळला आहे. उत्पादनाचे रक्षण करण्यासाठी लगेच योग्य बुरशीनाशक फवारा.'
-    };
-  }
-
-  // Default fallback to Tomato
-  return {
-    id: 'diag-tomato-default',
-    cropId: 'tomato',
-    cropName: 'Tomato',
-    cropNameHi: 'टमाटर',
-    cropNameMr: 'टोमॅटो',
-    diseaseName: 'Early Blight',
-    diseaseNameHi: 'अगेती झुलसा (अर्ली ब्लाइट)',
-    diseaseNameMr: 'करपा (अल्टरनेरिया सोलेनाय)',
-    pathogen: 'Alternaria solani (Fungal Pathogen)',
-    severity: 'moderate',
-    confidenceLabel: 'reliable',
-    isUncertain: false,
-    detectedAt: 'Today, 10:15 AM',
-    imageUrl: SVG_EARLY_BLIGHT,
-    whatToDoToday: [
-      {
-        step: 1,
-        title: 'Avoid overhead watering & maintain ridge drainage',
-        titleHi: 'ऊपर से पानी देना बंद करें और क्यारियों में जल निकासी रखें',
-        titleMr: 'वरतून पाणी देणे टाळा व वाफ्यांमध्ये पाणी साचू देऊ नका',
-        description: 'Do not wet foliage during humid evenings. Ensure clear drainage between crop ridges.',
-        descriptionHi: 'शाम के समय पत्तियों को गीला न करें। फसल की क्यारियों के बीच पानी की उचित निकासी सुनिश्चित करें।',
-        descriptionMr: 'संध्याकाळी पानांवर पाणी फवारू नका. वाफ्यांमध्ये साचलेल्या पाण्याचा निचरा करा.',
-        priority: 'critical',
-        category: 'cultural'
-      },
-      {
-        step: 2,
-        title: 'Prune & destroy heavily affected lower leaves',
-        titleHi: 'अधिक प्रभावित निचली पत्तियों को काटकर नष्ट करें',
-        titleMr: 'खालची जास्त बाधित पाने कापून नष्ट करा',
-        description: 'Prune infected lower leaves touching soil using clean shears. Burn or deeply bury removed leaves.',
-        descriptionHi: 'मिट्टी को छूने वाली संक्रमित निचली पत्तियों को साफ कैंची से छांटें। निकाली गई पत्तियों को खेत से दूर जलाएं या गहरा दबा दें।',
-        descriptionMr: 'मातीला टेकलेली व करपलेली पाने काळजीपूर्वक कापा. ही पाने शेतात न टाकता नष्ट करा.',
-        priority: 'critical',
-        category: 'mechanical'
-      },
-      {
-        step: 3,
-        title: 'Apply Neem-based organic extract (NSKE 5%)',
-        titleHi: 'नीम आधारित जैविक अर्क (एनएसकेई 5%) का छिड़काव करें',
-        titleMr: 'निमार्क ५% किंवा कडुनिंब अर्काची फवारणी',
-        description: 'Spray Neem seed kernel extract (NSKE 5%) @ 5ml/L to inhibit fungal spore multiplication naturally.',
-        descriptionHi: 'फफूंद के बीजाणुओं की वृद्धि को प्राकृतिक रूप से रोकने के लिए 5 मिली/लीटर की दर से नीम बीज अर्क (एनएसकेई 5%) का छिड़काव करें।',
-        descriptionMr: 'बुरशीची वाढ नैसर्गिकरीत्या रोखण्यासाठी निमार्क ५% ची फवारणी करा.',
-        priority: 'important',
-        category: 'biological'
-      },
-      {
-        step: 4,
-        title: 'Targeted Fungicide Spray (Only if humidity > 80%)',
-        titleHi: 'लक्षित कवकनाशी छिड़काव (केवल यदि आर्द्रता > 80% हो)',
-        titleMr: 'नियंत्रित बुरशीनाशक फवारणी (आर्द्रता जास्त असल्यास)',
-        description: 'Spray Mancozeb 75% WP @ 2.5g/L water OR Copper Oxychloride 50% WP @ 3g/L during clear morning hours.',
-        descriptionHi: 'सुबह के साफ मौसम में मैन्कोजेब 75% डब्ल्यूपी @ 2.5 ग्राम/लीटर पानी या कॉपर ऑक्सीक्लोराइड 50% डब्ल्यूपी @ 3 ग्राम/लीटर का छिड़काव करें।',
-        descriptionMr: 'सकाळच्या वेळी मॅन्कोझेब ७५% WP (२.५ ग्रॅम प्रति लिटर पाणी) ची नियंत्रित फवारणी करा.',
-        priority: 'preventive',
-        category: 'chemical'
-      }
-    ],
-    whatToMonitor: [
-      {
-        title: 'Concentric target-board rings',
-        titleHi: 'पत्तियों पर संकेंद्रित छल्लेदार गहरे धब्बे',
-        titleMr: 'पानांवरील चक्राकार तपकिरी कडी',
-        check: 'Monitor if dark rings with yellow halos enlarge over next 48 hours.',
-        checkHi: 'निगरानी रखें कि क्या अगले 48 घंटों में पीले घेरे वाले गहरे धब्बे बढ़ रहे हैं।',
-        checkMr: 'डागांच्या भोवती पिवळसर वलय वाढते आहे का यावर लक्ष ठेवा.'
-      },
-      {
-        title: 'Stem and petiole lesions',
-        titleHi: 'तने और डंठल पर घाव/धब्बे',
-        titleMr: 'देठ व खोडावरील डाग',
-        check: 'Ensure fungus has not penetrated the main stem.',
-        checkHi: 'सुनिश्चित करें कि फफूंद मुख्य तने तक न पहुंची हो।',
-        checkMr: 'रोग खोडापर्यंत पोहोचलेला नाही ना याची खात्री करा.'
-      }
-    ],
-    whatMayHappenNext: {
-      title: 'Upcoming Spread Forecast',
-      titleHi: 'आगामी रोग प्रसार पूर्वानुमान',
-      titleMr: 'पुढील संभाव्य धोका अंदाज',
-      text: 'Humidity is expected to remain above 80% with rain expected tomorrow. Fungal spore germination rate is HIGH. Disease spread risk will elevate to High in 48 hours unless preventive foliage protection is applied today.',
-      textHi: 'कल बारिश की संभावना के साथ आर्द्रता 80% से अधिक रहने का अनुमान है। फंगल बीजाणुओं का अंकुरण दर उच्च है। यदि आज पत्तियों पर सुरक्षात्मक छिड़काव नहीं किया गया तो 48 घंटों में बीमारी का जोखिम उच्च हो जाएगा।',
-      textMr: 'हवेतील आर्द्रता ८०% पेक्षा जास्त राहण्याचा आणि उद्या पाऊस पडण्याचा अंदाज आहे. त्यामुळे बुरशीचा प्रसार वेगाने होऊ शकतो. आज प्रतिबंधात्मक उपाय न केल्यास पुढील ४८ तासांत धोका उच्च पातळीवर जाऊ शकतो.',
-      riskTrend: 'increasing'
+export const DEFAULT_DIAGNOSIS: DiagnosisResult = {
+  id: 'diag-case-001',
+  cropId: 'cattle',
+  cropName: 'Cattle (Cow)',
+  cropNameHi: 'गोवंश (गाय)',
+  cropNameMr: 'गोवंश (गाय)',
+  diseaseName: 'Bovine Mastitis (थनैला रोग / स्तनदाह)',
+  diseaseNameHi: 'थनैला रोग (Bovine Mastitis)',
+  diseaseNameMr: 'स्तनदाह / मस्टायटिस (Bovine Mastitis)',
+  pathogen: 'Staphylococcus aureus / Streptococcus agalactiae',
+  severity: 'moderate',
+  urgencyLevel: 'moderate',
+  confidenceLabel: 'reliable',
+  confidenceScore: 88,
+  detectedAt: 'Today, 9:30 AM',
+  animalId: 'animal-001',
+  animalTag: 'MH-1042-88',
+  animalName: 'Gauri (Gir Cow)',
+  affectedBodyArea: 'udder',
+  symptomsObserved: ['Udder Swelling / Heat', 'Mild flakes in milk', 'Discomfort during milking'],
+  symptomDuration: '2 to 3 days',
+  appetiteChange: 'Slightly reduced (~15%)',
+  milkYieldChange: 'Dropped from 14L to 10L/day',
+  medicalDisclaimer:
+    '⚠️ PRELIMINARY CLINICAL SUPPORT ONLY: This evaluation is an automated decision-support report. It does NOT replace an on-site clinical check by a registered Veterinary Officer (B.V.Sc & A.H.). For intramammary infusions, antibiotics, or anti-inflammatories, consult your local veterinary dispensary.',
+  medicalDisclaimerHi:
+    '⚠️ प्रारंभिक स्वास्थ्य सलाह: यह रिपोर्ट केवल प्रारंभिक जांच व प्राथमिक देखभाल सहायता हेतु है। यह पंजीकृत पशु चिकित्सा अधिकारी की जांच का विकल्प नहीं है। दवाइयों व एंटीबायोटिक के लिए तुरंत डॉक्टर से संपर्क करें।',
+  medicalDisclaimerMr:
+    '⚠️ प्राथमिक आरोग्य मार्गदर्शन: हा अहवाल केवळ प्राथमिक तपासणीसाठी आहे. हा नोंदणीकृत पशुवैद्यकीय डॉक्टरांच्या तपासणीचा पर्याय नाही. प्रतिजैविके व औषधोपचारासाठी जवळच्या पशुवैद्यकीय दवाखान्याशी संपर्क साधा.',
+  whatToDoToday: [
+    {
+      step: 1,
+      title: 'Complete Milking & Teat Disinfection',
+      titleHi: 'पूर्ण दूध दोहन व थनों का निसंक्रमण',
+      titleMr: 'पूर्ण दूध काढणे व स्तनांचे निर्जंतुकीकरण',
+      description: 'Milk the affected quarter frequently (every 3-4 hours) into a separate vessel and discard safely. Dip teats in 0.5% povidone-iodine teat dip solution after milking.',
+      descriptionHi: 'संक्रमित थन का दूध पूरी तरह अलग बर्तन में निकालकर नष्ट करें। दोहन के बाद 0.5% पोवीडोन आयोडीन घोल में थन डुबोएं।',
+      descriptionMr: 'बाधित कासेतील दूध पूर्णपणे वेगळ्या भांड्यात काढून नष्ट करा. दूध काढल्यानंतर ०.५% पोव्हिडोन आयोडीन द्रावणात सड बुडवा.',
+      priority: 'critical',
+      category: 'hygiene',
     },
-    advisoryVoiceScript: 'Possible Early Blight detected on tomato leaf with moderate severity. Today you should remove heavily affected lower leaves and avoid excess watering. Fungal risk may increase over the next forty-eight hours due to high humidity. Consider preventive spray during clear morning hours.',
-    advisoryVoiceScriptHi: 'टमाटर की पत्ती पर मध्यम गंभीरता का अगेती झुलसा रोग पाया गया है। आज आपको अधिक प्रभावित निचली पत्तियों को हटाना चाहिए और अतिरिक्त पानी देने से बचना चाहिए। उच्च आर्द्रता के कारण अगले 48 घंटों में फंगल जोखिम बढ़ सकता है। सुबह के समय सुरक्षात्मक छिड़काव करें।',
-    advisoryVoiceScriptMr: 'टोमॅटोच्या पानावर मध्यम स्वरूपाचा करपा रोग आढळला आहे. आज लगेच जास्त खराब झालेली पाने तोडून टाका आणि पानांवर पाणी साचू देऊ नका. पुढील दोन दिवसांत जास्त आर्द्रतेमुळे रोग वाढू शकतो, म्हणून योग्य फवारणी करा.'
-  };
+    {
+      step: 2,
+      title: 'Cold/Warm Herbal Fomentation',
+      titleHi: 'हल्दी-चूना लेप व सिंकाई',
+      titleMr: 'हळद-चुना लेप व शेक देणे',
+      description: 'Apply a paste of fresh turmeric (Curcuma longa), Aloe vera, and a pinch of lime (Calcium hydroxide) externally on the udder twice daily to reduce inflammation.',
+      descriptionHi: 'हल्दी, एलोवेरा और चुटकी भर चूने का लेप थन पर लगाएं ताकि सूजन और दर्द कम हो सके।',
+      descriptionMr: 'हळद, कोरफड आणि चिमूटभर चुना यांचा लेप कासेवर दिवसातून दोनदा लावा ज्यामुळे सूज व वेदना कमी होतील.',
+      priority: 'important',
+      category: 'first_aid',
+    },
+    {
+      step: 3,
+      title: 'Barn Sanitation & Dry Bedding',
+      titleHi: 'गोठे की सफाई व सूखा बिछावन',
+      titleMr: 'गोठ्याची स्वच्छता व कोरडी गादी',
+      description: 'Sprinkle quicklime/bleaching powder on the barn floor. Ensure the cow remains standing for at least 45 minutes after milking while teat canals close.',
+      descriptionHi: 'फर्श पर चूना छिड़कें और दोहन के बाद गाय को कम से कम 45 मिनट तक बैठने न दें।',
+      descriptionMr: 'गोठ्याच्या जमिनीवर चुना टाका व दूध काढल्यानंतर गायीला किमान ४५ मिनिटे बसू देऊ नका.',
+      priority: 'preventive',
+      category: 'isolation',
+    },
+  ],
+  whatToMonitor: [
+    {
+      title: 'Milk Consistency & Clots',
+      titleHi: 'दूध में गांठें या रंग में बदलाव',
+      titleMr: 'दुधात गाठी किंवा रंगातील बदल',
+      check: 'Check strip cup for yellow watery discharge, blood specks, or foul odor.',
+      checkHi: 'दूध में पीलापन, खून के छींटे या दुर्गंध की जांच करें।',
+      checkMr: 'दुधात पिवळेपणा, रक्ताचे डाग किंवा दुर्गंधीची तपासणी करा.',
+    },
+    {
+      title: 'Rectal Body Temperature',
+      titleHi: 'शरीर का तापमान (बुखार)',
+      titleMr: 'शरीराचे तापमान (ताप)',
+      check: 'Monitor if temperature exceeds normal bovine range (101.5°F - 102.5°F).',
+      checkHi: 'जांचें कि तापमान 102.5°F से अधिक तो नहीं बढ़ रहा।',
+      checkMr: 'तापमान १०२.५°F पेक्षा जास्त वाढल्यास तातडीने नोंद घ्या.',
+    },
+  ],
+  whatMayHappenNext: {
+    title: 'Clinical Outlook & Recovery Window',
+    titleHi: 'रोग की प्रगति व सुधार का समय',
+    titleMr: 'रोग वाढीचा अंदाज व सुधारणा कालावधी',
+    text: 'With prompt stripping and hygiene, subacute mastitis usually resolves in 4-6 days. If swelling hardens or cow develops high fever (>103.5°F), intravenous antibiotics are required within 24 hours.',
+    textHi: 'सफाई और बार-बार दूध निकालने से 4-6 दिनों में सुधार संभव है। यदि थन सख्त हो या तेज बुखार आए तो 24 घंटे में डॉक्टर द्वारा इंजेक्शन आवश्यक होगा।',
+    textMr: 'नियमित दूध काढल्यास व स्वच्छतेने ४-६ दिवसांत सुधारणा होते. कास कडक झाल्यास किंवा तीव्र ताप आल्यास २४ तासांत पशुवैद्यकीय इंजेक्शन आवश्यक आहे.',
+    riskTrend: 'stable',
+  },
+  advisoryVoiceScript:
+    'Namaste. Your cow Gauri shows symptoms of moderate Bovine Mastitis in the udder. Please strip the milk frequently into a separate bowl, apply turmeric aloe paste on the udder, and keep the barn floor dry. Avoid letting the cow sit for 45 minutes after milking. If milk shows blood or cow develops fever, call your veterinary doctor immediately.',
+  advisoryVoiceScriptHi:
+    'नमस्ते। आपकी गाय गौरी में थनैला रोग के लक्षण पाए गए हैं। प्रभावित थन का दूध बार-बार अलग बर्तन में निकालें, हल्दी-एलोवेरा का लेप लगाएं और गोठे में चूना छिड़कें। दूध निकालने के बाद गाय को 45 मिनट बैठने न दें। यदि दूध में खून आए या तेज बुखार हो, तो तुरंत पशु चिकित्सक से संपर्क करें।',
+  advisoryVoiceScriptMr:
+    'नमस्कार. आपल्या गीर गाय गौरीमध्ये स्तनदाह (मस्टायटिस) आजाराची लक्षणे आढळली आहेत. बाधित कासेतील दूध वारंवार वेगळे काढा, हळद व कोरफडीचा लेप लावा आणि गोठ्याची जागा कोरडी ठेवा. दूध काढल्यावर गायीला बसू देऊ नका. दुधात रक्त आल्यास किंवा ताप वाढल्यास त्वरित पशुवैद्यक अधिकाऱ्यांशी संपर्क करा.',
+  caseStatus: 'suspected',
+};
+
+export const CATTLE_LSD_DIAGNOSIS: DiagnosisResult = {
+  id: 'diag-case-lsd',
+  cropId: 'cattle',
+  cropName: 'Cattle (Cow / Bull)',
+  cropNameHi: 'गोवंश (गाय/बैल)',
+  cropNameMr: 'गोवंश (गाय/बैल)',
+  diseaseName: 'Lumpy Skin Disease / LSD (लंपी त्वचा रोग)',
+  diseaseNameHi: 'लंपी त्वचा रोग (LSD)',
+  diseaseNameMr: 'लंपी त्वचा रोग (LSD)',
+  pathogen: 'Capripoxvirus (Lumpy Skin Disease Virus)',
+  severity: 'high',
+  urgencyLevel: 'high',
+  confidenceLabel: 'reliable',
+  confidenceScore: 92,
+  detectedAt: 'Today, 8:45 AM',
+  animalId: 'animal-001',
+  animalTag: 'MH-1042-88',
+  animalName: 'Gauri (Gir Cow)',
+  affectedBodyArea: 'skin',
+  symptomsObserved: ['Hard cutaneous nodules (2-5cm)', 'High fever (104°F)', 'Watery eye discharge', 'Lethargy'],
+  symptomDuration: '3 days',
+  appetiteChange: 'Off-feed (~60% reduction)',
+  milkYieldChange: 'Severe drop (50% reduction)',
+  medicalDisclaimer:
+    '⚠️ NOTIFIABLE VIRAL DISEASE ALERT: Lumpy Skin Disease spreads rapidly via biting flies, mosquitoes, and ticks. Immediately isolate the infected animal and report to your Gram Panchayat / Taluka Veterinary Officer for ring vaccination.',
+  medicalDisclaimerHi:
+    '⚠️ संक्रामक रोग चेतावनी: लंपी त्वचा रोग मक्खी, मच्छर और चिचड़ी के काटने से तेजी से फैलता है। पशु को तुरंत अलग बांधें और पशु चिकित्सा अधिकारी को सूचित करें।',
+  medicalDisclaimerMr:
+    '⚠️ साथीचा संसर्गजन्य आजार: लंपी रोग माश्या, डास व गोचीड यांच्यामुळे वेगाने पसरतो. बाधित जनावराला लगेच इतर जनावरांपासून वेगळे बांधा व पशुवैद्यकीय अधिकाऱ्यांना कळवा.',
+  whatToDoToday: [
+    {
+      step: 1,
+      title: 'Strict Quarantine & Vector Control',
+      titleHi: 'पशु को अलग बांधें व मक्खी-मच्छर नियंत्रण',
+      titleMr: 'जनावर वेगळे बांधणे व डास-माश्या नियंत्रण',
+      description: 'Quarantine the animal at least 30 meters away from healthy herd members. Spray neem oil (5%) or herbal fly repellents around the shed to prevent vector bites.',
+      descriptionHi: 'पशु को स्वस्थ पशुओं से 30 मीटर दूर बांधें। नीम के तेल का छिड़काव करें ताकि मक्खी-मच्छर न काटें।',
+      descriptionMr: 'बाधित जनावराला निरोगी जनावरांपासून ३० मीटर लांब बांधा. गोठ्यात कडुनिंबाच्या अर्काची फवारणी करा.',
+      priority: 'critical',
+      category: 'isolation',
+    },
+    {
+      step: 2,
+      title: 'Herbal Immune Booster Formulation',
+      titleHi: 'पारंपरिक रोग प्रतिरोधक काढ़ा',
+      titleMr: 'आयुर्वेदिक प्रतिकारशक्ती काढा',
+      description: 'Prepare oral paste: Betel leaves (10), black pepper (10g), salt (10g), turmeric (20g), jaggery (50g). Feed thrice daily on Day 1, then twice daily for 2 weeks.',
+      descriptionHi: 'पान (10), काली मिर्च (10g), नमक (10g), हल्दी (20g) व गुड़ मिलाकर दिन में 3 बार खिलाएं।',
+      descriptionMr: 'नागवेलीची पाने (१०), काळी मिरी (१० ग्रॅम), मीठ (१० ग्रॅम), हळद (२० ग्रॅम) व गूळ एकत्र करून दिवसातून ३ वेळा खाऊ घाला.',
+      priority: 'important',
+      category: 'nutrition',
+    },
+    {
+      step: 3,
+      title: 'Antiseptic Dressing on Skin Nodules',
+      titleHi: 'फफोले व घावों पर एंटीसेप्टिक लेप',
+      titleMr: 'गाठींवर जंतुनाशक मलम/लेप',
+      description: 'Wash open ruptured nodules with 1:1000 potassium permanganate solution. Apply neem-turmeric paste or fly repellent ointment to prevent maggot infestation.',
+      descriptionHi: 'खुले घावों को पोटाश के पानी से धोएं और कीड़े पड़ने से रोकने के लिए नीम-हल्दी का लेप लगाएं।',
+      descriptionMr: 'जखमा पोटॅशियम परमँगनेटच्या पाण्याने धुवा व अळ्या पडू नयेत म्हणून हळद-निंबोळी मलम लावा.',
+      priority: 'important',
+      category: 'first_aid',
+    },
+  ],
+  whatToMonitor: [
+    {
+      title: 'Nodule Spread & Secondary Wounds',
+      titleHi: 'गांठों का फैलाव व कीड़े पड़ना',
+      titleMr: 'गाठी फुटणे व जखमेत अळ्या होणे',
+      check: 'Inspect for flies settling on open nodules or maggots developing in wounds.',
+      checkHi: 'देखें कि घाव पर मक्खियां न बैठें और कीड़े न पड़ें।',
+      checkMr: 'फुटलेल्या गाठींवर माश्या बसणार नाहीत व अळ्या होणार नाहीत याची रोज तपासणी करा.',
+    },
+    {
+      title: 'Leg Swelling & Lameness',
+      titleHi: 'पैरों में सूजन व लंगड़ापन',
+      titleMr: 'पायांना सूज व लंगडणे',
+      check: 'Check if animal develops brisket or limb edema causing inability to stand.',
+      checkHi: 'पैरों व छाती के निचले हिस्से में सूजन की जांच करें।',
+      checkMr: 'छातीखाली किंवा पायांना सूज येऊन जनावर खाली बसत नाही ना ते पहा.',
+    },
+  ],
+  whatMayHappenNext: {
+    title: 'Progression Trajectory & Ring Vaccination',
+    titleHi: 'रोग फैलाव व रिंग टीकाकरण',
+    titleMr: 'रोग प्रसार व रिंग लसीकरण',
+    text: 'Skin nodules typically dry up over 2-3 weeks. Healthy animals in a 5km radius should receive Goat Pox / LSD heterologous vaccine immediately to halt the outbreak.',
+    textHi: 'गांठें 2-3 हफ्तों में सूखती हैं। 5 किमी के दायरे में स्वस्थ पशुओं को तुरंत गोट पॉक्स वैक्सीन लगवाएं।',
+    textMr: 'गाठी २-३ आठवड्यांत वाळतात. ५ किमी परिसरातील निरोगी जनावरांना तातडीने गोट पॉक्स लस द्या.',
+    riskTrend: 'increasing',
+  },
+  advisoryVoiceScript:
+    'Attention: Your animal exhibits classic signs of Lumpy Skin Disease. Please immediately isolate the cow, spray neem oil to repel mosquitoes and flies, feed the prescribed turmeric-pepper-jaggery paste, and notify your Veterinary Officer for ring vaccination.',
+  advisoryVoiceScriptHi:
+    'सावधान: आपकी गाय में लंपी त्वचा रोग के स्पष्ट लक्षण हैं। गाय को तुरंत अलग बांधें, नीम तेल से मक्खी-मच्छर भगाएं, हल्दी-कालीमिर्च-गुड़ का काढ़ा दें और डॉक्टर को तुरंत सूचित करें।',
+  advisoryVoiceScriptMr:
+    'सावधान: आपल्या जनावरामध्ये लंपी त्वचा रोगाची लक्षणे आढळली आहेत. जनावराला ताबडतोब वेगळे बांधा, माश्या-डासांपासून संरक्षण करा, हळद-मिरी-गुळाचा काढा द्या व डॉक्टरांशी संपर्क साधा.',
+  caseStatus: 'suspected',
+};
+
+export function getDefaultDiagnosisForCrop(speciesId: string): DiagnosisResult {
+  const key = (speciesId || 'cattle').toLowerCase().trim();
+  if (key === 'goat') {
+    return {
+      ...DEFAULT_DIAGNOSIS,
+      id: 'diag-case-goat',
+      cropId: 'goat',
+      cropName: 'Goat',
+      cropNameHi: 'बकरी',
+      cropNameMr: 'शेळी',
+      diseaseName: 'PPR / Goat Plague (बकरी प्लेग)',
+      diseaseNameHi: 'पीपीआर / बकरी प्लेग (PPR)',
+      diseaseNameMr: 'पीपीआर / शेळी प्लेग (PPR)',
+      pathogen: 'Small Ruminant Morbillivirus (PPRV)',
+      severity: 'high',
+      urgencyLevel: 'high',
+      affectedBodyArea: 'mouth',
+      symptomsObserved: ['Mouth erosions / foul breath', 'High fever', 'Watery diarrhea', 'Nasal crusts'],
+      whatToDoToday: [
+        {
+          step: 1,
+          title: 'Isolate Goat & Provide Warm Oral Fluids',
+          titleHi: 'बकरी को अलग रखें व इलेक्ट्रोलाइट घोल दें',
+          titleMr: 'शेळीला वेगळे ठेवा व ओआरएस पाणी द्या',
+          description: 'Quarantine immediately. Administer oral rehydration salts (ORS) with glucose and electrolytes to prevent dehydration from diarrhea.',
+          descriptionHi: 'बकरी को अलग करें। दस्त से पानी की कमी रोकने के लिए ओआरएस व ग्लूकोज का पानी पिलाएं।',
+          descriptionMr: 'शेळीला वेगळे ठेवा. हगवणीमुळे अशक्तपणा येऊ नये म्हणून ओआरएस व ग्लुकोजचे पाणी पाजा.',
+          priority: 'critical',
+          category: 'isolation',
+        },
+        {
+          step: 2,
+          title: 'Mouth Ulcer Fomentation',
+          titleHi: 'मुंह के छालों पर बोरोग्लिसरीन',
+          titleMr: 'तोंडातील फोडांवर मलम/बोरोग्लिसरीन',
+          description: 'Wash mouth with 1% potassium permanganate solution and gently apply Boroglycerine to ulcerated lips and tongue.',
+          descriptionHi: 'पोटाश पानी से मुंह साफ करें और छालों पर बोरोग्लिसरीन लगाएं।',
+          descriptionMr: 'पोटॅशच्या पाण्याने तोंड धुऊन जिभेवर बोरोग्लिसरीन लावा.',
+          priority: 'important',
+          category: 'first_aid',
+        },
+      ],
+      advisoryVoiceScript: 'Your goat shows symptoms consistent with PPR (Goat Plague). Isolate immediately, provide ORS fluids, and contact your Veterinary Officer.',
+      advisoryVoiceScriptHi: 'आपकी बकरी में पीपीआर (बकरी प्लेग) के लक्षण दिख रहे हैं। तुरंत अलग बांधें, ओआरएस पानी दें और डॉक्टर को बुलाएं।',
+      advisoryVoiceScriptMr: 'आपल्या शेळीमध्ये पीपीआर रोगाची लक्षणे आहेत. लगेच वेगळे ठेवा, ओआरएस पाणी पाजा आणि डॉक्टरांना दाखवा.',
+    };
+  }
+
+  if (key === 'poultry') {
+    return {
+      ...DEFAULT_DIAGNOSIS,
+      id: 'diag-case-poultry',
+      cropId: 'poultry',
+      cropName: 'Poultry',
+      cropNameHi: 'मुर्गी पालन',
+      cropNameMr: 'कुक्कुटपालन',
+      diseaseName: 'Ranikhet / Newcastle Disease (रानीखेत)',
+      diseaseNameHi: 'रानीखेत रोग (Newcastle Disease)',
+      diseaseNameMr: 'राणीखेत आजार (Newcastle Disease)',
+      pathogen: 'Avian Paramyxovirus Serotype 1',
+      severity: 'high',
+      urgencyLevel: 'high',
+      affectedBodyArea: 'general',
+      symptomsObserved: ['Gasping / rales', 'Twisting of neck (torticollis)', 'Greenish watery diarrhea', 'Drop in egg production'],
+      whatToDoToday: [
+        {
+          step: 1,
+          title: 'Immediate Shed Biosecurity & Disinfection',
+          titleHi: 'शेड में तुरंत कीटाणुनाशन व अलग करना',
+          titleMr: 'शेडचे निर्जंतुकीकरण व वेगळे करणे',
+          description: 'Quarantine sick birds. Spray Virkon-S or 2% formalin mist in the shed. Restrict human movement between sheds.',
+          descriptionHi: 'बीमार पक्षियों को तुरंत अलग करें और शेड में कीटाणुनाशक स्प्रे करें।',
+          descriptionMr: 'आजारी पक्ष्यांना वेगळे करा व शेडमध्ये जंतुनाशक फवारणी करा.',
+          priority: 'critical',
+          category: 'hygiene',
+        },
+      ],
+      advisoryVoiceScript: 'Your poultry flock shows symptoms of Newcastle (Ranikhet) disease. Implement biosecurity and administer electrolytes with vitamins.',
+      advisoryVoiceScriptHi: 'मुर्गियों में रानीखेत रोग के लक्षण हैं। तुरंत शेड का कीटाणुनाशन करें और विटामिन-इलेक्ट्रोलाइट दें।',
+      advisoryVoiceScriptMr: 'कुक्कुट पक्ष्यांमध्ये राणीखेत आजाराची लक्षणे आहेत. शेड निर्जंतुक करा व तातडीने उपचार सुरू करा.',
+    };
+  }
+
+  return DEFAULT_DIAGNOSIS;
 }
 
-export function getDefaultRiskForecastForCrop(cropIdOrName: string = 'tomato', liveWeather?: WeatherCondition): RiskForecast {
-  const key = (cropIdOrName || 'tomato').toLowerCase().trim();
-  const humidity = liveWeather?.humidity ?? 84;
-  const rainChance = liveWeather?.rainfallChance ?? 78;
+// =========================================================================
+// BARN WEATHER & LIVESTOCK HEALTH RISK FORECAST
+// =========================================================================
 
-  const cropDiseaseNames: Record<string, { crop: string; cropHi: string; cropMr: string; disease: string; diseaseHi: string; diseaseMr: string }> = {
-    tomato: { crop: 'Tomato', cropHi: 'टमाटर', cropMr: 'टोमॅटो', disease: 'Early Blight', diseaseHi: 'अगेती झुलसा', diseaseMr: 'करपा' },
-    cotton: { crop: 'Cotton', cropHi: 'कपास', cropMr: 'कापूस', disease: 'Leaf Curl Virus', diseaseHi: 'पत्ती मरोड़', diseaseMr: 'पानांचा चुरमुरडा' },
-    soybean: { crop: 'Soybean', cropHi: 'सोयाबीन', cropMr: 'सोयाबीन', disease: 'Soybean Rust', diseaseHi: 'सोयाबीन गेरुआ', diseaseMr: 'सोयाबीन तांबेरा' },
-    sugarcane: { crop: 'Sugarcane', cropHi: 'गन्ना', cropMr: 'ऊस', disease: 'Red Rot', diseaseHi: 'लाल सड़न', diseaseMr: 'लाल कुजव्या' },
-    maize: { crop: 'Maize', cropHi: 'मक्का', cropMr: 'मका', disease: 'Leaf Blight', diseaseHi: 'पत्ती झुलसा', diseaseMr: 'मका करपा' },
-    onion: { crop: 'Onion', cropHi: 'प्याज', cropMr: 'कांदा', disease: 'Purple Blotch', diseaseHi: 'बैंगनी धब्बा', diseaseMr: 'जांभळा करपा' },
-    rice: { crop: 'Rice', cropHi: 'धान', cropMr: 'भात', disease: 'Rice Blast', diseaseHi: 'झोंका रोग', diseaseMr: 'कडा करपा' },
-    wheat: { crop: 'Wheat', cropHi: 'गेहूं', cropMr: 'गहू', disease: 'Stripe Rust', diseaseHi: 'पीला रतुआ', diseaseMr: 'पिवळा तांबेरा' },
-  };
+export const MOCK_WEATHER: WeatherCondition = {
+  temp: 29.5,
+  humidity: 78,
+  rainfallStatus: 'Rain expected in 24-48 hrs',
+  rainfallStatusHi: 'अगले 24-48 घंटों में बारिश की संभावना',
+  rainfallStatusMr: 'पुढील २४-४८ तासांत पावसाची शक्यता',
+  rainfallChance: 65,
+  condition: 'humid',
+  thiIndex: 79.2, // Moderate Heat Stress for crossbred dairy cattle (THI > 78)
+  heatStressLevel: 'alert',
+  cropImpactSummary: 'High barn humidity (>75%) increases tick proliferation, fly vectors, and moisture-induced mastitis risks.',
+  cropImpactSummaryHi: 'गोठे में 78% नमी होने से किलनी (चिचड़ी), मक्खियों और थनैला रोग का जोखिम अधिक है।',
+  cropImpactSummaryMr: 'गोठ्यात ७८% दमटपणामुळे गोचीड, माश्या आणि कासेच्या आजाराचा (स्तनदाह) धोका वाढला आहे.',
+};
 
-  const info = cropDiseaseNames[key] || cropDiseaseNames.tomato;
-
-  return {
-    cropId: key,
-    currentLevel: 'moderate',
-    summary: `Disease risk for ${info.crop} is INCREASING because relative humidity is at ${humidity}% and rainfall is expected tomorrow.`,
-    summaryHi: `सापेक्ष आर्द्रता ${humidity}% होने और कल बारिश की संभावना के कारण ${info.cropHi} में ${info.diseaseHi} का जोखिम बढ़ रहा है।`,
-    summaryMr: `हवेतील आर्द्रता ${humidity}% असून उद्या पावसाची शक्यता असल्याने ${info.cropMr} पिकात ${info.diseaseMr} रोगाचा धोका वाढणार आहे।`,
-    timeline: [
-      { day: 'Today', dayHi: 'आज', dayMr: 'आज', date: 'Sat, Sep 6', level: 'moderate', score: 55 },
-      { day: 'Tomorrow', dayHi: 'कल', dayMr: 'उद्या', date: 'Sun, Sep 7', level: 'moderate', score: 62 },
-      { day: 'Day 3', dayHi: 'तीसरा दिन', dayMr: '३ रा दिवस', date: 'Mon, Sep 8', level: 'high', score: 88 },
-      { day: 'Day 4', dayHi: 'चौथा दिन', dayMr: '४ था दिवस', date: 'Tue, Sep 9', level: 'high', score: 82 },
-      { day: 'Day 5', dayHi: 'पाँचवाँ दिन', dayMr: '५ वा दिवस', date: 'Wed, Sep 10', level: 'moderate', score: 50 },
-    ],
-    reasons: [
-      {
-        id: 'r-humidity',
-        title: `High Relative Humidity (${humidity}%)`,
-        titleHi: `उच्च सापेक्ष आर्द्रता (${humidity}%)`,
-        titleMr: `जास्त हवेतील आर्द्रता (${humidity}%)`,
-        icon: 'droplet',
-        detail: `80% - 88% humidity projected continuously over next 3 days, accelerating ${info.disease} spore germination on ${info.crop} foliage.`,
-        detailHi: `अगले 3 दिनों में लगातार 80% - 88% आर्द्रता का अनुमान, जो ${info.cropHi} की पत्तियों पर ${info.diseaseHi} के बीजाणुओं के अंकुरण को बढ़ाता है।`,
-        detailMr: `पुढील ३ दिवस आर्द्रता ८०% ते ८८% दरम्यान राहण्याचा अंदाज, ज्याने ${info.cropMr} पिकावर ${info.diseaseMr} बुरशीचे बीजाणू वेगाने वाढतात.`
-      },
-      {
-        id: 'r-rain',
-        title: `Rainfall Expected in 24 hrs (${rainChance}%)`,
-        titleHi: `24 घंटों में बारिश की संभावना (${rainChance}%)`,
-        titleMr: `२४ तासांत पावसाची शक्यता (${rainChance}%)`,
-        icon: 'cloud-rain',
-        detail: `Rain splash spreads ${info.disease} pathogens onto upper healthy ${info.crop} leaves.`,
-        detailHi: `बारिश की बूंदों के छींटे ${info.diseaseHi} रोगजनकों को ${info.cropHi} की ऊपरी स्वस्थ पत्तियों तक फैलाते हैं।`,
-        detailMr: `पावसाच्या पाण्यामुळे ${info.diseaseMr} बुरशीचे कण ${info.cropMr} च्या निरोगी पानांवर उडतात.`
-      },
-      {
-        id: 'r-cluster',
-        title: `Active ${info.crop} Disease Clusters Nearby`,
-        titleHi: `आस-पास 14 पुष्ट मामले (${info.cropHi})`,
-        titleMr: `परिसरात ${info.cropMr} प्रादुर्भाव`,
-        icon: 'map-pin',
-        detail: `Neighboring farms within 5 km report active ${info.disease} clusters.`,
-        detailHi: `5 किमी के भीतर पड़ोसी खेतों में ${info.cropHi} के ${info.diseaseHi} के सक्रिय समूह पाए गए हैं।`,
-        detailMr: `५ किमी परिसरातील शेतांमध्ये ${info.cropMr} च्या ${info.diseaseMr} रोगाचे क्लस्टर आढळले आहेत.`
-      }
-    ],
-    recommendation: `Complete cultural field sanitation and protective spray for ${info.crop} today before rain starts.`,
-    recommendationHi: `बारिश शुरू होने से पहले आज ही ${info.cropHi} के लिए पत्तियों की छंटाई और जैविक/कॉपर का छिड़काव पूरा करें।`,
-    recommendationMr: `पाऊस सुरू होण्यापूर्वी आजच सकाळच्या सत्रात ${info.cropMr} साठी बाधित पाने कापा व योग्य फवारणी पूर्ण करा.`,
-    score: humidity >= 80 ? 78 : 55,
-    breakdown: {
-      temperature: (liveWeather?.temp ?? 26) >= 20 && (liveWeather?.temp ?? 26) <= 30 ? 'Suitable' : 'Moderate',
-      temperatureValue: `${liveWeather?.temp ?? 26}°C`,
-      humidity: humidity >= 75 ? 'High' : 'Moderate',
-      humidityValue: `${humidity}%`,
-      rainfall: rainChance >= 50 ? 'High' : 'Moderate',
-      rainfallValue: `${rainChance}% chance`,
-      nearbyReports: 7,
-      cropStage: 'Flowering / Vegetative (Susceptible)',
-      overallRisk: `${humidity >= 80 ? 78 : 55} / 100`,
+export const MOCK_RISK_FORECAST: RiskForecast = {
+  cropId: 'cattle',
+  currentLevel: 'moderate',
+  summary: 'Elevated humidity & vector breeding will increase mastitis and tick-borne blood protozoan risk over the next 5 days.',
+  summaryHi: 'बढ़ती उमस और बारिश के कारण अगले 5 दिनों में थनैला व किलनी संक्रमण का खतरा मध्यम से उच्च स्तर पर रहेगा।',
+  summaryMr: 'हवेतील दमटपणा व पावसामुळे पुढील ५ दिवसांत स्तनदाह व गोचीड आजारांचा धोका मध्यम ते उच्च राहील.',
+  timeline: [
+    { day: 'Today', dayHi: 'आज', dayMr: 'आज', date: 'Oct 1', level: 'moderate', score: 62 },
+    { day: 'Thu', dayHi: 'गुरुवार', dayMr: 'गुरुवार', date: 'Oct 2', level: 'moderate', score: 68 },
+    { day: 'Fri', dayHi: 'शुक्रवार', dayMr: 'शुक्रवार', date: 'Oct 3', level: 'high', score: 82 },
+    { day: 'Sat', dayHi: 'शनिवार', dayMr: 'शनिवार', date: 'Oct 4', level: 'high', score: 79 },
+    { day: 'Sun', dayHi: 'रविवार', dayMr: 'रविवार', date: 'Oct 5', level: 'moderate', score: 55 },
+  ],
+  reasons: [
+    {
+      id: 'r1',
+      title: 'Barn Humidity & Vector Spike',
+      titleHi: 'गोठे में नमी व मक्खी-मच्छर का फैलाव',
+      titleMr: 'गोठ्यात दमटपणा व डास-माश्या वाढ',
+      icon: 'droplet',
+      detail: 'Shed relative humidity at 78-84% favors bacterial growth on teat skin.',
+      detailHi: '78-84% नमी से थन की त्वचा पर जीवाणुओं का प्रसार तेजी से होता है।',
+      detailMr: '७८-८४% दमटपणामुळे कासेवर जिवाणूंचा संसर्ग वेगाने वाढतो.',
     },
-  };
+    {
+      id: 'r2',
+      title: 'Pre-Monsoon Disease Hotspot Alert',
+      titleHi: 'नजदीकी गांवों में लंपी व खुरपका रिपोर्ट',
+      titleMr: 'परिसरातील गावांत लंपी व खुरकूत नोंद',
+      icon: 'map-pin',
+      detail: '8 livestock disease cases confirmed within 8 km radius in Niphad sector.',
+      detailHi: 'निफाड़ क्षेत्र में 8 किमी के दायरे में 8 पशु रोग मामले दर्ज हुए हैं।',
+      detailMr: 'निफाड तालुक्यात ८ किमी परिसरात ८ जनावरांचे आजार नोंदवले गेले आहेत.',
+    },
+    {
+      id: 'r3',
+      title: 'Temperature Humidity Index (THI 79.2)',
+      titleHi: 'तापमान-आर्द्रता सूचकांक (THI 79.2)',
+      titleMr: 'उष्मा ताण निर्देशांक (THI ७९.२)',
+      icon: 'thermometer',
+      detail: 'Milch cows experience mild heat stress reducing immunity and feed intake.',
+      detailHi: 'दुधारू पशुओं में हल्का तनाव, जिससे रोग प्रतिरोधक क्षमता घट सकती है।',
+      detailMr: 'दुभत्या जनावरांमध्ये उष्मा ताणामुळे प्रतिकारशक्ती कमी होऊ शकते.',
+    },
+  ],
+  recommendation: 'Ensure clean dry bedding with lime powder, spray herbal fly repellents, and ensure clean electrolyte-rich drinking water.',
+  recommendationHi: 'फर्श पर सूखा चूना डालें, मक्खी भगाने हेतु नीम स्प्रे करें और साफ व ताजा पानी दें।',
+  recommendationMr: 'गोठ्यात चुना टाका, माश्यांसाठी निंबोळी अर्क फवारा आणि स्वच्छ थंड पाणी द्या.',
+};
+
+export function getDefaultRiskForecastForCrop(_speciesId?: string): RiskForecast {
+  return MOCK_RISK_FORECAST;
 }
 
-export const DEFAULT_DIAGNOSIS: DiagnosisResult = getDefaultDiagnosisForCrop('onion');
-
-export const MOCK_RISK_FORECAST: RiskForecast = getDefaultRiskForecastForCrop('onion');
+// =========================================================================
+// MOCK LIVESTOCK DISEASE HOTSPOTS & AREA REPORT
+// =========================================================================
 
 export const MOCK_AREA_REPORT: AreaReport = {
   district: 'Nashik',
   districtHi: 'नासिक',
   districtMr: 'नाशिक',
-  subDistrict: 'Dindori & Niphad Belt',
-  subDistrictHi: 'दिंडोरी और निफाड क्षेत्र',
-  subDistrictMr: 'दिंडोरी व निफाड पट्टा',
+  subDistrict: 'Niphad',
+  subDistrictHi: 'निफाड़',
+  subDistrictMr: 'निफाड',
   status: 'moderate',
   diseaseTrend: 'increasing',
   activeCasesCount: 14,
-  lastUpdated: '2 hours ago',
+  lastUpdated: '25 mins ago',
   clusters: [
     {
-      id: 'c1',
-      lat: 20.082,
-      lng: 73.845,
+      id: 'cluster-001',
+      lat: 20.085,
+      lng: 74.11,
       intensity: 'high',
-      areaName: 'Dindori Cluster A',
-      areaNameHi: 'दिंडोरी क्लस्टर ए',
-      areaNameMr: 'दिंडोरी क्लस्टर अ',
-      crop: 'Tomato',
-      reportedCases: 6,
-      distanceKm: 2.1
+      areaName: 'Pimpalgaon Ridge Livestock Zone',
+      areaNameHi: 'पिंपलगांव पशुधन क्षेत्र',
+      areaNameMr: 'पिंपळगाव पशुधन विभाग',
+      crop: 'Cattle (LSD & Mastitis)',
+      reportedCases: 7,
+      distanceKm: 2.1,
+      diseaseName: 'Lumpy Skin Disease (LSD)',
+      containmentStatus: 'Ring Vaccination Active',
     },
     {
-      id: 'c2',
-      lat: 20.035,
-      lng: 73.892,
+      id: 'cluster-002',
+      lat: 20.12,
+      lng: 74.15,
       intensity: 'moderate',
-      areaName: 'Niphad Border Sector',
-      areaNameHi: 'निफाड सीमा क्षेत्र',
-      areaNameMr: 'निफाड सीमा क्षेत्र',
-      crop: 'Tomato & Chilli',
-      reportedCases: 5,
-      distanceKm: 3.8
+      areaName: 'Lasalgaon Dairy Belt',
+      areaNameHi: 'लासलगांव दुग्ध पट्टा',
+      areaNameMr: 'लासलगाव दुग्ध पट्टा',
+      crop: 'Cattle & Buffalo (FMD)',
+      reportedCases: 4,
+      distanceKm: 4.8,
+      diseaseName: 'Foot and Mouth Disease (FMD)',
+      containmentStatus: 'Surveillance Mode',
     },
     {
-      id: 'c3',
-      lat: 19.992,
-      lng: 73.791,
+      id: 'cluster-003',
+      lat: 20.04,
+      lng: 74.05,
       intensity: 'low',
-      areaName: 'Panchavati Belt',
-      areaNameHi: 'पंचवटी क्षेत्र',
-      areaNameMr: 'पंचवटी पट्टा',
-      crop: 'Soybean',
+      areaName: 'Chandori River Goat Sector',
+      areaNameHi: 'चांदोरी शेळी क्लस्टर',
+      areaNameMr: 'चांदोरी शेळी विभाग',
+      crop: 'Goats (PPR & Deworming)',
       reportedCases: 3,
-      distanceKm: 4.9
-    }
+      distanceKm: 6.2,
+      diseaseName: 'Peste des Petits Ruminants (PPR)',
+      containmentStatus: 'Normal Monitoring',
+    },
   ],
-  communityAdvisory: 'Regional Advisory: Early Blight outbreak alert issued for tomato growers across Niphad and Dindori. Farmers are advised to clear ridge drainage and inspect lower leaf canopy.',
-  communityAdvisoryHi: 'क्षेत्रीय सलाह: निफाड और दिंडोरी के टमाटर उत्पादकों के लिए अगेती झुलसा का अलर्ट जारी। किसानों को जल निकासी साफ रखने और निचली पत्तियों का निरीक्षण करने की सलाह दी जाती है।',
-  communityAdvisoryMr: 'प्रादेशिक सल्ला: दिंडोरी व निफाड तालुक्यातील टोमॅटो उत्पादक शेतकऱ्यांसाठी करपा रोगाचा इशारा. पाण्याचा निचरा ठेवा व खालच्या पानांची तपासणी करा.'
+  communityAdvisory:
+    'Veterinary Officer Advisory for Niphad Taluka: Lumpy Skin Disease surveillance active in Pimpalgaon sector. All farmers are advised to avoid moving cattle across village borders and ensure annual goat pox vaccination.',
+  communityAdvisoryHi:
+    'निफाड़ तालुका पशु चिकित्सा अधिकारी एडवाइजरी: पिंपलगांव क्षेत्र में लंपी रोग की निगरानी जारी है। पशुओं का अंतर-ग्राम आवागमन रोकें और समय पर गोट पॉक्स वैक्सीन लगवाएं।',
+  communityAdvisoryMr:
+    'निफाड तालुका पशुवैद्यकीय अधिकारी सल्ला: पिंपळगाव परिसरात लंपी रोगाची दक्षता सुरू आहे. जनावरांची खरेदी-विक्री थांबवा व गोट पॉक्स लस तातडीने टोचून घ्या.',
 };
+
+// =========================================================================
+// MOCK VETERINARY PROFILES (Talk to a Vet)
+// =========================================================================
 
 export const MOCK_EXPERT: ExpertProfile = {
-  id: 'exp-demo-patil',
-  name: 'Dr. R. Patil (Demo Agronomist)',
-  nameHi: 'डॉ. आर. पाटिल (डेमो कृषि विशेषज्ञ)',
-  nameMr: 'डॉ. आर. पाटील (डेमो कृषी शास्त्रज्ञ)',
-  role: 'Plant Pathologist (Prototype Demo Data)',
-  roleHi: 'पादप रोग विशेषज्ञ (प्रोटोटाइप डेमो डेटा)',
-  roleMr: 'वनस्पती रोग शास्त्रज्ञ (प्रोटोटाइप नमुना)',
-  station: 'KVK Nashik Advisory Desk (Demo)',
-  stationHi: 'केवीके नासिक परामर्श केंद्र (डेमो)',
-  stationMr: 'कृषी सल्ला केंद्र (डेमो नमुना)',
-  avatar: 'https://images.unsplash.com/photo-1537368910025-700350fe46c7?auto=format&fit=crop&w=200&q=80',
+  id: 'vet-001',
+  name: 'Dr. Arvind Deshmukh',
+  nameHi: 'डॉ. अरविंद देशमुख',
+  nameMr: 'डॉ. अरविंद देशमुख',
+  role: 'Senior Veterinary Officer (B.V.Sc & A.H., M.V.Sc - Medicine)',
+  roleHi: 'वरिष्ठ पशु चिकित्सा अधिकारी (B.V.Sc & A.H., M.V.Sc)',
+  roleMr: 'वरिष्ठ पशुवैद्यकीय अधिकारी (B.V.Sc & A.H., M.V.Sc)',
+  station: 'Krishi Vigyan Kendra (KVK) & Taluka Veterinary Dispensary, Niphad',
+  stationHi: 'कृषि विज्ञान केंद्र (KVK) व पशु औषधालय, निफाड़',
+  stationMr: 'कृषी विज्ञान केंद्र (KVK) व तालुका पशुवैद्यकीय दवाखाना, निफाड',
+  avatar: '👨‍⚕️',
   available: true,
-  phone: '1800-000-0000 (Demo)'
+  phone: '1962', // Pashu Arogya Seva Helpline
+  qualifications: 'B.V.Sc & A.H., M.V.Sc (Veterinary Clinical Medicine)',
+  experienceYears: 14,
 };
 
-export const INITIAL_EXPERT_MESSAGES: ChatMessage[] = [
+export const MOCK_CHAT_MESSAGES: ChatMessage[] = [
   {
-    id: 'm1',
+    id: 'msg-1',
     sender: 'expert',
-    text: 'Namaste Kisan bhai! (Demo Expert Desk). I reviewed your Tomato diagnosis (Early Blight - Moderate). How many acres are affected, and have you sprayed in the last 7 days?',
-    textHi: 'नमस्ते किसान भाई! (डेमो विशेषज्ञ डेस्क)। मैंने आपके टमाटर निदान (अगेती झुलसा - मध्यम) की समीक्षा की है। कितने एकड़ क्षेत्र प्रभावित है, और क्या आपने पिछले 7 दिनों में कोई छिड़काव किया है?',
-    textMr: 'नमस्ते शेतकरी मित्र! (डेमो सल्ला केंद्र). मी तुमच्या टोमॅटोच्या पिकाचा अहवाल पाहिला (करपा रोग - मध्यम). किती क्षेत्र बाधित आहे आणि आपण गेल्या ७ दिवसांत फवारणी केली आहे का?',
-    timestamp: '10:18 AM'
-  }
+    text: 'Namaste! I am Dr. Arvind Deshmukh from KVK Nashik. I reviewed your case report for Gauri (Gir Cow). The udder inflammation appears to be moderate mastitis.',
+    textHi: 'नमस्ते! मैं KVK नाशिक से डॉ. अरविंद देशमुख हूँ। मैंने आपकी गाय गौरी की रिपोर्ट देखी। थन में मध्यम स्तर का थनैला (मस्टायटिस) प्रतीत होता है।',
+    textMr: 'नमस्कार! मी KVK नाशिक येथून डॉ. अरविंद देशमुख. आपल्या गीर गायीचा अहवाल मी पाहिला. कासेतील सूज मध्यम स्वरूपाच्या स्तनदाहाची (मस्टायटिस) दिसते.',
+    timestamp: '10:00 AM',
+  },
+  {
+    id: 'msg-2',
+    sender: 'farmer',
+    text: 'Doctor, should I give any antibiotic injection or first-aid paste today?',
+    textHi: 'डॉक्टर साहब, क्या आज कोई एंटीबायोटिक इंजेक्शन देना है या लेप लगाना है?',
+    textMr: 'डॉक्टर, आज कोणते अँटिबायोटिक इंजेक्शन द्यावे की लेप लावावा?',
+    timestamp: '10:02 AM',
+  },
+  {
+    id: 'msg-3',
+    sender: 'expert',
+    text: 'Do NOT self-administer any antibiotics without milk culture test. For today: empty the milk completely every 3 hours, apply turmeric-aloe paste, and keep bedding dry. I can visit or prescribe once you check if she has fever.',
+    textHi: 'बिना जांच के खुद से एंटीबायोटिक न दें। आज हर 3 घंटे में दूध पूरा निकालें, हल्दी-एलोवेरा लेप लगाएं और गोठा सूखा रखें। तापमान चेक करके बताएं।',
+    textMr: 'स्वतःहून कोणतेही अँटिबायोटिक इंजेक्शन देऊ नका. आज दर ३ तासांनी कासेतील दूध पूर्ण काढा, हळद-कोरफड लेप लावा व गोठा कोरडा ठेवा. ताप मोजून सांगा.',
+    timestamp: '10:04 AM',
+  },
 ];
-

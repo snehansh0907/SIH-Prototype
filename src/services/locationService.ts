@@ -4,6 +4,7 @@ import {
   normalizeDistrictName,
   findPincodeForVillage,
 } from '../data/locations';
+import { apiClient } from './apiClient';
 
 export interface Coordinates {
   latitude: number;
@@ -36,29 +37,54 @@ export interface DetectedLocationResult {
 }
 
 // Optional API key configured via environment variable
-const LOCATION_API_KEY = (typeof import.meta !== 'undefined' && (import.meta as any).env?.VITE_LOCATION_API_KEY) || '';
+const LOCATION_API_KEY =
+  (typeof import.meta !== 'undefined' && (import.meta as any).env?.VITE_LOCATION_API_KEY) || '';
+
+/**
+ * Map browser Geolocation errors to farmer-friendly messages
+ */
+export function formatGeolocationError(error: GeolocationPositionError | any): Error {
+  if (!error) {
+    return new Error('Unable to detect your location. Please try again or select your location manually.');
+  }
+
+  const code = typeof error.code === 'number' ? error.code : 0;
+  switch (code) {
+    case 1: // PERMISSION_DENIED
+      return new Error('Location permission was denied. Please allow location access or select your location manually.');
+    case 2: // POSITION_UNAVAILABLE
+      return new Error('Unable to determine your location. Please try again or select your location manually.');
+    case 3: // TIMEOUT
+      return new Error('Location request timed out. Please try again.');
+    default:
+      return new Error(error.message || 'Unable to detect your location. Please try again or select your location manually.');
+  }
+}
 
 // Clean administrative words like " Taluka", " District", " Tehsil"
-function cleanAdminName(raw?: string): string {
+export function cleanAdminName(raw?: string): string {
   if (!raw) return '';
   return raw
-    .replace(/\b(Taluka|Tehsil|Sub-District|Subdistrict|District|Division)\b/gi, '')
+    .replace(/\b(Taluka|Tehsil|Tahsil|Sub-District|Subdistrict|District|Division|Block|Sub-Division|Mandal)\b/gi, '')
     .replace(/\s{2,}/g, ' ')
     .trim();
 }
 
 // Find closest matching official state name
-function matchOfficialState(rawState?: string): string {
+export function matchOfficialState(rawState?: string): string {
   if (!rawState) return '';
   const clean = rawState.trim().toLowerCase();
   const found = ALL_INDIAN_STATES_AND_UTS.find(
-    (s) => s.name.toLowerCase() === clean || clean.includes(s.name.toLowerCase()) || s.name.toLowerCase().includes(clean)
+    (s) =>
+      s.name.toLowerCase() === clean ||
+      clean.includes(s.name.toLowerCase()) ||
+      s.name.toLowerCase().includes(clean)
   );
   return found ? found.name : rawState.trim();
 }
 
 // Offline fallback suggestions for key agricultural and Indian hubs
-const OFFLINE_AGRICULTURAL_HUBS: LocationSearchResult[] = [
+export const OFFLINE_AGRICULTURAL_HUBS: LocationSearchResult[] = [
   {
     id: 'hub_niphad',
     displayName: 'Niphad, Nashik, Maharashtra - 422303',
@@ -80,6 +106,17 @@ const OFFLINE_AGRICULTURAL_HUBS: LocationSearchResult[] = [
     pincode: '422209',
     latitude: 20.1741,
     longitude: 73.9876,
+  },
+  {
+    id: 'hub_chandori',
+    displayName: 'Chandori, Niphad, Nashik, Maharashtra - 422201',
+    village: 'Chandori',
+    taluka: 'Niphad',
+    district: 'Nashik',
+    state: 'Maharashtra',
+    pincode: '422201',
+    latitude: 20.0322,
+    longitude: 74.0322,
   },
   {
     id: 'hub_nashik',
@@ -270,6 +307,21 @@ const OFFLINE_AGRICULTURAL_HUBS: LocationSearchResult[] = [
   },
 ];
 
+// Helper to calculate approximate distance in km between two lat/lng pairs
+function haversineDistanceKm(lat1: number, lon1: number, lat2: number, lon2: number): number {
+  const R = 6371; // Earth's radius in km
+  const dLat = ((lat2 - lat1) * Math.PI) / 180;
+  const dLon = ((lon2 - lon1) * Math.PI) / 180;
+  const a =
+    Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+    Math.cos((lat1 * Math.PI) / 180) *
+      Math.cos((lat2 * Math.PI) / 180) *
+      Math.sin(dLon / 2) *
+      Math.sin(dLon / 2);
+  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+  return R * c;
+}
+
 export const locationService = {
   /**
    * Search location across all of India using live geocoding API
@@ -291,7 +343,10 @@ export const locationService = {
         const data = await response.json();
         if (Array.isArray(data.features) && data.features.length > 0) {
           const inFeatures = data.features.filter(
-            (f: any) => !f.properties?.countrycode || f.properties.countrycode === 'IN' || f.properties.country === 'India'
+            (f: any) =>
+              !f.properties?.countrycode ||
+              f.properties.countrycode === 'IN' ||
+              f.properties.country === 'India'
           );
           if (inFeatures.length > 0) {
             return inFeatures.map((f: any, idx: number) => {
@@ -328,7 +383,7 @@ export const locationService = {
       // Fallback below
     }
 
-    // 2. Try Nominatim if API key provided or network accessible
+    // 2. Try Nominatim search
     try {
       let url = isSixDigitPincode
         ? `https://nominatim.openstreetmap.org/search?postalcode=${encodeURIComponent(trimmed)}&countrycodes=in&format=json&addressdetails=1&limit=6`
@@ -341,6 +396,7 @@ export const locationService = {
       const response = await fetch(url, {
         headers: {
           'Accept-Language': 'en',
+          'User-Agent': 'KrishiSarthak/1.0 (SIH 2026 Prototype)',
         },
         signal: AbortSignal.timeout(5000),
       });
@@ -369,7 +425,7 @@ export const locationService = {
             const pincode = addr.postcode || (isSixDigitPincode ? trimmed : '');
 
             const parts = [village, taluka, district, state]
-              .filter((p) => Boolean(p) && p !== taluka && p !== district ? true : Boolean(p))
+              .filter(Boolean)
               .filter((v, i, a) => a.indexOf(v) === i);
 
             const display = parts.join(', ') + (pincode ? ` - ${pincode}` : '');
@@ -407,58 +463,74 @@ export const locationService = {
   },
 
   /**
-   * Request browser geolocation permission and acquire real coordinates
+   * Request browser geolocation permission and acquire real coordinates.
+   * Follows strict production guidelines:
+   * - Native navigator.geolocation.getCurrentPosition()
+   * - Sensible options: enableHighAccuracy: true, timeout: 12000ms, maximumAge: 0
+   * - Fallback attempt with standard accuracy if GPS hardware fix times out
+   * - Clear error mapping for permission denied, timeout, unavailable, or unsupported
    */
   async getCurrentCoordinates(): Promise<Coordinates> {
-    const isSupported = typeof navigator !== 'undefined' && 'geolocation' in navigator;
-    console.log('Geolocation supported:', isSupported);
-
-    if (!isSupported) {
-      throw new Error('Unable to detect your location. Please search manually.');
+    if (typeof navigator === 'undefined' || !('geolocation' in navigator) || !navigator.geolocation) {
+      throw new Error('Location detection is not supported on this device/browser. Please select your location manually.');
     }
-
-    if (typeof window !== 'undefined' && window.isSecureContext === false) {
-      console.warn('Geolocation requires a secure context (HTTPS or localhost).');
-    }
-
-    console.log('Requesting current location...');
 
     return new Promise<Coordinates>((resolve, reject) => {
+      let isSettled = false;
+
+      // Fallback helper for devices without hardware GPS (e.g. desktop browsers)
+      const tryStandardAccuracyFallback = () => {
+        navigator.geolocation.getCurrentPosition(
+          (pos) => {
+            if (isSettled) return;
+            isSettled = true;
+            resolve({
+              latitude: pos.coords.latitude,
+              longitude: pos.coords.longitude,
+            });
+          },
+          (err) => {
+            if (isSettled) return;
+            isSettled = true;
+            reject(formatGeolocationError(err));
+          },
+          {
+            enableHighAccuracy: false,
+            timeout: 8000,
+            maximumAge: 0,
+          }
+        );
+      };
+
       navigator.geolocation.getCurrentPosition(
         (position) => {
-          const latitude = position.coords.latitude;
-          const longitude = position.coords.longitude;
-          console.log('Location coordinates:', latitude, longitude);
+          if (isSettled) return;
+          isSettled = true;
           resolve({
-            latitude,
-            longitude,
+            latitude: position.coords.latitude,
+            longitude: position.coords.longitude,
           });
         },
         (error) => {
-          console.error('Geolocation error:', error.code, error.message);
-          let message = 'Unable to detect your location. Please search manually.';
+          if (isSettled) return;
 
-          switch (error.code) {
-            case error.PERMISSION_DENIED:
-              message = 'Location permission was denied. Please allow location access in your browser settings.';
-              break;
-            case error.POSITION_UNAVAILABLE:
-              message = 'Your current location could not be determined. Please search for your location manually.';
-              break;
-            case error.TIMEOUT:
-              message = 'Location detection took too long. Please try again or search manually.';
-              break;
-            default:
-              message = 'Unable to detect your location. Please search manually.';
-              break;
+          // If high-accuracy timed out, attempt standard accuracy once
+          if (error.code === error.TIMEOUT) {
+            try {
+              tryStandardAccuracyFallback();
+              return;
+            } catch {
+              // Ignore and fall through
+            }
           }
 
-          reject(new Error(message));
+          isSettled = true;
+          reject(formatGeolocationError(error));
         },
         {
-          enableHighAccuracy: false,
-          timeout: 15000,
-          maximumAge: 60000,
+          enableHighAccuracy: true,
+          timeout: 12000,
+          maximumAge: 0,
         }
       );
     });
@@ -466,8 +538,25 @@ export const locationService = {
 
   /**
    * Reverse geocode coordinates to extract State, District, Taluka, Village, Pincode
+   * Uses multi-tier free & reliable providers with graceful fallback to nearest agricultural centroid.
    */
   async reverseGeocode(latitude: number, longitude: number): Promise<DetectedLocationResult> {
+    if (
+      latitude === undefined ||
+      longitude === undefined ||
+      isNaN(latitude) ||
+      isNaN(longitude) ||
+      latitude < -90 ||
+      latitude > 90 ||
+      longitude < -180 ||
+      longitude > 180
+    ) {
+      return {
+        success: false,
+        errorMessage: 'Invalid coordinates provided for location reverse geocoding.',
+      };
+    }
+
     let rawState = '';
     let rawDistrict = '';
     let rawTaluka = '';
@@ -475,52 +564,104 @@ export const locationService = {
     let rawPincode = '';
     let formatted = '';
 
-    // Provider 1: BigDataCloud client API (Free, CORS-friendly, reliable in browsers)
+    // ----------------------------------------------------
+    // Provider 1: OpenStreetMap Nominatim
+    // ----------------------------------------------------
     try {
-      const resp = await fetch(
-        `https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${latitude}&longitude=${longitude}&localityLanguage=en`,
-        { signal: AbortSignal.timeout(6000) }
-      );
-      if (resp.ok) {
-        const data = await resp.json();
-        rawState = data.principalSubdivision || '';
+      let nomUrl = `https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}&zoom=18&addressdetails=1`;
+      if (LOCATION_API_KEY) {
+        nomUrl += `&key=${LOCATION_API_KEY}`;
+      }
 
-        const adminList: any[] = data.localityInfo?.administrative || [];
+      const nomResp = await fetch(nomUrl, {
+        headers: {
+          'Accept-Language': 'en',
+          'User-Agent': 'KrishiSarthak/1.0 (SIH 2026 Agricultural Prototype; contact@krishisarthak.in)',
+        },
+        signal: AbortSignal.timeout(6000),
+      });
 
-        // Identify district
-        const districtObj = adminList.find(
-          (a) => /district/i.test(a.name) || (a.adminLevel === 5 && a.name !== rawState)
-        );
-        if (districtObj) {
-          rawDistrict = districtObj.name;
-        } else if (adminList[2]?.name && adminList[2]?.name !== rawState) {
-          rawDistrict = adminList[2].name;
-        }
-
-        // Identify taluka / tehsil
-        const talukaObj = adminList.find(
-          (a) => /taluk|tehsil|subdistrict/i.test(a.name) || (a.adminLevel === 6 && a.name !== rawDistrict)
-        );
-        if (talukaObj) {
-          rawTaluka = talukaObj.name;
-        } else if (adminList[3]?.name && adminList[3]?.name !== rawDistrict && adminList[3]?.name !== rawState) {
-          rawTaluka = adminList[3].name;
-        }
-
-        rawVillage = data.locality || data.city || '';
-        rawPincode = data.postcode || '';
-        formatted = `${rawVillage || rawTaluka}, ${rawDistrict || rawTaluka}, ${rawState}`.replace(/^, |, $/g, '');
+      if (nomResp.ok) {
+        const nomData = await nomResp.json();
+        const addr = nomData.address || {};
+        rawState = addr.state || '';
+        rawDistrict = addr.state_district || addr.district || addr.county || '';
+        rawTaluka = addr.county || addr.subdistrict || addr.tehsil || addr.taluk || addr.suburb || '';
+        rawVillage =
+          addr.village ||
+          addr.town ||
+          addr.city ||
+          addr.suburb ||
+          addr.hamlet ||
+          addr.neighbourhood ||
+          addr.residential ||
+          addr.locality ||
+          '';
+        rawPincode = addr.postcode || '';
       }
     } catch (e) {
-      console.warn('[locationService] BigDataCloud reverse geocode error:', e);
+      console.warn('[locationService] Nominatim reverse geocode warning:', e);
     }
 
-    // Provider 2: Photon (Komoot OSM) reverse geocode for additional precision
-    if (!rawPincode || !rawDistrict || !rawTaluka || !rawVillage) {
+    // ----------------------------------------------------
+    // Provider 2: BigDataCloud client API (Free, CORS-friendly)
+    // ----------------------------------------------------
+    if (!rawState || !rawDistrict) {
+      try {
+        const bdcResp = await fetch(
+          `https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${latitude}&longitude=${longitude}&localityLanguage=en`,
+          { signal: AbortSignal.timeout(5000) }
+        );
+        if (bdcResp.ok) {
+          const data = await bdcResp.json();
+          if (!rawState) rawState = data.principalSubdivision || '';
+
+          const adminList: any[] = data.localityInfo?.administrative || [];
+
+          if (!rawDistrict) {
+            const districtObj = adminList.find(
+              (a) => /district/i.test(a.name) || (a.adminLevel === 5 && a.name !== rawState)
+            );
+            if (districtObj) {
+              rawDistrict = districtObj.name;
+            } else if (adminList[2]?.name && adminList[2]?.name !== rawState) {
+              rawDistrict = adminList[2].name;
+            }
+          }
+
+          if (!rawTaluka) {
+            const talukaObj = adminList.find(
+              (a) =>
+                /taluk|tehsil|subdistrict/i.test(a.name) ||
+                (a.adminLevel === 6 && a.name !== rawDistrict && a.name !== rawState)
+            );
+            if (talukaObj) {
+              rawTaluka = talukaObj.name;
+            } else if (
+              adminList[3]?.name &&
+              adminList[3]?.name !== rawDistrict &&
+              adminList[3]?.name !== rawState
+            ) {
+              rawTaluka = adminList[3].name;
+            }
+          }
+
+          if (!rawVillage) rawVillage = data.locality || data.city || '';
+          if (!rawPincode) rawPincode = data.postcode || '';
+        }
+      } catch (e) {
+        console.warn('[locationService] BigDataCloud reverse geocode warning:', e);
+      }
+    }
+
+    // ----------------------------------------------------
+    // Provider 3: Photon (Komoot OSM) reverse geocode
+    // ----------------------------------------------------
+    if (!rawState || !rawDistrict) {
       try {
         const pResp = await fetch(
           `https://photon.komoot.io/reverse?lat=${latitude}&lon=${longitude}`,
-          { signal: AbortSignal.timeout(5000) }
+          { signal: AbortSignal.timeout(4000) }
         );
         if (pResp.ok) {
           const pData = await pResp.json();
@@ -532,40 +673,75 @@ export const locationService = {
           if (!rawPincode && props.postcode) rawPincode = props.postcode;
         }
       } catch (e) {
-        console.warn('[locationService] Photon reverse geocode error:', e);
+        console.warn('[locationService] Photon reverse geocode warning:', e);
       }
     }
 
-    // Provider 3: OpenStreetMap Nominatim (if API key provided or accessible)
-    if (LOCATION_API_KEY && (!rawState || !rawDistrict)) {
+    // ----------------------------------------------------
+    // Provider 4: Backend Location Proxy API (/api/location/reverse)
+    // ----------------------------------------------------
+    if (!rawState || !rawDistrict) {
       try {
-        const nResp = await fetch(
-          `https://nominatim.openstreetmap.org/reverse?lat=${latitude}&lon=${longitude}&format=json&addressdetails=1&zoom=16&key=${LOCATION_API_KEY}`,
-          { signal: AbortSignal.timeout(4000) }
+        const backendRes = await apiClient<{ success: boolean; data?: any }>(
+          `/location/reverse?lat=${latitude}&lng=${longitude}`,
+          { timeout: 5000 }
         );
-        if (nResp.ok) {
-          const nData = await nResp.json();
-          const addr = nData.address || {};
-          if (!rawState) rawState = addr.state || '';
-          if (!rawDistrict) rawDistrict = addr.state_district || addr.district || addr.county || '';
-          if (!rawTaluka) rawTaluka = addr.county || addr.subdistrict || addr.tehsil || addr.taluk || '';
-          if (!rawVillage) rawVillage = addr.village || addr.town || addr.city || addr.suburb || '';
-          if (!rawPincode) rawPincode = addr.postcode || '';
+        if (backendRes?.success && backendRes.data) {
+          const d = backendRes.data;
+          if (!rawState) rawState = d.state || '';
+          if (!rawDistrict) rawDistrict = d.district || '';
+          if (!rawTaluka) rawTaluka = d.taluka || '';
+          if (!rawVillage) rawVillage = d.village || '';
+          if (!rawPincode) rawPincode = d.pincode || '';
         }
       } catch (e) {
-        console.warn('[locationService] Nominatim reverse geocode error:', e);
+        console.warn('[locationService] Backend proxy reverse geocode notice:', e);
       }
     }
 
+    // ----------------------------------------------------
+    // Provider 5: Nearest Agricultural Hub Centroid Fallback
+    // ----------------------------------------------------
+    if (!rawState || !rawDistrict) {
+      let closestHub: LocationSearchResult | null = null;
+      let minDistance = Infinity;
+
+      for (const hub of OFFLINE_AGRICULTURAL_HUBS) {
+        const d = haversineDistanceKm(latitude, longitude, hub.latitude, hub.longitude);
+        if (d < minDistance) {
+          minDistance = d;
+          closestHub = hub;
+        }
+      }
+
+      // If within 150 km of a known hub, use its state & district as fallback
+      if (closestHub && minDistance <= 150) {
+        if (!rawState) rawState = closestHub.state;
+        if (!rawDistrict) rawDistrict = closestHub.district;
+        if (!rawTaluka) rawTaluka = closestHub.taluka;
+        if (!rawVillage) rawVillage = closestHub.village;
+        if (!rawPincode) rawPincode = closestHub.pincode;
+      }
+    }
+
+    // ----------------------------------------------------
+    // Normalization & Hierarchy Validation
+    // ----------------------------------------------------
     const state = normalizeStateName(rawState) || matchOfficialState(rawState);
     const cleanedDist = cleanAdminName(rawDistrict);
-    const district = normalizeDistrictName(state, cleanedDist) || cleanedDist || cleanAdminName(rawTaluka) || cleanAdminName(rawVillage) || '';
-    const taluka = cleanAdminName(rawTaluka) || cleanAdminName(rawDistrict) || cleanAdminName(rawVillage) || '';
-    const village = rawVillage.trim() || taluka || district || '';
-    let pincode = rawPincode;
-    if (!pincode && state && district && taluka && village) {
-      pincode = findPincodeForVillage(state, district, taluka, village) || '';
+    const district = normalizeDistrictName(state, cleanedDist) || cleanedDist || '';
+    const taluka = cleanAdminName(rawTaluka) || cleanAdminName(rawDistrict) || '';
+    const village = cleanAdminName(rawVillage) || taluka || district || '';
+    
+    let pincode = rawPincode.replace(/\D/g, '').slice(0, 6);
+    if (!pincode && state && district && (taluka || village)) {
+      pincode = findPincodeForVillage(state, district, taluka || village, village || taluka) || '';
     }
+
+    const parts = [village, taluka, district, state]
+      .filter(Boolean)
+      .filter((v, i, a) => a.indexOf(v) === i);
+    formatted = parts.join(', ') + (pincode ? ` - ${pincode}` : '');
 
     return {
       success: true,

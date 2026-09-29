@@ -6,6 +6,7 @@ import { MobileContainer } from './components/layout/MobileContainer';
 import { FarmerHomeScreen } from './components/home/FarmerHomeScreen';
 import { ImageUploader } from './components/check-crop/ImageUploader';
 import { DiagnosisResultView } from './components/diagnosis/DiagnosisResultView';
+import { HerdManagementView } from './components/herd/HerdManagementView';
 import { RiskForecastView } from './components/risk/RiskForecastView';
 import { AreaHotspotView } from './components/area/AreaHotspotView';
 import { ExpertConsultView } from './components/expert/ExpertConsultView';
@@ -30,12 +31,13 @@ const AppContent: React.FC = () => {
         {activeTab === 'home' && <FarmerHomeScreen />}
         {activeTab === 'check' && <ImageUploader />}
         {activeTab === 'diagnosis' && <DiagnosisResultView />}
+        {(activeTab === 'herd' || activeTab === 'vaccination' || activeTab === 'history') && <HerdManagementView />}
         {activeTab === 'risk' && <RiskForecastView />}
         {activeTab === 'area' && <AreaHotspotView />}
         {activeTab === 'expert' && <ExpertConsultView />}
       </MobileContainer>
 
-      {/* Global Farmer Login Restriction Modal for Demo Mode */}
+      {/* Global Livestock Owner Login Restriction Modal for Demo Mode */}
       <FarmerLoginModal />
     </>
   );

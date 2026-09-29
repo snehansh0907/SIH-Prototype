@@ -7,7 +7,12 @@ const {
   getDiagnosisById,
   getLatestDiagnosisByFarm,
   getLatestDiagnosisByFarmer,
+  getMLHealth,
 } = require('../controllers/diagnosisController');
+
+// GET /api/diagnosis/ml/health
+router.get('/ml/health', getMLHealth);
+router.get('/health', getMLHealth);
 
 // POST /api/diagnosis  (multipart/form-data: image, farmer_id, farm_id, crop_cycle_id)
 router.post('/', upload.single('image'), createDiagnosis);

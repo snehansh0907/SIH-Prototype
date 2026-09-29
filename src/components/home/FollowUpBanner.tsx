@@ -116,10 +116,10 @@ export const FollowUpBanner: React.FC = () => {
   };
 
   return (
-    <div className="rounded-2xl bg-white border border-stone-200/70 p-4 shadow-sm mb-4">
+    <div className="rounded-2xl bg-white border border-stone-200/70 p-4 shadow-sm mb-4 text-left">
       <div className="flex items-center justify-between mb-1.5">
         <div className="flex items-center gap-1.5">
-          <span className="text-base">🌱</span>
+          <span className="text-base">🐮</span>
           <h3 className="text-xs uppercase tracking-wider font-bold text-stone-500 font-display">
             {t.followUpTitle}
           </h3>
@@ -131,7 +131,7 @@ export const FollowUpBanner: React.FC = () => {
             className="text-[11px] font-semibold text-stone-400 hover:text-stone-700 flex items-center gap-1 cursor-pointer"
           >
             <RotateCcw className="w-3 h-3" />
-            <span>{t.changeAction}</span>
+            <span>{language === 'mr' ? 'बदला' : language === 'hi' ? 'बदलें' : 'Change'}</span>
           </button>
         )}
       </div>
@@ -159,7 +159,7 @@ export const FollowUpBanner: React.FC = () => {
               className="py-2.5 px-2 rounded-xl bg-emerald-50/70 hover:bg-emerald-100/70 border border-emerald-200/70 text-emerald-900 font-semibold text-xs flex flex-col items-center gap-1 transition-all active:scale-95 shadow-xs cursor-pointer"
             >
               <span className="text-xl">😊</span>
-              <span>{t.btnBetter.split(' ')[0]}</span>
+              <span>{language === 'mr' ? 'सुधारणा आहे' : language === 'hi' ? 'सुधार है' : 'Better'}</span>
             </button>
 
             <button
@@ -168,7 +168,7 @@ export const FollowUpBanner: React.FC = () => {
               className="py-2.5 px-2 rounded-xl bg-amber-50/70 hover:bg-amber-100/70 border border-amber-200/70 text-amber-900 font-semibold text-xs flex flex-col items-center gap-1 transition-all active:scale-95 shadow-xs cursor-pointer"
             >
               <span className="text-xl">😐</span>
-              <span>{t.btnSame.split(' ')[0]}</span>
+              <span>{language === 'mr' ? 'तसेच आहे' : language === 'hi' ? 'वैसा ही है' : 'Same'}</span>
             </button>
 
             <button
@@ -177,7 +177,7 @@ export const FollowUpBanner: React.FC = () => {
               className="py-2.5 px-2 rounded-xl bg-rose-50/70 hover:bg-rose-100/70 border border-rose-200/70 text-rose-900 font-semibold text-xs flex flex-col items-center gap-1 transition-all active:scale-95 shadow-xs cursor-pointer"
             >
               <span className="text-xl">😟</span>
-              <span>{t.btnWorse.split(' ')[0]}</span>
+              <span>{language === 'mr' ? 'बिघडले आहे' : language === 'hi' ? 'गंभीर है' : 'Worse'}</span>
             </button>
           </div>
 
@@ -191,12 +191,12 @@ export const FollowUpBanner: React.FC = () => {
             {isUploadingPhoto ? (
               <>
                 <Loader2 className="w-4 h-4 animate-spin text-forest-700" />
-                <span>{t.analyzingFollowUp}</span>
+                <span>{t.analyzingFollowUp || 'Analyzing photo...'}</span>
               </>
             ) : (
               <>
                 <Camera className="w-4 h-4 text-forest-700" />
-                <span>{t.uploadFollowUpPhoto}</span>
+                <span>{language === 'mr' ? 'आरोग्य फोटो अपडेट करा' : language === 'hi' ? 'स्वास्थ्य फोटो अपडेट करें' : 'Upload Follow-Up Photo'}</span>
               </>
             )}
           </button>
@@ -242,10 +242,10 @@ export const FollowUpBanner: React.FC = () => {
               <CheckCircle2 className="w-4 h-4 text-emerald-700 shrink-0 mt-0.5" />
               <div>
                 <div className="text-xs font-bold text-emerald-950 mb-0.5">
-                  {t.recoveryLogged}
+                  {language === 'mr' ? 'सुधारणा नोंदवली गेली!' : language === 'hi' ? 'सुधार दर्ज किया गया!' : 'Recovery Logged!'}
                 </div>
                 <p className="text-xs text-emerald-900 leading-relaxed font-medium">
-                  {comparisonResult?.recommendation || t.feedbackBetter}
+                  {comparisonResult?.recommendation || (language === 'mr' ? 'चांगली बातमी! उपचार व स्वच्छता सुरू ठेवा.' : language === 'hi' ? 'शुभ समाचार! नियमित देखभाल व आहार जारी रखें।' : 'Great news! Continue recommended sanitation and nutrition.')}
                 </p>
               </div>
             </div>
@@ -256,10 +256,10 @@ export const FollowUpBanner: React.FC = () => {
               <span className="text-base">ℹ️</span>
               <div>
                 <div className="text-xs font-bold text-amber-950 mb-0.5">
-                  {t.continueMonitoring}
+                  {language === 'mr' ? 'निरीक्षण सुरू ठेवा' : language === 'hi' ? 'निगरानी जारी रखें' : 'Continue Monitoring'}
                 </div>
                 <p className="text-xs text-amber-900 leading-relaxed font-medium">
-                  {comparisonResult?.recommendation || t.feedbackSame}
+                  {comparisonResult?.recommendation || (language === 'mr' ? 'कास किंवा जखमेची स्वच्छता ठेवा आणि ताप मोजा.' : language === 'hi' ? 'पशु के तापमान और चारे की निगरानी रखें।' : 'Monitor feed intake and rectal temperature regularly.')}
                 </p>
               </div>
             </div>
@@ -271,15 +271,14 @@ export const FollowUpBanner: React.FC = () => {
                 <span className="text-base shrink-0">⚠️</span>
                 <div>
                   <div className="text-xs font-bold text-rose-950">
-                    {t.immediateHelpRecommended}
+                    {language === 'mr' ? 'तातडीने पशुवैद्यकीय डॉक्टरांशी संपर्क करा' : language === 'hi' ? 'तत्काल पशु चिकित्सक से संपर्क करें' : 'Immediate Veterinary Consultation Recommended'}
                   </div>
                   <p className="text-xs text-rose-900 leading-relaxed font-medium">
-                    {comparisonResult?.recommendation || t.feedbackWorse}
+                    {comparisonResult?.recommendation || (language === 'mr' ? 'लक्षणे वाढत असल्यास त्वरित डॉक्टरांना गोठ्यावर बोलवा किंवा १९६२ वर कॉल करा.' : language === 'hi' ? 'लक्षण बढ़ने पर नजदीकी पशु चिकित्सालय में संपर्क करें या 1962 पर कॉल करें।' : 'Condition needs immediate physical examination by a registered Veterinary Officer.')}
                   </p>
                 </div>
               </div>
 
-              {/* Action buttons specifically requested for Worse */}
               <div className="grid grid-cols-2 gap-2 mt-2.5 pt-2.5 border-t border-rose-200/70">
                 <button
                   onClick={() => fileInputRef.current?.click()}
@@ -287,7 +286,7 @@ export const FollowUpBanner: React.FC = () => {
                   className="flex items-center justify-center gap-1.5 py-2 px-3 rounded-lg bg-forest-800 text-white font-semibold text-xs hover:bg-forest-900 active:scale-95 transition-transform shadow-xs cursor-pointer"
                 >
                   <Camera className="w-3.5 h-3.5" />
-                  <span>{t.uploadNewPhoto}</span>
+                  <span>{language === 'mr' ? 'नवीन फोटो काढा' : language === 'hi' ? 'नया फोटो लें' : 'New Photo'}</span>
                 </button>
 
                 <button
@@ -296,7 +295,7 @@ export const FollowUpBanner: React.FC = () => {
                   className="flex items-center justify-center gap-1.5 py-2 px-3 rounded-lg bg-amber-600 text-white font-semibold text-xs hover:bg-amber-700 active:scale-95 transition-transform shadow-xs cursor-pointer"
                 >
                   <UserCheck className="w-3.5 h-3.5" />
-                  <span>{t.talkToExpertBtn}</span>
+                  <span>{t.actionExpert}</span>
                 </button>
               </div>
             </div>

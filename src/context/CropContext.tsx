@@ -1,22 +1,43 @@
 import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
-import type { DiagnosisResult, WeatherCondition, RiskForecast, FollowUpStatus } from '../types';
-import { getDefaultDiagnosisForCrop, getDefaultRiskForecastForCrop } from '../services/mockData';
-import { diagnosisService, InvalidCropImageError } from '../services/diagnosisService';
+import type {
+  DiagnosisResult,
+  WeatherCondition,
+  RiskForecast,
+  FollowUpStatus,
+  LivestockAnimal,
+  VaccinationRecord,
+} from '../types';
+import {
+  getDefaultDiagnosisForCrop,
+  getDefaultRiskForecastForCrop,
+  SEEDED_DEMO_HERD,
+  SEEDED_DEMO_VACCINATIONS,
+} from '../services/mockData';
+import { diagnosisService, InvalidCropImageError, type CheckAnimalOptions } from '../services/diagnosisService';
 import { weatherService } from '../services/weatherService';
 import { riskService } from '../services/riskService';
-
 import { followUpService } from '../services/followUpService';
+import { livestockService } from '../services/livestockService';
+import { vaccinationService } from '../services/vaccinationService';
 import { farmService, SEEDED_DEMO_FARM_ID, SEEDED_DEMO_FARMER_ID, type BackendFarm } from '../services/farmService';
 import { resolveFarmLocation } from '../services/locationRegionService';
 import { useAuth } from './AuthContext';
 
-export type NavigationTab = 'home' | 'check' | 'diagnosis' | 'risk' | 'area' | 'expert';
+export type NavigationTab = 'home' | 'check' | 'diagnosis' | 'herd' | 'vaccination' | 'history' | 'area' | 'expert' | 'risk';
 
 interface CropContextType {
   activeTab: NavigationTab;
   setActiveTab: (tab: NavigationTab) => void;
-  selectedCropId: string;
+  selectedCropId: string; // Active species (cattle, buffalo, goat, sheep, poultry)
   setSelectedCropId: (id: string) => void;
+  selectedAnimal: LivestockAnimal | null;
+  setSelectedAnimal: (animal: LivestockAnimal | null) => void;
+  herd: LivestockAnimal[];
+  vaccinations: VaccinationRecord[];
+  refreshHerd: () => Promise<void>;
+  refreshVaccinations: () => Promise<void>;
+  addAnimalToHerd: (animal: Parameters<typeof livestockService.addAnimal>[0]) => Promise<LivestockAnimal>;
+  recordVaccination: (vac: Parameters<typeof vaccinationService.addVaccineRecord>[0]) => Promise<VaccinationRecord>;
   diagnosis: DiagnosisResult;
   setDiagnosis: (diag: DiagnosisResult) => void;
   isAnalyzing: boolean;
@@ -30,7 +51,11 @@ interface CropContextType {
   riskForecast: RiskForecast;
   followUpStatus: FollowUpStatus | null;
   setFollowUpStatus: (status: FollowUpStatus | null) => void;
-  performDiagnosis: (cropId: string, imageSource?: string | File | Blob) => Promise<DiagnosisResult>;
+  performDiagnosis: (
+    speciesId: string,
+    imageSource?: string | File | Blob,
+    options?: CheckAnimalOptions
+  ) => Promise<DiagnosisResult>;
   resetToHome: () => void;
 }
 
@@ -39,11 +64,17 @@ const CropContext = createContext<CropContextType | undefined>(undefined);
 export const CropProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const { user } = useAuth();
   const [activeTab, setActiveTab] = useState<NavigationTab>('home');
-  
-  const initialCrop = (user?.monitoredCrop || 'onion').toLowerCase().trim();
-  const [selectedCropId, setSelectedCropId] = useState<string>(initialCrop);
-  const [diagnosis, setDiagnosis] = useState<DiagnosisResult>(() => getDefaultDiagnosisForCrop(initialCrop));
+
+  const initialSpecies = (user?.monitoredCrop || 'cattle').toLowerCase().trim();
+  const [selectedCropId, setSelectedCropId] = useState<string>(initialSpecies);
+  const [diagnosis, setDiagnosis] = useState<DiagnosisResult>(() => getDefaultDiagnosisForCrop(initialSpecies));
+
   const [isAnalyzing, setIsAnalyzing] = useState<boolean>(false);
+
+  // Herd & Vaccination state
+  const [herd, setHerd] = useState<LivestockAnimal[]>(() => livestockService.getStoredHerd(user?.id || user?.farmerId));
+  const [selectedAnimal, setSelectedAnimal] = useState<LivestockAnimal | null>(() => SEEDED_DEMO_HERD[0] || null);
+  const [vaccinations, setVaccinations] = useState<VaccinationRecord[]>(() => vaccinationService.getStoredVaccines());
 
   // Weather & Farm State
   const [selectedFarm, setSelectedFarm] = useState<BackendFarm | null>(null);
@@ -52,17 +83,16 @@ export const CropProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [isWeatherLoading, setIsWeatherLoading] = useState<boolean>(true);
   const [weatherError, setWeatherError] = useState<string | null>(null);
 
-  const [riskForecast, setRiskForecast] = useState<RiskForecast>(() => getDefaultRiskForecastForCrop(initialCrop));
+  const [riskForecast, setRiskForecast] = useState<RiskForecast>(() => getDefaultRiskForecastForCrop(initialSpecies));
   const [followUpStatus, setFollowUpStatusState] = useState<FollowUpStatus | null>(null);
 
-  // Synchronize active crop with authenticated farmer's registered crop immediately
+  // Synchronize active species with authenticated owner's registered primary species
   useEffect(() => {
     if (user?.monitoredCrop) {
-      const targetCrop = user.monitoredCrop.toLowerCase().trim();
-      setSelectedCropId(targetCrop);
-      // Immediately align default diagnosis and risk forecast with new user's active crop
-      setDiagnosis((prev) => (prev.cropId === targetCrop ? prev : getDefaultDiagnosisForCrop(targetCrop)));
-      setRiskForecast((prev) => (prev.cropId === targetCrop ? prev : getDefaultRiskForecastForCrop(targetCrop)));
+      const targetSpecies = user.monitoredCrop.toLowerCase().trim();
+      setSelectedCropId(targetSpecies);
+      setDiagnosis((prev) => (prev.cropId === targetSpecies ? prev : getDefaultDiagnosisForCrop(targetSpecies)));
+      setRiskForecast((prev) => (prev.cropId === targetSpecies ? prev : getDefaultRiskForecastForCrop(targetSpecies)));
     }
   }, [user?.farmerId, user?.id, user?.monitoredCrop]);
 
@@ -71,7 +101,7 @@ export const CropProvider: React.FC<{ children: React.ReactNode }> = ({ children
     let isCancelled = false;
 
     async function syncActiveDiagnosis() {
-      const activeCrop = (user?.monitoredCrop || selectedCropId || 'onion').toLowerCase().trim();
+      const activeCrop = (user?.monitoredCrop || selectedCropId || 'cattle').toLowerCase().trim();
       const farmerId = user?.farmerId || user?.id;
       const farmId = selectedFarm?.id || user?.farmId;
 
@@ -83,7 +113,6 @@ export const CropProvider: React.FC<{ children: React.ReactNode }> = ({ children
         });
 
         if (!isCancelled && resolvedDiagnosis) {
-          // Strictly verify crop alignment before setting
           if (resolvedDiagnosis.cropId === activeCrop) {
             setDiagnosis(resolvedDiagnosis);
           } else {
@@ -103,9 +132,37 @@ export const CropProvider: React.FC<{ children: React.ReactNode }> = ({ children
     return () => {
       isCancelled = true;
     };
-  }, [user?.farmerId, user?.id, user?.monitoredCrop, user?.farmId, selectedFarm?.id, selectedCropId]);
+  }, [user?.monitoredCrop, selectedCropId, user?.farmerId, user?.id, selectedFarm?.id, user?.farmId]);
 
-  // Synchronize available farms and selected farm when user changes
+  // Load and synchronize user herd & vaccination records
+  const refreshHerd = useCallback(async () => {
+    const ownerId = user?.id || user?.farmerId || SEEDED_DEMO_FARMER_ID;
+    try {
+      const loaded = await livestockService.getHerdByOwner(ownerId);
+      setHerd(loaded);
+      if (loaded.length > 0 && !selectedAnimal) {
+        setSelectedAnimal(loaded[0]);
+      }
+    } catch {
+      setHerd(SEEDED_DEMO_HERD);
+    }
+  }, [user?.id, user?.farmerId, selectedAnimal]);
+
+  const refreshVaccinations = useCallback(async () => {
+    try {
+      const loaded = await vaccinationService.getVaccinationsForHerd();
+      setVaccinations(loaded);
+    } catch {
+      setVaccinations(SEEDED_DEMO_VACCINATIONS);
+    }
+  }, []);
+
+  useEffect(() => {
+    refreshHerd();
+    refreshVaccinations();
+  }, [refreshHerd, refreshVaccinations]);
+
+  // Synchronize available farms and barn locations
   useEffect(() => {
     let isCancelled = false;
 
@@ -119,14 +176,13 @@ export const CropProvider: React.FC<{ children: React.ReactNode }> = ({ children
       const farmerId = user.id || user.farmerId;
       const farms = await farmService.getFarmsByFarmer(farmerId);
 
-      // If user has specific registered coordinates and farmName, ensure it's in the list
       let userFarm: BackendFarm | null = null;
       if (user.farmName || user.village) {
         const resolved = resolveFarmLocation(user, null);
         userFarm = {
           id: user.farmId || (farms.length > 0 ? farms[0].id : `user-farm-${user.id || 'reg'}`),
           farmer_id: farmerId,
-          farm_name: user.farmName || `${user.village || 'My'} Farm`,
+          farm_name: user.farmName || `${user.village || 'My'} Barn`,
           latitude: resolved.latitude ?? 20.085,
           longitude: resolved.longitude ?? 74.11,
           village: user.village,
@@ -137,11 +193,7 @@ export const CropProvider: React.FC<{ children: React.ReactNode }> = ({ children
       }
 
       if (!isCancelled) {
-        const combined = farms.length > 0
-          ? farms
-          : userFarm
-          ? [userFarm]
-          : [];
+        const combined = farms.length > 0 ? farms : userFarm ? [userFarm] : [];
         setAvailableFarms(combined);
         setSelectedFarm(combined[0] || null);
       }
@@ -170,33 +222,31 @@ export const CropProvider: React.FC<{ children: React.ReactNode }> = ({ children
     const resolved = resolveFarmLocation(user, selectedFarm);
     const lat = selectedFarm?.latitude ?? resolved.latitude ?? 20.085;
     const lng = selectedFarm?.longitude ?? resolved.longitude ?? 74.11;
-    const activeCropKey = (user?.monitoredCrop || selectedCropId || 'onion').toLowerCase().trim();
+
+    const activeSpeciesKey = (user?.monitoredCrop || selectedCropId || 'cattle').toLowerCase().trim();
     const farmId = selectedFarm?.id || user?.farmId || (user?.farmerId === 'farmer123' || user?.id === SEEDED_DEMO_FARMER_ID ? SEEDED_DEMO_FARM_ID : `farm-${user?.id || 'default'}`);
 
     setIsWeatherLoading(true);
     setWeatherError(null);
 
     try {
-      const liveWeatherData = await weatherService.getWeather(lat, lng, activeCropKey);
+      const liveWeatherData = await weatherService.getWeather(lat, lng, activeSpeciesKey);
       setWeather(liveWeatherData);
       setIsWeatherLoading(false);
 
-      // Re-calculate risk forecast dynamically using live weather data and active crop
       try {
-        const risk = await riskService.getRiskForecast(activeCropKey, farmId, liveWeatherData);
+        const risk = await riskService.getRiskForecast(activeSpeciesKey, farmId, liveWeatherData);
         setRiskForecast(risk);
       } catch (rErr) {
-        console.warn('[CropContext] Dynamic risk forecast calculation notice:', rErr);
+        console.warn('[CropContext] Dynamic livestock risk forecast notice:', rErr);
       }
     } catch (err: unknown) {
-      console.error('[CropContext] Failed to fetch live weather for coordinates:', lat, lng, err);
       setIsWeatherLoading(false);
-      const message = err instanceof Error ? err.message : 'Weather data unavailable. Please try again.';
+      const message = err instanceof Error ? err.message : 'Weather data unavailable.';
       setWeatherError(message);
     }
   }, [selectedFarm?.id, selectedFarm?.latitude, selectedFarm?.longitude, user?.latitude, user?.longitude, user?.farmId, user?.monitoredCrop, user?.farmerId, user?.id, selectedCropId]);
 
-  // Trigger weather & risk refetch whenever selected farm or crop changes
   useEffect(() => {
     fetchLiveWeatherAndRisk();
   }, [fetchLiveWeatherAndRisk]);
@@ -205,29 +255,47 @@ export const CropProvider: React.FC<{ children: React.ReactNode }> = ({ children
     await fetchLiveWeatherAndRisk();
   };
 
+  const addAnimalToHerd = async (payload: Parameters<typeof livestockService.addAnimal>[0]) => {
+    const newAnimal = await livestockService.addAnimal(payload);
+    await refreshHerd();
+    return newAnimal;
+  };
+
+  const recordVaccination = async (vac: Parameters<typeof vaccinationService.addVaccineRecord>[0]) => {
+    const record = await vaccinationService.addVaccineRecord(vac);
+    await refreshVaccinations();
+    return record;
+  };
+
   const setFollowUpStatus = (status: FollowUpStatus | null) => {
     setFollowUpStatusState(status);
     if (status && diagnosis?.id) {
-      // Connect to backend POST /api/follow-ups
-      followUpService.createFollowUp({
-        case_id: diagnosis.id,
-        status,
-      }).catch((err: unknown) => console.warn('[CropContext] Follow up submission fallback:', err));
+      followUpService
+        .createFollowUp({
+          case_id: diagnosis.id,
+          status,
+        })
+        .catch((err: unknown) => console.warn('[CropContext] Follow-up submission fallback:', err));
     }
   };
 
-  const performDiagnosis = async (cropId: string, imageSource?: string | File | Blob): Promise<DiagnosisResult> => {
+  const performDiagnosis = async (
+    speciesId: string,
+    imageSource?: string | File | Blob,
+    options?: CheckAnimalOptions
+  ): Promise<DiagnosisResult> => {
     setIsAnalyzing(true);
-    setSelectedCropId(cropId);
-    
-    // Smooth reassuring animation timing for human confidence
-    await new Promise(res => setTimeout(res, 2000));
-    
+    setSelectedCropId(speciesId);
+
+    // Reassuring triage processing pause
+    await new Promise((res) => setTimeout(res, 1800));
+
     try {
-      const result = await diagnosisService.checkCrop(cropId, imageSource, {
+      const result = await diagnosisService.checkCrop(speciesId, imageSource, {
         farmerId: user?.farmerId || user?.id,
         farmId: user?.farmId || selectedFarm?.id,
         cropCycleId: user?.cropCycleId,
+        ...options,
       });
       setDiagnosis(result);
       setIsAnalyzing(false);
@@ -235,10 +303,12 @@ export const CropProvider: React.FC<{ children: React.ReactNode }> = ({ children
       return result;
     } catch (err) {
       setIsAnalyzing(false);
+
       if (err instanceof InvalidCropImageError || (err as Error)?.name === 'InvalidCropImageError') {
         throw err;
       }
-      const fallback = getDefaultDiagnosisForCrop(cropId);
+
+      const fallback = getDefaultDiagnosisForCrop(speciesId);
       setDiagnosis(fallback);
       setActiveTab('diagnosis');
       return fallback;
@@ -257,6 +327,14 @@ export const CropProvider: React.FC<{ children: React.ReactNode }> = ({ children
         setActiveTab,
         selectedCropId,
         setSelectedCropId,
+        selectedAnimal,
+        setSelectedAnimal,
+        herd,
+        vaccinations,
+        refreshHerd,
+        refreshVaccinations,
+        addAnimalToHerd,
+        recordVaccination,
         diagnosis,
         setDiagnosis,
         isAnalyzing,
@@ -286,3 +364,5 @@ export const useCrop = () => {
   }
   return context;
 };
+
+export const useLivestock = useCrop;
