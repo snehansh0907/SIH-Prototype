@@ -168,26 +168,27 @@ export const ExpertConsultView: React.FC = () => {
           expertId: 'exp-patil-1',
           status,
           correctedCrop: diagnosis.cropName,
-          correctedDisease: status === 'corrected' ? 'Alternaria Leaf Blight' : diagnosis.diseaseName,
+          correctedDisease: status === 'corrected' ? 'Foot-and-Mouth Disease' : diagnosis.diseaseName,
           reviewNotes: status === 'confirmed'
-            ? 'Confirmed symptoms match classical fungal lesions with concentric rings.'
-            : 'Reclassified as Alternaria based on target-board concentric markings.'
+            ? 'Confirmed clinical skin nodules typical of Capripoxvirus (LSD) infection.'
+            : 'Reclassified as Foot-and-Mouth Disease based on oral mucosal lesions.'
         }),
       });
     } catch {}
     setDiagnosis({
       ...diagnosis,
-      diseaseName: status === 'corrected' ? 'Alternaria Leaf Blight' : diagnosis.diseaseName,
+      diseaseName: status === 'corrected' ? 'Foot-and-Mouth Disease' : diagnosis.diseaseName,
       expertReviewStatus: status,
-      expertNotes: status === 'confirmed' ? 'Verified by Dr. Patil (KVK)' : 'Corrected to Alternaria by Dr. Patil (KVK)',
+      expertNotes: status === 'confirmed' ? 'Verified by Dr. Ashok Kulkarni (LDO)' : 'Corrected by Dr. Ashok Kulkarni (LDO)',
     });
   };
 
-  const quickChips = [
-    t.chipFungicide,
-    t.chipSprayBeforeRain,
-    t.chipOrganicAlternative,
-  ];
+  const quickChips =
+    language === 'mr'
+      ? ['जखमांची स्वच्छता कशी करावी?', 'लंपी/लाळ्या लस कधी टोचावी?', 'दूध पिण्यासाठी सुरक्षित आहे का?', '१९६२ वर संपर्क कसा करावा?']
+      : language === 'hi'
+      ? ['घावों की सफाई कैसे करें?', 'लम्पी/FMD टीका कब लगवाएं?', 'क्या दूध पीना सुरक्षित है?', '1962 हेल्पलाइन पर कॉल करें']
+      : ['How to clean lesions with KMnO4?', 'When to give Goat Pox vaccine?', 'Is boiled milk safe to drink?', 'Call 1962 Veterinary Helpline'];
 
   const getMessageText = (msg: ChatMessage) => {
     if (language === 'mr' && msg.textMr) return msg.textMr;
@@ -217,21 +218,21 @@ export const ExpertConsultView: React.FC = () => {
           <span>{t.navHome}</span>
         </button>
 
-        {/* Demo Helpline Call Button */}
+        {/* Toll-Free Vet Helpline 1962 Button */}
         <button
           type="button"
-          onClick={() => alert(t.demoHelplineCall)}
-          className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-forest-100 text-forest-900 border border-forest-300 font-bold text-xs hover:bg-forest-200 transition-colors shadow-sm"
+          onClick={() => alert(language === 'mr' ? 'शासकीय फिरता पशुवैद्यकीय दवाखाना हेल्पलाइन: १९६२ (टोल-फ्री)' : language === 'hi' ? 'सचल पशुचिकित्सा हेल्पलाइन: 1962 (टोल-फ्री)' : 'Govt. of Maharashtra Mobile Veterinary Clinic Helpline: 1962 (Toll-Free)')}
+          className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-forest-100 text-forest-900 border border-forest-300 font-bold text-xs hover:bg-forest-200 transition-colors shadow-sm cursor-pointer"
         >
           <PhoneCall className="w-3.5 h-3.5 text-forest-700" />
-          <span>1800-000-0000 (Demo)</span>
+          <span>1962 (Vet Helpline)</span>
         </button>
       </div>
 
       {/* Screen Title */}
       <div className="mb-3">
         <h2 className="text-lg font-black text-stone-900 font-display flex items-center gap-2">
-          <span>👨‍🌾</span>
+          <span>🩺</span>
           <span>{t.expertTitle}</span>
         </h2>
         <p className="text-xs text-stone-500 font-medium">
@@ -258,7 +259,7 @@ export const ExpertConsultView: React.FC = () => {
       <div className="rounded-2xl bg-amber-50/90 border border-amber-300 p-3.5 shadow-sm mb-3.5 flex items-center justify-between">
         <div className="flex items-center gap-3">
           <div className="w-10 h-10 rounded-xl bg-amber-100 flex items-center justify-center text-xl shadow-inner shrink-0">
-            🌿
+            🩺
           </div>
           <div>
             <div className="text-[10px] uppercase font-bold tracking-wider text-amber-800 font-display">
@@ -279,7 +280,7 @@ export const ExpertConsultView: React.FC = () => {
           <div className="flex items-center gap-1.5">
             <span className="text-sm">🛡️</span>
             <span className="text-xs font-black uppercase tracking-wider text-stone-800 font-display">
-              {language === 'mr' ? 'तज्ज्ञ पडताळणी प्रकरण' : language === 'hi' ? 'विशेषज्ञ सत्यापन मामला' : 'Expert Verification Case'}
+              {language === 'mr' ? 'पशुवैद्यकीय पडताळणी प्रकरण' : language === 'hi' ? 'पशुचिकित्सक सत्यापन मामला' : 'Veterinary Verification Case'}
             </span>
           </div>
           <span
@@ -307,10 +308,10 @@ export const ExpertConsultView: React.FC = () => {
           <div className="space-y-2">
             <p className="text-[11px] text-stone-600">
               {language === 'mr'
-                ? 'तुमच्या पिकाचा फोटो आणि AI निदान थेट KVK कृषी शास्त्रज्ञांकडे पडताळणीसाठी पाठवा.'
+                ? 'तुमच्या जनावराचा फोटो आणि AI लक्षण निदान थेट शासकीय पशुवैद्यकीय अधिकाऱ्यांकडे (LDO) पडताळणीसाठी पाठवा.'
                 : language === 'hi'
-                ? 'अपनी फसल का फोटो और AI निदान सीधे KVK कृषि वैज्ञानिक को सत्यापन के लिए भेजें।'
-                : 'Send your leaf photo and AI diagnosis directly to the regional KVK agronomist for official verification.'}
+                ? 'अपने पशु का फोटो और AI लक्षण निदान सीधे पशुचिकित्सा अधिकारी (LDO) को सत्यापन के लिए भेजें।'
+                : 'Send your animal symptom photo and AI diagnosis directly to the regional Live Stock Development Officer for verification.'}
             </p>
             <button
               type="button"
@@ -324,7 +325,7 @@ export const ExpertConsultView: React.FC = () => {
                   <span>Submitting Case...</span>
                 </>
               ) : (
-                <span>🛡️ {language === 'mr' ? 'तज्ज्ञ पडताळणीसाठी विनंती करा' : language === 'hi' ? 'विशेषज्ञ सत्यापन का अनुरोध करें' : 'Request Expert Verification'}</span>
+                <span>🛡️ {language === 'mr' ? 'पशुवैद्यकीय पडताळणीसाठी विनंती करा' : language === 'hi' ? 'पशुचिकित्सक सत्यापन का अनुरोध करें' : 'Request Vet Verification'}</span>
               )}
             </button>
           </div>
@@ -333,18 +334,18 @@ export const ExpertConsultView: React.FC = () => {
             <p className="text-[11px] text-stone-700 font-medium">
               {diagnosis.expertReviewStatus === 'pending'
                 ? (language === 'mr'
-                    ? 'प्रकरण दाखल केले आहे. KVK नाशिकचे तज्ज्ञ या निदानाचे पुनरावलोकन करत आहेत.'
+                    ? 'प्रकरण दाखल केले आहे. पशुवैद्यकीय अधिकारी या निदानाचे पुनरावलोकन करत आहेत.'
                     : language === 'hi'
-                    ? 'मामला दर्ज किया गया है। KVK नासिक के विशेषज्ञ इस निदान की समीक्षा कर रहे हैं।'
-                    : 'Case filed in queue. KVK agronomists are reviewing your crop photo and AI diagnosis.')
-                : (diagnosis.expertNotes || 'Verified by regional KVK specialist.')}
+                    ? 'मामला दर्ज किया गया है। पशुचिकित्सा अधिकारी इस निदान की समीक्षा कर रहे हैं।'
+                    : 'Case filed in queue. Veterinary officers are reviewing your animal symptom photo.')
+                : (diagnosis.expertNotes || 'Verified by Live Stock Development Officer.')}
             </p>
 
             {/* Evaluator Simulation Control (Clearly labeled for SIH evaluator demo) */}
             <div className="bg-amber-50/70 border border-amber-200/80 rounded-xl p-2.5 mt-2">
               <div className="text-[10px] font-extrabold uppercase tracking-wider text-amber-900 mb-1.5 flex items-center gap-1">
                 <span>⚙️</span>
-                <span>SIH Evaluator Action (Simulate KVK Desk)</span>
+                <span>SIH Evaluator Action (Simulate Vet Review Desk)</span>
               </div>
               <div className="grid grid-cols-2 gap-2">
                 <button
@@ -431,10 +432,10 @@ export const ExpertConsultView: React.FC = () => {
             </div>
             <span className="text-[11px] font-medium text-stone-600 italic">
               {language === 'mr'
-                ? 'डॉ. पाटील उत्तर टाईप करत आहेत...'
+                ? 'डॉ. अशोक कुलकर्णी उत्तर टाईप करत आहेत...'
                 : language === 'hi'
-                ? 'डॉ. पाटिल टाइप कर रहे हैं...'
-                : 'Dr. Patil is typing...'}
+                ? 'डॉ. अशोक कुलकर्णी टाइप कर रहे हैं...'
+                : 'Dr. Ashok Kulkarni is typing...'}
             </span>
           </div>
         )}

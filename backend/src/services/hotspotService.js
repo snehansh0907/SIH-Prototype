@@ -26,19 +26,19 @@ const LOCAL_DIAGNOSES_FILE = path.resolve(__dirname, '../data/diagnosis_cases.js
 const BASE_LAT = 20.0850;
 const BASE_LNG = 74.1100;
 
-// Deterministic seed records for offline / demo mode
+// Deterministic seed records for offline / demo mode (Niphad, Nashik taluka livestock clusters)
 const DEMO_SEEDED_CASES = [
-  { id: 'c-1', latitude: 20.092, longitude: 74.118, predicted_disease: 'Purple Blotch', crop: 'onion', status: 'confirmed', created_at: new Date(Date.now() - 2 * 86400000).toISOString() },
-  { id: 'c-2', latitude: 20.078, longitude: 74.102, predicted_disease: 'Purple Blotch', crop: 'onion', status: 'confirmed', created_at: new Date(Date.now() - 3 * 86400000).toISOString() },
-  { id: 'c-3', latitude: 20.089, longitude: 74.125, predicted_disease: 'Purple Blotch', crop: 'onion', status: 'confirmed', created_at: new Date(Date.now() - 1 * 86400000).toISOString() },
-  { id: 'c-4', latitude: 20.071, longitude: 74.095, predicted_disease: 'Purple Blotch', crop: 'onion', status: 'confirmed', created_at: new Date(Date.now() - 4 * 86400000).toISOString() },
-  { id: 'c-5', latitude: 20.098, longitude: 74.130, predicted_disease: 'Purple Blotch', crop: 'onion', status: 'suspected', created_at: new Date(Date.now() - 1 * 86400000).toISOString() },
-  { id: 'c-6', latitude: 20.081, longitude: 74.114, predicted_disease: 'Purple Blotch', crop: 'onion', status: 'confirmed', created_at: new Date(Date.now() - 2 * 86400000).toISOString() },
-  { id: 'c-7', latitude: 20.086, longitude: 74.108, predicted_disease: 'Purple Blotch', crop: 'onion', status: 'confirmed', created_at: new Date(Date.now() - 5 * 86400000).toISOString() },
-  { id: 'c-8', latitude: 20.075, longitude: 74.122, predicted_disease: 'Purple Blotch', crop: 'onion', status: 'suspected', created_at: new Date(Date.now() - 2 * 86400000).toISOString() },
-  { id: 'c-9', latitude: 20.094, longitude: 74.105, predicted_disease: 'Early Blight', crop: 'tomato', status: 'confirmed', created_at: new Date(Date.now() - 3 * 86400000).toISOString() },
-  { id: 'c-10', latitude: 20.083, longitude: 74.119, predicted_disease: 'Early Blight', crop: 'tomato', status: 'confirmed', created_at: new Date(Date.now() - 2 * 86400000).toISOString() },
-  { id: 'c-11', latitude: 20.065, longitude: 74.088, predicted_disease: 'Soybean Rust', crop: 'soybean', status: 'confirmed', created_at: new Date(Date.now() - 4 * 86400000).toISOString() },
+  { id: 'c-1', latitude: 20.092, longitude: 74.118, predicted_disease: 'Lumpy Skin Disease', crop: 'cattle', species: 'cattle', status: 'confirmed', created_at: new Date(Date.now() - 2 * 86400000).toISOString() },
+  { id: 'c-2', latitude: 20.078, longitude: 74.102, predicted_disease: 'Lumpy Skin Disease', crop: 'cattle', species: 'cattle', status: 'confirmed', created_at: new Date(Date.now() - 3 * 86400000).toISOString() },
+  { id: 'c-3', latitude: 20.089, longitude: 74.125, predicted_disease: 'Foot-and-Mouth Disease', crop: 'buffalo', species: 'buffalo', status: 'confirmed', created_at: new Date(Date.now() - 1 * 86400000).toISOString() },
+  { id: 'c-4', latitude: 20.071, longitude: 74.095, predicted_disease: 'Lumpy Skin Disease', crop: 'cattle', species: 'cattle', status: 'confirmed', created_at: new Date(Date.now() - 4 * 86400000).toISOString() },
+  { id: 'c-5', latitude: 20.098, longitude: 74.130, predicted_disease: 'Lumpy Skin Disease', crop: 'cattle', species: 'cattle', status: 'suspected', created_at: new Date(Date.now() - 1 * 86400000).toISOString() },
+  { id: 'c-6', latitude: 20.081, longitude: 74.114, predicted_disease: 'Foot-and-Mouth Disease', crop: 'cattle', species: 'cattle', status: 'confirmed', created_at: new Date(Date.now() - 2 * 86400000).toISOString() },
+  { id: 'c-7', latitude: 20.086, longitude: 74.108, predicted_disease: 'Lumpy Skin Disease', crop: 'buffalo', species: 'buffalo', status: 'confirmed', created_at: new Date(Date.now() - 5 * 86400000).toISOString() },
+  { id: 'c-8', latitude: 20.075, longitude: 74.122, predicted_disease: 'Foot-and-Mouth Disease', crop: 'goat', species: 'goat', status: 'suspected', created_at: new Date(Date.now() - 2 * 86400000).toISOString() },
+  { id: 'c-9', latitude: 20.094, longitude: 74.105, predicted_disease: 'Lumpy Skin Disease', crop: 'cattle', species: 'cattle', status: 'confirmed', created_at: new Date(Date.now() - 3 * 86400000).toISOString() },
+  { id: 'c-10', latitude: 20.083, longitude: 74.119, predicted_disease: 'Foot-and-Mouth Disease', crop: 'cattle', species: 'cattle', status: 'confirmed', created_at: new Date(Date.now() - 2 * 86400000).toISOString() },
+  { id: 'c-11', latitude: 20.065, longitude: 74.088, predicted_disease: 'Lumpy Skin Disease', crop: 'cattle', species: 'cattle', status: 'confirmed', created_at: new Date(Date.now() - 4 * 86400000).toISOString() },
 ];
 
 /**
@@ -220,14 +220,15 @@ async function getHotspots({ disease, crop, taluka, latitude = BASE_LAT, longitu
   const reportCount = nearbyCases.length;
   const level = reportCount >= 6 ? 'HIGH' : reportCount >= 2 ? 'MODERATE' : 'LOW';
 
-  const selectedCrop = crop ? crop.toLowerCase() : 'onion';
-  const selectedDisease = disease ? disease.toLowerCase() : 'purple_blotch';
+  const selectedCrop = crop ? crop.toLowerCase() : 'cattle';
+  const selectedDisease = disease ? disease.toLowerCase() : 'lumpy_skin_disease';
 
   const shapeAnonymizedCase = (c) => ({
     latitude: c.latitude,
     longitude: c.longitude,
     disease: c.disease || c.predicted_disease,
     crop: c.crop,
+    species: c.crop,
     status: c.status,
     distanceKm: c.distanceKm,
     created_at: c.created_at,
@@ -241,11 +242,12 @@ async function getHotspots({ disease, crop, taluka, latitude = BASE_LAT, longitu
     reportCount,
     radiusKm: targetRadius,
     crop: selectedCrop,
+    species: selectedCrop,
     disease: selectedDisease,
-    displayMessage: `${reportCount} disease reports within ${targetRadius} km`,
-    displayMessageHi: `${targetRadius} किमी के भीतर ${reportCount} रोग रिपोर्टें`,
-    displayMessageMr: `${targetRadius} किमी परिसरात ${reportCount} रोगाच्या नोंदी`,
-    privacyNotice: 'Anonymized community data. Individual farmer identities and exact plot numbers are strictly protected.',
+    displayMessage: `${reportCount} livestock outbreak reports within ${targetRadius} km (Surveillance Ring)`,
+    displayMessageHi: `${targetRadius} किमी के भीतर ${reportCount} पशु रोग प्रकोप रिपोर्टें (निगरानी क्षेत्र)`,
+    displayMessageMr: `${targetRadius} किमी परिसरात ${reportCount} जनावरांच्या आजाराच्या नोंदी (रिंग निगराणी)`,
+    privacyNotice: 'Anonymized veterinary surveillance data. Livestock owner identities and exact shed locations are strictly protected.',
     confirmed_cases: confirmed,
     suspected_cases: suspected,
     total: reportCount,
