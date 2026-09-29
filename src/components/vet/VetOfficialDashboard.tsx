@@ -10,11 +10,13 @@ import {
   ChevronRight,
   ChevronDown,
   Check,
+  ShieldAlert,
+  AlertTriangle,
 } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import { useLanguage } from '../../context/LanguageContext';
 import { apiClient } from '../../services/apiClient';
-import type { VeterinaryCaseRecord, Language } from '../../types';
+import type { VeterinaryCaseRecord, OutbreakAlert, Language } from '../../types';
 import { VetCaseDetailModal } from './VetCaseDetailModal';
 
 export const VetOfficialDashboard: React.FC = () => {
@@ -22,6 +24,7 @@ export const VetOfficialDashboard: React.FC = () => {
   const { language, setLanguage } = useLanguage();
 
   const [cases, setCases] = useState<VeterinaryCaseRecord[]>([]);
+  const [outbreakAlerts, setOutbreakAlerts] = useState<OutbreakAlert[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [selectedStatusTab, setSelectedStatusTab] = useState<string>('all');
   const [selectedSpecies, setSelectedSpecies] = useState<string>('all');
@@ -29,17 +32,26 @@ export const VetOfficialDashboard: React.FC = () => {
   const [activeCaseForDetail, setActiveCaseForDetail] = useState<VeterinaryCaseRecord | null>(null);
   const [showLangMenu, setShowLangMenu] = useState(false);
 
-  // Fetch all regional cases from backend
+  // Fetch all regional cases and active outbreaks from backend
   const fetchRegionalCases = async () => {
     setIsLoading(true);
     try {
-      const res = await apiClient<{ success: boolean; data: VeterinaryCaseRecord[]; count: number }>('/diagnosis/cases', {
-        method: 'GET',
-        timeout: 8000,
-      });
+      const [casesRes, outbreaksRes] = await Promise.all([
+        apiClient<{ success: boolean; data: VeterinaryCaseRecord[]; count: number }>('/diagnosis/cases', {
+          method: 'GET',
+          timeout: 8000,
+        }),
+        apiClient<{ success: boolean; data: OutbreakAlert[]; count: number }>('/outbreaks', {
+          method: 'GET',
+          timeout: 8000,
+        }),
+      ]);
 
-      if (res.success && Array.isArray(res.data)) {
-        setCases(res.data);
+      if (casesRes.success && Array.isArray(casesRes.data)) {
+        setCases(casesRes.data);
+      }
+      if (outbreaksRes.success && Array.isArray(outbreaksRes.data)) {
+        setOutbreakAlerts(outbreaksRes.data);
       }
     } catch (err) {
       console.warn('[VetOfficialDashboard] Fallback to locally stored cases');
@@ -224,6 +236,100 @@ export const VetOfficialDashboard: React.FC = () => {
             </div>
           </div>
         </div>
+
+        {/* AUTOMATED OUTBREAK TRIAGE WARNING SECTION */}
+        {outbreakAlerts.length > 0 && (
+          <div className="space-y-3">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <span className="w-3 h-3 rounded-full bg-rose-500 animate-ping shrink-0" />
+                <h3 className="text-sm font-black uppercase tracking-widest text-rose-400 flex items-center gap-1.5">
+                  <ShieldAlert className="w-4 h-4 text-rose-400" />
+                  <span>Suspected Outbreak Alerts (Rule-Based Triage Engine)</span>
+                </h3>
+              </div>
+              <span className="text-xs font-bold text-rose-300 bg-rose-950/80 px-2.5 py-0.5 rounded-full border border-rose-800">
+                {outbreakAlerts.length} Active Spatial Clusters (5km / 7-Day Window)
+              </span>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5">
+              {outbreakAlerts.map((outbreak) => (
+                <div
+                  key={outbreak.id}
+                  className="bg-gradient-to-br from-rose-950/90 via-slate-900 to-rose-950/60 p-5 rounded-3xl border-2 border-rose-600/80 shadow-2xl space-y-3 relative overflow-hidden"
+                >
+                  <div className="flex items-start justify-between gap-2">
+                    <div>
+                      <div className="flex items-center gap-2">
+                        <span className="text-[10px] font-mono font-bold bg-rose-900/80 text-rose-200 px-2 py-0.5 rounded">
+                          {(outbreak as any).outbreak_code || 'EPI-MH-NIP'}
+                        </span>
+                        <span className="text-[10px] font-black uppercase bg-rose-600 text-white px-2 py-0.5 rounded animate-pulse">
+                          {outbreak.status || 'ACTIVE'} OUTBREAK
+                        </span>
+                      </div>
+                      <h4 className="text-lg font-black text-white mt-1">
+                        {outbreak.disease_name} Cluster
+                      </h4>
+                      <p className="text-xs text-rose-200 font-medium">
+                        Species: <span className="uppercase font-bold">{outbreak.species}</span> • Center: {outbreak.cluster_center.village || 'Niphad'}, {outbreak.cluster_center.taluka || 'Niphad'}
+                      </p>
+                    </div>
+
+                    <div className="text-right shrink-0">
+                      <div className="text-2xl font-black text-rose-400">
+                        {outbreak.total_case_count} Cases
+                      </div>
+                      <div className="text-[10px] text-rose-300 font-semibold">
+                        {outbreak.mortality_case_count} Deaths • {outbreak.symptom_case_count} Symptoms
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Triage Criteria Badges */}
+                  <div className="grid grid-cols-3 gap-2 bg-slate-950/60 p-2.5 rounded-2xl border border-rose-900/50 text-[11px]">
+                    <div>
+                      <span className="text-slate-400 block text-[9px] uppercase">Radius</span>
+                      <span className="font-bold text-white">{outbreak.radius_km || 5.0} km</span>
+                    </div>
+                    <div>
+                      <span className="text-slate-400 block text-[9px] uppercase">Time Window</span>
+                      <span className="font-bold text-white">{outbreak.time_window_days || 7} Days</span>
+                    </div>
+                    <div>
+                      <span className="text-slate-400 block text-[9px] uppercase">Triage Trigger</span>
+                      <span className="font-bold text-amber-300">&ge; 3.0 Threshold</span>
+                    </div>
+                  </div>
+
+                  {/* Containment Directive */}
+                  {outbreak.notes || (outbreak as any).containment_advisory ? (
+                    <div className="p-3 rounded-2xl bg-rose-900/40 border border-rose-700/60 text-xs text-rose-100 flex items-start gap-2">
+                      <AlertTriangle className="w-4 h-4 text-amber-300 shrink-0 mt-0.5" />
+                      <p className="leading-relaxed">
+                        <strong className="text-amber-200">Containment Protocol:</strong> {outbreak.notes || (outbreak as any).containment_advisory}
+                      </p>
+                    </div>
+                  ) : null}
+
+                  <div className="flex items-center justify-between pt-1">
+                    <span className="text-[10px] text-slate-400 font-mono">
+                      Flagged: {new Date(outbreak.flagged_at).toLocaleString('en-IN', { dateStyle: 'short', timeStyle: 'short' })}
+                    </span>
+                    <button
+                      type="button"
+                      onClick={() => setSearchQuery(outbreak.disease_name)}
+                      className="px-3 py-1.5 rounded-xl bg-rose-700 hover:bg-rose-600 active:scale-95 text-white font-extrabold text-xs transition-all shadow-sm cursor-pointer"
+                    >
+                      Filter Clustered Cases &rarr;
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
 
         {/* Metric KPI Cards Grid */}
         <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 gap-3">

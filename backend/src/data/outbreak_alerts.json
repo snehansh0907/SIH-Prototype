@@ -1,0 +1,31 @@
+[
+  {
+    "id": "outbreak-niphad-lsd-001",
+    "outbreak_code": "EPI-MH-NIP-2026-01",
+    "disease_name": "Lumpy Skin Disease",
+    "species": "cattle",
+    "cluster_center": {
+      "village": "Chandori & Niphad Central",
+      "taluka": "Niphad",
+      "district": "Nashik",
+      "latitude": 20.0825,
+      "longitude": 74.1112
+    },
+    "radius_km": 5,
+    "time_window_days": 7,
+    "symptom_case_count": 4,
+    "mortality_case_count": 1,
+    "total_case_count": 5,
+    "threshold_crossed": 5.5,
+    "case_ids": [
+      "case-seed-001",
+      "case-seed-002",
+      "mort-seed-001"
+    ],
+    "status": "ACTIVE",
+    "priority": "CRITICAL",
+    "flagged_at": "2026-09-29T21:40:14.494Z",
+    "updated_at": "2026-09-29T21:40:14.494Z",
+    "containment_advisory": "Immediate Ring Vaccination (Goat Pox vaccine) required within 5km of Chandori-Niphad belt. Restrict live cattle bazaars."
+  }
+]

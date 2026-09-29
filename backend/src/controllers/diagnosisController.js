@@ -20,11 +20,24 @@ const { calculateRisk } = require('../services/riskService');
 const { buildAdvisory } = require('../services/advisoryService');
 const mlInferenceService = require('../services/mlInferenceService');
 const { getDiseasesByCrop } = require('../data/diseaseKnowledgeBase');
+const triageService = require('../services/triageService');
 
 const LOCAL_DIAGNOSES_FILE = path.resolve(__dirname, '../data/diagnosis_cases.json');
 
 function saveLocalDiagnosis(record) {
   try {
+    // Run rule-based epidemic outbreak triage
+    try {
+      const triageResult = triageService.evaluateTriageForNewReport(record);
+      if (triageResult && triageResult.isOutbreakFlagged) {
+        record.is_outbreak_flagged = true;
+        record.outbreak_id = triageResult.outbreakAlert?.id;
+        record.status = 'Escalated';
+      }
+    } catch (triageErr) {
+      console.warn('[diagnosisController] Triage evaluation warning:', triageErr.message);
+    }
+
     let list = [];
     if (fs.existsSync(LOCAL_DIAGNOSES_FILE)) {
       list = JSON.parse(fs.readFileSync(LOCAL_DIAGNOSES_FILE, 'utf8') || '[]');

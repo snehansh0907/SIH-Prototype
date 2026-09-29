@@ -23,6 +23,7 @@ const advisoryRoutes = require('./routes/advisoryRoutes');
 const authRoutes = require('./routes/authRoutes');
 const locationRoutes = require('./routes/locationRoutes');
 const mortalityRoutes = require('./routes/mortalityRoutes');
+const outbreakRoutes = require('./routes/outbreakRoutes');
 
 const app = express();
 
@@ -109,6 +110,8 @@ app.use('/api/auth', authRoutes);
 app.use('/api/location', locationRoutes);
 app.use('/api/mortality', mortalityRoutes);
 app.use('/api/mortality-reports', mortalityRoutes);
+app.use('/api/outbreaks', outbreakRoutes);
+app.use('/api/triage/outbreaks', outbreakRoutes);
 
 // ---------------- TTS Streaming Proxy ----------------
 app.get(

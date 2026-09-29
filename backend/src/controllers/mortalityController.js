@@ -8,6 +8,7 @@ const path = require('path');
 const { v4: uuidv4 } = require('uuid');
 const { supabase } = require('../config/supabase');
 const { asyncHandler, ApiError } = require('../middleware/errorHandler');
+const triageService = require('../services/triageService');
 
 const DATA_DIR = path.join(__dirname, '..', 'data');
 const LOCAL_MORTALITY_FILE = path.join(DATA_DIR, 'mortality_reports.json');
@@ -168,12 +169,24 @@ const createMortalityReport = asyncHandler(async (req, res) => {
     updated_at: now,
   };
 
-  // 1. Save to local mortality_reports.json
+  // 1. Run real-time epidemic spatio-temporal triage
+  try {
+    const triageResult = triageService.evaluateTriageForNewReport(mortalityRecord);
+    if (triageResult && triageResult.isOutbreakFlagged) {
+      mortalityRecord.is_outbreak_flagged = true;
+      mortalityRecord.outbreak_id = triageResult.outbreakAlert?.id;
+      mortalityRecord.status = 'Escalated';
+    }
+  } catch (triageErr) {
+    console.warn('[mortalityController] Triage evaluation warning:', triageErr.message);
+  }
+
+  // 2. Save to local mortality_reports.json
   const reports = getLocalMortalityReports();
   reports.unshift(mortalityRecord);
   saveLocalMortalityReports(reports);
 
-  // 2. Synchronize to unified cases feed
+  // 3. Synchronize to unified cases feed
   syncToDiagnosisCases(mortalityRecord);
 
   // 3. Attempt Supabase persistence
