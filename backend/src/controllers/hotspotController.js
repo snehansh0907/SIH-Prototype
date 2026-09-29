@@ -1,26 +1,29 @@
 // =========================================================
 // Hotspot Controller
 // =========================================================
-// GET /api/hotspots?disease=&crop=&taluka=
-// Returns confirmed and suspected cases separately for the
-// frontend's Leaflet heatmap. No private farmer data included.
+// GET /api/hotspots?disease=&crop=&taluka=&lat=&lng=&radius=
+// Returns anonymized disease report cluster for local area radar.
+// Private farmer information is NEVER exposed.
 // =========================================================
 
 const { asyncHandler } = require('../middleware/errorHandler');
 const { getHotspots } = require('../services/hotspotService');
 
 const getAllHotspots = asyncHandler(async (req, res) => {
-  const { disease, crop, taluka } = req.query;
+  const { disease, crop, taluka, lat, lng, radius } = req.query;
 
-  const { confirmed, suspected } = await getHotspots({ disease, crop, taluka });
+  const result = await getHotspots({
+    disease,
+    crop,
+    taluka,
+    latitude: lat ? parseFloat(lat) : undefined,
+    longitude: lng ? parseFloat(lng) : undefined,
+    radiusKm: radius ? parseFloat(radius) : undefined,
+  });
 
   res.json({
     success: true,
-    data: {
-      confirmed_cases: confirmed,
-      suspected_cases: suspected,
-      total: confirmed.length + suspected.length,
-    },
+    data: result,
   });
 });
 

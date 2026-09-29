@@ -610,69 +610,48 @@ export const expertService = {
 
     session.push(farmerMsg);
 
-    // 1. Attempt optional remote LLM if an API key is available
+    // 1. Attempt server-side LLM if configured on backend
     let remoteSuccess = false;
     let remoteReplyText = '';
 
-    const apiKey =
-      (import.meta as any).env?.VITE_ANTHROPIC_API_KEY ||
-      (typeof localStorage !== 'undefined'
-        ? localStorage.getItem('ANTHROPIC_API_KEY') || localStorage.getItem('VITE_ANTHROPIC_API_KEY')
-        : '') ||
-      '';
+    try {
+      const systemPrompt = buildExpertSystemPrompt(activeContext);
+      const conversationHistory: Array<{ role: 'user' | 'assistant'; content: string }> = [];
 
-    if (apiKey) {
-      try {
-        const systemPrompt = buildExpertSystemPrompt(activeContext);
-        const conversationHistory: Array<{ role: 'user' | 'assistant'; content: string }> = [];
+      for (const msg of session) {
+        if (msg.id === 'm1') continue;
+        const role = msg.sender === 'farmer' ? 'user' : 'assistant';
+        const content = msg.text;
+        if (!content) continue;
 
-        for (const msg of session) {
-          if (msg.id === 'm1') continue;
-          const role = msg.sender === 'farmer' ? 'user' : 'assistant';
-          const content = msg.text;
-          if (!content) continue;
+        if (conversationHistory.length === 0 && role !== 'user') continue;
 
-          if (conversationHistory.length === 0 && role !== 'user') continue;
-
-          const prev = conversationHistory[conversationHistory.length - 1];
-          if (prev && prev.role === role) {
-            prev.content += `\n${content}`;
-          } else {
-            conversationHistory.push({ role, content });
-          }
+        const prev = conversationHistory[conversationHistory.length - 1];
+        if (prev && prev.role === role) {
+          prev.content += `\n${content}`;
+        } else {
+          conversationHistory.push({ role, content });
         }
-
-        if (conversationHistory.length === 0 || conversationHistory[conversationHistory.length - 1].role !== 'user') {
-          conversationHistory.push({ role: 'user', content: text });
-        }
-
-        const response = await fetch('https://api.anthropic.com/v1/messages', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'anthropic-version': '2023-06-01',
-            'anthropic-dangerous-direct-browser-access': 'true',
-            'x-api-key': apiKey,
-          },
-          body: JSON.stringify({
-            model: 'claude-sonnet-4-6',
-            max_tokens: 1024,
-            system: systemPrompt,
-            messages: conversationHistory,
-          }),
-        });
-
-        if (response.ok) {
-          const data = await response.json();
-          remoteReplyText =
-            data.content?.find((c: any) => c.type === 'text')?.text ||
-            data.content?.[0]?.text ||
-            '';
-          if (remoteReplyText) remoteSuccess = true;
-        }
-      } catch {
-        // Fall through to local intelligent engine gracefully
       }
+
+      if (conversationHistory.length === 0 || conversationHistory[conversationHistory.length - 1].role !== 'user') {
+        conversationHistory.push({ role: 'user', content: text });
+      }
+
+      const res = await apiClient<{ success: boolean; text?: string; fallback?: boolean }>('/expert/chat', {
+        method: 'POST',
+        body: JSON.stringify({
+          messages: conversationHistory,
+          systemPrompt,
+        }),
+      });
+
+      if (res?.success && res.text) {
+        remoteReplyText = res.text;
+        remoteSuccess = true;
+      }
+    } catch {
+      // Fall through to local intelligent engine gracefully
     }
 
     // 2. Local Intelligent Response Engine (Always responsive, conversational, and agricultural)

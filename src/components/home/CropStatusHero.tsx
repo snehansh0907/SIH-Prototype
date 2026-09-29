@@ -11,12 +11,12 @@ import { getDefaultDiagnosisForCrop } from '../../services/mockData';
 
 export const CropStatusHero: React.FC = () => {
   const { language, t } = useLanguage();
-  const { diagnosis, setActiveTab } = useCrop();
+  const { diagnosis, setActiveTab, riskForecast } = useCrop();
   const { user, requireFarmerAccess } = useAuth();
 
   const isNewUser = user?.isNewUser && user?.userType === 'registered';
 
-  const activeCropKey = (user?.monitoredCrop || diagnosis?.cropId || 'tomato').toLowerCase().trim();
+  const activeCropKey = (user?.monitoredCrop || diagnosis?.cropId || 'onion').toLowerCase().trim();
   const isCropMatched = (diagnosis?.cropId || '').toLowerCase().trim() === activeCropKey;
   const isDiseaseValid = diagnosis?.diseaseName ? isDiseaseCompatibleWithCrop(diagnosis.diseaseName, activeCropKey) : true;
 
@@ -127,14 +127,21 @@ export const CropStatusHero: React.FC = () => {
   }
 
   // Standard Monitored Crop Status
-  const statusQuote =
+  // Dynamic non-contradictory risk explanation from the unified risk engine
+  const riskExplanation =
     language === 'mr'
-      ? (currentDiagnosis.whatMayHappenNext.textMr.slice(0, 110) + '...')
+      ? (riskForecast?.summaryMr || riskForecast?.reasons?.[0]?.detailMr || currentDiagnosis.whatMayHappenNext?.textMr)
       : language === 'hi'
-      ? ((currentDiagnosis.whatMayHappenNext.textHi || currentDiagnosis.whatMayHappenNext.text).slice(0, 110) + '...')
-      : (activeCropKey === 'soybean' && currentDiagnosis.whatMayHappenNext?.text
-          ? (currentDiagnosis.whatMayHappenNext.text.slice(0, 110) + '...')
-          : t.cropStatusDesc);
+      ? (riskForecast?.summaryHi || riskForecast?.reasons?.[0]?.detailHi || currentDiagnosis.whatMayHappenNext?.textHi)
+      : (riskForecast?.summary || riskForecast?.reasons?.[0]?.detail || currentDiagnosis.whatMayHappenNext?.text);
+
+  const statusQuote = riskExplanation || t.cropStatusDesc;
+
+  const confPercent = Math.round(
+    (currentDiagnosis.confidence ?? 0.91) <= 1
+      ? (currentDiagnosis.confidence ?? 0.91) * 100
+      : (currentDiagnosis.confidence ?? 91)
+  );
 
   return (
     <div className="relative overflow-hidden rounded-2xl bg-gradient-to-b from-amber-50/50 via-white to-white border border-amber-200/70 p-4 shadow-sm">
@@ -146,10 +153,15 @@ export const CropStatusHero: React.FC = () => {
             {t.myCropStatus}
           </h2>
         </div>
-        <StatusBadge level={currentDiagnosis.severity} type="severity" size="sm" />
+        <div className="flex items-center gap-1.5">
+          <span className="px-2 py-0.5 rounded-full bg-forest-50 text-forest-800 text-[10px] font-bold border border-forest-200">
+            AI {confPercent}%
+          </span>
+          <StatusBadge level={currentDiagnosis.severity} type="severity" size="sm" />
+        </div>
       </div>
 
-      {/* Main Focus: Status Message */}
+      {/* Main Focus: Status Message (Non-contradictory risk explanation) */}
       <div className="flex items-start gap-2 mb-3">
         <AlertTriangle className="w-4 h-4 text-amber-600 shrink-0 mt-0.5" />
         <p className="text-xs font-semibold text-stone-800 leading-relaxed">
@@ -165,9 +177,14 @@ export const CropStatusHero: React.FC = () => {
           <span className="text-stone-600 font-medium truncate">{diseaseName}</span>
         </div>
 
-        <div className="flex items-center gap-1 text-[10px] text-stone-400 font-medium shrink-0 ml-2">
-          <Clock className="w-3 h-3 text-stone-400" />
-          <span>{t.lastScanned.split(':')[1] || 'Today'}</span>
+        <div className="flex items-center gap-2 text-[10px] text-stone-400 font-medium shrink-0 ml-2">
+          <span className="px-1.5 py-0.5 rounded bg-amber-50 text-amber-800 font-bold border border-amber-200 text-[9px] uppercase tracking-wide">
+            {language === 'mr' ? 'जोखीम' : language === 'hi' ? 'जोखिम' : 'Risk'}: {riskForecast?.currentLevel?.toUpperCase() || 'MODERATE'}
+          </span>
+          <div className="flex items-center gap-1">
+            <Clock className="w-3 h-3 text-stone-400" />
+            <span>{t.lastScanned.split(':')[1] || 'Today'}</span>
+          </div>
         </div>
       </div>
 

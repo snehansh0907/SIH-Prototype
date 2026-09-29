@@ -1,0 +1,245 @@
+[
+  {
+    "id": "def2ad39-5eb3-4d54-aef9-389edf0aae48",
+    "farmer_id": "KSF-BJFWYP",
+    "farm_id": "0402f9d2-e1ff-4697-af4f-d5383a90193c",
+    "crop_cycle_id": "099017a3-711a-4c97-9ae7-4bfd87d92e3c",
+    "image_url": "/uploads/crop_1790696244584_155111957.jpg",
+    "predicted_disease": "Purple Blotch",
+    "confidence": 91,
+    "severity_band": "Moderate",
+    "severity_percent": 42,
+    "latitude": 20.085,
+    "longitude": 74.11,
+    "status": "suspected",
+    "created_at": "2026-09-29T15:37:40.435Z",
+    "crop_name": "onion",
+    "advisory": {
+      "status": "MODERATE",
+      "what_to_do_today": [
+        "Avoid late-evening irrigations; destroy infected crop residue post harvest",
+        "Hand-pick and remove severely infected leaf tips early in the morning",
+        "Foliar application of Trichoderma viride or Pseudomonas fluorescens @ 5 g/litre"
+      ],
+      "what_to_monitor": [
+        "Recheck the crop after 48-72 hours to evaluate if lesions are dry or expanding",
+        "Monitor weather forecasts for impending rainfall and high relative humidity (>80%)",
+        "Track lower leaf canopy where micro-climate humidity remains highest"
+      ],
+      "prevention": [
+        "Use certified disease-free seeds or sets from reliable nurseries",
+        "Adopt a 2-3 year crop rotation without allium crops (onion, garlic, leek)",
+        "Avoid excessive overhead irrigation; prefer drip or furrow irrigation",
+        "Maintain proper plant spacing for sunlight penetration and fast foliage drying"
+      ],
+      "immediateActions": [
+        "Avoid late-evening irrigations; destroy infected crop residue post harvest",
+        "Hand-pick and remove severely infected leaf tips early in the morning"
+      ],
+      "monitoring": [
+        "Recheck the crop after 48-72 hours to evaluate if lesions are dry or expanding",
+        "Monitor weather forecasts for impending rainfall and high relative humidity (>80%)",
+        "Track lower leaf canopy where micro-climate humidity remains highest"
+      ],
+      "biologicalOptions": [
+        "Foliar application of Trichoderma viride or Pseudomonas fluorescens @ 5 g/litre"
+      ],
+      "chemicalIntervention": [
+        "Synthetic chemical sprays are currently NOT recommended at this mild stage. Rely on biological and cultural controls first.",
+        "Mancozeb 75% WP: 2.5 g/litre of water + sticker (0.5 ml/L); or Difenoconazole 25% EC: 1 ml/litre",
+        "Spray at 10-15 day intervals upon first appearance of purple lesions"
+      ],
+      "expertEscalation": [
+        "Contact a certified agricultural expert if symptoms persist or expand after 4 days of cultural treatment",
+        "Bring affected leaf sample inside an aerated paper bag to local Krishi Vigyan Kendra (KVK) if unsure"
+      ],
+      "expert_help_required": false,
+      "disease_info": {
+        "disease_name": "Purple Blotch",
+        "scientific_name": "Alternaria porri",
+        "description": "A common foliar fungal disease causing small water-soaked lesions that turn brown to purplish with distinct yellow halos, blighting leaves and reducing bulb yield.",
+        "how_it_spreads": [
+          "Spores spread by wind and rain splash during warm, humid weather",
+          "Requires prolonged leaf wetness (dew or rain) and 21-30°C temperature",
+          "Survives in crop debris and infected onion seed or sets"
+        ],
+        "safe_dosage": [
+          "Mancozeb 75% WP: 2.5 g/litre of water + sticker (0.5 ml/L); or Difenoconazole 25% EC: 1 ml/litre",
+          "Spray at 10-15 day intervals upon first appearance of purple lesions"
+        ],
+        "ipm_priority_order": [
+          "cultural",
+          "mechanical",
+          "biological",
+          "chemical"
+        ]
+      }
+    }
+  },
+  {
+    "id": "fc886b8c-cbcb-44fe-9310-ba3241e2e499",
+    "farmer_id": null,
+    "farm_id": "demo-farm-nashik",
+    "crop_cycle_id": null,
+    "image_url": "/uploads/crop_1790695693542_724993488.jpg",
+    "predicted_disease": "Unable to confidently identify problem",
+    "confidence": 48,
+    "severity_band": "Low",
+    "severity_percent": 15,
+    "latitude": 20.085,
+    "longitude": 74.11,
+    "status": "expert_review_pending",
+    "created_at": "2026-09-29T15:28:28.679Z",
+    "crop_name": "Onion",
+    "advisory": {
+      "status": "LOW",
+      "what_to_do_today": [
+        "Isolate and closely inspect adjacent plants for early lesion development",
+        "Take clear, well-lit photos of both upper and lower leaf surfaces",
+        "Avoid applying synthetic pesticides until disease identity is confirmed by an agronomist",
+        "Ensure proper drainage to prevent root moisture stagnation"
+      ],
+      "what_to_monitor": [
+        "Recheck crop in 48 hours for symptom spread or color alterations",
+        "Monitor relative humidity and morning dew duration on foliage"
+      ],
+      "prevention": [
+        "Maintain field hygiene and rogue out suspicious debris",
+        "Avoid late-evening overhead sprinkler irrigation"
+      ],
+      "immediateActions": [
+        "Isolate and closely inspect adjacent plants for early lesion development",
+        "Take clear, well-lit photos of both upper and lower leaf surfaces",
+        "Avoid applying synthetic pesticides until disease identity is confirmed by an agronomist",
+        "Ensure proper drainage to prevent root moisture stagnation"
+      ],
+      "monitoring": [
+        "Recheck crop in 48 hours for symptom spread or color alterations",
+        "Monitor relative humidity and morning dew duration on foliage"
+      ],
+      "biologicalOptions": [
+        "Apply preventive bio-control spray of Trichoderma viride @ 5g/L on lower canopy if conditions are wet",
+        "Maintain field sanitation and organic mulch cleanliness"
+      ],
+      "chemicalIntervention": [
+        "Chemical treatment is NOT recommended without certified expert diagnosis",
+        "Consult nearest Krishi Vigyan Kendra (KVK) or local agronomist before spraying"
+      ],
+      "expertEscalation": [
+        "Contact local agricultural extension officer or request verification in the app",
+        "Escalate immediately if symptoms spread across more than 5% of field canopy"
+      ],
+      "expert_help_required": true,
+      "disease_info": {
+        "disease_name": "Unable to confidently identify problem",
+        "scientific_name": "Pathogen not yet confirmed",
+        "description": "Plant symptoms require clear daylight re-scanning or manual agronomic verification."
+      }
+    }
+  },
+  {
+    "id": "f1571e02-d1f0-43f3-8c11-70b49749adf4",
+    "farmer_id": null,
+    "farm_id": "demo-farm-nashik",
+    "crop_cycle_id": null,
+    "image_url": "/uploads/crop_1790695646892_826995969.jpg",
+    "predicted_disease": "Purple Blotch",
+    "confidence": 91,
+    "severity_band": "Moderate",
+    "severity_percent": 42,
+    "latitude": 20.085,
+    "longitude": 74.11,
+    "status": "suspected",
+    "created_at": "2026-09-29T15:27:42.243Z",
+    "crop_name": "Onion",
+    "advisory": {
+      "status": "MODERATE",
+      "what_to_do_today": [
+        "Avoid late-evening irrigations; destroy infected crop residue post harvest",
+        "Hand-pick and remove severely infected leaf tips early in the morning",
+        "Foliar application of Trichoderma viride or Pseudomonas fluorescens @ 5 g/litre"
+      ],
+      "what_to_monitor": [
+        "Recheck the crop after 48-72 hours to evaluate if lesions are dry or expanding",
+        "Monitor weather forecasts for impending rainfall and high relative humidity (>80%)",
+        "Track lower leaf canopy where micro-climate humidity remains highest"
+      ],
+      "prevention": [
+        "Use certified disease-free seeds or sets from reliable nurseries",
+        "Adopt a 2-3 year crop rotation without allium crops (onion, garlic, leek)",
+        "Avoid excessive overhead irrigation; prefer drip or furrow irrigation",
+        "Maintain proper plant spacing for sunlight penetration and fast foliage drying"
+      ],
+      "immediateActions": [
+        "Avoid late-evening irrigations; destroy infected crop residue post harvest",
+        "Hand-pick and remove severely infected leaf tips early in the morning"
+      ],
+      "monitoring": [
+        "Recheck the crop after 48-72 hours to evaluate if lesions are dry or expanding",
+        "Monitor weather forecasts for impending rainfall and high relative humidity (>80%)",
+        "Track lower leaf canopy where micro-climate humidity remains highest"
+      ],
+      "biologicalOptions": [
+        "Foliar application of Trichoderma viride or Pseudomonas fluorescens @ 5 g/litre"
+      ],
+      "chemicalIntervention": [
+        "Synthetic chemical sprays are currently NOT recommended at this mild stage. Rely on biological and cultural controls first.",
+        "Mancozeb 75% WP: 2.5 g/litre of water + sticker (0.5 ml/L); or Difenoconazole 25% EC: 1 ml/litre",
+        "Spray at 10-15 day intervals upon first appearance of purple lesions"
+      ],
+      "expertEscalation": [
+        "Contact a certified agricultural expert if symptoms persist or expand after 4 days of cultural treatment",
+        "Bring affected leaf sample inside an aerated paper bag to local Krishi Vigyan Kendra (KVK) if unsure"
+      ],
+      "expert_help_required": false,
+      "disease_info": {
+        "disease_name": "Purple Blotch",
+        "scientific_name": "Alternaria porri",
+        "description": "A common foliar fungal disease causing small water-soaked lesions that turn brown to purplish with distinct yellow halos, blighting leaves and reducing bulb yield.",
+        "how_it_spreads": [
+          "Spores spread by wind and rain splash during warm, humid weather",
+          "Requires prolonged leaf wetness (dew or rain) and 21-30°C temperature",
+          "Survives in crop debris and infected onion seed or sets"
+        ],
+        "safe_dosage": [
+          "Mancozeb 75% WP: 2.5 g/litre of water + sticker (0.5 ml/L); or Difenoconazole 25% EC: 1 ml/litre",
+          "Spray at 10-15 day intervals upon first appearance of purple lesions"
+        ],
+        "ipm_priority_order": [
+          "cultural",
+          "mechanical",
+          "biological",
+          "chemical"
+        ]
+      }
+    }
+  },
+  {
+    "id": "case-onion-test-1",
+    "case_id": "case-onion-test-1",
+    "farmer_id": "farmer-suresh-1",
+    "crop": "Onion",
+    "disease": "Purple Blotch",
+    "predicted_disease": "Purple Blotch",
+    "confidence": 0.91,
+    "severity_band": "moderate",
+    "severity_percent": 45,
+    "image_url": null,
+    "status": "confirmed",
+    "created_at": "2026-09-29T15:25:25.758Z"
+  },
+  {
+    "id": "diag-onion-default",
+    "case_id": "diag-onion-default",
+    "farmer_id": "e57a8786-1392-42b7-9428-a644a6721b0a",
+    "crop": "Onion",
+    "disease": "Purple Blotch",
+    "predicted_disease": "Alternaria Leaf Blight",
+    "confidence": 0.91,
+    "severity_band": "moderate",
+    "severity_percent": 45,
+    "image_url": "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wCEAAkGBxIQEhUSEhIVFhUVGBgZFxgWFhcVFRcVGBcXFxYVGBUYHiggGB0lGxgYIzEhJSkrLi4uGB8zODMsOCgtLisBCgoKDg0OGhAQGi0lICYtLS0vKy0tLS0tLSstLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLf/AABEIAN8A4gMBIgACEQEDEQH/xAAcAAABBQEBAQAAAAAAAAAAAAAAAQIEBQYDBwj/xAA6EAABAwIEBAQEBAYCAwEBAAABAAIRAyEEEjFBBVFhcQYTIoEykaGxQsHR8AcUI1Ji4YLxM3KSUxX/xAAZAQADAQEBAAAAAAAAAAAAAAAAAQIDBAX/xAAjEQEBAAICAgMAAwEBAAAAAAAAAQIRAyESQRMxUQQUIqFh/9oADAMBAAIRAxEAPwD3FCRKgBCEIAQhCAEIQgBCEIAQhCAEIQgBCEIAQhCAEIQgBCEIAQhCAELJ8V8b06T8lOmahzlkyIcW/HliTAgguMCeas+CeJKOKJa2WvFi10a3JgjsonLhb477aXizk8tdLlCEK2YQhCAallNQkZyVNSymRUJAlQAhCEAIQhACEIQAhCJQAhCEAIQhACEIQAhCEALzfx74oc/EtwFGDF6uazSQA4MmNIvM6wOa3/E8czD0n1qhhlNpcewGg5k6LwjhfiI0sW/F1WZ31i6Wh0AeY4GJg2aLLDnz1NR1fxuLyty/EjhmHq/1GeqlGYebLAwRJhrTMRM3G/Zb/wAJ8MZSaxzAczspnvuNhqdOa85xmNq4zGuztDWMDZYzM4PqSCy8awQL6+q1l7bwXh4pU25mw/eTMcgLkC0aLm4+LeX/AFvz8usdVZIQheg84IQhAc0JsolJR8olNlLKCOSpspQUA5CRVvGuO0cI2ajrxIaPiPtsOpRsaWaouN+LcLhAc78zh+FgzGeU6D3K868T/wARXvljSWNOzbE93HVZBmK/mDLSI7E/XT6KLyLnH+tZxv8Ai3innLhMOym3++q7M6OjRAH1WM4l4n4tXP8AUxlQA3in6BH/AAhT3cGB+Mu73+ybieFBg/pvcDoZH4ellHyr+OMxVxFeZfiqx5nO533cl/mas/08VUM83PH5qzdwAtGckuk++uvyuuruCsNg4jUg3APsU/khfGqxx7iGGNsVXG9qj3D7q+4b/EvitGCapqN5VGh3zMA/VU9fhtWn+NoH4Z+Id503Ujh+HrtnM4QIuPVbrdHydD4+3pnAf4rvqAedhj1LLHuGu1+a23DPF2Dr2FXI7+2qPLd2E2PsSvI+DUiTleGtkWgfER20MfZXdXh9jYfOfusr/I1V/Bt66ClXj2C4jiMMYp1HNHIXb/8AJsrg8exNRoPnVYdplaxpka3DRGnPdP8AtYD+rm9JQvJGYvFOLiKtXpNV3fUf7VFxnjGKYHNdiK5a7Vudxb2mdO6X9qfip/Eyvtsv4peIqL8OcNSqhzy9ucNkgMbLru0PrDLSvJcJTa+oG1XODIJkCTAgCO5spGepWL8rfhA2Mxu4g7aLtS4ZUBaS2NHEn8IFm3NpvPc9FhnyW3dehwccww1G6/hfw/zMTUqkOsTUdmIPqPopC3JoLu56L1hZvwHwgYbCgkeqr6zOsH4B8r+60i7eHHWEeX/Jz8uS6CEIWrAIQhAR5RKbKJUqOlLKZKWUA+U6VylZ3x14qZw3DGpY1Hemk07ujU9Br/2kNF8YeLqeBaWhwNUiwOjR/cR+S8X4vxl1dxeSahJkzN+8fZUYx9XEVXVa5JLiXFzjbnop78eIDaW4uY209lOX2vH6QqmHqVj8UB20Qe3ZaHgOEy+gGNgbONtbKBRp5qgbvA3kf8ndOS1fg3BNc95Ja6LDf3jae6zyvTTGLdmEDg0EQ42ExmO5v2BsovFuEkZXAQBa82ncHn+q0mUWmJGn2MfVZ7xfj/Lpw1sucbSYFjqTy0Wc3telfhsGypZpIdzDnbc762Q3g9VrSDVc4yTJDe3yA6ql4DiajnB+kmDA0OmkXE916BRphzBmMzrAgH3P+0s5YeOmTZw6LuJzbCQBt/l0VczhWR7tADGjmuM6iGg37Ec1vGYRrbxJ9tPeIVZxmvUAhjRJgSALdws5avpA4ThGn0vBN9Zdna6AbG+XXQFWxq1KTg2sZYfhqER7Pn7pcDQqFrZLmnWziAYm+n06qyxNMOpkVMxb/kZH1Kyy3vtpjUQMY+III5gg/UKWzDQ0C7j0gQLmBvptKoeE1PIeaYNPKHSJDjYidWkQrp/E8QWltKmzObNdNh1ynodVNw1T8/SNXqUsOW0nRnqE5abG+ZUcbySBYb3MBUnEcDVBdVcwNH4WyHuEblwEZugkCNyrnAYJ1J2cHNUqCajqjsziOcNFmjYWPOYTeM4w03ZHhxzWD2szNFpj/H8veFPvppLfbL8BxM52m0uuBGgEgmNdz3AWp8M8GONxGZzT5LIz2sSDLaY99encKi4NgsznGkwhrgZc8FtpEuDdpgACdu69a8Lhow7Wtj0yDG51JPUytuDjmfL2P5HNePj/AM/dWwQhC9V4wQhCAEIQgIUolMlEqVHyjMucolAh5fC+ff4i8ZONxjzM06PoZyEfqbn5L13x9xZ2GwdRzCA98U2kmILrE9w2SvAa+FIokwcpub/EecnVLatIH8wIOZ0t0jcnmrXAsJaXlxDAYaG3cT0aq/hvDPPflBgWOhsPxab/AO1teGYOnTazK3OLayQNTmDdT9tOZU5WKxlV2Bo1S6AzK0kC4EyLzmPbbTktXgcFWBBbDetxPePiSUOHE1vMqDK0A5QAZBIvc2mw6gE3Oqm1qxa3Zw7k/NZZdtIXG1q7WxTaHO0JBmB/dJgbBUBoPc8PrhxcDpZwFx6Q3l12WpwoNSCHiBYiSBO0725WU7D4NlNpdA5mIFt7XOk7qd6V9vOMVVxNQZKQcxpcG5aYh8HawEiSbC8C8rQ8A8P16NQufUMEQ4GJnZ0m+g+q0ZxtCnDfSHG7WxLiSDf5E+x5Lk3B1a1UOfmpspgO2cH/ABAsyjQjWQTtc3SuVsOSR3psykDLIN+xA9MczIXeplfDRHKAJ+gE7JuGcXyQx0SRLzM2GjRaJkX5dU9lTKYcSCdpHKQ0DYQNO/VZ1WzX4AtvIgX9Rv7C59pCo+LNqEODahHUiG72zGY7ytSMsAmL7RmJ7BQ+I0nvEEFgOwN43kj7D5qbDl0844liqjHDJHLMDmkg6jlNrrV8Lxgphs3zAGe4Jk8oJ+YUHxPw4spDyg2QdTFma2942VXwDEB+ak50OaC5v+Q/ECeYMH3J2Szx8sevS8L/AKb54Ag5swfLpty+0THdV/FqodTgiHGbGxgfa0uVBwTjbvM8qofSTAvPpEw0fqrhjXPf5hEiCBJFgBkiJ19RusbjfbWdrHFP8tthPpDbX/tM9rq+8G1iHPpmwLQ5oPSxMbahUVOjnAgk7EQJsBBJ7fdXnBSW1GEzDrTpaNx3ha8HWcrPmkuFjVIQheq8sIQhACEIQFbKSUiFKiolIhI48+/igfNfSpEemm11Q6xNwPoHfPqvKsbjHV2w0Q0ENaATJb8Uxsd52HuvSv4pCAanJwbrFsun/wBQvKaddtP4jHmRMfhAuBEGL/s3UTur+o1PhHC0w4k5ZmCIBjue40Wpw1KHkx0uLgDn++SwmA4p5VRrGlpEgSIhx6EG+9uy3LcYDkcJykGTo5wgG3IRvy+anKXa5Y74o5ol+XY7AWIyiN9be55FuJqU6IlxAkiZmZcQG5dMpMjTTluuFeuXN0FjFwGsaBBDR2+e/QVXH6FYtDhlhxFjOZ0Gdj6QR+tktDay4S6HenM6TOVmV1OL3gafPWJMLQcQwjqtLKHvYTswiY/FLtjGw+aqeHYkHLTZT8txuQOcQIG8galaPCMbT+IkHeZIiJsP3opq1RheFGiAZJFMQ0zMADYQI79VZUb0qb2Pa8WdP97YJGUjQmxncbXkRfEHFRQp5oc8uIDWgSXEiQCImI2/6XbD1KrsoLBSp5WxnEPzGIDWT6QI35hRdntYnECJMAuvA1PYC6hF7nOJcANIvJ97EA/NOYxk2u4QC4/HF4E7C+ml+67Ow7dbW3JsDz91OjdMG+OTb9yeUmZ10H0XTHVgWwIJ5HSNyT+X3VBjsb5Rs7TmbARcgbDX57pmDx+eXuMxoBuTuf8AEXidflJYWiY+qXWLW5fiuMvpGpdHyHvpZeecSokOa9gdTMmoCSCWyTlGmgAvOxMrZ8WLqxNPcwDJ0g6DvYnpbmq3iFPJUputIIAb8XpBkz3bb3Txmj3uoPCuK0qhyVGeXXzCP/zeDrHLnB9iVuKDHgNEemIPcmX/AG2Wfx3AGPBloDom17an8hdccPxTFYRzKbj5lIHQgEhvR+tpXPnq3p04b01lJjmuI1AcD8wBrbqrtuIylp3F/lH+lVUcRTqOAa8esAxvGoPvB+RVjlv2t+/klN7LLV+2wa6RI3Sqt4LjRUaWfiZA7tPwn8vZWS9fG7m3lZTV0EIQmQQhCAqkIQpUEBCAkceeePKYdTfmIjzJJOgh4sfYLxfHUXOv3Me9gPb7L2L+ITSaTgBMuM+zxP0Xlb+H5XPzP9LQIG5NrGdv9dVHH7XnEPhODdVOVwgTrMEAxIA6x/0trVw73OGWpDgRqZb8XwRr/wAROnSFR0CQ4uy3e0NaRMhsGMs6G3xEddlc8DwRZesS+80/VOY6GQNovtqVdpSL9uKipTa/1GZ/xDmt32meVhoOa4cdbUxNN3k3LgY56RIM6aHXlHRmF4Oa4J/yEXOWAZ7nX81pOB4QUxYTpJF5IAAF9p5H9Fm09Mz4M4RXohjqtRzPTAuCTm+GJBmCd9L7a6TFY6S1rHgucMppug5YMZnuBtcdZnZUHiXiIxefDYcluS+cAxv6WuI9V/xCYMd07whw91Go6nnljWS+0kVpuMwvEA630G6V/SjW8LpBkuu5xHxfiO0NH4R0HK8kX71GOguJGaCQDYc7kdR91A4rxNuGaC4yfhABAc6dLFwi4OpgwVw4DiziM73gAgyG7FlnW3LgSe3JY5bXFxgWnIHOGUxLmi8GLgHlrcqNxDEkMcXCGRJPPlbV0/NSnuLbzrAaIuXESR1m+nJLxCm6nTc9wkwYbrlMG887+ymK2xnFuIBr2Ne2Mx0cGmO4/EewIEbwFAwlZxdIMwJv6g30iSefa31tZN4ex05yZMxOtyIB3J2S4jhIDQyRmc0kgETGob+9JsrmiqBhq5fXDplrRHquTMucXREd7dVLOJpVKmbNDicrAeQg5p0E69wouCwL4ewlrQ4eozJa0GXyOZAI7lqpcdWe+uxgkNY4Eb5b6W1sdd1etlMtNxj8QGPY1uoY8HuYA+4Puq2ri2vboCRJgwNIBE/ZUXm1KlQtJs22t52PzI9gtDwk0qTXOqAQDlEi5PqA+w+S588JG2GdTvD9IiqxoILScwJ1iDAB5f7Wvq05EqFSwIe1j6cNcw+nYET8J6fqrXLBuNQpwVnlLdxDoVPJrU3z6T6Xf+p/QwfZa1ZLFUy4R+wr/hOINSkxx1iD3Fiu3ivWnHzTvachNlLK2YnISIQSrQhClQQhCDjI+JMPAqE7Elp2h0H7z8l5txLDFrs7gAyA4HcwCAI2Eyeg7r1/xFSlvQj7f9rzPxE0Ci3MNAQexItPIgfQLL6rX7ii4UPMLTEufD5IAEAZZvr6ojtC78If5td4dGVjoE6uIMWn2M7/AHp8Dii0Aht3AACSAGTaJ1vHyCaeIFsOHxASLRca37gQtNJ29Q4ZJJpkAh06TANtuS71cZTbTLWkGm2M5mc55Ts3Y6TBGkzh+F8YPlgBxAqAgiZkH7DU/wCWlm3NrwytFOCHtAdEk5iJO8mRJM/ZZ2LccbiMzc2R7czagIGY5Ghvpdlg9Lx7WVxwusKORwpyXNDTcF1rSDE7wRab8r0XFK9TzWtaRGXNm2aLiCyI0HsANNVO4dhT/Lt9RAaJzaOJmcxN520i3JTlejxjTY1rKozPb/UdEbExERBsP1UPh9L+XEhohjgDMggO1N5k9JvEXlUtDFNNduYuBDfSQXGwMRmFhJtG57K5xvFwx0vIDzFjowxFpNzNpvJ6KFNGx0NB3OgBHpGuWeZ3+Wyq+IcRDjldEAT0gaknTbdUtarUbBa+0zBsBcZj26BMxQa7O2ILrBvJsH1GDeNgbmTyCUgcq9ZrXkl4yFxkC9gDfqfrE7pleu97SWwCTaQcxAmwA9hPMrNVq72PHpLon4rAkHTpt891xxOPL30y5zg1hJhsCXC4BJgQYPPTTRaTFNyXNA+XUrUQINUCdzOYPDRNwPSL8iTyVRxB+aqchaDIG7YHKDqZkf8AFLwoltTznE5nExOwMCO+ogp/FsF63PIN2ioJvrBm0nS/TMq9kc3FVG1mucBImYMEmZJ5aEBencNwbRRaHQbtIkchr9SvL+DV/NqsDojOCIkOMmCJ7816/UaPQLak/Yey5+bprxpWEMBo72+3ZTXtkBVFasGtDnOywYJ2g/TkrChVkSDYrLCqyns9zInqpfCfTmbzOYe+v1Chl6kYF0vB6EfYrq472y5J0tgUoK5gpwXRHM6SkSJEyQEiVIkYQhCDiJxaiX0ngaxIXlfi/CPfRlpMOIbEXEWXsCxPirBABzBPqM263+8hZ5ddtMPx5bheFZzGWCBYC4cOgm1l0/8A4hpth0l5a4mAYBmAPpfpHO2j4ZgBnc6Yc2wzSYsfUQdYC412ue4Nn0tFyCJJmbkRcySe10eVPxU/BuGHMJBc2B9NBtv87rQuxeQBkeuo4uk6ME2JE8gDH5JtMeYLQ25iNImAT+nRVPGg5rgbuFrRD3OO/QHftySt2qTS3r8Soz8U5GkgiwB3c4z9eqZg8Z5tNzJLaZJaTABMkA5Z3vEQdVQ4uk7LmbmaCPUdeQDRsf8AfVSOES+oHOcSGuDWtcNN3Exvb8lFnSpe2p8yhgGD1Xj0tJBLZkdr8/bRZji2INVzmGzTuB8NwQS6e61JoDNoDeSYvHLrsqfiWHZTlwFzctmdJvfQBRje1WO3C8PmcwuqEtYBmgwbmQAOtp3hduJtLXF4BDTZpa2TF7wfh2vpbsF34D5bBl9T3OMuJkN336chopeKreW+Za5jgQdzY6aenQfII8uxpnsTwmGkuzElwdAm521OUy6B+5VFTbLjIEgHbeOepMRA5LUcS4sRlLgBmBaAAZiLua4/8otuedoR4XnaHCxBvsTBABE3I/ZVyo0qqrHNYz0u9YuexEjnEbcwpAo5mgDM10QQ4NMg/AB3u2Oo20thTaXtzPAAIAi2ZwDXFokayADGuXRcquDc+Afhs063DRmInfN6dN29U/ItG8LwIbiKWeDmuIbAi4teJl2/Jek1KZzNkiABI+en0XluPrPbXYfW1rak6XBDRYc4jlv2Xo9XHhzAdfQ0EdwT9iP2Flyz2vD8QvE0voVG04c/KHNBNi5paZ9rFcfBPHvOp5HtLXssZn1GSCRPPVR8ZixSe0FxIYXCNyHNB/Ij2VV4goOoB9ag7QyCD87aRqs8Z6aX9ejhy4cKxwdiBTBFmuJHyC8zwH8Q3tYA5gL7zeDtH52V3/CjEOr4nEV3CA4SByBIt9F0ceGU+2HJlLOnqoKcCubCnhdDnPlKmITCIUicQkKQNQlQg4i4h9RpluVzSQMplpHZwn6hUXH8dTe25ALZa5pIzA8jzCu+IVHNDYDcpdDpmwIMEHb1R81g/E3C6lRrq7LkznabOA/C/sQAseXKydRvw4zLLVuj8XSa2pEEh7QAdTBJLpPYKtxlBvrc0AO23n2m14XXgXEvOp+Wf/I0Zb7xp9yotbCPBeSba3HQB/tb762UY3fa8sdXTJnjb21XU5jlAhzosIj2+SteHcRFR8yJFiTNhrlI23VFxp2V+ZrYJ0JNo0kcyZVPw6uWVRbqLSM3tr0W3jLGflqtrxLFNJDDYGcgmbnRxB1MfvkmcUmQCAZBHLQz++hWZxmOOYPIBO8Gw/0pFKq97ZDC4mIbMNAg3+v73i4rlbmljGCALvcBvJJ1LjewGhO+i68baPLLGXfInT7disjw0PpkRGUR5kEwSCSAOgn6dVrWUp9W/wBDN5WOXTTGbScI9jaQBLfMcIk7uA0DdTupDMMA2PgJ9TzoIkWB5m4HKSdguWDIBBsXT6QOcakjbf5KR54f/TdzmRqY1Jn2j9FntelY/AsqOzPaJBkaAAWgAAWge/yhW+OpsFESASAJDTYExYWG55XkKLxV7ScrcwuDIMXFxB5So38yWENgOAM+pxJkXGvUa9lcu2ViLj6mZolpIaZ0cc5kkEGbAkxpuNLKz4JQJDYc6BOcSNT6rEi15VSMOXvBJcRq4kODSAJAbqC2b+7Y0U3Eu8ol7HT5lxbK0NjNMHkbKsr6TIice4W14mZvuSRd7nyZOwPTbsozOMPAYWyR+I6j1Wa63+IH6LrhsTmpuL2yR1+IkkSRMGLlVWDa5rwx5ytkn8R0vljeI06o9apl4yaoMlw9RzEQTAAqAX2uT8xyXNvHHMBY4SxzTblMxv3UnH1GOLr5gBE7DKYH6quwmC8x4piTHS195TklnZW2XpUjCl9XLAlrQTGk9OWpXsn8MOHilRe6IJIbPPKJP1JWd8K+Hc1YyLTe50Gy9P4fhG0WZGCBJMdzK1xy3WWU0lNXQLk1dAtWVPlCRCA4kJpC6kJpCYc4SFPISEJG5kKh8Q0HPcGscKbsjvXEkiwyRuLq/IULiAylrwJLTpvB1jqoy+lT7eNeI+H4jDVW1aYDSyPSBlLgOY3K0XDeMU8cwEWqCzmEQQ6ND91e8d4b/NHzWH1tkDMDHbosBjsA+lVNZnoqj4r2qAbGPoVzeNl16d+OuTHr7d/E/DwGua1gED1nfT1Af2mIk7T8sTwvD+Y57WgkAX0EAbgrXVuL/wA3TdTeC2pFnQYc7cEczyXXgvh8U9SS+po0Ngm+x2Am526raZajnyw/0x+IwpcR8QmRABF7SdPcnotDQp+W0ZWhwcG3bcAc50jUq1x3DqdB0EAZ94MQNbXyi/clPdw5j8zXOAa5sSIzHrdTlntWOOlE8ua7MSA0Ta8EQIhXFHibcglxaTZsfi2H13UY8OBcMhc4AZRuNRAAJubWO3RS6XAwJe85nQImSGifhZy79VnbGklSOHk0Q5xdJcSTEwAbw2TYX+fsp1Bwn+21jMemLwBpa3sqcYgB2WDeBAPKwA57hXLqQYPUbuEnm3p+qmmOIYgsaDYAGTNzHKN/1VLXxRqvBYGz0Jyk3gEchz6KPxWp5pEGGi7hrvDTH29ly4JScHZjIAuReNBa+5Vyam2dvek+owRBJGX1Q2zRfWANTfZUGJquDYzGYsNddSSPz5nutFXc6o2AZuc20AXvA2kWndUWJ4WSWkiwnTva2ieH/qMlrgeJSwHNoJ5CQDEdZ3nT5LhXrHMHC3qEf3EQLkDWQCFFfDKZAsdet9NVzwWGcbEyWyI3JsdJ26p6n2W1lQw7vLJIEOI0j7e/zVj4dwrnF7wIsdogRa/fZWOG4Y84ZtSJiLAwTHpH76LpgMWaYDA0kuIOWLG5gfT6KbfRtl4bwoZTaAL6knU7yr4qJwuiWsBdqduSllbYTUZZ3dDV0amNXRq1ZU5CIQgAhNIXWEhCYcS1NIXctTS1IOBC416UhSnNUfFvyMc7kClVRROqkj089CFnvEXD3vDi0tkt+FzSWyPxAggg/QrYvwo8to/EAL9d1V4xhi4M/vdc+Uyjowym9vGMbSy1skljxeTcHoOY6LXeHOJtqjI85amjuZA0IJ1Hbmo/i7hbszXNolxOjhfI7YkbqBRwzsQGh2WliWCQRZr45jabJX67dHljnV/xvA1Q2R/U/tiM3Ob6wqFuDm7y4OBlwJOURPqnYdB8lpODY59RobXpuBFjItmHUKVxUtayS2QNhFraC1lO6mztl/LLXAMNxMumMsza+xI66DopAqk7mRpMa9/3oolHDnKSKZph0gEzIFyCLHpYrqMJVIlrZF77kDSw26dkrBK4YaialQku0MiLf9Kzx2FLxBmxkbWGx9wn8D4bkDvMkFztZv7K4fhsv29t7qMr2fpmaVGZlhkTAIMEgj1EjfRdsLSLjGWIN4J3PYHor5+Vmuh6e1x7qKa1OnqYm+9uV+tlU7Z2qniNMsDm0wBJIJNiefWPdV+Ga5wcL2+WlrjXt1VzVqNeSYsCetujtPl0CqMPixLiBAkxte/5LTGXTO1AxzCXlroDmtiN5EQPed5stJ4V4Mf/ACOLZNgD12/fJVnDcOHvzmDBkmM3/dl6D4fomo0OLC3/ANv0Tzt1qDGe6nUcFDYcTAvA+yj+H+AB9Y4l7SGttSaeQtmI+a0GFwO7tNh+v6KwRx4a7pZ576hCmpxQAt2NK0J4SAJwCpJUqEqYPhJCdCITIyEQnpIQHNwVbxF4OWnzIJ7C/wBSrDF1hTaXHZRsFhSfXU+I6DkNgov4qfprKJcZKK2DBCsMqQtT0Nszi+FSsvxfwyTLmgz+m46r0t1Nc34cKbjL9nMtfTySlXxIbN2vZ/eBlqN/tePzVvwzitKpGdppOOod8BPR2nzW2xHC2O2VdW8O0zss7xtflt+1RjsEHi4kbR+7rjh+HhrYtvrr8les4Lk+EkDcajvBSVOG1NhTI65gfos7hVzNnMWwM6TY7kDpGiqMfxfIJv6ecx3W1HDKh+JlP2c4j5Fqq+JeB2VwZe5p2sI+SJhPYuVedcS8VT8QtoNNVV1eLurEC5G2xO61WL/hjiAfQA7rmAn2+qmcJ/ha5rpfJJ1OYR1HNbSYxjbkg4CmG02l1s9xeZH4R9fnKu8NwBtZpBBgxpv0tqtTwfwhToiCAbzf1fKey0VLDNbEDT96KPGq8oyfC/CobltlDbAfn3WpwuEbTEDZSIQqmOk3K0iQpyIVpNhOASgJwCqRNpAE4BACcAmQhInpEwehCEyCEIQHHEYZtQAO0BB+S7QhCNAkISoQCQkhOQgGFqaWLqhLR7cTTTTSUiEkJeI2immjy1KhIWqfE/JHFNOyrpCIRobc4RlXSEQnobc4RCfCIRoGwgBOhLCegbCUBOhLCZGhORCVACEqEyf/2Q==",
+    "status": "corrected",
+    "created_at": "2026-09-29T15:39:41.060Z"
+  }
+]

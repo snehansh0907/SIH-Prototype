@@ -13,7 +13,7 @@ interface AuthContextType {
   isLoginModalOpen: boolean;
   login: (idOrEmail: string, pass: string) => Promise<{ success: boolean; message?: string }>;
   register: (payload: RegisterPayload) => Promise<{ success: boolean; message?: string; user?: FarmerUser }>;
-  loginAsDemo: (specificKey?: 'ramesh' | 'vikas' | 'anita') => void;
+  loginAsDemo: (specificKey?: 'ramesh' | 'vikas' | 'anita' | 'sunita' | 'suresh') => void;
   logout: () => void;
   openLoginModal: () => void;
   closeLoginModal: () => void;
@@ -58,7 +58,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     return { success: false, message: res.message || 'Registration failed' };
   };
 
-  const loginAsDemo = async (specificKey?: 'ramesh' | 'vikas' | 'anita') => {
+  const loginAsDemo = async (specificKey?: 'ramesh' | 'vikas' | 'anita' | 'sunita' | 'suresh') => {
     const res = await authService.loginAsDemo(specificKey);
     setAuthState('demo');
     setUser(res.user);

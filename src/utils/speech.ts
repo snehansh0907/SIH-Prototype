@@ -306,32 +306,32 @@ export function getLocalizedAdvisoryScript(
 ): string {
   if (!diagnosis) {
     if (lang === 'mr') {
-      return 'टोमॅटोच्या पानावर मध्यम स्वरूपाचा करपा रोग आढळला आहे. आज लगेच जास्त खराब झालेली पाने तोडून टाका आणि पानांवर पाणी साचू देऊ नका. पुढील दोन दिवसांत जास्त आर्द्रतेमुळे रोग वाढू शकतो, म्हणून योग्य फवारणी करा.';
+      return 'कांद्याच्या पिकावर जांभळा करपा रोग मध्यम स्वरूपात आढळला आहे. आजच पिकाची तपासणी करा आणि अतिरिक्त पाणी देणे टाळा. हवामानातील वाढत्या आर्द्रतेमुळे योग्य प्रतिबंधात्मक उपाययोजना करा.';
     }
     if (lang === 'hi') {
-      return 'टमाटर की पत्ती पर मध्यम स्तर का अगेती झुलसा रोग पाया गया है। आज ही अधिक प्रभावित निचली पत्तियों को हटा दें और खेत में पानी का जमाव न होने दें। अधिक आर्द्रता के कारण अगले अड़तालीस घंटों में संक्रमण बढ़ सकता है, इसलिए सुबह के समय उचित निवारक छिड़काव करें।';
+      return 'प्याज की फसल पर मध्यम स्तर का बैंगनी धब्बा (पर्पल ब्लॉच) रोग पाया गया है। आज ही खेत में जल निकासी सुधारें और प्रभावित पत्तियों की निगरानी करें। बढ़ती आर्द्रता के कारण निवारक उपाय तुरंत अपनाएं।';
     }
-    return 'Possible Early Blight detected on tomato leaf with moderate severity. Today you should remove heavily affected lower leaves and avoid excess watering. Fungal risk may increase over the next forty-eight hours due to high humidity. Consider preventive spray during clear morning hours.';
+    return 'Purple Blotch detected on Onion with moderate severity. Today you should inspect adjacent rows, improve furrow drainage, and follow recommended Integrated Pest Management steps.';
   }
 
   if (lang === 'mr') {
     return (
       diagnosis.advisoryVoiceScriptMr ||
       diagnosis.advisoryVoiceScript ||
-      'टोमॅटोच्या पानावर मध्यम स्वरूपाचा करपा रोग आढळला आहे. आज लगेच जास्त खराब झालेली पाने तोडून टाका आणि पानांवर पाणी साचू देऊ नका.'
+      'कांद्याच्या पिकावर जांभळा करपा रोग मध्यम स्वरूपात आढळला आहे. दिलेल्या उपाययोजना त्वरित अंमलात आणा.'
     );
   }
 
   if (lang === 'hi') {
     return (
       diagnosis.advisoryVoiceScriptHi ||
-      'टमाटर की पत्ती पर मध्यम स्तर का अगेती झुलसा रोग पाया गया है। आज ही अधिक प्रभावित निचली पत्तियों को हटा दें और खेत में पानी का जमाव न होने दें। अधिक आर्द्रता के कारण अगले अड़तालीस घंटों में संक्रमण बढ़ सकता है, इसलिए सुबह के समय उचित निवारक छिड़काव करें।'
+      'प्याज की फसल पर मध्यम स्तर का बैंगनी धब्बा रोग पाया गया है। दिए गए एकीकृत कीट प्रबंधन उपायों का पालन करें।'
     );
   }
 
   return (
     diagnosis.advisoryVoiceScript ||
-    'Possible Early Blight detected on tomato leaf with moderate severity. Today you should remove heavily affected lower leaves and avoid excess watering.'
+    'Purple Blotch detected on Onion with moderate severity. Follow the recommended daily IPM steps.'
   );
 }
 

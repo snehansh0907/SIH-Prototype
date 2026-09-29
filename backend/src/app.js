@@ -83,6 +83,7 @@ app.get(
 
 // ---------------- Feature Routes ----------------
 app.use('/api/diagnosis', diagnosisRoutes);
+app.use('/api/diagnose', diagnosisRoutes);
 app.use('/api/farms', farmRouter);
 app.use('/api/crop-cycles', cropCycleRouter);
 app.use('/api/risk', riskRoutes);

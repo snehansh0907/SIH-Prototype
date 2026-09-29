@@ -21,7 +21,7 @@ export const FarmerProfileCard: React.FC = () => {
 
   const monitoredCrop = user
     ? (language === 'mr' ? (user.monitoredCropMr || user.monitoredCrop) : language === 'hi' ? (user.monitoredCropHi || user.monitoredCrop) : user.monitoredCrop)
-    : (language === 'mr' ? 'टोमॅटो' : language === 'hi' ? 'टमाटर' : 'Tomato');
+    : (language === 'mr' ? 'कांदा' : language === 'hi' ? 'प्याज' : 'Onion');
 
   const myFarm = language === 'mr' ? 'माझे शेत' : language === 'hi' ? 'मेरा खेत' : 'My Farm';
   const defaultFarm = language === 'mr' ? 'शेत (२ एकर)' : language === 'hi' ? 'खेत (2 एकड़)' : 'Farm (2 Acres)';
@@ -32,19 +32,28 @@ export const FarmerProfileCard: React.FC = () => {
 
   const farmerIdDisplay = user?.farmerId || (user?.id ? user.id.slice(0, 8) : 'KSF-001');
 
+  const isDemoMode = (import.meta as any).env?.VITE_DEMO_MODE === 'true';
+
   return (
     <div className="rounded-2xl bg-white border border-stone-200/70 p-3.5 shadow-sm hover:border-forest-600/30 transition-all">
       {/* Top row: Status, Cloud Connection & Auth Action */}
       <div className="flex items-center justify-between gap-2 pb-2 mb-2.5 border-b border-stone-100">
         <div className="flex items-center gap-2">
-          <div className="flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-800 text-[10px] font-semibold border border-emerald-200/60">
-            <span className="w-1.5 h-1.5 rounded-full bg-emerald-600 animate-pulse shrink-0" />
-            <span>
-              {user?.userType === 'registered'
-                ? t.localProfileActive
-                : t.cloudSyncActive}
-            </span>
-          </div>
+          {isDemoMode ? (
+            <div className="flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-amber-100 text-amber-900 text-[10px] font-bold border border-amber-300">
+              <span className="w-1.5 h-1.5 rounded-full bg-amber-600 shrink-0" />
+              <span>DEMO MODE</span>
+            </div>
+          ) : (
+            <div className="flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-800 text-[10px] font-semibold border border-emerald-200/60">
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-600 animate-pulse shrink-0" />
+              <span>
+                {user?.userType === 'registered'
+                  ? t.localProfileActive
+                  : 'LIVE CLOUD'}
+              </span>
+            </div>
+          )}
 
           <span className="text-[10px] text-stone-400 font-medium hidden sm:inline">
             ID: {farmerIdDisplay}

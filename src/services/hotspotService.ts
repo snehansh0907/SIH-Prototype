@@ -11,26 +11,7 @@ interface BackendCase {
   created_at: string;
 }
 
-interface BackendHotspotResponse {
-  success: boolean;
-  data: {
-    confirmed_cases: BackendCase[];
-    suspected_cases: BackendCase[];
-    total: number;
-  };
-}
 
-// Distance helper
-function calculateDistanceKm(lat1: number, lon1: number, lat2: number, lon2: number): number {
-  const R = 6371;
-  const dLat = ((lat2 - lat1) * Math.PI) / 180;
-  const dLon = ((lon2 - lon1) * Math.PI) / 180;
-  const a =
-    Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-    Math.cos((lat1 * Math.PI) / 180) * Math.cos((lat2 * Math.PI) / 180) * Math.sin(dLon / 2) * Math.sin(dLon / 2);
-  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-  return Math.round(R * c * 10) / 10;
-}
 
 export interface AreaReportFilters {
   disease?: string;
@@ -61,21 +42,19 @@ export const hotspotService = {
       if (filters?.disease) queryParts.push(`disease=${encodeURIComponent(filters.disease)}`);
       if (filters?.crop) queryParts.push(`crop=${encodeURIComponent(filters.crop)}`);
       if (filters?.taluka) queryParts.push(`taluka=${encodeURIComponent(filters.taluka)}`);
+      queryParts.push(`lat=${farmLat}`);
+      queryParts.push(`lng=${farmLng}`);
+      queryParts.push(`radius=3`);
       const queryString = queryParts.length > 0 ? `?${queryParts.join('&')}` : '';
 
-      const res = await apiClient<BackendHotspotResponse>(`/hotspots${queryString}`);
-      const { confirmed_cases = [], suspected_cases = [], total = 0 } = res.data || {};
+      const res = await apiClient<any>(`/hotspots${queryString}`);
+      const data = res.data || {};
+      const confirmed_cases: BackendCase[] = data.confirmed_cases || [];
+      const suspected_cases: BackendCase[] = data.suspected_cases || [];
+      const total = typeof data.reportCount === 'number' ? data.reportCount : (typeof data.total === 'number' ? data.total : (confirmed_cases.length + suspected_cases.length));
 
-      const allCases = [...confirmed_cases, ...suspected_cases];
-
-      // If backend has cases, calculate distance relative to user's actual location
-      const nearbyCases = allCases.map((c) => ({
-        ...c,
-        distanceKm: calculateDistanceKm(farmLat, farmLng, c.latitude, c.longitude),
-      })).filter((c) => c.distanceKm <= 10);
-
-      const activeCount = total || nearbyCases.length || Math.min(14, Math.max(4, Math.floor(Math.abs(Math.sin(farmLat * farmLng)) * 12) + 4));
-      const status: SeverityLevel = activeCount > 12 ? 'high' : activeCount > 5 ? 'moderate' : 'low';
+      const activeCount = total;
+      const status: SeverityLevel = activeCount >= 6 ? 'high' : activeCount >= 2 ? 'moderate' : 'low';
 
       // 3 realistic spatial clusters centered on user's active area
       const clusters: HotspotCluster[] = [

@@ -5,7 +5,7 @@
 
 export const BASE_URL =
   (typeof import.meta !== 'undefined' && (import.meta as any).env?.VITE_API_URL) ||
-  'http://localhost:5000/api';
+  'http://localhost:5001/api';
 export const API_ROOT_URL = BASE_URL.replace(/\/api\/?$/, '');
 
 interface RequestOptions extends RequestInit {
@@ -47,10 +47,11 @@ export async function apiClient<T>(endpoint: string, options: RequestOptions = {
     }
   }
 
+  const cleanBase = BASE_URL.replace(/\/+$/, '');
+  const cleanEndpoint = endpoint.startsWith('/') ? endpoint : `/${endpoint}`;
+  const url = endpoint.startsWith('http') ? endpoint : `${cleanBase}${cleanEndpoint}`;
+
   try {
-    const cleanBase = BASE_URL.replace(/\/+$/, '');
-    const cleanEndpoint = endpoint.startsWith('/') ? endpoint : `/${endpoint}`;
-    const url = endpoint.startsWith('http') ? endpoint : `${cleanBase}${cleanEndpoint}`;
     const response = await fetch(url, config);
     clearTimeout(id);
 
@@ -67,6 +68,28 @@ export async function apiClient<T>(endpoint: string, options: RequestOptions = {
     return (await response.json()) as T;
   } catch (error: any) {
     clearTimeout(id);
+
+    // If port 5001/5000 failed with network error, attempt alternate port fallback
+    if (!endpoint.startsWith('http') && (!error.status || error.name === 'TypeError')) {
+      const altUrl = url.includes(':5001')
+        ? url.replace(':5001', ':5000')
+        : url.includes(':5000')
+        ? url.replace(':5000', ':5001')
+        : null;
+
+      if (altUrl) {
+        try {
+          const retryController = new AbortController();
+          const retryId = setTimeout(() => retryController.abort(), 4000);
+          const altResponse = await fetch(altUrl, { ...config, signal: retryController.signal });
+          clearTimeout(retryId);
+          if (altResponse.ok) {
+            return (await altResponse.json()) as T;
+          }
+        } catch {}
+      }
+    }
+
     const isNetworkError =
       !error.status &&
       (error.name === 'AbortError' ||

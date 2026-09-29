@@ -93,10 +93,27 @@ export const DiagnosisHeader: React.FC = () => {
                 <span>{cropName}</span> • <span className="italic">{diagnosis.pathogen}</span>
               </div>
 
-              {/* Badges: Severity + Secondary Confidence Label */}
+              {/* Badges: Severity + Secondary Confidence Label + Expert Review Status */}
               <div className="flex flex-wrap items-center gap-2">
                 <StatusBadge level={diagnosis.severity} type="severity" size="sm" />
                 <StatusBadge level={diagnosis.confidenceLabel} type="confidence" size="sm" />
+                {diagnosis.expertReviewStatus && (
+                  <span
+                    className={`px-2 py-0.5 rounded-full text-[11px] font-extrabold border ${
+                      diagnosis.expertReviewStatus === 'confirmed'
+                        ? 'bg-emerald-100 text-emerald-900 border-emerald-300'
+                        : diagnosis.expertReviewStatus === 'corrected'
+                        ? 'bg-sky-100 text-sky-900 border-sky-300'
+                        : 'bg-amber-100 text-amber-900 border-amber-300 animate-pulse'
+                    }`}
+                  >
+                    {diagnosis.expertReviewStatus === 'confirmed'
+                      ? '✓ Expert Confirmed (KVK)'
+                      : diagnosis.expertReviewStatus === 'corrected'
+                      ? '✓ Expert Corrected (KVK)'
+                      : '⏳ Expert Review Pending'}
+                  </span>
+                )}
               </div>
             </div>
 

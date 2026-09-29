@@ -33,6 +33,17 @@ interface BackendRiskResponse {
       nearby_cases_factor?: number;
     };
     nearby_confirmed_cases: number;
+    breakdown?: {
+      temperature: string;
+      temperatureValue?: string;
+      humidity: string;
+      humidityValue?: string;
+      rainfall: string;
+      rainfallValue?: string;
+      nearbyReports: number;
+      cropStage: string;
+      overallRisk: string;
+    };
     five_day_forecast: BackendForecastDay[];
   };
 }
@@ -77,7 +88,8 @@ export const riskService = {
     const defaultForecast = getDefaultRiskForecastForCrop(cropId, liveWeather);
 
     try {
-      const response = await apiClient<BackendRiskResponse>(`/risk/${farmId}`);
+      const cropQuery = cropId ? `?crop=${encodeURIComponent(cropId)}` : '';
+      const response = await apiClient<BackendRiskResponse>(`/risk/${farmId}${cropQuery}`);
       const data = response.data;
 
       const currentLevel = mapSeverity(data.risk_level);
@@ -159,6 +171,8 @@ export const riskService = {
       return {
         cropId,
         currentLevel,
+        score: data.risk_score || defaultForecast.score || 78,
+        breakdown: data.breakdown || defaultForecast.breakdown,
         summary,
         summaryHi,
         summaryMr,

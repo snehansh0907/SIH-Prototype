@@ -1,83 +1,173 @@
 // =========================================================
-// Advisory Service
+// Advisory Service (IPM Engine)
 // =========================================================
-// Builds a farmer-friendly IPM advisory response for a given
-// diagnosis case, using the disease knowledge base.
-//
-// Recommendation order always follows:
-//   1. Cultural practices
-//   2. Mechanical controls
-//   3. Biological controls
-//   4. Chemical intervention (only when necessary)
+// Builds structured Integrated Pest Management (IPM) advisory
+// following strict agronomic hierarchy:
+//   1. WHAT TO DO NOW (Immediate cultural & sanitation actions)
+//   2. MONITORING (Recheck intervals, humidity spread checks)
+//   3. BIOLOGICAL OPTIONS (Bio-fungicides, Trichoderma, neem)
+//   4. CHEMICAL INTERVENTION (Only validated, label-compliant last resort)
+//   5. EXPERT ESCALATION (Thresholds for agronomist consultation)
 // =========================================================
 
 const { findDisease } = require('../data/diseaseKnowledgeBase');
 
 function severityToStatus(severityBand) {
   if (!severityBand) return 'LOW';
-  const band = severityBand.toLowerCase();
-  if (band === 'severe' || band === 'high') return band === 'severe' ? 'HIGH' : 'HIGH';
+  const band = (severityBand || '').toLowerCase();
+  if (band === 'severe' || band === 'high') return 'HIGH';
   if (band === 'moderate') return 'MODERATE';
   return 'LOW';
 }
 
 /**
- * Build the advisory payload for a diagnosis case.
- * @param {object} diagnosisCase - row from diagnosis_cases
- * @param {string} cropName - crop name from the linked crop cycle
+ * Build structured IPM advisory for a diagnosis.
+ * @param {object} diagnosisCase - row from diagnosis_cases or diagnosis result object
+ * @param {string} cropName - crop name (e.g. "Onion", "Tomato")
  */
-function buildAdvisory(diagnosisCase, cropName) {
-  const disease = findDisease(cropName, diagnosisCase.predicted_disease);
+function buildAdvisory(diagnosisCase, cropName = 'Onion') {
+  const predictedDisease = diagnosisCase.predicted_disease || diagnosisCase.disease;
+  const disease = findDisease(cropName, predictedDisease);
 
-  const status = severityToStatus(diagnosisCase.severity_band);
+  const status = severityToStatus(diagnosisCase.severity_band || diagnosisCase.severity);
   const expertHelpRequired =
-    status === 'HIGH' || diagnosisCase.status === 'expert_review_pending';
+    status === 'HIGH' ||
+    diagnosisCase.status === 'expert_review_pending' ||
+    diagnosisCase.isUncertain;
 
+  // Unknown or low-confidence disease fallback
   if (!disease) {
-    // Fallback advisory when the disease isn't in the knowledge base yet
+    const immediateActions = [
+      'Isolate and closely inspect adjacent plants for early lesion development',
+      'Take clear, well-lit photos of both upper and lower leaf surfaces',
+      'Avoid applying synthetic pesticides until disease identity is confirmed by an agronomist',
+      'Ensure proper drainage to prevent root moisture stagnation',
+    ];
+    const monitoring = [
+      'Recheck crop in 48 hours for symptom spread or color alterations',
+      'Monitor relative humidity and morning dew duration on foliage',
+    ];
+    const biologicalOptions = [
+      'Apply preventive bio-control spray of Trichoderma viride @ 5g/L on lower canopy if conditions are wet',
+      'Maintain field sanitation and organic mulch cleanliness',
+    ];
+    const chemicalIntervention = [
+      'Chemical treatment is NOT recommended without certified expert diagnosis',
+      'Consult nearest Krishi Vigyan Kendra (KVK) or local agronomist before spraying',
+    ];
+    const expertEscalation = [
+      'Contact local agricultural extension officer or request verification in the app',
+      'Escalate immediately if symptoms spread across more than 5% of field canopy',
+    ];
+
     return {
       status,
-      what_to_do_today: [
-        'Isolate and closely inspect the affected plants',
-        'Take clear photos of both sides of affected leaves for expert review',
-        'Avoid applying any pesticide until the disease is confirmed',
-      ],
-      what_to_monitor: [
-        'Spread of symptoms to nearby plants',
-        'Any change in leaf color, spotting, or wilting',
-      ],
+      what_to_do_today: immediateActions,
+      what_to_monitor: monitoring,
       prevention: [
-        'Maintain field hygiene and remove crop debris',
-        'Avoid overhead irrigation where possible',
+        'Maintain field hygiene and rogue out suspicious debris',
+        'Avoid late-evening overhead sprinkler irrigation',
       ],
+      immediateActions,
+      monitoring,
+      biologicalOptions,
+      chemicalIntervention,
+      expertEscalation,
       expert_help_required: true,
+      disease_info: {
+        disease_name: predictedDisease || 'Undetermined Plant Issue',
+        scientific_name: 'Pathogen not yet confirmed',
+        description: 'Plant symptoms require clear daylight re-scanning or manual agronomic verification.',
+      },
     };
   }
 
-  // Order remedy steps to follow cultural -> mechanical -> biological -> chemical
-  const whatToDoToday = [...disease.remedy_steps];
+  // Parse remedy steps into IPM hierarchy
+  const culturalSteps = [];
+  const mechanicalSteps = [];
+  const biologicalSteps = [];
+  const chemicalSteps = [];
 
-  // For low/moderate severity, drop chemical suggestions from "today" list
-  // and move them into monitoring guidance instead, to avoid pesticide-first behaviour.
-  let todayFiltered = whatToDoToday;
-  let monitorExtra = [];
-  if (status !== 'HIGH') {
-    todayFiltered = whatToDoToday.filter((step) => !step.toLowerCase().startsWith('chemical'));
-    const chemicalSteps = whatToDoToday.filter((step) => step.toLowerCase().startsWith('chemical'));
-    monitorExtra = chemicalSteps.map(
-      (step) => `${step} (only if condition worsens despite the above steps)`
+  (disease.remedy_steps || []).forEach((step) => {
+    const lower = step.toLowerCase();
+    if (lower.startsWith('cultural')) {
+      culturalSteps.push(step.replace(/^cultural:\s*/i, ''));
+    } else if (lower.startsWith('mechanical')) {
+      mechanicalSteps.push(step.replace(/^mechanical:\s*/i, ''));
+    } else if (lower.startsWith('biological')) {
+      biologicalSteps.push(step.replace(/^biological:\s*/i, ''));
+    } else if (lower.startsWith('chemical')) {
+      chemicalSteps.push(step.replace(/^chemical(\s*\(.*?\))?:\s*/i, ''));
+    } else {
+      culturalSteps.push(step);
+    }
+  });
+
+  // Immediate Actions: Cultural + Mechanical
+  const immediateActions = [
+    ...culturalSteps,
+    ...mechanicalSteps,
+  ];
+  if (immediateActions.length === 0) {
+    immediateActions.push(
+      'Inspect nearby crop rows to map lesion perimeter',
+      'Improve furrow drainage and restrict overhead irrigation'
     );
   }
 
+  // Biological Options
+  const biologicalOptions = biologicalSteps.length > 0 ? biologicalSteps : [
+    'Apply Trichoderma viride or Pseudomonas fluorescens @ 5 g/litre as preventive foliar spray',
+    'Spray 5% Neem Seed Kernel Extract (NSKE) to deter secondary pest vectors',
+  ];
+
+  // Monitoring Steps
+  const monitoring = [
+    'Recheck the crop after 48-72 hours to evaluate if lesions are dry or expanding',
+    'Monitor weather forecasts for impending rainfall and high relative humidity (>80%)',
+    'Track lower leaf canopy where micro-climate humidity remains highest',
+  ];
+
+  // Chemical Intervention (Validated & label-compliant)
+  const chemicalIntervention = [];
+  if (disease.safe_dosage && disease.safe_dosage.length > 0) {
+    chemicalIntervention.push(...disease.safe_dosage);
+  } else if (chemicalSteps.length > 0) {
+    chemicalIntervention.push(...chemicalSteps);
+  } else {
+    chemicalIntervention.push('Consult local Krishi Kendra for registered, label-approved fungicide dosage');
+  }
+
+  // If severity is Low/Moderate, highlight that chemicals are last resort
+  if (status !== 'HIGH') {
+    chemicalIntervention.unshift(
+      'Synthetic chemical sprays are currently NOT recommended at this mild stage. Rely on biological and cultural controls first.'
+    );
+  }
+
+  // Expert Escalation
+  const expertEscalation = [
+    status === 'HIGH'
+      ? 'High severity detected: Submit case for expert verification immediately to prevent widespread yield loss'
+      : 'Contact a certified agricultural expert if symptoms persist or expand after 4 days of cultural treatment',
+    'Bring affected leaf sample inside an aerated paper bag to local Krishi Vigyan Kendra (KVK) if unsure',
+  ];
+
+  // Flat what_to_do_today for UI cards
+  const whatToDoToday = status === 'HIGH'
+    ? [...immediateActions, ...biologicalOptions, ...chemicalIntervention.slice(0, 1)]
+    : [...immediateActions, ...biologicalOptions];
+
   return {
     status,
-    what_to_do_today: todayFiltered,
-    what_to_monitor: [
-      'Whether symptoms spread to new leaves or plants over the next 3-5 days',
-      'Weather changes (rain/humidity) that could accelerate spread',
-      ...monitorExtra,
-    ],
-    prevention: disease.prevention_steps,
+    what_to_do_today: whatToDoToday,
+    what_to_monitor: monitoring,
+    prevention: disease.prevention_steps || [],
+    immediateActions,
+    monitoring,
+    biologicalOptions,
+    chemicalIntervention,
+    expertEscalation,
     expert_help_required: expertHelpRequired,
     disease_info: {
       disease_name: disease.disease_name,
@@ -90,4 +180,4 @@ function buildAdvisory(diagnosisCase, cropName) {
   };
 }
 
-module.exports = { buildAdvisory };
+module.exports = { buildAdvisory, severityToStatus };

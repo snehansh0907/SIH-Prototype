@@ -1,0 +1,22 @@
+[
+  {
+    "id": "bd111aef-dfe5-43ca-b7cc-c7c10ef31d3b",
+    "case_id": "diag-onion-default",
+    "expert_id": "exp-patil-1",
+    "expert_name": "Dr. Ashok Kulkarni (Senior Agronomist, Nashik)",
+    "expert_diagnosis": "Alternaria Leaf Blight",
+    "review_status": "corrected",
+    "remarks": "Reclassified as Alternaria based on target-board concentric markings.",
+    "reviewed_at": "2026-09-29T15:39:52.789Z"
+  },
+  {
+    "id": "e87371de-66a0-40df-a4ba-68a002d8199b",
+    "case_id": "case-onion-test-1",
+    "expert_id": "dr-patil-kvk",
+    "expert_name": "Dr. Ashok Kulkarni (Senior Agronomist, Nashik)",
+    "expert_diagnosis": "Purple Blotch",
+    "review_status": "confirmed",
+    "remarks": "Verified typical Alternaria porri symptoms with dark purple centers.",
+    "reviewed_at": "2026-09-29T15:26:04.834Z"
+  }
+]

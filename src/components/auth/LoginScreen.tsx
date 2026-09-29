@@ -64,8 +64,8 @@ export const LoginScreen: React.FC = () => {
   const [loginError, setLoginError] = useState<string | null>(null);
   const [isLoggingIn, setIsLoggingIn] = useState(false);
 
-  // Quick Demo Autofill Selector ('ramesh' | 'vikas')
-  const [selectedDemoKey, setSelectedDemoKey] = useState<'ramesh' | 'vikas'>('ramesh');
+  // Quick Demo Autofill Selector ('suresh' | 'ramesh' | 'vikas')
+  const [selectedDemoKey, setSelectedDemoKey] = useState<'suresh' | 'ramesh' | 'vikas'>('suresh');
 
   // Registration Form State: Personal Details
   const [regName, setRegName] = useState('');
@@ -120,7 +120,7 @@ export const LoginScreen: React.FC = () => {
   // ----------------------------------------------------
 
   // Auto-fill Demo credentials without automatically logging in
-  const handleAutofillDemo = (farmerKey: 'ramesh' | 'vikas' = 'ramesh') => {
+  const handleAutofillDemo = (farmerKey: 'suresh' | 'ramesh' | 'vikas' = 'suresh') => {
     setSelectedDemoKey(farmerKey);
     const demo = SEEDED_DEMO_FARMERS[farmerKey];
     if (demo) {
@@ -552,29 +552,41 @@ export const LoginScreen: React.FC = () => {
                   </span>
                 </div>
 
-                <div className="grid grid-cols-2 gap-2">
+                <div className="grid grid-cols-3 gap-1.5">
                   <button
                     type="button"
-                    onClick={() => handleAutofillDemo('ramesh')}
-                    className={`py-2 px-2.5 rounded-xl text-[11px] font-bold border transition-all active:scale-95 flex flex-col items-start ${selectedDemoKey === 'ramesh' && loginIdentifier === 'farmer123'
+                    onClick={() => handleAutofillDemo('suresh')}
+                    className={`py-2 px-2 rounded-xl text-[10px] font-bold border transition-all active:scale-95 flex flex-col items-start ${selectedDemoKey === 'suresh' && loginIdentifier === 'suresh123'
                         ? 'bg-amber-200/90 border-amber-400 text-amber-950 font-black shadow-sm'
                         : 'bg-white border-amber-200 text-stone-700 hover:bg-amber-100/60'
                       }`}
                   >
-                    <span className="font-extrabold">🍅 Ramesh Patil</span>
-                    <span className="text-[10px] text-stone-500">farmer123 (Tomato)</span>
+                    <span className="font-extrabold truncate w-full text-left">🧅 Suresh (Onion)</span>
+                    <span className="text-[9px] text-stone-500">suresh123</span>
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => handleAutofillDemo('ramesh')}
+                    className={`py-2 px-2 rounded-xl text-[10px] font-bold border transition-all active:scale-95 flex flex-col items-start ${selectedDemoKey === 'ramesh' && loginIdentifier === 'farmer123'
+                        ? 'bg-amber-200/90 border-amber-400 text-amber-950 font-black shadow-sm'
+                        : 'bg-white border-amber-200 text-stone-700 hover:bg-amber-100/60'
+                      }`}
+                  >
+                    <span className="font-extrabold truncate w-full text-left">🍅 Ramesh (Tomato)</span>
+                    <span className="text-[9px] text-stone-500">farmer123</span>
                   </button>
 
                   <button
                     type="button"
                     onClick={() => handleAutofillDemo('vikas')}
-                    className={`py-2 px-2.5 rounded-xl text-[11px] font-bold border transition-all active:scale-95 flex flex-col items-start ${selectedDemoKey === 'vikas' && loginIdentifier === 'vikas123'
+                    className={`py-2 px-2 rounded-xl text-[10px] font-bold border transition-all active:scale-95 flex flex-col items-start ${selectedDemoKey === 'vikas' && loginIdentifier === 'vikas123'
                         ? 'bg-amber-200/90 border-amber-400 text-amber-950 font-black shadow-sm'
                         : 'bg-white border-amber-200 text-stone-700 hover:bg-amber-100/60'
                       }`}
                   >
-                    <span className="font-extrabold">🌱 Vikas More</span>
-                    <span className="text-[10px] text-stone-500">vikas123 (Soybean)</span>
+                    <span className="font-extrabold truncate w-full text-left">🌱 Vikas (Soybean)</span>
+                    <span className="text-[9px] text-stone-500">vikas123</span>
                   </button>
                 </div>
                 <p className="text-[10px] text-stone-500 mt-1.5 text-center font-medium">

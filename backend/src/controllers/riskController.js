@@ -89,8 +89,10 @@ const getRiskForFarm = asyncHandler(async (req, res) => {
     };
   }
 
+  const { crop, disease } = req.query;
+
   // 3 + 4 + 5: weather, nearby cases, risk calculation (all handled in riskService)
-  const risk = await calculateRisk(farm, activeCropCycle);
+  const risk = await calculateRisk(farm, activeCropCycle, { crop, disease });
 
   // Persist this forecast so it can be reviewed/audited later
   const forecastRecord = {
@@ -121,12 +123,17 @@ const getRiskForFarm = asyncHandler(async (req, res) => {
       crop_cycle: activeCropCycle
         ? { id: activeCropCycle.id, crop_name: activeCropCycle.crop_name, crop_stage: activeCropCycle.crop_stage }
         : null,
+      score: risk.risk_score,
+      level: risk.risk_level,
       risk_score: risk.risk_score,
       risk_level: risk.risk_level,
+      reasons: risk.reasons,
       explanation: risk.explanation,
+      breakdown: risk.breakdown,
       factors: {
         humidity_factor: risk.humidity_factor,
         rain_factor: risk.rain_factor,
+        temperature_factor: risk.temperature_factor,
         crop_stage_factor: risk.crop_stage_factor,
         nearby_cases_factor: risk.nearby_cases_factor,
       },
@@ -136,4 +143,50 @@ const getRiskForFarm = asyncHandler(async (req, res) => {
   });
 });
 
-module.exports = { getRiskForFarm };
+/**
+ * GET /api/risk/forecast or GET /api/risk
+ * Query params: crop, disease, lat, lng, crop_stage, farm_id
+ */
+const getRiskForecast = asyncHandler(async (req, res) => {
+  const { crop = 'Onion', disease, lat, lng, crop_stage, farm_id } = req.query;
+
+  const farm = {
+    id: farm_id || 'demo-farm-nashik',
+    farm_name: 'Farm Plot',
+    latitude: lat ? parseFloat(lat) : 20.085,
+    longitude: lng ? parseFloat(lng) : 74.11,
+    taluka: 'Niphad',
+    district: 'Nashik',
+  };
+
+  const cropCycle = {
+    crop_name: crop,
+    crop_stage: crop_stage || 'flowering',
+  };
+
+  const risk = await calculateRisk(farm, cropCycle, { crop, disease });
+
+  res.json({
+    success: true,
+    data: {
+      score: risk.risk_score,
+      level: risk.risk_level,
+      risk_score: risk.risk_score,
+      risk_level: risk.risk_level,
+      reasons: risk.reasons,
+      explanation: risk.explanation,
+      breakdown: risk.breakdown,
+      factors: {
+        humidity_factor: risk.humidity_factor,
+        rain_factor: risk.rain_factor,
+        temperature_factor: risk.temperature_factor,
+        crop_stage_factor: risk.crop_stage_factor,
+        nearby_cases_factor: risk.nearby_cases_factor,
+      },
+      nearby_confirmed_cases: risk.nearby_cases_count,
+      five_day_forecast: risk.five_day_forecast,
+    },
+  });
+});
+
+module.exports = { getRiskForFarm, getRiskForecast };

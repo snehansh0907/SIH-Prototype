@@ -175,5 +175,66 @@ create table if not exists follow_ups (
 create index if not exists idx_follow_ups_case_id on follow_ups(case_id);
 
 -- =========================================================
--- Done. Next step: run seed.js to populate demo data.
+-- 9. WEATHER RECORDS
 -- =========================================================
+create table if not exists weather_records (
+    id uuid primary key default gen_random_uuid(),
+    farm_id uuid references farms(id) on delete cascade,
+    latitude double precision,
+    longitude double precision,
+    temperature numeric,
+    humidity numeric,
+    rainfall_mm numeric,
+    rain_probability numeric,
+    weather_condition text,
+    recorded_at timestamptz not null default now()
+);
+
+create index if not exists idx_weather_records_farm_id on weather_records(farm_id);
+
+-- =========================================================
+-- 10. COMPATIBILITY VIEWS (No table duplication)
+-- =========================================================
+-- Farmers view matching Phase 6 specification
+create or replace view farmers as
+select
+    id as id,
+    id as farmer_id,
+    name,
+    preferred_language as language,
+    district,
+    taluka,
+    coalesce(district, 'Nashik') || ', Maharashtra' as state,
+    coalesce(taluka, 'Niphad') || ', ' || coalesce(district, 'Nashik') as location,
+    created_at
+from users
+where role = 'farmer';
+
+-- Crop diagnoses view matching Phase 6 specification
+create or replace view crop_diagnoses as
+select
+    dc.id,
+    dc.farmer_id,
+    dc.farm_id,
+    dc.image_url,
+    coalesce(cc.crop_name, 'Onion') as crop,
+    dc.predicted_disease as disease,
+    dc.confidence,
+    dc.severity_band as severity,
+    coalesce(rf.risk_score, 78) as risk_score,
+    dc.latitude,
+    dc.longitude,
+    dc.status,
+    dc.created_at
+from diagnosis_cases dc
+left join crop_cycles cc on dc.crop_cycle_id = cc.id
+left join lateral (
+    select risk_score from risk_forecasts
+    where farm_id = dc.farm_id
+    order by created_at desc limit 1
+) rf on true;
+
+-- Followups view aliasing follow_ups
+create or replace view followups as
+select * from follow_ups;
+

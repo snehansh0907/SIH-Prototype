@@ -14,6 +14,7 @@ export const WeatherAlertCard: React.FC = () => {
     setSelectedFarm,
     availableFarms,
     setActiveTab,
+    riskForecast,
   } = useCrop();
 
   const isMarathi = language === 'mr';
@@ -111,14 +112,13 @@ export const WeatherAlertCard: React.FC = () => {
     );
   }
 
-  // Render Live Weather Data
-  const impactSummary = weather
-    ? isMarathi
-      ? weather.cropImpactSummaryMr
+  // Render Unified Non-Contradictory Advisory from Risk Engine
+  const impactSummary =
+    isMarathi
+      ? (riskForecast?.recommendationMr || riskForecast?.summaryMr || weather?.cropImpactSummaryMr)
       : isHindi
-      ? (weather.cropImpactSummaryHi || weather.cropImpactSummary)
-      : weather.cropImpactSummary
-    : '';
+      ? (riskForecast?.recommendationHi || riskForecast?.summaryHi || weather?.cropImpactSummaryHi)
+      : (riskForecast?.recommendation || riskForecast?.summary || weather?.cropImpactSummary);
 
   return (
     <div className="rounded-2xl bg-white border border-stone-200/70 p-4 shadow-sm transition-all">

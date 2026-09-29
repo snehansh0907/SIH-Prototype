@@ -708,6 +708,7 @@ export function getDefaultDiagnosisForCrop(cropIdOrName: string = 'tomato'): Dia
       pathogen: 'Alternaria porri (Fungal Pathogen)',
       severity: 'moderate',
       confidenceLabel: 'reliable',
+      confidence: 0.91,
       isUncertain: false,
       detectedAt: 'Today, 10:15 AM',
       imageUrl: SVG_ONION_BLOTCH,
@@ -1083,13 +1084,25 @@ export function getDefaultRiskForecastForCrop(cropIdOrName: string = 'tomato', l
     ],
     recommendation: `Complete cultural field sanitation and protective spray for ${info.crop} today before rain starts.`,
     recommendationHi: `बारिश शुरू होने से पहले आज ही ${info.cropHi} के लिए पत्तियों की छंटाई और जैविक/कॉपर का छिड़काव पूरा करें।`,
-    recommendationMr: `पाऊस सुरू होण्यापूर्वी आजच सकाळच्या सत्रात ${info.cropMr} साठी बाधित पाने कापा व योग्य फवारणी पूर्ण करा.`
+    recommendationMr: `पाऊस सुरू होण्यापूर्वी आजच सकाळच्या सत्रात ${info.cropMr} साठी बाधित पाने कापा व योग्य फवारणी पूर्ण करा.`,
+    score: humidity >= 80 ? 78 : 55,
+    breakdown: {
+      temperature: (liveWeather?.temp ?? 26) >= 20 && (liveWeather?.temp ?? 26) <= 30 ? 'Suitable' : 'Moderate',
+      temperatureValue: `${liveWeather?.temp ?? 26}°C`,
+      humidity: humidity >= 75 ? 'High' : 'Moderate',
+      humidityValue: `${humidity}%`,
+      rainfall: rainChance >= 50 ? 'High' : 'Moderate',
+      rainfallValue: `${rainChance}% chance`,
+      nearbyReports: 7,
+      cropStage: 'Flowering / Vegetative (Susceptible)',
+      overallRisk: `${humidity >= 80 ? 78 : 55} / 100`,
+    },
   };
 }
 
-export const DEFAULT_DIAGNOSIS: DiagnosisResult = getDefaultDiagnosisForCrop('tomato');
+export const DEFAULT_DIAGNOSIS: DiagnosisResult = getDefaultDiagnosisForCrop('onion');
 
-export const MOCK_RISK_FORECAST: RiskForecast = getDefaultRiskForecastForCrop('tomato');
+export const MOCK_RISK_FORECAST: RiskForecast = getDefaultRiskForecastForCrop('onion');
 
 export const MOCK_AREA_REPORT: AreaReport = {
   district: 'Nashik',

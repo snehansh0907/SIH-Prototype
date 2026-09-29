@@ -40,7 +40,7 @@ export const CropProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const { user } = useAuth();
   const [activeTab, setActiveTab] = useState<NavigationTab>('home');
   
-  const initialCrop = (user?.monitoredCrop || 'tomato').toLowerCase().trim();
+  const initialCrop = (user?.monitoredCrop || 'onion').toLowerCase().trim();
   const [selectedCropId, setSelectedCropId] = useState<string>(initialCrop);
   const [diagnosis, setDiagnosis] = useState<DiagnosisResult>(() => getDefaultDiagnosisForCrop(initialCrop));
   const [isAnalyzing, setIsAnalyzing] = useState<boolean>(false);
@@ -71,7 +71,7 @@ export const CropProvider: React.FC<{ children: React.ReactNode }> = ({ children
     let isCancelled = false;
 
     async function syncActiveDiagnosis() {
-      const activeCrop = (user?.monitoredCrop || selectedCropId || 'tomato').toLowerCase().trim();
+      const activeCrop = (user?.monitoredCrop || selectedCropId || 'onion').toLowerCase().trim();
       const farmerId = user?.farmerId || user?.id;
       const farmId = selectedFarm?.id || user?.farmId;
 
@@ -170,7 +170,7 @@ export const CropProvider: React.FC<{ children: React.ReactNode }> = ({ children
     const resolved = resolveFarmLocation(user, selectedFarm);
     const lat = selectedFarm?.latitude ?? resolved.latitude ?? 20.085;
     const lng = selectedFarm?.longitude ?? resolved.longitude ?? 74.11;
-    const activeCropKey = (user?.monitoredCrop || selectedCropId || 'tomato').toLowerCase().trim();
+    const activeCropKey = (user?.monitoredCrop || selectedCropId || 'onion').toLowerCase().trim();
     const farmId = selectedFarm?.id || user?.farmId || (user?.farmerId === 'farmer123' || user?.id === SEEDED_DEMO_FARMER_ID ? SEEDED_DEMO_FARM_ID : `farm-${user?.id || 'default'}`);
 
     setIsWeatherLoading(true);

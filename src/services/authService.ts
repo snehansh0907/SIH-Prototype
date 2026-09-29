@@ -231,16 +231,16 @@ export const SEEDED_DEMO_FARMERS: Record<string, DemoFarmerConfig> = {
   },
 };
 
-export const MOCK_FARMER_USER: FarmerUser = SEEDED_DEMO_FARMERS.ramesh;
+export const MOCK_FARMER_USER: FarmerUser = SEEDED_DEMO_FARMERS.suresh;
 
 export const MOCK_DEMO_USER: FarmerUser = {
-  ...SEEDED_DEMO_FARMERS.ramesh,
+  ...SEEDED_DEMO_FARMERS.suresh,
   name: 'Demo Explorer (Guest)',
   nameHi: 'डेमो किसान (अतिथि)',
   nameMr: 'डेमो वापरकर्ता (अतिथी)',
   emailOrPhone: 'demo@krishisarthak.in',
-  latitude: 20.156556,
-  longitude: 74.117339,
+  latitude: 20.145,
+  longitude: 74.228,
   userType: 'demo',
   isDemo: true,
 };
@@ -643,8 +643,8 @@ export const authService = {
   /**
    * Continue as Demo User (Guest mode)
    */
-  async loginAsDemo(specificKey: 'ramesh' | 'vikas' | 'anita' = 'ramesh'): Promise<{ user: FarmerUser }> {
-    const demo = SEEDED_DEMO_FARMERS[specificKey] || SEEDED_DEMO_FARMERS.ramesh;
+  async loginAsDemo(specificKey: 'ramesh' | 'vikas' | 'anita' | 'sunita' | 'suresh' = 'suresh'): Promise<{ user: FarmerUser }> {
+    const demo = SEEDED_DEMO_FARMERS[specificKey] || SEEDED_DEMO_FARMERS.suresh || SEEDED_DEMO_FARMERS.ramesh;
     const demoUser: FarmerUser = {
       ...demo,
       name: `Demo Explorer (${demo.name})`,

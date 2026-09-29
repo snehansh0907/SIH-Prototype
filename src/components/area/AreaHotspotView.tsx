@@ -4,8 +4,9 @@ import { useLanguage } from '../../context/LanguageContext';
 import { useCrop } from '../../context/CropContext';
 import { useAuth } from '../../context/AuthContext';
 import { StatusBadge } from '../common/StatusBadge';
-import type { SeverityLevel } from '../../types';
+import type { SeverityLevel, AreaReport } from '../../types';
 import { VoiceButton } from '../common/VoiceButton';
+import { hotspotService } from '../../services/hotspotService';
 import {
   getNearbyRegionsForLocation,
   generateRegionalHotspotDataset,
@@ -327,7 +328,7 @@ const MAHARASHTRA_DEMO_LOCATIONS: Record<string, LocationHeatDataset> = {
 
 export const AreaHotspotView: React.FC = () => {
   const { language, t } = useLanguage();
-  const { resetToHome, setActiveTab, selectedFarm } = useCrop();
+  const { resetToHome, setActiveTab, selectedFarm, diagnosis } = useCrop();
   const { user } = useAuth();
 
   const isDemoSession = user?.userType === 'demo' || Boolean(user?.isDemo);
@@ -384,6 +385,30 @@ export const AreaHotspotView: React.FC = () => {
 
   const defaultLocId = nearbyRegions[0]?.id || 'niphad';
   const [selectedLocId, setSelectedLocId] = useState<string>(defaultLocId);
+  const [backendReport, setBackendReport] = useState<AreaReport | null>(null);
+
+  // Fetch real anonymized hotspot data from backend diagnosis cases
+  useEffect(() => {
+    let isMounted = true;
+    hotspotService
+      .getAreaReport({
+        crop: user?.monitoredCrop || diagnosis?.cropId || 'Onion',
+        disease: diagnosis?.diseaseName,
+        taluka: user?.taluka || 'Niphad',
+        district: user?.district || 'Nashik',
+        latitude: selectedFarm?.latitude || user?.latitude || 20.15,
+        longitude: selectedFarm?.longitude || user?.longitude || 74.12,
+      })
+      .then((report) => {
+        if (isMounted && report) {
+          setBackendReport(report);
+        }
+      })
+      .catch(() => {});
+    return () => {
+      isMounted = false;
+    };
+  }, [user?.id, selectedFarm?.id, diagnosis?.cropId]);
 
   // Immediately refresh location data when user account or selected farm changes (zero stale cache)
   useEffect(() => {
@@ -527,10 +552,10 @@ export const AreaHotspotView: React.FC = () => {
             <span className="text-base">🦠</span>
             <span>
               {language === 'mr'
-                ? `या भागात ${activeDataset.activeCasesCount} शेतांमध्ये प्रादुर्भाव आढळला आहे`
+                ? `${backendReport?.activeCasesCount ?? activeDataset.activeCasesCount} रोग अहवाल (३ किमी परिसर)`
                 : language === 'hi'
-                ? `इस क्षेत्र में ${activeDataset.activeCasesCount} खेतों में प्रकोप की पुष्टि हुई है (5 किमी दायरा)`
-                : `${activeDataset.activeCasesCount} active disease reports confirmed within 5 km`}
+                ? `3 किमी के दायरे में ${backendReport?.activeCasesCount ?? activeDataset.activeCasesCount} बीमारी की रिपोर्ट`
+                : `${backendReport?.activeCasesCount ?? activeDataset.activeCasesCount} disease reports within 3 km`}
             </span>
           </div>
 

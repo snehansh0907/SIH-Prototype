@@ -106,6 +106,9 @@ export interface DiagnosisResult {
     textMr: string;
     riskTrend: 'increasing' | 'stable' | 'decreasing';
   };
+  confidence?: number;
+  expertReviewStatus?: 'pending' | 'confirmed' | 'corrected';
+  expertNotes?: string;
   advisoryVoiceScript: string;
   advisoryVoiceScriptHi?: string;
   advisoryVoiceScriptMr: string;
@@ -147,6 +150,7 @@ export interface RiskReason {
 export interface RiskForecast {
   cropId: string;
   currentLevel: SeverityLevel;
+  score?: number; // 0 - 100
   summary: string;
   summaryHi?: string;
   summaryMr: string;
@@ -155,6 +159,17 @@ export interface RiskForecast {
   recommendation: string;
   recommendationHi?: string;
   recommendationMr: string;
+  breakdown?: {
+    temperature: string;
+    temperatureValue?: string;
+    humidity: string;
+    humidityValue?: string;
+    rainfall: string;
+    rainfallValue?: string;
+    nearbyReports: number;
+    cropStage: string;
+    overallRisk: string;
+  };
 }
 
 export interface HotspotCluster {
