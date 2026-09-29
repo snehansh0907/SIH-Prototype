@@ -1,14 +1,14 @@
 /**
  * Image Content Validation Service
  * Uses TensorFlow.js + MobileNet (free, offline/in-browser, client-side)
- * to ensure uploaded images show plants/leaves before running diagnosis.
+ * to ensure uploaded images show livestock / animals / clinical tissue before running diagnosis.
  */
 
 export class InvalidCropImageError extends Error {
   readonly predictions?: Array<{ className: string; probability: number }>;
 
   constructor(
-    message: string = 'Invalid crop image — please upload a clear photo of a leaf/plant',
+    message: string = 'Invalid image — please upload a clear photo of your animal (skin nodules, muzzle, hooves, or body)',
     predictions?: Array<{ className: string; probability: number }>
   ) {
     super(message);
@@ -18,38 +18,47 @@ export class InvalidCropImageError extends Error {
   }
 }
 
+export const InvalidLivestockImageError = InvalidCropImageError;
+
 export interface ImageValidationResult {
   isValid: boolean;
   predictions: Array<{ className: string; probability: number }>;
   reason?: string;
 }
 
-// Plant, crop, and vegetation related keywords in ImageNet classes
-export const PLANT_KEYWORDS = [
-  'leaf', 'plant', 'flower', 'vegetable', 'fruit', 'tree', 'grass', 'crop',
-  'flora', 'herb', 'stalk', 'stem', 'sprout', 'vine', 'shoot', 'foliage',
-  'blossom', 'petal', 'bud', 'seed', 'pod', 'grain', 'cereal',
-  // Specific crops and produce
-  'corn', 'maize', 'ear', 'tomato', 'cotton', 'soy', 'soybean',
-  'wheat', 'rice', 'paddy', 'onion', 'scallion', 'leek', 'shallot', 'garlic',
-  'sugarcane', 'cane', 'sugar cane',
-  'cabbage', 'broccoli', 'cauliflower', 'zucchini', 'cucumber', 'squash', 'eggplant', 'aubergine',
-  'courgette', 'bell pepper', 'chili', 'pepper', 'pot', 'flowerpot', 'greenhouse',
-  'apple', 'orange', 'banana', 'lemon', 'lime', 'grape', 'pomegranate', 'pineapple', 'fig', 'peach', 'plum', 'mango',
-  'jackfruit', 'elderberry', 'strawberry',
-  'fungus', 'mushroom', 'lichen', 'moss', 'alga', 'seaweed', 'agaric', 'bolete', 'gyromitra', 'stinkhorn', 'earthstar',
-  'hay', 'straw', 'clover', 'alfalfa', 'fern', 'bamboo', 'reed', 'cactus',
-  'rose', 'daisy', 'sunflower', 'tulip', 'orchid', 'poppy', 'dahlia', 'marigold',
-  'slipper', "lady's slipper", 'cypripedium', 'rosehip',
-  'acorn', 'chestnut', 'buckeye', 'conker', 'cardoon', 'artichoke', 'rapeseed',
+// Livestock, animal, mammal, and clinical veterinary keywords in ImageNet classes
+export const LIVESTOCK_KEYWORDS = [
+  // Bovine & Ruminants
+  'ox', 'cow', 'bull', 'cattle', 'bovine', 'calf', 'calves', 'dairy', 'steer',
+  'buffalo', 'water buffalo', 'bison', 'yak', 'zebu',
+  // Small Ruminants & Swine
+  'goat', 'ibex', 'billy goat', 'kid', 'sheep', 'ram', 'ewe', 'lamb', 'bighorn',
+  'pig', 'swine', 'hog', 'boar', 'piglet',
+  // Equine & Camelid
+  'horse', 'mare', 'stallion', 'colt', 'foal', 'pony', 'donkey', 'mule', 'ass', 'camel', 'dromedary', 'llama', 'alpaca',
+  // Anatomical & Clinical features
+  'muzzle', 'snout', 'nose', 'mouth', 'lip', 'jaw', 'hoof', 'hooves', 'foot', 'feet', 'paw', 'claw',
+  'skin', 'hide', 'coat', 'fur', 'fleece', 'wool', 'hair', 'leather', 'udder', 'teat', 'horn', 'antler',
+  'ear', 'tail', 'eye', 'flank', 'belly', 'dewlap', 'hump', 'brisket',
+  'lesion', 'nodule', 'blister', 'pustule', 'scab', 'ulcer', 'wound', 'tissue',
+  // General Animal & Shed Environment
+  'mammal', 'animal', 'vertebrate', 'fauna', 'quadruped', 'livestock',
+  'barn', 'shed', 'stall', 'stable', 'pen', 'corral', 'pasture', 'paddock', 'trough', 'manger', 'fence',
+  'hay', 'straw', 'silage', 'fodder', 'grass', 'feed',
+  // Poultry (Avian livestock)
+  'chicken', 'rooster', 'hen', 'cock', 'poultry', 'fowl', 'turkey', 'duck', 'drake', 'goose', 'gander',
+  // Also tolerate flora & plant items for backward compatibility
+  'leaf', 'plant', 'flower', 'vegetable', 'fruit', 'crop', 'tree', 'greenhouse',
 ];
 
-export function isPlantClassName(className: string): boolean {
+export const PLANT_KEYWORDS = LIVESTOCK_KEYWORDS;
+
+export function isLivestockClassName(className: string): boolean {
   if (!className) return false;
   const lower = className.toLowerCase();
   const tokens = lower.split(/[\s,/\-_()[\]]+/);
 
-  for (const kw of PLANT_KEYWORDS) {
+  for (const kw of LIVESTOCK_KEYWORDS) {
     if (kw.includes(' ')) {
       if (lower.includes(kw)) return true;
     } else {
@@ -59,6 +68,8 @@ export function isPlantClassName(className: string): boolean {
   }
   return false;
 }
+
+export const isPlantClassName = isLivestockClassName;
 
 // Cached singleton promise for MobileNet model
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -114,7 +125,7 @@ export function createImgElement(imageSource: string | File | Blob): Promise<HTM
 /**
  * Fallback pixel-based heuristic if TensorFlow/MobileNet fails to load
  */
-async function fallbackCanvasPlantCheck(img: HTMLImageElement): Promise<boolean> {
+async function fallbackCanvasAnimalCheck(img: HTMLImageElement): Promise<boolean> {
   try {
     const size = 80;
     const canvas = document.createElement('canvas');
@@ -127,7 +138,7 @@ async function fallbackCanvasPlantCheck(img: HTMLImageElement): Promise<boolean>
     const imgData = ctx.getImageData(0, 0, size, size);
     const data = imgData.data;
 
-    let plantPixels = 0;
+    let organicPixels = 0;
     const totalPixels = size * size;
 
     for (let i = 0; i < data.length; i += 4) {
@@ -141,45 +152,37 @@ async function fallbackCanvasPlantCheck(img: HTMLImageElement): Promise<boolean>
       const lightness = (max + min) / 2 / 255;
       const saturation = max === 0 ? 0 : delta / max;
 
-      let hue = 0;
-      if (delta !== 0) {
-        if (max === r) hue = ((g - b) / delta) % 6;
-        else if (max === g) hue = (b - r) / delta + 2;
-        else hue = (r - g) / delta + 4;
-        hue = Math.round(hue * 60);
-        if (hue < 0) hue += 360;
-      }
+      // Detect animal fur/coat, skin tone, brown/tan/cream hide, or lesion erythema
+      const isWarmCoat = (r >= g && g >= b) && (r > 40) && lightness <= 0.95;
+      const isSkinLesion = (r > 100 && r > g * 1.1) && saturation >= 0.15;
+      const isVegetationOrStraw = (g >= b && r >= b) && saturation >= 0.1;
 
-      const isGreenHue = (hue >= 35 && hue <= 165) && saturation >= 0.08 && lightness >= 0.08 && lightness <= 0.92;
-      const isGreenDominated = (g > r * 0.85) && (g > b * 1.05) && (g > 25);
-      const isDiseasedTissue = (hue >= 20 && hue < 55) && saturation >= 0.12 && (g >= b) && (r >= b);
-
-      if (isGreenHue || isGreenDominated || isDiseasedTissue) {
-        plantPixels++;
+      if (isWarmCoat || isSkinLesion || isVegetationOrStraw) {
+        organicPixels++;
       }
     }
 
-    return (plantPixels / totalPixels) >= 0.08;
+    return (organicPixels / totalPixels) >= 0.08;
   } catch {
     return true;
   }
 }
 
 /**
- * Validates whether an image shows a plant or leaf using MobileNet.
- * Rejects non-plant images (selfies, documents, vehicles, animals, etc.).
+ * Validates whether an image shows livestock or animal symptoms using MobileNet.
+ * Rejects non-animal images (text documents, vehicle parts, electronic screenshots).
  */
-export async function validatePlantImage(imageSource?: string | File | Blob): Promise<ImageValidationResult> {
+export async function validateLivestockImage(imageSource?: string | File | Blob): Promise<ImageValidationResult> {
   if (!imageSource) {
     return { isValid: false, predictions: [], reason: 'No image provided' };
   }
 
-  // Allow built-in demo SVG illustrations
+  // Allow built-in demo vector sample illustrations
   if (typeof imageSource === 'string') {
     if (imageSource.startsWith('data:image/svg') || imageSource.includes('data:image/svg')) {
       return {
         isValid: true,
-        predictions: [{ className: 'plant (demo vector sample)', probability: 1.0 }],
+        predictions: [{ className: 'livestock (demo vector sample)', probability: 1.0 }],
       };
     }
   }
@@ -191,20 +194,20 @@ export async function validatePlantImage(imageSource?: string | File | Blob): Pr
       const model = await getMobileNetModel();
       const predictions: Array<{ className: string; probability: number }> = await model.classify(img, 5);
 
-      const isValid = predictions.some((p) => isPlantClassName(p.className));
+      const isValid = predictions.some((p) => isLivestockClassName(p.className));
 
       return {
         isValid,
         predictions,
-        reason: isValid ? undefined : 'No plant or vegetation categories found in top predictions',
+        reason: isValid ? undefined : 'No livestock or animal categories found in top predictions',
       };
     } catch (modelErr) {
       console.warn('[imageValidationService] MobileNet unavailable, using pixel heuristic fallback:', modelErr);
-      const fallbackValid = await fallbackCanvasPlantCheck(img);
+      const fallbackValid = await fallbackCanvasAnimalCheck(img);
       return {
         isValid: fallbackValid,
         predictions: [],
-        reason: fallbackValid ? undefined : 'Fails plant vegetation pixel heuristic',
+        reason: fallbackValid ? undefined : 'Fails animal texture pixel heuristic',
       };
     }
   } catch (imgErr) {
@@ -212,3 +215,5 @@ export async function validatePlantImage(imageSource?: string | File | Blob): Pr
     return { isValid: false, predictions: [], reason: 'Image could not be decoded' };
   }
 }
+
+export const validatePlantImage = validateLivestockImage;

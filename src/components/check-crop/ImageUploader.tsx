@@ -6,10 +6,10 @@ import { CropSelector } from './CropSelector';
 import { PhotoGuidance } from './PhotoGuidance';
 import { ProcessingModal } from './ProcessingModal';
 import { MOCK_CROPS } from '../../services/mockData';
-import { validatePlantImage, InvalidCropImageError } from '../../services/imageValidationService';
+import { validateLivestockImage, InvalidCropImageError, InvalidLivestockImageError } from '../../services/imageValidationService';
 
 export async function validateCropImage(imageSource: string | File): Promise<boolean> {
-  const res = await validatePlantImage(imageSource);
+  const res = await validateLivestockImage(imageSource);
   return res.isValid;
 }
 
@@ -91,7 +91,12 @@ export const ImageUploader: React.FC = () => {
         await performDiagnosis(selectedCropId, fallbackUrl);
       }
     } catch (err) {
-      if (err instanceof InvalidCropImageError || (err as Error)?.name === 'InvalidCropImageError') {
+      if (
+        err instanceof InvalidLivestockImageError ||
+        err instanceof InvalidCropImageError ||
+        (err as Error)?.name === 'InvalidLivestockImageError' ||
+        (err as Error)?.name === 'InvalidCropImageError'
+      ) {
         setShowInvalidModal(true);
         setSelectedImage(null);
         setSelectedFile(null);
@@ -177,7 +182,7 @@ export const ImageUploader: React.FC = () => {
           <div className="relative rounded-3xl overflow-hidden border-2 border-forest-600 shadow-card bg-stone-900">
             <img
               src={selectedImage}
-              alt="Crop Leaf Preview"
+              alt="Livestock Symptom Preview"
               className="w-full h-64 object-cover object-center"
               onError={(e) => {
                 const target = e.currentTarget;
@@ -249,8 +254,14 @@ export const ImageUploader: React.FC = () => {
                 : sample.title;
 
             const getConditionLabel = () => {
-              if (sample.condition === 'Healthy Leaf') {
-                return language === 'mr' ? 'निरोगी पान' : language === 'hi' ? 'स्वस्थ पत्ती' : 'Healthy Leaf';
+              if (sample.condition === 'Healthy Animal' || sample.condition === 'Healthy Leaf') {
+                return language === 'mr' ? 'निरोगी जनावर' : language === 'hi' ? 'स्वस्थ पशु' : 'Healthy Animal';
+              }
+              if (sample.condition === 'Lumpy Skin Disease') {
+                return language === 'mr' ? 'लंपी चर्मरोग' : language === 'hi' ? 'लम्पी त्वचा रोग' : 'Lumpy Skin Disease';
+              }
+              if (sample.condition === 'Foot-and-Mouth Disease') {
+                return language === 'mr' ? 'लाळ्या खुरकूत (FMD)' : language === 'hi' ? 'खुरपका-मुंहपका (FMD)' : 'Foot-and-Mouth Disease';
               }
               if (sample.condition === 'Early Blight') {
                 return language === 'mr' ? 'करपा रोग' : language === 'hi' ? 'अगेती झुलसा' : 'Early Blight';
@@ -315,7 +326,7 @@ export const ImageUploader: React.FC = () => {
         disabled={isAnalyzing}
         className="w-full py-4 px-6 rounded-2xl bg-forest-800 hover:bg-forest-900 active:scale-[0.98] text-white font-extrabold text-base transition-all duration-200 shadow-elevated flex items-center justify-center gap-2 font-display cursor-pointer"
       >
-        <span className="text-lg">🌿</span>
+        <span className="text-lg">🩺</span>
         <span>{t.btnCheckCrop}</span>
       </button>
 

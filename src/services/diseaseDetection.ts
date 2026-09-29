@@ -1,29 +1,33 @@
 /**
- * Crop Disease Detection Service
- * Primary functional workflow for "Check My Crop" (SIH Problem Statement).
+ * Livestock Disease Detection Service
+ * Primary functional workflow for "Check My Animal" (SIH26128).
  *
  * ARCHITECTURAL INTEGRITY NOTE:
- * - MobileNet (client-side) is used strictly for pre-upload plant/foliage validation
- *   (confirming the image is a plant before consuming network/compute). It is NEVER
- *   falsely labeled as a plant pathology model.
+ * - MobileNet (client-side) is used strictly for pre-upload animal validation
+ *   (confirming the image is an animal / tissue before consuming network/compute).
+ *   It is NEVER falsely labeled as a veterinary pathologist.
  * - Disease detection connects to backend POST /api/diagnose (or /api/diagnosis) which
  *   implements a pluggable pathology model architecture.
+ * - Scoped to Lumpy Skin Disease (LSD) skin nodules and Foot-and-Mouth Disease (FMD) lesions.
  * - Supports explicit low-confidence state (< 0.60):
- *   "Unable to confidently identify the problem. Please capture another clear image or request expert verification."
- * - Does not force every image into a disease (supports healthy leaves and indeterminate images).
+ *   "Unable to confidently identify the livestock condition. Please capture a clear image of nodules, muzzle, or hooves."
+ * - Does not force every image into a disease (supports healthy animals and indeterminate images).
  */
 
 import type { DiagnosisResult, SeverityLevel, ConfidenceLevel, ActionItem, MonitorItem } from '../types';
 import { apiClient, API_ROOT_URL } from './apiClient';
-import { validatePlantImage, InvalidCropImageError } from './imageValidationService';
-import { getDefaultDiagnosisForCrop, MOCK_CROPS } from './mockData';
+import { validateLivestockImage, InvalidLivestockImageError, InvalidCropImageError } from './imageValidationService';
+import { getDefaultDiagnosisForCrop, MOCK_CROPS, MOCK_LIVESTOCK } from './mockData';
 
-export { InvalidCropImageError };
+export { InvalidLivestockImageError, InvalidCropImageError };
 
 export interface RawDiagnosisPayload {
   case_id: string;
   id?: string;
-  crop: string;
+  crop?: string;
+  species?: string;
+  affected_body_part?: string;
+  animal_tag?: string;
   disease: string;
   type: 'disease' | 'pest' | 'healthy' | 'uncertain';
   confidence: number; // 0.0 - 1.0 (or 0-100)
@@ -40,13 +44,13 @@ export interface RawDiagnosisPayload {
     reasons: string[];
     breakdown?: {
       temperature: string;
-      temperatureValue: string;
+      temperatureValue?: string;
       humidity: string;
-      humidityValue: string;
+      humidityValue?: string;
       rainfall: string;
-      rainfallValue: string;
+      rainfallValue?: string;
       nearbyReports: number;
-      cropStage: string;
+      cropStage?: string;
       overallRisk: string;
     };
     factors?: Record<string, number>;
@@ -58,6 +62,8 @@ export interface RawDiagnosisPayload {
     prevention?: string[];
     immediateActions?: string[];
     monitoring?: string[];
+    supportiveCare?: string[];
+    veterinaryEscalation?: string[];
     biologicalOptions?: string[];
     chemicalIntervention?: string[];
     expertEscalation?: string[];
@@ -71,9 +77,14 @@ export interface RawDiagnosisPayload {
 
 export interface DiseaseDetectionOptions {
   farmerId?: string;
+  ownerId?: string;
   farmId?: string;
+  shedId?: string;
   cropCycleId?: string;
+  unitId?: string;
   cropStage?: string;
+  affectedBodyPart?: string;
+  animalTag?: string;
   latitude?: number;
   longitude?: number;
 }
@@ -131,14 +142,14 @@ async function resolveDisplayUrl(imageSource?: string | File | Blob): Promise<st
  */
 export function mapToDiagnosisResult(
   payload: RawDiagnosisPayload,
-  selectedCropId: string,
+  selectedSpeciesId: string = 'cattle',
   localImageUrl?: string
 ): DiagnosisResult {
-  const cropId = (payload.crop || selectedCropId || 'onion').toLowerCase().trim();
-  const defaultDiag = getDefaultDiagnosisForCrop(cropId);
-  const matchedCrop = MOCK_CROPS.find((c) => c.id === cropId) || MOCK_CROPS[0];
+  const speciesId = (payload.species || payload.crop || selectedSpeciesId || 'cattle').toLowerCase().trim();
+  const defaultDiag = getDefaultDiagnosisForCrop(speciesId);
+  const matchedSpecies = MOCK_LIVESTOCK.find((s) => s.id === speciesId) || MOCK_CROPS[0];
 
-  const confRaw = typeof payload.confidence === 'number' ? payload.confidence : 0.85;
+  const confRaw = typeof payload.confidence === 'number' ? payload.confidence : 0.88;
   const normalizedConf = confRaw > 1 ? confRaw / 100 : confRaw;
   const isLowConfidence = normalizedConf < 0.60 || payload.is_uncertain === true || payload.type === 'uncertain';
 
@@ -165,14 +176,23 @@ export function mapToDiagnosisResult(
   let diseaseNameHi = defaultDiag.diseaseNameHi;
   let diseaseNameMr = defaultDiag.diseaseNameMr;
 
+  const diseaseLower = diseaseName.toLowerCase();
   if (isLowConfidence) {
-    diseaseName = 'Uncertain Image / Low AI Confidence';
+    diseaseName = 'Uncertain Photo / Low AI Confidence';
     diseaseNameHi = 'अस्पष्ट फोटो / AI निदान अनिश्चित';
     diseaseNameMr = 'अस्पष्ट फोटो / AI निदान अनिश्चित';
-  } else if (cropId === 'onion' && diseaseName.toLowerCase().includes('blotch')) {
-    diseaseName = 'Purple Blotch';
-    diseaseNameHi = 'बैंगनी धब्बा रोग (Purple Blotch)';
-    diseaseNameMr = 'कांदा जांभळा करपा (Purple Blotch)';
+  } else if (diseaseLower.includes('foot') || diseaseLower.includes('mouth') || diseaseLower.includes('fmd')) {
+    diseaseName = 'Foot-and-Mouth Disease (FMD)';
+    diseaseNameHi = 'खुरपका-मुंहपका रोग (FMD)';
+    diseaseNameMr = 'लाळ्या खुरकूत रोग (FMD)';
+  } else if (diseaseLower.includes('lumpy') || diseaseLower.includes('lsd') || diseaseLower.includes('nodule')) {
+    diseaseName = 'Lumpy Skin Disease (LSD)';
+    diseaseNameHi = 'लंपी चर्मरोग (LSD)';
+    diseaseNameMr = 'लंपी चर्मरोग (Lumpy Skin Disease)';
+  } else if (diseaseLower.includes('healthy')) {
+    diseaseName = 'Healthy Animal';
+    diseaseNameHi = 'स्वस्थ पशु (रोगमुक्त)';
+    diseaseNameMr = 'निरोगी पशु (रोगमुक्त)';
   }
 
   // Parse structured actions
@@ -187,22 +207,22 @@ export function mapToDiagnosisResult(
       {
         step: 1,
         title: 'Retake photo in clear daylight',
-        titleHi: 'दिन के उजाले में पत्ती की स्पष्ट फोटो लें',
-        titleMr: 'सूर्यप्रकाशात पानाचा स्पष्ट फोटो पुन्हा काढा',
-        description: 'Position camera 10-15 cm from leaf spot with steady hands and clear focus.',
-        descriptionHi: 'पत्ती के धब्बे से 10-15 सेमी की दूरी पर कैमरा स्थिर रखकर स्पष्ट फोटो लें।',
-        descriptionMr: 'पानाच्या डागापासून १० ते १५ सेमी अंतरावर कॅमेरा धरून स्पष्ट फोटो काढा.',
+        titleHi: 'दिन के उजाले में पशु के लक्षणों की स्पष्ट फोटो लें',
+        titleMr: 'सूर्यप्रकाशात जनावराच्या गाठी किंवा तोंडाचा स्पष्ट फोटो पुन्हा काढा',
+        description: 'Position camera 20-30 cm from skin nodules, muzzle, or hooves with steady hands and clear focus.',
+        descriptionHi: 'गांठों या मुंह के छालों से 20-30 सेमी की दूरी पर कैमरा स्थिर रखकर स्पष्ट फोटो लें।',
+        descriptionMr: 'गाठी किंवा खुरांपासून २०-३० सेमी अंतरावर कॅमेरा धरून स्पष्ट फोटो काढा.',
         priority: 'critical',
         category: 'cultural',
       },
       {
         step: 2,
-        title: 'Request Expert Verification',
-        titleHi: 'कृषि विशेषज्ञ से सत्यापन का अनुरोध करें',
-        titleMr: 'कृषी तज्ज्ञांकडून खात्रीशीर तपासणी करून घ्या',
-        description: 'Submit this scan to the agronomist queue for human specialist evaluation.',
-        descriptionHi: 'मानव विशेषज्ञ के मूल्यांकन के लिए इस स्कैन को विशेषज्ञ कतार में भेजें।',
-        descriptionMr: 'अचूक निदानासाठी हा फोटो थेट कृषी तज्ज्ञांच्या तपासणीसाठी पाठवा.',
+        title: 'Request Veterinary Officer Verification',
+        titleHi: 'पशु चिकित्सा अधिकारी से सत्यापन का अनुरोध करें',
+        titleMr: 'पशुवैद्यकीय अधिकाऱ्यांकडून तपासणी करून घ्या',
+        description: 'Submit this case to the Veterinary Officer review queue or call helpline 1962.',
+        descriptionHi: 'विशेषज्ञ समीक्षा हेतु यह मामला पशु चिकित्सक को भेजें या हेल्पलाइन 1962 पर कॉल करें।',
+        descriptionMr: 'अचूक निदानासाठी हा फोटो थेट पशुवैद्यकीय अधिकाऱ्यांच्या तपासणीसाठी पाठवा किंवा १९६२ वर संपर्क करा.',
         priority: 'critical',
         category: 'biological',
       }
@@ -215,8 +235,8 @@ export function mapToDiagnosisResult(
         titleHi: `उपाय (${idx + 1}): ${item.slice(0, 35)}`,
         titleMr: `उपाय (${idx + 1}): ${item.slice(0, 35)}`,
         description: item,
-        descriptionHi: `सलाह: ${item}`,
-        descriptionMr: `सल्ला: ${item}`,
+        descriptionHi: `पशु सलाह: ${item}`,
+        descriptionMr: `पशु सल्ला: ${item}`,
         priority: idx === 0 ? 'critical' : idx === 1 ? 'important' : 'preventive',
         category: idx === 0 ? 'cultural' : idx === 1 ? 'biological' : 'chemical',
       });
@@ -245,16 +265,16 @@ export function mapToDiagnosisResult(
 
   // Voice Script
   const voiceScript = isLowConfidence
-    ? 'Unable to confidently identify the problem. Please capture another clear image or request expert verification.'
-    : `Detected ${diseaseName} on ${matchedCrop.name} with ${mappedSeverity} severity. Follow the recommended daily IPM steps.`;
+    ? 'Unable to confidently identify the livestock condition. Please capture another clear image of skin nodules, muzzle, or hooves, or request veterinary officer verification.'
+    : `Detected ${diseaseName} on ${matchedSpecies.name} with ${mappedSeverity} severity. Isolate the animal and follow recommended veterinary care steps.`;
 
   const voiceScriptHi = isLowConfidence
-    ? 'एआई आत्मविश्वास कम है। कृपया एक स्पष्ट तस्वीर लें या विशेषज्ञ सत्यापन का अनुरोध करें।'
-    : `${matchedCrop.nameHi || matchedCrop.name} फसल पर ${diseaseNameHi} पाया गया है। गंभीरता: ${mappedSeverity}। दिए गए एकीकृत कीट प्रबंधन उपायों का पालन करें।`;
+    ? 'एआई निदान अनिश्चित है। कृपया त्वचा की गांठों, मुंह या खुरों की एक स्पष्ट तस्वीर लें या पशु चिकित्सक से सत्यापन का अनुरोध करें।'
+    : `${matchedSpecies.nameHi || matchedSpecies.name} में ${diseaseNameHi} पाया गया है। गंभीरता: ${mappedSeverity}। पशु को तुरंत अलग करें और दिए गए पशु चिकित्सा उपायों का पालन करें।`;
 
   const voiceScriptMr = isLowConfidence
-    ? 'एआय निदान अनिश्चित आहे. कृपया सूर्यप्रकाशात नवीन स्पष्ट फोटो काढा किंवा तज्ज्ञ सल्ला घ्या.'
-    : `${matchedCrop.nameMr} पिकावर ${diseaseNameMr} आढळला आहे. गांभीर्य: ${mappedSeverity}. दिलेल्या उपाययोजना त्वरित अंमलात आणा.`;
+    ? 'एआय निदान अनिश्चित आहे. कृपया सूर्यप्रकाशात जनावराच्या गाठी किंवा खुरांचा नवीन स्पष्ट फोटो काढा किंवा पशुवैद्यकांचा सल्ला घ्या.'
+    : `${matchedSpecies.nameMr} मध्ये ${diseaseNameMr} आढळला आहे. गांभीर्य: ${mappedSeverity}. बाधित जनावरास त्वरित वेगळे बांधा व पशुवैद्यकीय उपायांची अंमलबजावणी करा.`;
 
   // Resolved image URL
   let finalImageUrl = localImageUrl || defaultDiag.imageUrl;
@@ -266,10 +286,10 @@ export function mapToDiagnosisResult(
 
   return {
     id: payload.case_id || payload.id || `case-${Date.now()}`,
-    cropId,
-    cropName: matchedCrop.name,
-    cropNameHi: matchedCrop.nameHi || matchedCrop.name,
-    cropNameMr: matchedCrop.nameMr,
+    cropId: speciesId,
+    cropName: matchedSpecies.name,
+    cropNameHi: matchedSpecies.nameHi || matchedSpecies.name,
+    cropNameMr: matchedSpecies.nameMr,
     diseaseName,
     diseaseNameHi,
     diseaseNameMr,
@@ -290,25 +310,25 @@ export function mapToDiagnosisResult(
 
 export const diseaseDetectionService = {
   /**
-   * Main Check My Crop flow:
-   * 1. Pre-validates image content (MobileNet client-side plant validator)
+   * Main Check My Animal flow:
+   * 1. Pre-validates image content (MobileNet client-side animal validator)
    * 2. Sends image to backend POST /api/diagnose
-   * 3. Receives standard crop, disease, type, confidence, severity, risk, advisory
+   * 3. Receives standard species, disease, type, confidence, severity, risk, advisory
    * 4. Maps to unified frontend model
    */
   async diagnose(
     imageSource?: string | File | Blob,
-    cropId: string = 'onion',
+    speciesId: string = 'cattle',
     options?: DiseaseDetectionOptions
   ): Promise<DiagnosisResult> {
-    const activeCrop = (cropId || 'onion').toLowerCase().trim();
+    const activeSpecies = (speciesId || 'cattle').toLowerCase().trim();
 
-    // 1. Client-Side Plant Validation (Transparent MobileNet usage)
-    const validation = await validatePlantImage(imageSource);
+    // 1. Client-Side Animal Validation (Transparent MobileNet usage)
+    const validation = await validateLivestockImage(imageSource);
     if (!validation.isValid) {
-      console.warn('[diseaseDetectionService] Rejected: Image does not appear to show plant/crop foliage:', validation.predictions);
-      throw new InvalidCropImageError(
-        'Invalid crop image — please upload a clear photo of a leaf or plant',
+      console.warn('[diseaseDetectionService] Rejected: Image does not appear to show livestock / animal symptoms:', validation.predictions);
+      throw new InvalidLivestockImageError(
+        'Invalid animal photo — please upload a clear photo of your animal (skin nodules, muzzle, hooves, or body)',
         validation.predictions
       );
     }
@@ -320,7 +340,7 @@ export const diseaseDetectionService = {
     const imageBlob = await resolveImageBlob(imageSource);
 
     if (imageBlob) {
-      formData.append('image', imageBlob, `crop_${activeCrop}_${Date.now()}.jpg`);
+      formData.append('image', imageBlob, `animal_${activeSpecies}_${Date.now()}.jpg`);
     } else {
       // Offline fallback canvas blob
       const canvas = document.createElement('canvas');
@@ -328,19 +348,24 @@ export const diseaseDetectionService = {
       canvas.height = 300;
       const ctx = canvas.getContext('2d');
       if (ctx) {
-        ctx.fillStyle = '#2d5a27';
+        ctx.fillStyle = '#6c584c';
         ctx.fillRect(0, 0, 300, 300);
       }
       const dummyBlob = await new Promise<Blob>((res) => canvas.toBlob((b) => res(b || new Blob()), 'image/jpeg'));
-      formData.append('image', dummyBlob, `crop_${activeCrop}.jpg`);
+      formData.append('image', dummyBlob, `animal_${activeSpecies}.jpg`);
     }
 
-    formData.append('crop', activeCrop);
-    formData.append('crop_name', activeCrop);
+    formData.append('species', activeSpecies);
+    formData.append('crop', activeSpecies);
+    formData.append('crop_name', activeSpecies);
+    if (options?.affectedBodyPart) formData.append('affected_body_part', options.affectedBodyPart);
+    if (options?.animalTag) formData.append('animal_tag', options.animalTag);
+    if (options?.ownerId || options?.farmerId) formData.append('owner_id', (options.ownerId || options.farmerId)!);
     if (options?.farmerId) formData.append('farmer_id', options.farmerId);
+    if (options?.shedId || options?.farmId) formData.append('shed_id', (options.shedId || options.farmId)!);
     if (options?.farmId) formData.append('farm_id', options.farmId);
+    if (options?.unitId || options?.cropCycleId) formData.append('unit_id', (options.unitId || options.cropCycleId)!);
     if (options?.cropCycleId) formData.append('crop_cycle_id', options.cropCycleId);
-    if (options?.cropStage) formData.append('crop_stage', options.cropStage);
     if (options?.latitude) formData.append('latitude', String(options.latitude));
     if (options?.longitude) formData.append('longitude', String(options.longitude));
 
@@ -352,7 +377,7 @@ export const diseaseDetectionService = {
       });
 
       if (response && response.success && response.data) {
-        return mapToDiagnosisResult(response.data, activeCrop, displayUrl);
+        return mapToDiagnosisResult(response.data, activeSpecies, displayUrl);
       }
       throw new Error('Invalid backend diagnosis response');
     } catch (apiErr) {
@@ -366,19 +391,20 @@ export const diseaseDetectionService = {
       if (isUncertainSample) {
         const uncertainPayload: RawDiagnosisPayload = {
           case_id: `diag-uncertain-${Date.now()}`,
-          crop: activeCrop,
-          disease: 'Unable to confidently identify problem',
+          species: activeSpecies,
+          crop: activeSpecies,
+          disease: 'Unable to confidently identify livestock condition',
           type: 'uncertain',
           confidence: 0.52,
           severity: 'low',
           is_uncertain: true,
-          message: 'Unable to confidently identify the problem. Please capture another clear image or request expert verification.',
+          message: 'Unable to confidently identify the livestock condition. Please capture a clear image of skin nodules, muzzle, or hooves, or request veterinary officer verification.',
         };
-        return mapToDiagnosisResult(uncertainPayload, activeCrop, displayUrl);
+        return mapToDiagnosisResult(uncertainPayload, activeSpecies, displayUrl);
       }
 
-      // Standard crop default
-      const defaultDiag = getDefaultDiagnosisForCrop(activeCrop);
+      // Standard livestock default
+      const defaultDiag = getDefaultDiagnosisForCrop(activeSpecies);
       return {
         ...defaultDiag,
         imageUrl: displayUrl || defaultDiag.imageUrl,

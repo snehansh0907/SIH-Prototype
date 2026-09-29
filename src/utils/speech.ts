@@ -306,32 +306,32 @@ export function getLocalizedAdvisoryScript(
 ): string {
   if (!diagnosis) {
     if (lang === 'mr') {
-      return 'कांद्याच्या पिकावर जांभळा करपा रोग मध्यम स्वरूपात आढळला आहे. आजच पिकाची तपासणी करा आणि अतिरिक्त पाणी देणे टाळा. हवामानातील वाढत्या आर्द्रतेमुळे योग्य प्रतिबंधात्मक उपाययोजना करा.';
+      return 'जनावर लंपी चर्मरोग किंवा लाळ्या खुरकूत आजाराने बाधित असण्याची शक्यता आहे. बाधित जनावरास निरोगी कळपापासून तात्काळ वेगळे करा, १:१००० पोटॅशियम परमँगनेटच्या पाण्याने जखमा धुवा आणि १९६२ टोल-फ्री क्रमांकावर शासकीय पशुवैद्यकीय अधिकाऱ्यांशी संपर्क साधा.';
     }
     if (lang === 'hi') {
-      return 'प्याज की फसल पर मध्यम स्तर का बैंगनी धब्बा (पर्पल ब्लॉच) रोग पाया गया है। आज ही खेत में जल निकासी सुधारें और प्रभावित पत्तियों की निगरानी करें। बढ़ती आर्द्रता के कारण निवारक उपाय तुरंत अपनाएं।';
+      return 'पशु में लम्पी त्वचा रोग अथवा खुरपका-मुंहपका (FMD) के लक्षण पाए गए हैं। प्रभावित पशु को तुरंत स्वस्थ पशुओं से अलग करें, पोटेशियम परमैंगनेट के घोल से घाव साफ करें और 1962 पशु हेल्पलाइन पर संपर्क करें।';
     }
-    return 'Purple Blotch detected on Onion with moderate severity. Today you should inspect adjacent rows, improve furrow drainage, and follow recommended Integrated Pest Management steps.';
+    return 'Livestock symptoms suggest possible Lumpy Skin Disease or Foot-and-Mouth Disease. Segregate the affected animal immediately, clean lesions with antiseptic wash, and contact the veterinary helpline 1962.';
   }
 
   if (lang === 'mr') {
     return (
       diagnosis.advisoryVoiceScriptMr ||
       diagnosis.advisoryVoiceScript ||
-      'कांद्याच्या पिकावर जांभळा करपा रोग मध्यम स्वरूपात आढळला आहे. दिलेल्या उपाययोजना त्वरित अंमलात आणा.'
+      'जनावरामध्ये आजाराची लक्षणे आढळली आहेत. बाधित जनावरास वेगळे ठेवा आणि शासकीय पशुवैद्यकीय अधिकाऱ्यांशी तात्काळ संपर्क साधा.'
     );
   }
 
   if (lang === 'hi') {
     return (
       diagnosis.advisoryVoiceScriptHi ||
-      'प्याज की फसल पर मध्यम स्तर का बैंगनी धब्बा रोग पाया गया है। दिए गए एकीकृत कीट प्रबंधन उपायों का पालन करें।'
+      'पशु में रोग के लक्षण पाए गए हैं। प्रभावित पशु को तुरंत अलग करें और पशुचिकित्सक से परामर्श लें।'
     );
   }
 
   return (
     diagnosis.advisoryVoiceScript ||
-    'Purple Blotch detected on Onion with moderate severity. Follow the recommended daily IPM steps.'
+    'Livestock disease symptoms detected. Follow recommended biosecurity quarantine steps and consult a Veterinary Officer.'
   );
 }
 

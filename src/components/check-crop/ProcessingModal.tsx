@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Sprout, Search, CloudRain, Sparkles, CheckCircle2 } from 'lucide-react';
+import { Activity, Search, CloudRain, Sparkles, CheckCircle2 } from 'lucide-react';
 import { useLanguage } from '../../context/LanguageContext';
 
 export const ProcessingModal: React.FC = () => {
@@ -7,7 +7,7 @@ export const ProcessingModal: React.FC = () => {
   const [currentStep, setCurrentStep] = useState(0);
 
   const steps = [
-    { icon: <Sprout className="w-5 h-5" />, label: t.step1 },
+    { icon: <Activity className="w-5 h-5" />, label: t.step1 },
     { icon: <Search className="w-5 h-5" />, label: t.step2 },
     { icon: <CloudRain className="w-5 h-5" />, label: t.step3 },
     { icon: <Sparkles className="w-5 h-5" />, label: t.step4 },
@@ -28,11 +28,11 @@ export const ProcessingModal: React.FC = () => {
   return (
     <div className="fixed inset-0 z-50 bg-stone-900/75 backdrop-blur-sm flex items-center justify-center p-4">
       <div className="bg-[#FCFAF7] border border-amber-200/80 rounded-3xl p-6 w-full max-w-sm text-center shadow-2xl animate-scaleUp">
-        {/* Animated Crop Leaf Icon */}
+        {/* Animated Animal Diagnostic Icon */}
         <div className="relative mb-6 mx-auto w-20 h-20">
           <div className="w-20 h-20 rounded-full bg-forest-100 animate-ping absolute inset-0 opacity-40"></div>
           <div className="w-20 h-20 rounded-full bg-forest-800 flex items-center justify-center text-3xl shadow-elevated border-2 border-forest-600">
-            🌱
+            🩺
           </div>
         </div>
 

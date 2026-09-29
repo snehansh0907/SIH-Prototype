@@ -1,70 +1,62 @@
 import type { DiagnosisResult, ActionItem, MonitorItem, SeverityLevel, ConfidenceLevel } from '../types';
 import { apiClient, API_ROOT_URL } from './apiClient';
 import { SUPABASE_URL, SUPABASE_ANON_KEY } from './authService';
-import { DEFAULT_DIAGNOSIS, getDefaultDiagnosisForCrop, MOCK_CROPS } from './mockData';
+import { DEFAULT_DIAGNOSIS, getDefaultDiagnosisForCrop, MOCK_CROPS, MOCK_LIVESTOCK } from './mockData';
 import { diseaseDetectionService } from './diseaseDetection';
-import { InvalidCropImageError } from './imageValidationService';
+import { InvalidCropImageError, InvalidLivestockImageError } from './imageValidationService';
 
-export { InvalidCropImageError };
+export { InvalidCropImageError, InvalidLivestockImageError };
 export { diseaseDetectionService };
 
-export const CROP_COMPATIBLE_DISEASES: Record<string, string[]> = {
-  tomato: ['Early Blight', 'Late Blight', 'Leaf Mold', 'Healthy Leaf', 'Uncertain Image / Low AI Confidence'],
-  soybean: ['Soybean Rust', 'Rust', 'Leaf Spot', 'Healthy Leaf', 'Uncertain Image / Low AI Confidence'],
-  cotton: ['Leaf Curl Virus', 'Leaf Curl Disease', 'Bollworm Related Damage', 'Healthy Leaf', 'Uncertain Image / Low AI Confidence'],
-  sugarcane: ['Red Rot', 'Healthy Leaf', 'Uncertain Image / Low AI Confidence'],
-  maize: ['Turcicum Leaf Blight', 'Leaf Blight', 'Healthy Leaf', 'Uncertain Image / Low AI Confidence'],
-  onion: ['Purple Blotch', 'Stemphylium Blight', 'Healthy Leaf', 'Uncertain Image / Low AI Confidence'],
-  rice: ['Rice Blast', 'Blast', 'Healthy Leaf', 'Uncertain Image / Low AI Confidence'],
-  wheat: ['Stripe Rust (Yellow Rust)', 'Stripe Rust', 'Yellow Rust', 'Healthy Leaf', 'Uncertain Image / Low AI Confidence'],
+export const LIVESTOCK_COMPATIBLE_DISEASES: Record<string, string[]> = {
+  cattle: ['Lumpy Skin Disease (LSD)', 'Foot-and-Mouth Disease (FMD)', 'LSD', 'FMD', 'Healthy Animal', 'Uncertain Photo / Low AI Confidence'],
+  cow: ['Lumpy Skin Disease (LSD)', 'Foot-and-Mouth Disease (FMD)', 'LSD', 'FMD', 'Healthy Animal', 'Uncertain Photo / Low AI Confidence'],
+  buffalo: ['Foot-and-Mouth Disease (FMD)', 'Lumpy Skin Disease (LSD)', 'FMD', 'Healthy Animal', 'Uncertain Photo / Low AI Confidence'],
+  goat: ['Foot-and-Mouth Disease (FMD)', 'Peste des Petits Ruminants (PPR)', 'FMD', 'Healthy Animal', 'Uncertain Photo / Low AI Confidence'],
+  sheep: ['Foot-and-Mouth Disease (FMD)', 'Sheep Pox', 'FMD', 'Healthy Animal', 'Uncertain Photo / Low AI Confidence'],
+  // Compatibility fallback for existing crop keys
+  tomato: ['Lumpy Skin Disease (LSD)', 'Foot-and-Mouth Disease (FMD)', 'Healthy Animal', 'Uncertain Photo / Low AI Confidence'],
+  onion: ['Lumpy Skin Disease (LSD)', 'Foot-and-Mouth Disease (FMD)', 'Healthy Animal', 'Uncertain Photo / Low AI Confidence'],
+  cotton: ['Lumpy Skin Disease (LSD)', 'Foot-and-Mouth Disease (FMD)', 'Healthy Animal', 'Uncertain Photo / Low AI Confidence'],
+  soybean: ['Lumpy Skin Disease (LSD)', 'Foot-and-Mouth Disease (FMD)', 'Healthy Animal', 'Uncertain Photo / Low AI Confidence'],
 };
 
-export function isDiseaseCompatibleWithCrop(diseaseName: string, cropIdOrName: string): boolean {
+export const CROP_COMPATIBLE_DISEASES = LIVESTOCK_COMPATIBLE_DISEASES;
+
+export function isDiseaseCompatibleWithCrop(diseaseName: string, speciesOrCropId: string): boolean {
   if (!diseaseName) return true;
-  const cropKey = (cropIdOrName || '').toLowerCase().trim();
-  const allowed = CROP_COMPATIBLE_DISEASES[cropKey];
+  const key = (speciesOrCropId || '').toLowerCase().trim();
+  const allowed = LIVESTOCK_COMPATIBLE_DISEASES[key] || LIVESTOCK_COMPATIBLE_DISEASES.cattle;
   if (!allowed) return true;
   const dLower = diseaseName.toLowerCase().trim();
-  return allowed.some((a) => a.toLowerCase() === dLower || dLower.includes(a.toLowerCase()));
+  return allowed.some((a) => a.toLowerCase() === dLower || dLower.includes(a.toLowerCase()) || a.toLowerCase().includes(dLower));
 }
 
-// Marathi disease name map for standard recognized diseases
+// Marathi disease name map for livestock diseases
 const DISEASE_NAME_MR_MAP: Record<string, string> = {
-  'Early Blight': 'करपा रोग (Early Blight)',
-  'Late Blight': 'उशिरा येणारा करपा (Late Blight)',
-  'Leaf Mold': 'पानावरील बुरशी (Leaf Mold)',
-  'Leaf Curl Disease': 'पानांचा चुरमुरडा / लीफ कर्ल',
-  'Leaf Curl Virus': 'पानांचा चुरमुरडा / लीफ कर्ल',
-  'Bollworm Related Damage': 'बोंडअळी नुकसान',
-  'Rust': 'सोयाबीन तांबेरा रोग (Rust)',
-  'Soybean Rust': 'सोयाबीन तांबेरा रोग (Rust)',
-  'Leaf Spot': 'पानावरील ठिपके (Leaf Spot)',
-  'Red Rot': 'ऊस लाल कुजव्या रोग (Red Rot)',
-  'Turcicum Leaf Blight': 'मका करपा रोग (Leaf Blight)',
-  'Purple Blotch': 'कांदा जांभळा करपा (Purple Blotch)',
-  'Rice Blast': 'भात कडा करपा / ब्लास्ट (Blast)',
-  'Stripe Rust (Yellow Rust)': 'पिवळा तांबेरा (Yellow Rust)',
+  'Lumpy Skin Disease (LSD)': 'लंपी चर्मरोग (LSD)',
+  'Lumpy Skin Disease': 'लंपी चर्मरोग (LSD)',
+  'LSD': 'लंपी चर्मरोग (LSD)',
+  'Foot-and-Mouth Disease (FMD)': 'लाळ्या खुरकूत रोग (FMD)',
+  'Foot-and-Mouth Disease': 'लाळ्या खुरकूत रोग (FMD)',
+  'FMD': 'लाळ्या खुरकूत रोग (FMD)',
+  'Healthy Animal': 'निरोगी पशु (रोगमुक्त)',
+  'Uncertain Photo / Low AI Confidence': 'अस्पष्ट फोटो / AI निदान अनिश्चित',
 };
 
-// Hindi disease name map for standard recognized diseases
+// Hindi disease name map for livestock diseases
 const DISEASE_NAME_HI_MAP: Record<string, string> = {
-  'Early Blight': 'अगेती झुलसा रोग (Early Blight)',
-  'Late Blight': 'पछेती झुलसा रोग (Late Blight)',
-  'Leaf Mold': 'पत्ती फफूंद (Leaf Mold)',
-  'Leaf Curl Disease': 'पत्ती मरोड़ / पर्ण कुंचन रोग (Leaf Curl)',
-  'Leaf Curl Virus': 'पत्ती मरोड़ / पर्ण कुंचन रोग (Leaf Curl)',
-  'Bollworm Related Damage': 'गुलाबी सुंडी / इल्ली नुकसान',
-  'Rust': 'सोयाबीन गेरुआ रोग (Rust)',
-  'Soybean Rust': 'सोयाबीन गेरुआ रोग (Rust)',
-  'Leaf Spot': 'पत्ती धब्बा रोग (Leaf Spot)',
-  'Red Rot': 'लाल सड़न रोग (Red Rot)',
-  'Turcicum Leaf Blight': 'मक्का पत्ती झुलसा (Leaf Blight)',
-  'Purple Blotch': 'बैंगनी धब्बा रोग (Purple Blotch)',
-  'Rice Blast': 'धान का झोंका रोग (Rice Blast)',
-  'Stripe Rust (Yellow Rust)': 'पीला रतुआ / गेरुआ रोग (Yellow Rust)',
+  'Lumpy Skin Disease (LSD)': 'लंपी चर्मरोग (LSD)',
+  'Lumpy Skin Disease': 'लंपी चर्मरोग (LSD)',
+  'LSD': 'लंपी चर्मरोग (LSD)',
+  'Foot-and-Mouth Disease (FMD)': 'खुरपका-मुंहपका रोग (FMD)',
+  'Foot-and-Mouth Disease': 'खुरपका-मुंहपका रोग (FMD)',
+  'FMD': 'खुरपका-मुंहपका रोग (FMD)',
+  'Healthy Animal': 'स्वस्थ पशु (रोगमुक्त)',
+  'Uncertain Photo / Low AI Confidence': 'अस्पष्ट फोटो / AI निदान अनिश्चित',
 };
 
-// Category and title parsing for IPM what_to_do_today strings
+// Category and title parsing for Veterinary what_to_do_today strings
 function parseAdvisoryActions(items?: string[], fallback?: ActionItem[]): ActionItem[] {
   if (!items || items.length === 0) {
     return fallback || DEFAULT_DIAGNOSIS.whatToDoToday;
@@ -75,18 +67,18 @@ function parseAdvisoryActions(items?: string[], fallback?: ActionItem[]): Action
     let text = raw;
 
     const lower = raw.toLowerCase();
-    if (lower.startsWith('cultural:')) {
+    if (lower.startsWith('quarantine:') || lower.startsWith('isolation:') || lower.startsWith('cultural:')) {
       category = 'cultural';
-      text = raw.replace(/^cultural:\s*/i, '');
-    } else if (lower.startsWith('mechanical:')) {
+      text = raw.replace(/^(quarantine|isolation|cultural):\s*/i, '');
+    } else if (lower.startsWith('antiseptic:') || lower.startsWith('supportive:') || lower.startsWith('mechanical:')) {
       category = 'mechanical';
-      text = raw.replace(/^mechanical:\s*/i, '');
-    } else if (lower.startsWith('biological:')) {
+      text = raw.replace(/^(antiseptic|supportive|mechanical):\s*/i, '');
+    } else if (lower.startsWith('nutrition:') || lower.startsWith('diet:') || lower.startsWith('biological:')) {
       category = 'biological';
-      text = raw.replace(/^biological:\s*/i, '');
-    } else if (lower.startsWith('chemical')) {
+      text = raw.replace(/^(nutrition|diet|biological):\s*/i, '');
+    } else if (lower.startsWith('veterinary') || lower.startsWith('chemical')) {
       category = 'chemical';
-      text = raw.replace(/^chemical(\s*\(.*?\))?:\s*/i, '');
+      text = raw.replace(/^(veterinary|chemical(\s*\(.*?\))?):\s*/i, '');
     }
 
     const priority: 'critical' | 'important' | 'preventive' =
@@ -95,8 +87,8 @@ function parseAdvisoryActions(items?: string[], fallback?: ActionItem[]): Action
     return {
       step: idx + 1,
       title: text.length > 50 ? `${text.slice(0, 48)}...` : text,
-      titleMr: `${category.toUpperCase()}: शेतातील उपाययोजना (${idx + 1})`,
-      titleHi: `${category.toUpperCase()}: खेत में निवारक उपाय (${idx + 1})`,
+      titleMr: `उपाय (${idx + 1}): ${text.slice(0, 35)}`,
+      titleHi: `पशु उपाय (${idx + 1}): ${text.slice(0, 35)}`,
       description: text,
       descriptionMr: `सल्ला: ${text}`,
       descriptionHi: `सलाह: ${text}`,
@@ -124,11 +116,11 @@ function parseAdvisoryMonitors(items?: string[], fallback?: MonitorItem[]): Moni
 /**
  * Maps a backend diagnosis record or API response into a frontend DiagnosisResult.
  */
-function mapBackendCaseToDiagnosisResult(data: any, expectedCropIdOrName?: string): DiagnosisResult {
-  const cropRaw = data.crop || data.crop_name || data.crop_cycle?.crop_name || expectedCropIdOrName || 'tomato';
-  const cropId = cropRaw.toLowerCase().trim();
-  const defaultDiag = getDefaultDiagnosisForCrop(cropId);
-  const selectedCrop = MOCK_CROPS.find((c) => c.id === cropId) || MOCK_CROPS[0];
+function mapBackendCaseToDiagnosisResult(data: any, expectedSpeciesOrCrop?: string): DiagnosisResult {
+  const speciesRaw = data.species || data.crop || data.crop_name || data.crop_cycle?.crop_name || expectedSpeciesOrCrop || 'cattle';
+  const speciesId = speciesRaw.toLowerCase().trim();
+  const defaultDiag = getDefaultDiagnosisForCrop(speciesId);
+  const selectedSpecies = MOCK_LIVESTOCK.find((s) => s.id === speciesId) || MOCK_CROPS[0];
 
   const severityMap: Record<string, SeverityLevel> = {
     low: 'low',
@@ -148,13 +140,13 @@ function mapBackendCaseToDiagnosisResult(data: any, expectedCropIdOrName?: strin
   }
 
   const rawDisease = data.predicted_disease || data.disease || defaultDiag.diseaseName;
-  const diseaseName = isDiseaseCompatibleWithCrop(rawDisease, cropId) ? rawDisease : defaultDiag.diseaseName;
+  const diseaseName = isDiseaseCompatibleWithCrop(rawDisease, speciesId) ? rawDisease : defaultDiag.diseaseName;
   const diseaseNameMr = DISEASE_NAME_MR_MAP[diseaseName] || defaultDiag.diseaseNameMr;
   const diseaseNameHi = DISEASE_NAME_HI_MAP[diseaseName] || defaultDiag.diseaseNameHi;
 
   const advisory = data.advisory;
-  const actions = parseAdvisoryActions(advisory?.what_to_do_today, defaultDiag.whatToDoToday);
-  const monitors = parseAdvisoryMonitors(advisory?.what_to_monitor, defaultDiag.whatToMonitor);
+  const actions = parseAdvisoryActions(advisory?.what_to_do_today || advisory?.immediateActions, defaultDiag.whatToDoToday);
+  const monitors = parseAdvisoryMonitors(advisory?.what_to_monitor || advisory?.monitoring, defaultDiag.whatToMonitor);
 
   let finalImageUrl = defaultDiag.imageUrl;
   if (data.image_url) {
@@ -163,16 +155,16 @@ function mapBackendCaseToDiagnosisResult(data: any, expectedCropIdOrName?: strin
       : `${API_ROOT_URL}${data.image_url}`;
   }
 
-  const voiceScript = `Detected ${diseaseName} on ${selectedCrop.name} with ${data.severity_band || 'moderate'} severity. Follow the recommended daily IPM steps.`;
-  const voiceScriptMr = `${selectedCrop.nameMr} पिकावर ${diseaseNameMr} आढळला आहे. दिलेल्या उपाययोजना अंमलात आणा.`;
-  const voiceScriptHi = `${selectedCrop.nameHi || selectedCrop.name} फसल पर ${diseaseNameHi || diseaseName} पाया गया है। दिए गए उपायों का पालन करें।`;
+  const voiceScript = `Detected ${diseaseName} on ${selectedSpecies.name} with ${data.severity_band || 'moderate'} severity. Follow the recommended veterinary care steps.`;
+  const voiceScriptMr = `${selectedSpecies.nameMr} मध्ये ${diseaseNameMr} आढळला आहे. दिलेल्या पशुवैद्यकीय उपाययोजना अंमलात आणा.`;
+  const voiceScriptHi = `${selectedSpecies.nameHi || selectedSpecies.name} में ${diseaseNameHi || diseaseName} पाया गया है। दिए गए पशु चिकित्सा उपायों का पालन करें।`;
 
   return {
     id: data.id || data.case_id || defaultDiag.id,
-    cropId,
-    cropName: selectedCrop.name,
-    cropNameMr: selectedCrop.nameMr,
-    cropNameHi: selectedCrop.nameHi || selectedCrop.name,
+    cropId: speciesId,
+    cropName: selectedSpecies.name,
+    cropNameMr: selectedSpecies.nameMr,
+    cropNameHi: selectedSpecies.nameHi || selectedSpecies.name,
     diseaseName,
     diseaseNameMr,
     diseaseNameHi,
@@ -195,18 +187,24 @@ function mapBackendCaseToDiagnosisResult(data: any, expectedCropIdOrName?: strin
 
 export const diagnosisService = {
   /**
-   * Submit a crop photo for AI diagnosis.
+   * Submit an animal photo for AI diagnosis.
    * Delegates to primary diseaseDetectionService (POST /api/diagnose).
    */
   async checkCrop(
-    cropId: string,
+    speciesOrCropId: string,
     imageSource?: string | File | Blob,
-    options?: { farmerId?: string; farmId?: string; cropCycleId?: string; cropStage?: string }
+    options?: { farmerId?: string; ownerId?: string; farmId?: string; shedId?: string; cropCycleId?: string; unitId?: string; affectedBodyPart?: string; animalTag?: string }
   ): Promise<DiagnosisResult> {
-    return await diseaseDetectionService.diagnose(imageSource, cropId, options);
+    return await diseaseDetectionService.diagnose(imageSource, speciesOrCropId, options);
   },
 
-
+  async checkAnimal(
+    speciesId: string,
+    imageSource?: string | File | Blob,
+    options?: { ownerId?: string; shedId?: string; affectedBodyPart?: string; animalTag?: string }
+  ): Promise<DiagnosisResult> {
+    return await diseaseDetectionService.diagnose(imageSource, speciesId, options);
+  },
 
   async getDiagnosisById(caseId: string): Promise<any> {
     try {
@@ -218,27 +216,26 @@ export const diagnosisService = {
   },
 
   /**
-   * Fetch latest diagnosis case for a specific farm, filtered by crop.
+   * Fetch latest diagnosis case for a specific shed / herd.
    */
-  async getLatestDiagnosisForFarm(farmId: string, cropName?: string): Promise<DiagnosisResult | null> {
+  async getLatestDiagnosisForFarm(farmId: string, speciesOrCropName?: string): Promise<DiagnosisResult | null> {
     if (!farmId) return null;
-    const targetCrop = (cropName || '').toLowerCase().trim();
+    const target = (speciesOrCropName || '').toLowerCase().trim();
 
-    // 1. Try Backend API with fast 2500ms timeout
     try {
-      const cropQuery = cropName ? `?crop=${encodeURIComponent(cropName)}` : '';
-      const res = await apiClient<{ success: boolean; data: any }>(`/diagnosis/farm/${farmId}/latest${cropQuery}`, {
+      const q = speciesOrCropName ? `?species=${encodeURIComponent(speciesOrCropName)}` : '';
+      const res = await apiClient<{ success: boolean; data: any }>(`/diagnosis/farm/${farmId}/latest${q}`, {
         timeout: 2500,
       });
       if (res?.data) {
-        const diag = mapBackendCaseToDiagnosisResult(res.data, cropName);
-        if ((!targetCrop || diag.cropId === targetCrop) && isDiseaseCompatibleWithCrop(diag.diseaseName, diag.cropId)) {
+        const diag = mapBackendCaseToDiagnosisResult(res.data, speciesOrCropName);
+        if ((!target || diag.cropId === target) && isDiseaseCompatibleWithCrop(diag.diseaseName, diag.cropId)) {
           return diag;
         }
       }
     } catch {}
 
-    // 2. Direct Supabase REST Fallback
+    // Direct Supabase REST Fallback
     try {
       const supaHeaders = {
         apikey: SUPABASE_ANON_KEY,
@@ -246,20 +243,20 @@ export const diagnosisService = {
         Accept: 'application/json',
       };
       const res = await fetch(
-        `${SUPABASE_URL}/rest/v1/diagnosis_cases?farm_id=eq.${farmId}&select=*,crop_cycle:crop_cycle_id(id,crop_name,variety,crop_stage)&order=created_at.desc&limit=15`,
+        `${SUPABASE_URL}/rest/v1/diagnosis_cases?farm_id=eq.${farmId}&order=created_at.desc&limit=15`,
         { headers: supaHeaders }
       );
       if (res.ok) {
         const list = await res.json();
         if (Array.isArray(list) && list.length > 0) {
           const matched = list.find((c) => {
-            const cCrop = (c.crop_cycle?.crop_name || c.crop || '').toLowerCase().trim();
+            const cSpecies = (c.species || c.crop || '').toLowerCase().trim();
             const disease = c.predicted_disease || c.disease || '';
-            const cropMatches = !targetCrop || cCrop === targetCrop;
-            return cropMatches && isDiseaseCompatibleWithCrop(disease, targetCrop || cCrop);
+            const matches = !target || cSpecies === target;
+            return matches && isDiseaseCompatibleWithCrop(disease, target || cSpecies);
           });
           if (matched) {
-            return mapBackendCaseToDiagnosisResult(matched, cropName);
+            return mapBackendCaseToDiagnosisResult(matched, speciesOrCropName);
           }
         }
       }
@@ -269,27 +266,26 @@ export const diagnosisService = {
   },
 
   /**
-   * Fetch latest diagnosis case for a specific farmer, filtered by crop.
+   * Fetch latest diagnosis case for a specific livestock owner.
    */
-  async getLatestDiagnosisForFarmer(farmerId: string, cropName?: string): Promise<DiagnosisResult | null> {
+  async getLatestDiagnosisForFarmer(farmerId: string, speciesOrCropName?: string): Promise<DiagnosisResult | null> {
     if (!farmerId) return null;
-    const targetCrop = (cropName || '').toLowerCase().trim();
+    const target = (speciesOrCropName || '').toLowerCase().trim();
 
-    // 1. Try Backend API with fast 2500ms timeout
     try {
-      const cropQuery = cropName ? `?crop=${encodeURIComponent(cropName)}` : '';
-      const res = await apiClient<{ success: boolean; data: any }>(`/diagnosis/farmer/${farmerId}/latest${cropQuery}`, {
+      const q = speciesOrCropName ? `?species=${encodeURIComponent(speciesOrCropName)}` : '';
+      const res = await apiClient<{ success: boolean; data: any }>(`/diagnosis/farmer/${farmerId}/latest${q}`, {
         timeout: 2500,
       });
       if (res?.data) {
-        const diag = mapBackendCaseToDiagnosisResult(res.data, cropName);
-        if ((!targetCrop || diag.cropId === targetCrop) && isDiseaseCompatibleWithCrop(diag.diseaseName, diag.cropId)) {
+        const diag = mapBackendCaseToDiagnosisResult(res.data, speciesOrCropName);
+        if ((!target || diag.cropId === target) && isDiseaseCompatibleWithCrop(diag.diseaseName, diag.cropId)) {
           return diag;
         }
       }
     } catch {}
 
-    // 2. Direct Supabase REST Fallback
+    // Direct Supabase REST Fallback
     try {
       const supaHeaders = {
         apikey: SUPABASE_ANON_KEY,
@@ -297,20 +293,20 @@ export const diagnosisService = {
         Accept: 'application/json',
       };
       const res = await fetch(
-        `${SUPABASE_URL}/rest/v1/diagnosis_cases?farmer_id=eq.${farmerId}&select=*,crop_cycle:crop_cycle_id(id,crop_name,variety,crop_stage)&order=created_at.desc&limit=15`,
+        `${SUPABASE_URL}/rest/v1/diagnosis_cases?farmer_id=eq.${farmerId}&order=created_at.desc&limit=15`,
         { headers: supaHeaders }
       );
       if (res.ok) {
         const list = await res.json();
         if (Array.isArray(list) && list.length > 0) {
           const matched = list.find((c) => {
-            const cCrop = (c.crop_cycle?.crop_name || c.crop || '').toLowerCase().trim();
+            const cSpecies = (c.species || c.crop || '').toLowerCase().trim();
             const disease = c.predicted_disease || c.disease || '';
-            const cropMatches = !targetCrop || cCrop === targetCrop;
-            return cropMatches && isDiseaseCompatibleWithCrop(disease, targetCrop || cCrop);
+            const matches = !target || cSpecies === target;
+            return matches && isDiseaseCompatibleWithCrop(disease, target || cSpecies);
           });
           if (matched) {
-            return mapBackendCaseToDiagnosisResult(matched, cropName);
+            return mapBackendCaseToDiagnosisResult(matched, speciesOrCropName);
           }
         }
       }
@@ -320,37 +316,33 @@ export const diagnosisService = {
   },
 
   /**
-   * Master context resolver: gets latest diagnosis strictly for the active farmer/farm/crop context.
-   * If no existing diagnosis case exists for this specific crop, returns the dynamic crop-specific default.
+   * Master context resolver: gets latest diagnosis strictly for the active livestock owner/shed context.
    */
   async getDiagnosisForActiveContext(options: {
     farmId?: string;
     farmerId?: string;
     cropName?: string;
   }): Promise<DiagnosisResult> {
-    const cropId = (options.cropName || 'tomato').toLowerCase().trim();
+    const speciesId = (options.cropName || 'cattle').toLowerCase().trim();
 
-    // 1. Try farm latest for this crop
     if (options.farmId) {
       const farmCase = await this.getLatestDiagnosisForFarm(options.farmId, options.cropName);
-      if (farmCase && farmCase.cropId === cropId && isDiseaseCompatibleWithCrop(farmCase.diseaseName, cropId)) {
+      if (farmCase && farmCase.cropId === speciesId && isDiseaseCompatibleWithCrop(farmCase.diseaseName, speciesId)) {
         return farmCase;
       }
     }
 
-    // 2. Try farmer latest for this crop
     if (options.farmerId) {
       const farmerCase = await this.getLatestDiagnosisForFarmer(options.farmerId, options.cropName);
-      if (farmerCase && farmerCase.cropId === cropId && isDiseaseCompatibleWithCrop(farmerCase.diseaseName, cropId)) {
+      if (farmerCase && farmerCase.cropId === speciesId && isDiseaseCompatibleWithCrop(farmerCase.diseaseName, speciesId)) {
         return farmerCase;
       }
     }
 
-    // 3. Dynamic crop-specific default (strictly matches active crop)
-    return getDefaultDiagnosisForCrop(cropId);
+    return getDefaultDiagnosisForCrop(speciesId);
   },
 
-  async getLatestDiagnosis(cropId?: string): Promise<DiagnosisResult> {
-    return getDefaultDiagnosisForCrop(cropId || 'tomato');
+  async getLatestDiagnosis(speciesId?: string): Promise<DiagnosisResult> {
+    return getDefaultDiagnosisForCrop(speciesId || 'cattle');
   },
 };

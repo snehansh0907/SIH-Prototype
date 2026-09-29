@@ -1,13 +1,13 @@
 // =========================================================
-// Advisory Service (IPM Engine)
+// Pashu Sarthak - Livestock Veterinary Advisory Service
 // =========================================================
-// Builds structured Integrated Pest Management (IPM) advisory
-// following strict agronomic hierarchy:
-//   1. WHAT TO DO NOW (Immediate cultural & sanitation actions)
-//   2. MONITORING (Recheck intervals, humidity spread checks)
-//   3. BIOLOGICAL OPTIONS (Bio-fungicides, Trichoderma, neem)
-//   4. CHEMICAL INTERVENTION (Only validated, label-compliant last resort)
-//   5. EXPERT ESCALATION (Thresholds for agronomist consultation)
+// Builds structured Veterinary Care Advisory for diagnosed livestock diseases
+// following clinical veterinary hierarchy:
+//   1. WHAT TO DO TODAY (Immediate Quarantine & Biosecurity + Antiseptic Care)
+//   2. MONITORING (Temperature, Rumination, Lesions, Milk Drop)
+//   3. SUPPORTIVE CARE & NUTRITION (Electrolytes, Soft Mash, Vitamins)
+//   4. VETERINARY INTERVENTION & RING VACCINATION (Govt. Schemes, NADCP, 1962)
+//   5. OUTBREAK ESCALATION (Village/Panchayat Alert & Ring Biosecurity)
 // =========================================================
 
 const { findDisease } = require('../data/diseaseKnowledgeBase');
@@ -21,13 +21,14 @@ function severityToStatus(severityBand) {
 }
 
 /**
- * Build structured IPM advisory for a diagnosis.
+ * Builds structured veterinary advisory for a diagnosis case.
  * @param {object} diagnosisCase - row from diagnosis_cases or diagnosis result object
- * @param {string} cropName - crop name (e.g. "Onion", "Tomato")
+ * @param {string} [species] - animal species (e.g. "Cattle", "Buffalo", "Goat")
  */
-function buildAdvisory(diagnosisCase, cropName = 'Onion') {
+function buildAdvisory(diagnosisCase, species = 'Cattle') {
   const predictedDisease = diagnosisCase.predicted_disease || diagnosisCase.disease;
-  const disease = findDisease(cropName, predictedDisease);
+  const resolvedSpecies = diagnosisCase.species || species || 'Cattle';
+  const disease = findDisease(resolvedSpecies, predictedDisease);
 
   const status = severityToStatus(diagnosisCase.severity_band || diagnosisCase.severity);
   const expertHelpRequired =
@@ -38,26 +39,24 @@ function buildAdvisory(diagnosisCase, cropName = 'Onion') {
   // Unknown or low-confidence disease fallback
   if (!disease) {
     const immediateActions = [
-      'Isolate and closely inspect adjacent plants for early lesion development',
-      'Take clear, well-lit photos of both upper and lower leaf surfaces',
-      'Avoid applying synthetic pesticides until disease identity is confirmed by an agronomist',
-      'Ensure proper drainage to prevent root moisture stagnation',
+      'Quarantine the animal immediately in a clean, isolated shed separate from healthy livestock.',
+      'Take clear, well-lit photographs of the skin nodules, oral cavity, or hooves in natural daylight.',
+      'Clean affected areas gently with warm saline solution or mild potassium permanganate (1:1000).',
+      'Provide soft green fodder, warm gruel, and clean drinking water ad libitum.',
     ];
     const monitoring = [
-      'Recheck crop in 48 hours for symptom spread or color alterations',
-      'Monitor relative humidity and morning dew duration on foliage',
+      'Record rectal body temperature twice daily (normal bovine temp is 101.5°F / 38.6°C).',
+      'Observe daily rumination frequency, feed intake, and milk production levels.',
+      'Check for spreading nodules, oral blistering, or lameness.',
     ];
-    const biologicalOptions = [
-      'Apply preventive bio-control spray of Trichoderma viride @ 5g/L on lower canopy if conditions are wet',
-      'Maintain field sanitation and organic mulch cleanliness',
+    const supportiveCare = [
+      'Provide electrolyte-enriched warm water with 50g jaggery and mineral mixture.',
+      'Keep shed floor dry with lime powder and install mosquito/fly repellents.',
     ];
-    const chemicalIntervention = [
-      'Chemical treatment is NOT recommended without certified expert diagnosis',
-      'Consult nearest Krishi Vigyan Kendra (KVK) or local agronomist before spraying',
-    ];
-    const expertEscalation = [
-      'Contact local agricultural extension officer or request verification in the app',
-      'Escalate immediately if symptoms spread across more than 5% of field canopy',
+    const veterinaryEscalation = [
+      'Alert nearest Government Veterinary Dispensary / Taluka Veterinary Officer.',
+      'Call National Animal Disease Toll-Free Helpline: 1962 for on-farm emergency assistance.',
+      'Do not administer unprescribed antibiotics or hormonal injections without veterinary guidance.',
     ];
 
     return {
@@ -65,98 +64,90 @@ function buildAdvisory(diagnosisCase, cropName = 'Onion') {
       what_to_do_today: immediateActions,
       what_to_monitor: monitoring,
       prevention: [
-        'Maintain field hygiene and rogue out suspicious debris',
-        'Avoid late-evening overhead sprinkler irrigation',
+        'Maintain strict herd biosecurity and restrict animal entry from outside markets.',
+        'Ensure seasonal vaccination schedule (FMD, LSD, HS/BQ) is up to date.',
       ],
       immediateActions,
       monitoring,
-      biologicalOptions,
-      chemicalIntervention,
-      expertEscalation,
+      supportiveCare,
+      veterinaryEscalation,
       expert_help_required: true,
       disease_info: {
-        disease_name: predictedDisease || 'Undetermined Plant Issue',
-        scientific_name: 'Pathogen not yet confirmed',
-        description: 'Plant symptoms require clear daylight re-scanning or manual agronomic verification.',
+        disease_name: predictedDisease || 'Undetermined Livestock Condition',
+        scientific_name: 'Pathological agent unconfirmed',
+        description: 'Livestock symptoms require clear daylight re-scanning or clinical veterinary officer verification.',
       },
     };
   }
 
-  // Parse remedy steps into IPM hierarchy
-  const culturalSteps = [];
-  const mechanicalSteps = [];
-  const biologicalSteps = [];
-  const chemicalSteps = [];
+  // Parse clinical steps into Veterinary Protocol Hierarchy
+  const quarantineSteps = [];
+  const antisepticSteps = [];
+  const supportiveSteps = [];
+  const vetRxSteps = [];
 
   (disease.remedy_steps || []).forEach((step) => {
     const lower = step.toLowerCase();
-    if (lower.startsWith('cultural')) {
-      culturalSteps.push(step.replace(/^cultural:\s*/i, ''));
-    } else if (lower.startsWith('mechanical')) {
-      mechanicalSteps.push(step.replace(/^mechanical:\s*/i, ''));
-    } else if (lower.startsWith('biological')) {
-      biologicalSteps.push(step.replace(/^biological:\s*/i, ''));
-    } else if (lower.startsWith('chemical')) {
-      chemicalSteps.push(step.replace(/^chemical(\s*\(.*?\))?:\s*/i, ''));
+    if (lower.startsWith('quarantine') || lower.startsWith('isolation') || lower.startsWith('biosecurity')) {
+      quarantineSteps.push(step.replace(/^(quarantine|isolation|biosecurity):\s*/i, ''));
+    } else if (lower.startsWith('supportive') || lower.startsWith('antiseptic') || lower.startsWith('mechanical')) {
+      antisepticSteps.push(step.replace(/^(supportive|antiseptic|mechanical):\s*/i, ''));
+    } else if (lower.startsWith('nutrition') || lower.startsWith('diet') || lower.startsWith('biological')) {
+      supportiveSteps.push(step.replace(/^(nutrition|diet|biological):\s*/i, ''));
+    } else if (lower.startsWith('veterinary') || lower.startsWith('treatment') || lower.startsWith('chemical')) {
+      vetRxSteps.push(step.replace(/^(veterinary|treatment|chemical(\s*\(.*?\))?):\s*/i, ''));
     } else {
-      culturalSteps.push(step);
+      quarantineSteps.push(step);
     }
   });
 
-  // Immediate Actions: Cultural + Mechanical
+  // Immediate Actions: Quarantine + Antiseptic wound/oral wash
   const immediateActions = [
-    ...culturalSteps,
-    ...mechanicalSteps,
+    ...quarantineSteps,
+    ...antisepticSteps,
   ];
   if (immediateActions.length === 0) {
     immediateActions.push(
-      'Inspect nearby crop rows to map lesion perimeter',
-      'Improve furrow drainage and restrict overhead irrigation'
+      'Isolate affected livestock in a segregated fly-proof pen immediately',
+      'Wash lesion sites with mild antiseptic solution (KMnO4 1:1000 or 1% soda)'
     );
   }
 
-  // Biological Options
-  const biologicalOptions = biologicalSteps.length > 0 ? biologicalSteps : [
-    'Apply Trichoderma viride or Pseudomonas fluorescens @ 5 g/litre as preventive foliar spray',
-    'Spray 5% Neem Seed Kernel Extract (NSKE) to deter secondary pest vectors',
+  // Supportive Care & Nutrition
+  const supportiveCare = supportiveSteps.length > 0 ? supportiveSteps : [
+    'Feed soft, easily digestible boiled mash (rice/ragi gruel with 50g jaggery and salt)',
+    'Provide fresh tender green fodder and ad libitum clean drinking water with electrolytes',
   ];
 
-  // Monitoring Steps
+  // Clinical Monitoring
   const monitoring = [
-    'Recheck the crop after 48-72 hours to evaluate if lesions are dry or expanding',
-    'Monitor weather forecasts for impending rainfall and high relative humidity (>80%)',
-    'Track lower leaf canopy where micro-climate humidity remains highest',
+    'Measure and record rectal body temperature twice daily using a veterinary thermometer',
+    'Track rumination chews per minute (normal 45-60) and observe water intake',
+    'Inspect lesion margins for secondary bacterial pus or maggot infestation',
+    'Monitor milk yield volume to track systemic recovery timeline',
   ];
 
-  // Chemical Intervention (Validated & label-compliant)
-  const chemicalIntervention = [];
+  // Veterinary Intervention & Prescription Protocol
+  const veterinaryEscalation = [];
   if (disease.safe_dosage && disease.safe_dosage.length > 0) {
-    chemicalIntervention.push(...disease.safe_dosage);
-  } else if (chemicalSteps.length > 0) {
-    chemicalIntervention.push(...chemicalSteps);
+    veterinaryEscalation.push(...disease.safe_dosage);
+  } else if (vetRxSteps.length > 0) {
+    veterinaryEscalation.push(...vetRxSteps);
   } else {
-    chemicalIntervention.push('Consult local Krishi Kendra for registered, label-approved fungicide dosage');
+    veterinaryEscalation.push('Contact local Veterinary Officer for prescription antipyretics and wound ointments');
   }
 
-  // If severity is Low/Moderate, highlight that chemicals are last resort
-  if (status !== 'HIGH') {
-    chemicalIntervention.unshift(
-      'Synthetic chemical sprays are currently NOT recommended at this mild stage. Rely on biological and cultural controls first.'
-    );
-  }
-
-  // Expert Escalation
-  const expertEscalation = [
+  veterinaryEscalation.push(
+    'Contact Maharashtra Department of Animal Husbandry Toll-Free Helpline: 1962 for doorstep veterinary support',
     status === 'HIGH'
-      ? 'High severity detected: Submit case for expert verification immediately to prevent widespread yield loss'
-      : 'Contact a certified agricultural expert if symptoms persist or expand after 4 days of cultural treatment',
-    'Bring affected leaf sample inside an aerated paper bag to local Krishi Vigyan Kendra (KVK) if unsure',
-  ];
+      ? 'High severity detected: Mandatory notification to Taluka Veterinary Officer for ring vaccination protocol'
+      : 'Consult nearest Veterinary Dispensary if fever or lesions persist beyond 3 days'
+  );
 
   // Flat what_to_do_today for UI cards
   const whatToDoToday = status === 'HIGH'
-    ? [...immediateActions, ...biologicalOptions, ...chemicalIntervention.slice(0, 1)]
-    : [...immediateActions, ...biologicalOptions];
+    ? [...immediateActions, ...supportiveCare, ...veterinaryEscalation.slice(0, 1)]
+    : [...immediateActions, ...supportiveCare];
 
   return {
     status,
@@ -165,9 +156,8 @@ function buildAdvisory(diagnosisCase, cropName = 'Onion') {
     prevention: disease.prevention_steps || [],
     immediateActions,
     monitoring,
-    biologicalOptions,
-    chemicalIntervention,
-    expertEscalation,
+    supportiveCare,
+    veterinaryEscalation,
     expert_help_required: expertHelpRequired,
     disease_info: {
       disease_name: disease.disease_name,
@@ -175,7 +165,13 @@ function buildAdvisory(diagnosisCase, cropName = 'Onion') {
       description: disease.description,
       how_it_spreads: disease.how_it_spreads,
       safe_dosage: disease.safe_dosage,
-      ipm_priority_order: disease.ipm_priority_order,
+      vet_protocol_order: disease.vet_protocol_order || [
+        'Quarantine & Shed Biosecurity',
+        'Antiseptic Wash & Fly Repellent',
+        'Supportive Mash Feeding',
+        'Veterinary Medical Treatment',
+        'Ring Vaccination in 5km Zone',
+      ],
     },
   };
 }

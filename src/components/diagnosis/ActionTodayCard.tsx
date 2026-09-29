@@ -8,6 +8,30 @@ export const ActionTodayCard: React.FC = () => {
 
   const getIpmCategoryBadge = (category?: string) => {
     switch (category) {
+      case 'biosecurity':
+        return {
+          label: language === 'mr' ? 'जैविक सुरक्षा / विलगीकरण' : language === 'hi' ? 'जैव-सुरक्षा / पृथक्करण' : 'Biosecurity / Quarantine',
+          bg: 'bg-rose-100 text-rose-900 border-rose-300',
+          icon: '🛡️'
+        };
+      case 'antiseptic':
+        return {
+          label: language === 'mr' ? 'जंतुनाशक स्वच्छता' : language === 'hi' ? 'रोगाणुरोधी सफाई' : 'Antiseptic Care',
+          bg: 'bg-sky-100 text-sky-900 border-sky-300',
+          icon: '🧴'
+        };
+      case 'supportive':
+        return {
+          label: language === 'mr' ? 'पोषक आहार व देखभाल' : language === 'hi' ? 'सहायक पोषण व देखभाल' : 'Supportive Care',
+          bg: 'bg-amber-100 text-amber-900 border-amber-300',
+          icon: '🥣'
+        };
+      case 'veterinary':
+        return {
+          label: language === 'mr' ? 'पशुवैद्यकीय उपचार (१९६२)' : language === 'hi' ? 'पशुचिकित्सा परामर्श (1962)' : 'Veterinary Care (1962)',
+          bg: 'bg-emerald-100 text-emerald-900 border-emerald-300',
+          icon: '🩺'
+        };
       case 'cultural':
         return {
           label: t.ipmCultural,
@@ -34,7 +58,7 @@ export const ActionTodayCard: React.FC = () => {
         };
       default:
         return {
-          label: 'Action',
+          label: language === 'mr' ? 'उपाययोजना' : language === 'hi' ? 'उपाय' : 'Action Step',
           bg: 'bg-stone-100 text-stone-800 border-stone-300',
           icon: '⚡'
         };
@@ -46,7 +70,7 @@ export const ActionTodayCard: React.FC = () => {
       {/* Prominent Section Header: WHAT SHOULD I DO NOW? */}
       <div className="flex items-center gap-2.5 mb-4 pb-3 border-b border-stone-200">
         <span className="w-8 h-8 rounded-xl bg-forest-800 text-amber-300 flex items-center justify-center text-base font-bold shadow-sm">
-          🌱
+          🛡️
         </span>
         <div>
           <h3 className="text-base font-black tracking-tight text-forest-950 font-display">

@@ -108,16 +108,16 @@ export const DiagnosisHeader: React.FC = () => {
                     }`}
                   >
                     {diagnosis.expertReviewStatus === 'confirmed'
-                      ? '✓ Expert Confirmed (KVK)'
+                      ? '✓ Vet Confirmed (LDO/DIS)'
                       : diagnosis.expertReviewStatus === 'corrected'
-                      ? '✓ Expert Corrected (KVK)'
-                      : '⏳ Expert Review Pending'}
+                      ? '✓ Vet Corrected (LDO)'
+                      : '⏳ Vet Review Pending'}
                   </span>
                 )}
               </div>
             </div>
 
-            {/* Leaf photo preview thumbnail if present */}
+            {/* Livestock photo preview thumbnail if present */}
             {diagnosis.imageUrl && (
               <div className="w-20 h-20 rounded-2xl overflow-hidden border-2 border-white shadow-md shrink-0 bg-stone-100">
                 <img
