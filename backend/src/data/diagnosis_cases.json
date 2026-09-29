@@ -1,5 +1,39 @@
 [
   {
+    "id": "mort-59c4a889-e210-4902-bdd7-d20416e848bb",
+    "case_id": "mort-59c4a889-e210-4902-bdd7-d20416e848bb",
+    "report_type": "mortality",
+    "farmer_id": "farmer123",
+    "farmer_name": "Ramesh Patil",
+    "farmer_phone": "+91 98200 00000",
+    "farm_id": "farm-demo-001",
+    "village": "Niphad",
+    "taluka": "Nashik",
+    "district": "Nashik",
+    "latitude": 20.085,
+    "longitude": 74.11,
+    "species": "cattle",
+    "disease_name": "Mortality: Sudden Death / Suspected Anthrax",
+    "suspected_cause": "Sudden Death / Suspected Anthrax",
+    "date_of_death": "2026-09-30",
+    "approximate_age": "4 years",
+    "severity": "high",
+    "status": "New",
+    "image_url": null,
+    "notes": "Animal showed sudden high fever and collapsed within 6 hours",
+    "created_at": "2026-09-29T21:36:40.175Z",
+    "updated_at": "2026-09-29T21:36:40.175Z",
+    "status_history": [
+      {
+        "from_status": null,
+        "to_status": "New",
+        "timestamp": "2026-09-29T21:36:40.175Z",
+        "updated_by": "Farmer (Self Report)",
+        "notes": "Animal mortality reported. Suspected cause: Sudden Death / Suspected Anthrax"
+      }
+    ]
+  },
+  {
     "id": "dbf066c0-1e17-4105-a7ad-56dbae65051e",
     "farmer_id": "KSF-BJFWYP",
     "farm_id": "0402f9d2-e1ff-4697-af4f-d5383a90193c",

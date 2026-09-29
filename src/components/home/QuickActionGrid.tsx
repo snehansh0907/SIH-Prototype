@@ -21,35 +21,68 @@ export const QuickActionGrid: React.FC = () => {
         </span>
       </div>
 
-      {/* PRIMARY FEATURED ACTION: Check My Animal */}
-      <button
-        onClick={() => requireFarmerAccess(() => setActiveTab('check'))}
-        type="button"
-        className="w-full rounded-2xl bg-emerald-900 hover:bg-emerald-950 active:scale-[0.99] text-white p-4 shadow-sm hover:shadow-md transition-all duration-200 cursor-pointer flex items-center justify-between border border-emerald-800/80 group text-left relative overflow-hidden"
-      >
-        <div className="flex items-center gap-3.5">
-          <div className="w-11 h-11 rounded-xl bg-emerald-800/90 flex items-center justify-center text-white shrink-0 group-hover:scale-105 transition-transform shadow-inner text-xl">
-            🩺
-          </div>
-          <div>
-            <div className="flex items-center gap-2 mb-0.5">
-              <span className="text-base font-bold font-display text-white tracking-tight">
-                {t.actionCheckCrop}
-              </span>
-              <span className="text-[9px] font-bold px-1.5 py-0.5 rounded-full bg-amber-400 text-stone-900 leading-none">
-                AI Triage
-              </span>
+      {/* PRIMARY FEATURED ACTIONS: Check Animal (Symptoms) & Report Animal Death (Mortality) */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+        {/* ACTION 1: Check My Animal */}
+        <button
+          onClick={() => requireFarmerAccess(() => setActiveTab('check'))}
+          type="button"
+          className="w-full rounded-2xl bg-emerald-900 hover:bg-emerald-950 active:scale-[0.99] text-white p-3.5 shadow-sm hover:shadow-md transition-all duration-200 cursor-pointer flex items-center justify-between border border-emerald-800/80 group text-left relative overflow-hidden"
+        >
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-xl bg-emerald-800/90 flex items-center justify-center text-white shrink-0 group-hover:scale-105 transition-transform shadow-inner text-lg">
+              🩺
             </div>
-            <p className="text-xs text-amber-200/90 font-medium">
-              {t.actionCheckCropSub}
-            </p>
+            <div>
+              <div className="flex items-center gap-1.5 mb-0.5">
+                <span className="text-sm font-bold font-display text-white tracking-tight">
+                  {t.actionCheckCrop}
+                </span>
+                <span className="text-[8px] font-bold px-1.5 py-0.5 rounded-full bg-amber-400 text-stone-900 leading-none">
+                  Symptom AI
+                </span>
+              </div>
+              <p className="text-[11px] text-amber-200/90 font-medium line-clamp-1">
+                {t.actionCheckCropSub}
+              </p>
+            </div>
           </div>
-        </div>
 
-        <div className="w-8 h-8 rounded-lg bg-emerald-800/60 flex items-center justify-center text-amber-300 shrink-0 group-hover:translate-x-1 transition-transform">
-          <ArrowRight className="w-4 h-4" />
-        </div>
-      </button>
+          <div className="w-7 h-7 rounded-lg bg-emerald-800/60 flex items-center justify-center text-amber-300 shrink-0 group-hover:translate-x-1 transition-transform">
+            <ArrowRight className="w-3.5 h-3.5" />
+          </div>
+        </button>
+
+        {/* ACTION 2: Report Animal Death (Mortality) */}
+        <button
+          onClick={() => requireFarmerAccess(() => setActiveTab('mortality'))}
+          type="button"
+          className="w-full rounded-2xl bg-rose-950 hover:bg-slate-900 active:scale-[0.99] text-white p-3.5 shadow-sm hover:shadow-md transition-all duration-200 cursor-pointer flex items-center justify-between border border-rose-800/80 group text-left relative overflow-hidden"
+        >
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-xl bg-rose-800/80 flex items-center justify-center text-white shrink-0 group-hover:scale-105 transition-transform shadow-inner text-lg">
+              🪦
+            </div>
+            <div>
+              <div className="flex items-center gap-1.5 mb-0.5">
+                <span className="text-sm font-bold font-display text-white tracking-tight">
+                  {language === 'mr' ? 'पशू मृत्यू नोंदवा' : language === 'hi' ? 'पशु मृत्यु दर्ज करें' : 'Report Animal Death'}
+                </span>
+                <span className="text-[8px] font-bold px-1.5 py-0.5 rounded-full bg-rose-400 text-slate-950 leading-none">
+                  Mortality
+                </span>
+              </div>
+              <p className="text-[11px] text-rose-200/90 font-medium line-clamp-1">
+                {language === 'mr' ? 'महामारी रोखण्यासाठी तातडीने नोंदवा' : language === 'hi' ? 'महामारी रोकथाम हेतु तुरंत सूचित करें' : 'Urgent outbreak & epidemic alert'}
+              </p>
+            </div>
+          </div>
+
+          <div className="w-7 h-7 rounded-lg bg-rose-800/60 flex items-center justify-center text-rose-300 shrink-0 group-hover:translate-x-1 transition-transform">
+            <ArrowRight className="w-3.5 h-3.5" />
+          </div>
+        </button>
+      </div>
 
       {/* SECONDARY ACTIONS GRID: My Herd, Vaccination, My Area, Talk to a Vet */}
       <div className="grid grid-cols-4 gap-2 mt-2">

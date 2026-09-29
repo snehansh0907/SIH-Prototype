@@ -23,7 +23,7 @@ import { farmService, SEEDED_DEMO_FARM_ID, SEEDED_DEMO_FARMER_ID, type BackendFa
 import { resolveFarmLocation } from '../services/locationRegionService';
 import { useAuth } from './AuthContext';
 
-export type NavigationTab = 'home' | 'check' | 'diagnosis' | 'herd' | 'vaccination' | 'history' | 'area' | 'expert' | 'risk';
+export type NavigationTab = 'home' | 'check' | 'mortality' | 'diagnosis' | 'herd' | 'vaccination' | 'history' | 'area' | 'expert' | 'risk';
 
 interface CropContextType {
   activeTab: NavigationTab;

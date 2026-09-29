@@ -13,6 +13,7 @@ import { ExpertConsultView } from './components/expert/ExpertConsultView';
 import { LoginScreen } from './components/auth/LoginScreen';
 import { FarmerLoginModal } from './components/auth/FarmerLoginModal';
 import { VetOfficialDashboard } from './components/vet/VetOfficialDashboard';
+import { MortalityReportForm } from './components/mortality/MortalityReportForm';
 
 const AppContent: React.FC = () => {
   const { activeTab } = useCrop();
@@ -36,6 +37,7 @@ const AppContent: React.FC = () => {
       <MobileContainer>
         {activeTab === 'home' && <FarmerHomeScreen />}
         {activeTab === 'check' && <ImageUploader />}
+        {activeTab === 'mortality' && <MortalityReportForm />}
         {activeTab === 'diagnosis' && <DiagnosisResultView />}
         {(activeTab === 'herd' || activeTab === 'vaccination' || activeTab === 'history') && <HerdManagementView />}
         {activeTab === 'risk' && <RiskForecastView />}
