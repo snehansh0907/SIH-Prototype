@@ -30,6 +30,12 @@ export interface FarmerUser {
   monitoredCropMr?: string;
   farmId?: string;
   cropCycleId?: string;
+  shedId?: string;
+  herdId?: string;
+  species?: string;
+  herdName?: string;
+  herdSize?: number | string;
+  vaccinationHistory?: string;
   avatar?: string;
   isDemo?: boolean;
   isNewUser?: boolean;

@@ -36,14 +36,10 @@ import { locationService, type LocationSearchResult } from '../../services/locat
 import type { Language } from '../../types';
 
 const CROPS = [
-  { key: 'Tomato', transKey: 'cropTomato', defaultLabel: 'Tomato', icon: '🍅' },
-  { key: 'Cotton', transKey: 'cropCotton', defaultLabel: 'Cotton', icon: '🌿' },
-  { key: 'Soybean', transKey: 'cropSoybean', defaultLabel: 'Soybean', icon: '🌱' },
-  { key: 'Sugarcane', transKey: 'cropSugarcane', defaultLabel: 'Sugarcane', icon: '🎋' },
-  { key: 'Maize', transKey: 'cropMaize', defaultLabel: 'Maize', icon: '🌽' },
-  { key: 'Onion', transKey: 'cropOnion', defaultLabel: 'Onion', icon: '🧅' },
-  { key: 'Rice', transKey: 'cropRice', defaultLabel: 'Rice', icon: '🌾' },
-  { key: 'Wheat', transKey: 'cropWheat', defaultLabel: 'Wheat', icon: '🌾' },
+  { key: 'Cattle', transKey: 'speciesCattle', defaultLabel: 'Cattle (Cow)', icon: '🐄' },
+  { key: 'Buffalo', transKey: 'speciesBuffalo', defaultLabel: 'Buffalo', icon: '🐃' },
+  { key: 'Goat', transKey: 'speciesGoat', defaultLabel: 'Goat / Sheep', icon: '🐐' },
+  { key: 'Poultry', transKey: 'speciesPoultry', defaultLabel: 'Poultry', icon: '🐔' },
 ];
 
 export const LoginScreen: React.FC = () => {
@@ -96,10 +92,10 @@ export const LoginScreen: React.FC = () => {
   const [locationSuccessMsg, setLocationSuccessMsg] = useState<string | null>(null);
   const [locationErrorMsg, setLocationErrorMsg] = useState<string | null>(null);
 
-  // Farm Details
-  const [regFarmName, setRegFarmName] = useState('My Green Farm');
-  const [regAreaAcres, setRegAreaAcres] = useState<number | string>('2.5');
-  const [regMainCrop, setRegMainCrop] = useState<string>('Tomato');
+  // Shed & Herd Details
+  const [regFarmName, setRegFarmName] = useState('My Dairy Shed');
+  const [regAreaAcres, setRegAreaAcres] = useState<number | string>('8');
+  const [regMainCrop, setRegMainCrop] = useState<string>('Cattle');
 
   const [regError, setRegError] = useState<string | null>(null);
   const [isRegistering, setIsRegistering] = useState(false);
@@ -402,10 +398,10 @@ export const LoginScreen: React.FC = () => {
       <div className="hidden md:flex items-center justify-between w-full max-w-md mb-3 px-2 text-xs text-stone-600">
         <div className="flex items-center gap-1.5 font-semibold text-forest-900">
           <span className="w-2 h-2 rounded-full bg-forest-600 animate-pulse"></span>
-          <span>🌾 Krishi Sarthak Authentication</span>
+          <span>🐄 Pashu Sarthak Authentication</span>
         </div>
         <div className="text-stone-500 font-medium">
-          SIH26131 Prototype
+          SIH26128 Prototype
         </div>
       </div>
 
@@ -429,7 +425,7 @@ export const LoginScreen: React.FC = () => {
               aria-label="Select language (English / हिंदी / मराठी)"
             >
               <Globe className="w-3.5 h-3.5 text-amber-300 shrink-0" />
-              <span>{language === 'en' ? '🇬🇧 English' : language === 'hi' ? '🇮🇳 हिन्दी' : '🌾 मराठी'}</span>
+              <span>{language === 'en' ? '🇬🇧 English' : language === 'hi' ? '🇮🇳 हिन्दी' : 'मराठी'}</span>
               <ChevronDown className="w-3 h-3 text-amber-300/90 shrink-0" />
             </button>
 
@@ -438,7 +434,7 @@ export const LoginScreen: React.FC = () => {
                 {[
                   { code: 'en', label: '🇬🇧 English' },
                   { code: 'hi', label: '🇮🇳 हिन्दी' },
-                  { code: 'mr', label: '🌾 मराठी' },
+                  { code: 'mr', label: 'मराठी' },
                 ].map((langItem) => (
                   <button
                     key={langItem.code}
@@ -467,7 +463,7 @@ export const LoginScreen: React.FC = () => {
 
           {/* Logo Icon */}
           <div className="w-14 h-14 rounded-2xl bg-forest-700/90 border-2 border-amber-400/40 flex items-center justify-center text-3xl mx-auto mb-2.5 shadow-inner">
-            🌱
+            🐄
           </div>
 
           {/* Title & Subtitle */}
@@ -512,7 +508,7 @@ export const LoginScreen: React.FC = () => {
                   : 'text-stone-700 hover:text-stone-900'
                 }`}
             >
-              <span>🌾 {t.createAccountTab}</span>
+              <span>🐄 {t.createAccountTab}</span>
             </button>
           </div>
         </div>
@@ -561,7 +557,7 @@ export const LoginScreen: React.FC = () => {
                         : 'bg-white border-amber-200 text-stone-700 hover:bg-amber-100/60'
                       }`}
                   >
-                    <span className="font-extrabold truncate w-full text-left">🧅 Suresh (Onion)</span>
+                    <span className="font-extrabold truncate w-full text-left">🐄 Suresh (Cattle)</span>
                     <span className="text-[9px] text-stone-500">suresh123</span>
                   </button>
 
@@ -573,7 +569,7 @@ export const LoginScreen: React.FC = () => {
                         : 'bg-white border-amber-200 text-stone-700 hover:bg-amber-100/60'
                       }`}
                   >
-                    <span className="font-extrabold truncate w-full text-left">🍅 Ramesh (Tomato)</span>
+                    <span className="font-extrabold truncate w-full text-left">🐃 Ramesh (Buffalo)</span>
                     <span className="text-[9px] text-stone-500">farmer123</span>
                   </button>
 
@@ -585,7 +581,7 @@ export const LoginScreen: React.FC = () => {
                         : 'bg-white border-amber-200 text-stone-700 hover:bg-amber-100/60'
                       }`}
                   >
-                    <span className="font-extrabold truncate w-full text-left">🌱 Vikas (Soybean)</span>
+                    <span className="font-extrabold truncate w-full text-left">🐐 Vikas (Goat)</span>
                     <span className="text-[9px] text-stone-500">vikas123</span>
                   </button>
                 </div>

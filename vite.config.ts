@@ -11,10 +11,10 @@ export default defineConfig({
       registerType: 'autoUpdate',
 
       manifest: {
-        name: 'Krishi Sarthak',
-        short_name: 'Krishi Sarthak',
+        name: 'Pashu Sarthak',
+        short_name: 'Pashu Sarthak',
         description:
-          'AI-powered crop health monitoring and agricultural advisory platform for farmers.',
+          'SIH26128 AI-powered livestock health monitoring and veterinary advisory platform for livestock owners.',
 
         theme_color: '#173f35',
         background_color: '#f6f3eb',

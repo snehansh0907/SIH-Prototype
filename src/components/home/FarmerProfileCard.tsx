@@ -1,5 +1,5 @@
 import React from 'react';
-import { UserCheck, MapPin, Database, LogOut, ArrowRight, ShieldCheck, Sprout, User } from 'lucide-react';
+import { UserCheck, MapPin, Database, LogOut, ArrowRight, ShieldCheck, HeartPulse, User } from 'lucide-react';
 import { useLanguage } from '../../context/LanguageContext';
 import { useAuth } from '../../context/AuthContext';
 
@@ -21,16 +21,16 @@ export const FarmerProfileCard: React.FC = () => {
 
   const monitoredCrop = user
     ? (language === 'mr' ? (user.monitoredCropMr || user.monitoredCrop) : language === 'hi' ? (user.monitoredCropHi || user.monitoredCrop) : user.monitoredCrop)
-    : (language === 'mr' ? 'कांदा' : language === 'hi' ? 'प्याज' : 'Onion');
+    : (language === 'mr' ? 'देशी गाय (गीर)' : language === 'hi' ? 'देसी गाय (गीर)' : 'Indigenous Cattle (Gir)');
 
-  const myFarm = language === 'mr' ? 'माझे शेत' : language === 'hi' ? 'मेरा खेत' : 'My Farm';
-  const defaultFarm = language === 'mr' ? 'शेत (२ एकर)' : language === 'hi' ? 'खेत (2 एकड़)' : 'Farm (2 Acres)';
+  const myFarm = language === 'mr' ? 'माझा गोठा' : language === 'hi' ? 'मेरा गोठा' : 'My Dairy Shed';
+  const defaultFarm = language === 'mr' ? 'गोठा (८ जनावरे)' : language === 'hi' ? 'गोठा (8 पशु)' : 'Dairy Shed (8 Animals)';
 
   const farmDisplayName = user
-    ? `${user.farmName || myFarm} (${user.areaAcres || '1'} ${t.acresUnit})`
+    ? `${user.farmName || user.herdName || myFarm} (${user.herdSize || user.areaAcres || '6'} ${t.acresUnit})`
     : defaultFarm;
 
-  const farmerIdDisplay = user?.farmerId || (user?.id ? user.id.slice(0, 8) : 'KSF-001');
+  const farmerIdDisplay = user?.farmerId || (user?.id ? user.id.slice(0, 8) : 'PSL-001');
 
   const isDemoMode = (import.meta as any).env?.VITE_DEMO_MODE === 'true';
 
@@ -90,7 +90,7 @@ export const FarmerProfileCard: React.FC = () => {
           {/* Avatar with status indicator */}
           <div className="relative shrink-0">
             <div className="w-10 h-10 rounded-xl bg-forest-800 text-white flex items-center justify-center text-lg shadow-sm">
-              {user?.userType === 'registered' ? '🌾' : isFarmer ? '👨‍🌾' : '🚜'}
+              {user?.userType === 'registered' ? '🐄' : isFarmer ? '🧑‍🌾' : '🛖'}
             </div>
             <div className="absolute -bottom-0.5 -right-0.5 w-3 h-3 rounded-full bg-emerald-500 border-2 border-white shadow-xs flex items-center justify-center">
               <span className="w-1 h-1 rounded-full bg-white" />
@@ -131,7 +131,7 @@ export const FarmerProfileCard: React.FC = () => {
       {/* Connected Farm & Crop Cycle Micro-bar */}
       <div className="mt-2.5 pt-2 border-t border-stone-100 grid grid-cols-2 gap-2 text-xs">
         <div className="flex items-center gap-1.5 px-2 py-1 rounded-lg bg-stone-50/80 border border-stone-200/50 truncate">
-          <Sprout className="w-3.5 h-3.5 text-emerald-700 shrink-0" />
+          <HeartPulse className="w-3.5 h-3.5 text-emerald-700 shrink-0" />
           <div className="truncate">
             <span className="text-[10px] text-stone-400 font-medium mr-1">{t.activeCropLabel}:</span>
             <span className="font-semibold text-stone-800 text-[11px]">{monitoredCrop}</span>

@@ -12,7 +12,7 @@ export const AppHeader: React.FC = () => {
 
   const userName = isFarmer && user
     ? (language === 'mr' ? user.nameMr : language === 'hi' ? (user.nameHi || user.name) : user.name)
-    : (language === 'mr' ? 'डेमो नमुना' : language === 'hi' ? 'डेमो किसान' : 'Demo');
+    : (language === 'mr' ? 'डेमो पशुपालक' : language === 'hi' ? 'डेमो पशुपालक' : 'Demo Owner');
 
   return (
     <header className="sticky top-0 z-40 w-full bg-forest-800/95 backdrop-blur-md text-white border-b border-forest-700/50 shadow-sm">
@@ -26,7 +26,7 @@ export const AppHeader: React.FC = () => {
           className="flex items-center gap-2.5 cursor-pointer select-none group"
         >
           <div className="w-8 h-8 rounded-xl bg-forest-700/80 border border-forest-600/60 flex items-center justify-center text-base shadow-sm group-hover:scale-105 transition-transform shrink-0">
-            🌾
+            🐄
           </div>
           <div>
             <div className="flex items-center gap-1.5">

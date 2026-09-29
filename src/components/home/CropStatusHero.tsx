@@ -1,5 +1,5 @@
 import React from 'react';
-import { AlertTriangle, Clock, ArrowRight, Camera, Sparkles, Sprout } from 'lucide-react';
+import { AlertTriangle, Clock, ArrowRight, Camera, Sparkles, HeartPulse } from 'lucide-react';
 import { useLanguage } from '../../context/LanguageContext';
 import { useCrop } from '../../context/CropContext';
 import { useAuth } from '../../context/AuthContext';
@@ -70,16 +70,16 @@ export const CropStatusHero: React.FC = () => {
 
     const onboardingDesc =
       language === 'mr'
-        ? `तुमच्या ${user.farmName} मधील ${monitoredCropName} पिकाच्या पानांचा फोटो काढून त्वरित रोग तपासणी आणि तज्ज्ञ सल्ला मिळवा.`
+        ? `तुमच्या ${user.farmName || user.herdName || 'गोठ्यातील'} ${monitoredCropName} जनावरांच्या अंगावरील गाठी किंवा लक्षणांचा फोटो काढून त्वरित रोग तपासणी आणि तज्ज्ञ सल्ला मिळवा.`
         : language === 'hi'
-        ? `आपके ${user.farmName} में ${monitoredCropName} फसल की पत्तियों की फोटो खींचकर तुरंत रोग जांच और विशेषज्ञ सलाह प्राप्त करें।`
-        : `Your ${user.farmName} profile is ready for monitoring ${user.monitoredCrop}. Take a quick leaf photo to start smart AI disease detection.`;
+        ? `आपके ${user.farmName || user.herdName || 'गोठे के'} ${monitoredCropName} पशु की त्वचा की गांठों या घावों की फोटो खींचकर तुरंत रोग जांच और पशुचिकित्सा सलाह प्राप्त करें।`
+        : `Your ${user.farmName || user.herdName || 'dairy shed'} profile is ready for monitoring ${user.monitoredCrop}. Take a quick photo of skin nodules or lesions to start smart AI disease detection.`;
 
     return (
       <div className="relative overflow-hidden rounded-2xl bg-gradient-to-b from-emerald-50/60 to-white border border-emerald-200/80 p-4 shadow-sm animate-fadeIn">
         <div className="flex items-center justify-between mb-2.5">
           <div className="flex items-center gap-2">
-            <span className="text-lg">🌱</span>
+            <span className="text-lg">🐄</span>
             <h2 className="text-sm font-bold text-forest-950 font-display">
               {welcomeGreeting}
             </h2>
@@ -102,13 +102,13 @@ export const CropStatusHero: React.FC = () => {
         {/* Farm & Crop Summary Chip */}
         <div className="bg-stone-50 rounded-xl px-3 py-2 border border-stone-200/60 mb-3 flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <Sprout className="w-4 h-4 text-emerald-700 shrink-0" />
+            <HeartPulse className="w-4 h-4 text-emerald-700 shrink-0" />
             <span className="text-xs font-bold text-stone-800">
               {farmPlotLabel} • {monitoredCropName}
             </span>
           </div>
           <span className="text-[10px] font-semibold text-stone-500">
-            {user.areaAcres} {t.acresUnit}
+            {user.herdSize || user.areaAcres} {t.acresUnit}
           </span>
         </div>
 
@@ -148,7 +148,7 @@ export const CropStatusHero: React.FC = () => {
       {/* Top Header */}
       <div className="flex items-center justify-between mb-2.5">
         <div className="flex items-center gap-1.5">
-          <span className="text-base">🌱</span>
+          <span className="text-base">🐄</span>
           <h2 className="text-sm font-bold text-stone-800 font-display tracking-tight">
             {t.myCropStatus}
           </h2>

@@ -84,12 +84,12 @@ export const FollowUpBanner: React.FC = () => {
         previousSeverity,
         currentSeverity,
         trend: isImproving ? 'improving' : 'worsening',
-        result: isImproving ? 'Improving' : 'Risk increasing — expert verification recommended.',
-        resultHi: isImproving ? 'सुधार हो रहा है' : 'जोखिम बढ़ रहा है — विशेषज्ञ सत्यापन की सिफारिश की जाती है।',
-        resultMr: isImproving ? 'सुधारणा होत आहे' : 'धोका वाढत आहे — कृषी तज्ज्ञांच्या सल्ल्याची शिफारस केली जाते.',
+        result: isImproving ? 'Lesions Healing / Improving' : 'Lesions expanding — Veterinary review recommended.',
+        resultHi: isImproving ? 'घाव ठीक हो रहे हैं' : 'घाव/गांठें बढ़ रही हैं — पशुचिकित्सक जांच की आवश्यकता।',
+        resultMr: isImproving ? 'जखमा भरत आहेत' : 'गाठी किंवा व्रण वाढत आहेत — पशुवैद्यकीय तपासणी आवश्यक.',
         recommendation: isImproving
-          ? 'Crop health is improving. Continue preventative care and scheduled aeration.'
-          : 'Infection is expanding. Contact agronomist or upload to expert verification queue.',
+          ? 'Animal lesion healing is progressing well. Continue antiseptic wash and fly protection.'
+          : 'Lesions are spreading. Isolate animal and contact Veterinary Officer via Helpline 1962.',
         followUpStatus: isImproving ? 'better' : 'worse',
       };
       setComparisonResult(comp);
@@ -119,7 +119,7 @@ export const FollowUpBanner: React.FC = () => {
     <div className="rounded-2xl bg-white border border-stone-200/70 p-4 shadow-sm mb-4">
       <div className="flex items-center justify-between mb-1.5">
         <div className="flex items-center gap-1.5">
-          <span className="text-base">🌱</span>
+          <span className="text-base">🩺</span>
           <h3 className="text-xs uppercase tracking-wider font-bold text-stone-500 font-display">
             {t.followUpTitle}
           </h3>

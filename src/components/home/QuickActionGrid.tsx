@@ -145,7 +145,7 @@ export const QuickActionGrid: React.FC = () => {
               {t.actionExpert}
             </div>
             <div className="text-[10px] text-stone-400 font-medium line-clamp-1 mt-0.5">
-              {language === 'hi' ? 'विशेषज्ञ' : language === 'mr' ? 'तज्ज्ञ सल्ला' : 'Agri Expert'}
+              {language === 'hi' ? 'पशुचिकित्सक' : language === 'mr' ? 'पशुवैद्यक' : 'Vet Officer'}
             </div>
           </div>
         </button>
