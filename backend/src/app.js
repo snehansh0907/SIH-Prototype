@@ -64,7 +64,7 @@ app.use('/uploads', express.static(path.join(__dirname, '..', 'uploads')));
 
 // ---------------- Health Check ----------------
 app.get('/api/health', (req, res) => {
-  res.json({ success: true, message: 'Krishi Sarthak API is running' });
+  res.json({ success: true, message: 'Pashu Sarthak API is running' });
 });
 
 // ---------------- Weather ----------------
@@ -84,7 +84,9 @@ app.get(
 // ---------------- Feature Routes ----------------
 app.use('/api/diagnosis', diagnosisRoutes);
 app.use('/api/diagnose', diagnosisRoutes);
+app.use('/api/herds', farmRouter);
 app.use('/api/farms', farmRouter);
+app.use('/api/animal-units', cropCycleRouter);
 app.use('/api/crop-cycles', cropCycleRouter);
 app.use('/api/risk', riskRoutes);
 app.use('/api/hotspots', hotspotRoutes);

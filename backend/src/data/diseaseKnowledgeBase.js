@@ -1,539 +1,383 @@
 // =========================================================
-// Disease Knowledge Base
+// Pashu Sarthak - Livestock Disease Knowledge Base
+// SIH26128: Early Detection, Prevention & Management of Livestock Diseases
+// Govt. of Maharashtra - Animal Husbandry Department
 // =========================================================
-// Static IPM (Integrated Pest Management) knowledge used by:
-//   - the mock diagnosis layer (diagnosisController)
-//   - the advisory service (advisoryService)
-//   - the seed script (seed.js)
+// Authoritative clinical veterinary guidance for:
+//   1. Lumpy Skin Disease (LSD) - Capripoxvirus
+//   2. Foot-and-Mouth Disease (FMD) - Aphthovirus
+//   3. Black Quarter (BQ) - Clostridium chauvoei
+//   4. Hemorrhagic Septicemia (HS / Galghotu) - Pasteurella multocida
+//   5. Bovine Mastitis - Bacterial Udder Infection
+//   6. Healthy Animal / Baseline
 //
-// This same data is also inserted into the `diseases` table
-// in Supabase so it can be queried/edited from the DB later.
-//
-// IPM PRIORITY ORDER (always followed):
-//   1. Cultural practices
-//   2. Mechanical controls
-//   3. Biological controls
-//   4. Chemical intervention (only when necessary, last resort)
+// VETERINARY PROTOCOL HIERARCHY:
+//   1. Immediate Quarantine & Physical Isolation
+//   2. Biosecurity & Vector Control (Flies, Mosquitoes, Ticks)
+//   3. Supportive & Antiseptic Care (Lesion washes, hydration, soft feeding)
+//   4. Veterinary Escalation & Ring Vaccination (Govt. Dispensary / NADCP)
 // =========================================================
 
-const IPM_PRIORITY_ORDER = ['cultural', 'mechanical', 'biological', 'chemical'];
+const VET_PROTOCOL_ORDER = [
+  'isolation_quarantine',
+  'biosecurity_vector_control',
+  'supportive_antiseptic_care',
+  'veterinary_escalation_vaccination',
+];
 
 const DISEASE_KNOWLEDGE_BASE = [
-  // ---------------------- TOMATO ----------------------
+  // -------------------------------------------------------------------------
+  // 1. LUMPY SKIN DISEASE (LSD) - लंपी त्वचा रोग / लंपी चर्मरोग
+  // -------------------------------------------------------------------------
   {
-    crop_name: 'Tomato',
-    disease_name: 'Early Blight',
-    scientific_name: 'Alternaria solani',
+    species: 'Cattle',
+    crop_name: 'Cattle', // Compatibility alias
+    disease_name: 'Lumpy Skin Disease (LSD)',
+    disease_name_hi: 'लंपी त्वचा रोग (LSD)',
+    disease_name_mr: 'लंपी चर्मरोग (LSD)',
+    scientific_name: 'Capripoxvirus (Poxviridae family)',
+    severity_typical: 'high',
+    affected_organs: 'Cutaneous skin nodules, superficial lymph nodes, muzzle, udder',
     description:
-      'A fungal disease causing dark concentric-ring spots on older leaves, which can spread to stems and fruit if untreated.',
+      'A viral transboundary infectious disease affecting cattle and water buffaloes, characterized by high fever, enlarged superficial lymph nodes, and multiple circumscribed firm cutaneous nodules (2-5 cm diameter) all over the body.',
+    visual_symptoms: [
+      'Firm, round, raised skin nodules (2 to 5 cm) on neck, back, head, udder, and limbs',
+      'Nodules become necrotic, ulcerate forming deep "sitfast" scabs susceptible to fly maggots',
+      'Enlarged prescapular and precrural lymph nodes palpable as firm swellings',
+      'High pyrexia (fever 40-41.5°C / 104-106°F) lasting 1-3 days',
+      'Copious bilateral serous to purulent nasal and ocular discharge',
+      'Sudden drop in daily milk yield by 50-80% and rapid body emaciation',
+      'Edema/swelling of the dewlap, brisket, and ventral abdomen',
+    ],
     how_it_spreads: [
-      'Fungal spores splash from soil onto lower leaves during rain or overhead irrigation',
-      'Spreads faster in warm, humid weather (24-29°C)',
-      'Survives in infected plant debris left in the field',
+      'Primary transmission via hematophagous vector insects: biting flies (Stomoxys calcitrans), mosquitoes (Aedes, Culex), and hard ticks (Rhipicephalus appendiculatus)',
+      'Direct contact with saliva, nasal secretions, and weeping skin scabs of infected animals',
+      'Sharing contaminated community water troughs, feed mangers, and milking equipment',
+      'Movement of cattle across inter-state animal markets and shared grazing pastures',
+      'Iatrogenic transmission via repeated needle and syringe reuse during mass injections',
     ],
     prevention_steps: [
-      'Rotate crops - avoid planting tomato/potato in the same field for 2 seasons',
-      'Remove and destroy infected plant debris after harvest',
-      'Use drip irrigation instead of overhead sprinklers to keep leaves dry',
-      'Maintain proper plant spacing for airflow',
+      'Strict vector control: Install fine insect netting in cattle sheds, eliminate stagnant slurry pools, and burn neem/camphor leaves for herbal smoke repellent',
+      'Isolate all newly purchased or returned livestock for minimum 28 days before herd mixing',
+      'Prohibit common grazing on village pastures during active regional outbreak alerts',
+      'Annual vaccination with Heterologous Live Attenuated Goat Pox Vaccine (Uttarkashi strain) @ 3 ml S/C or Lumpi-ProVacInd under Animal Husbandry Department guidelines',
+      'Disinfect shed premises twice weekly with 2% Virkon-S, 2-3% Sodium Hypochlorite, or 1% Formalin',
     ],
     remedy_steps: [
-      'Cultural: Remove and destroy infected lower leaves immediately',
-      'Mechanical: Prune for better air circulation; avoid working in fields when plants are wet',
-      'Biological: Apply Trichoderma viride or Bacillus subtilis based bio-fungicides',
-      'Chemical (only if severity is high): Apply a copper oxychloride or Mancozeb based fungicide as per label dosage',
+      'Quarantine: Immediately isolate the affected animal inside a separate, well-ventilated, fly-proof shed at least 50 meters away from healthy stock',
+      'Antiseptic Wash: Clean ulcerated nodules twice daily with a dilute Potassium Permanganate (KMnO4) solution (1:1000 ratio, faint pink color) or cooled neem leaf decoction',
+      'Wound Protection: Apply fly-repellent antiseptic ointment (Gamma benzene hexachloride + zinc oxide or Charma-Gel / Lorexane) on broken nodules to prevent secondary fly-strike and maggot infestation',
+      'Supportive Nutrition: Provide easily digestible green fodder, soft mash with jaggery, electrolyte water, and oral multivitamins (Zinc, Vitamin A, E & H / Biotin) to boost epithelial repair',
+      'Veterinary Escalation: Promptly report to the nearest Taluka Veterinary Dispensary or call Maharashtra Animal Husbandry Helpline 1962 for NSAIDs (Meloxicam/Paracetamol) and secondary broad-spectrum antibiotic cover',
     ],
     safe_dosage: [
-      'Copper oxychloride 50% WP: 2.5 g/litre of water (only under high severity, consult local Krishi Kendra)',
-      'Always follow pre-harvest interval mentioned on the product label',
+      'Potassium Permanganate (KMnO4): 1 gram in 10 liters clean water (faint pink) for external skin wash twice daily',
+      'Neem oil + Camphor: Topically applied over closed lumps as natural repellent against biting stable flies',
+      'Meloxicam + Paracetamol (Melonex Plus): 0.5 mg/kg body weight under registered Veterinary Officer prescription only',
+      'Goat Pox Vaccine (Preventive only for healthy in-contact herd): 3 ml S/C in neck region as per Govt. ring vaccination protocol',
     ],
-    ipm_priority_order: IPM_PRIORITY_ORDER,
-  },
-  {
-    crop_name: 'Tomato',
-    disease_name: 'Late Blight',
-    scientific_name: 'Phytophthora infestans',
-    description:
-      'A fast-spreading and destructive disease causing water-soaked patches on leaves that turn brown/black, often with white fungal growth on the underside.',
-    how_it_spreads: [
-      'Spreads rapidly in cool, wet, and humid conditions',
-      'Airborne spores travel long distances with wind and rain',
-      'Can destroy an entire field within days if unmanaged',
-    ],
-    prevention_steps: [
-      'Use certified disease-free seedlings',
-      'Avoid overhead irrigation, especially in the evening',
-      'Ensure good field drainage to avoid waterlogging',
-      'Monitor fields daily during cool, humid weather',
-    ],
-    remedy_steps: [
-      'Cultural: Remove and bury/destroy infected plants immediately to stop spread',
-      'Mechanical: Improve field drainage and spacing between plants',
-      'Biological: Use Bacillus subtilis or Pseudomonas fluorescens based bio-agents preventively',
-      'Chemical (only if spreading fast): Apply Metalaxyl + Mancozeb combination fungicide as per label',
-    ],
-    safe_dosage: [
-      'Metalaxyl 8% + Mancozeb 64% WP: 2 g/litre of water (use only under expert guidance)',
-    ],
-    ipm_priority_order: IPM_PRIORITY_ORDER,
-  },
-  {
-    crop_name: 'Tomato',
-    disease_name: 'Leaf Mold',
-    scientific_name: 'Passalora fulva',
-    description:
-      'A fungal disease common in humid/greenhouse conditions, causing pale yellow spots on the upper leaf surface with olive-green mold underneath.',
-    how_it_spreads: [
-      'Thrives in high humidity (above 85%) and poor ventilation',
-      'Spreads through air currents and water splash',
-      'Common in polyhouse/greenhouse tomato cultivation',
-    ],
-    prevention_steps: [
-      'Improve ventilation in greenhouses/polyhouses',
-      'Avoid excess humidity by controlled watering',
-      'Use resistant tomato varieties where available',
-    ],
-    remedy_steps: [
-      'Cultural: Increase spacing and ventilation, reduce humidity',
-      'Mechanical: Remove and destroy affected leaves',
-      'Biological: Apply Trichoderma-based bio-fungicide',
-      'Chemical (last resort): Chlorothalonil-based fungicide as per label dosage',
-    ],
-    safe_dosage: ['Chlorothalonil 75% WP: 2 g/litre of water (only if biological control fails)'],
-    ipm_priority_order: IPM_PRIORITY_ORDER,
+    ipm_priority_order: VET_PROTOCOL_ORDER,
   },
 
-  // ---------------------- COTTON ----------------------
+  // -------------------------------------------------------------------------
+  // 2. FOOT-AND-MOUTH DISEASE (FMD) - लाळ्या खुरकूत / खुरपका-मुंहपका
+  // -------------------------------------------------------------------------
   {
-    crop_name: 'Cotton',
-    disease_name: 'Leaf Curl Disease',
-    scientific_name: 'Cotton Leaf Curl Virus (CLCuV)',
+    species: 'Cattle',
+    crop_name: 'Cattle',
+    disease_name: 'Foot-and-Mouth Disease (FMD)',
+    disease_name_hi: 'खुरपका-मुंहपका रोग (FMD)',
+    disease_name_mr: 'लाळ्या खुरकूत (FMD)',
+    scientific_name: 'Aphthovirus (Picornaviridae family) - Serotypes O, A, Asia-1',
+    severity_typical: 'high',
+    affected_organs: 'Oral mucosa, dental pad, tongue, interdigital space, coronet band, teats',
     description:
-      'A viral disease transmitted by whiteflies causing upward/downward curling of leaves, thickened veins, and stunted growth.',
+      'A highly contagious acute viral disease of cloven-hoofed domestic animals (cattle, buffaloes, goats, sheep, pigs). Characterized by high fever, severe lameness, and painful vesicular eruptions that rupture into erosions on the mouth, tongue, dental pad, and feet.',
+    visual_symptoms: [
+      'Profuse ropy, stringy, frothy salivation hanging from mouth with characteristic lip smacking sound',
+      'Painful vesicles and blanched blisters on tongue, dental pad, gums, inner cheeks, and muzzle',
+      'Ruptured blisters leaving raw, bleeding, red erosive ulcers making eating impossible',
+      'Severe lameness and reluctance to stand; animal shifts weight from foot to foot or stays recumbent',
+      'Ulcers and raw lesions in the interdigital cleft and coronet band of hooves with foul smell',
+      'High pyrexia (fever 40-41°C / 104-106°F) and extreme lethargy',
+      'Vesicles on teats causing painful milking and acute secondary mastitis',
+    ],
     how_it_spreads: [
-      'Transmitted primarily by whitefly (Bemisia tabaci)',
-      'Spreads faster in warm weather with high whitefly populations',
-      'Can spread from infected weeds/host plants nearby',
+      'Extremely contagious through aerosol inhalation; virus carried on wind over kilometers in humid air',
+      'Direct contact with infectious saliva, vesicular fluid, milk, urine, and dung',
+      'Indirect transmission via contaminated stock footwear, vehicle tires, milk cans, and fodder',
+      'Spread through shared grazing paths, village water bodies, and livestock haats/fairs',
+      'Calves consuming unboiled colostrum or milk from infected dams (causes fatal myocarditis / "tiger heart")',
     ],
     prevention_steps: [
-      'Use virus-resistant/tolerant cotton varieties',
-      'Control whitefly population through yellow sticky traps',
-      'Remove weed hosts around the field',
-      'Avoid late sowing which increases whitefly exposure',
+      'Strict biannual vaccination under National Animal Disease Control Programme (NADCP) using oil-adjuvant trivalent FMD vaccine (O, A, Asia-1 strains)',
+      'Install foot-dip at shed entry filled with 4% Sodium Carbonate (washing soda) or 2% Copper Sulphate',
+      'Quarantine newly inducted cattle/buffaloes for 21 days with separate watering buckets',
+      'Immediately halt movement of animals and ban milk collection vans from entering infected premises',
+      'Boil all farm-produced milk prior to feeding newborn calves or home consumption',
     ],
     remedy_steps: [
-      'Cultural: Remove and destroy severely infected plants to reduce virus source',
-      'Mechanical: Install yellow sticky traps to monitor/reduce whitefly population',
-      'Biological: Encourage natural predators like ladybird beetles; use neem-based formulations',
-      'Chemical (only for severe whitefly outbreaks): Use recommended systemic insecticide as per label, rotating chemical groups to avoid resistance',
+      'Immediate Isolation: Confine affected animal to dry, clean, soft bedded stall (rice straw or sand). Restrict all animal movement off-premises',
+      'Oral Lesion Care: Gently flush the mouth 2-3 times daily with a mild 1% to 2% Sodium Bicarbonate (baking soda) solution or 0.1% KMnO4 wash to soothe ulcers',
+      'Foot-Bath & Hoof Dressing: Make the animal walk through a 2% Copper Sulphate or 1% Potassium Permanganate foot-bath. Clean interdigital cleft and apply fly-repellent antiseptic paste',
+      'Soft Diet Management: Feed lukewarm liquid/semi-solid gruel (boiled rice kanji, ragi porridge, jaggery water, fine green wheatgrass) since the animal cannot chew coarse fodder',
+      'Veterinary Escalation & Ring Vaccination: Immediately alert the Taluka Veterinary Officer. Establish emergency ring vaccination within 5-10 km radius to contain the outbreak',
     ],
     safe_dosage: [
-      'Neem oil (1500 ppm): 3-5 ml/litre of water as a preventive spray',
-      'Consult local agriculture officer before using systemic insecticides for whitefly control',
+      'Sodium Bicarbonate (Baking Soda): 15-20 grams per liter of lukewarm water for oral cavity mouth rinse 3 times daily',
+      'Copper Sulphate (Morchut): 20 grams per liter of water (2% solution) for hoof foot-baths and interdigital cleaning',
+      'Boro-Glycerine paste: Glycerine (90 ml) + Boric acid (10 g) gently swabbed on tongue and dental pad for pain relief',
+      'Trivalent FMD Vaccine (NADCP): 2 ml S/C or 3 ml I/M for healthy livestock in 5 km ring containment zone',
     ],
-    ipm_priority_order: IPM_PRIORITY_ORDER,
-  },
-  {
-    crop_name: 'Cotton',
-    disease_name: 'Bollworm Related Damage',
-    scientific_name: 'Helicoverpa armigera / Pectinophora gossypiella',
-    description:
-      'Damage caused by bollworm larvae boring into cotton bolls and squares, leading to boll drop and reduced fiber quality.',
-    how_it_spreads: [
-      'Adult moths lay eggs on leaves/squares; larvae bore into bolls after hatching',
-      'Population increases rapidly in warm weather with continuous cotton cultivation',
-      'Spreads across fields as moths migrate',
-    ],
-    prevention_steps: [
-      'Practice crop rotation and destroy crop residue after harvest',
-      'Use pheromone traps to monitor moth activity early',
-      'Grow trap crops like marigold around the field border',
-      'Avoid excessive nitrogen fertilizer which encourages lush growth attractive to pests',
-    ],
-    remedy_steps: [
-      'Cultural: Remove and destroy damaged bolls/squares regularly',
-      'Mechanical: Hand-pick larvae in small fields; use pheromone traps (5/acre)',
-      'Biological: Release Trichogramma parasitoids or apply Bt (Bacillus thuringiensis) based bio-pesticide',
-      'Chemical (only above economic threshold level): Use recommended insecticide as per label, rotating modes of action',
-    ],
-    safe_dosage: [
-      'Bt (Bacillus thuringiensis) formulation: 1-2 g/litre of water in the evening',
-      'Chemical sprays only after confirming pest crosses Economic Threshold Level (ETL) - consult local Krishi Kendra',
-    ],
-    ipm_priority_order: IPM_PRIORITY_ORDER,
+    ipm_priority_order: VET_PROTOCOL_ORDER,
   },
 
-  // ---------------------- SOYBEAN ----------------------
+  // -------------------------------------------------------------------------
+  // 3. BLACK QUARTER (BQ) - एकटांग्या / सुजवा रोग
+  // -------------------------------------------------------------------------
   {
-    crop_name: 'Soybean',
-    disease_name: 'Rust',
-    scientific_name: 'Phakopsora pachyrhizi',
+    species: 'Cattle',
+    crop_name: 'Cattle',
+    disease_name: 'Black Quarter (BQ)',
+    disease_name_hi: 'ब्लैक क्वार्टर / लंगड़ा बुखार (BQ)',
+    disease_name_mr: 'एकटांग्या / सुजवा रोग (BQ)',
+    scientific_name: 'Clostridium chauvoei (Spore-forming Anaerobe)',
+    severity_typical: 'high',
+    affected_organs: 'Heavy muscle groups (shoulder, thigh, rump), systemic toxemia',
     description:
-      'A fungal disease producing small reddish-brown to tan pustules mainly on the underside of leaves, causing premature leaf drop.',
+      'An acute, highly fatal, soil-borne infectious bacterial disease primarily affecting young healthy cattle (6 to 24 months). Characterized by severe acute lameness, high fever, and hot painful crepitant swellings over heavy skeletal muscles that quickly turn cold and painless.',
+    visual_symptoms: [
+      'Sudden onset severe lameness; animal unable to walk on affected hindleg or foreleg',
+      'Hot, tense, painful swelling over thighs, rump, shoulder, or neck',
+      'Crepitus (crackling parchment-like sound) when pressing the swelling due to subcutaneous gas accumulation',
+      'High fever (105-107°F / 41°C), shivering, dry muzzle, and fast shallow breathing',
+      'Skin over the swollen muscle turns dark blackish-purple, dry, cold, and insensitive',
+      'Rapid recumbency, depression, and death within 12-48 hours if untreated',
+    ],
     how_it_spreads: [
-      'Spores spread through wind over long distances',
-      'Favoured by high humidity, leaf wetness, and moderate temperatures (20-28°C)',
-      'Can spread quickly during monsoon season',
+      'Spores persist in soil and pasture for decades and enter animal body through ingestion or deep skin abrasions',
+      'Spike in incidence after heavy monsoon rains when earth is dug up or washed by runoff',
+      'Non-contagious from animal to animal, but multiple animals in herd ingest spores simultaneously from pasture',
     ],
     prevention_steps: [
-      'Use early-maturing and rust-tolerant varieties where available',
-      'Avoid very close plant spacing to allow airflow',
-      'Monitor fields regularly during the flowering to pod-filling stage',
+      'Annual pre-monsoon vaccination (May-June) of all young cattle (above 3 months) with Polyvalent / BQ Vaccine',
+      'Deep burial of deceased animals with quicklime (chuna) to prevent soil spore contamination; never skin or open carcasses in the open',
+      'Avoid grazing young stock on waterlogged or newly ploughed fields prone to historical BQ cases',
     ],
     remedy_steps: [
-      'Cultural: Remove volunteer/self-sown soybean plants that can carry infection between seasons',
-      'Mechanical: Ensure proper drainage and spacing to reduce leaf wetness duration',
-      'Biological: Apply Trichoderma-based seed treatment/soil application preventively',
-      'Chemical (if rust is spreading rapidly): Apply a triazole or strobilurin based fungicide as per label',
+      'Emergency Vet Call: BQ is a hyper-acute emergency. Call Veterinary Officer immediately within first hours of fever/lameness',
+      'Penicillin Therapy: High-dose Crystalline Penicillin + Procaine Penicillin given parenterally and infiltrated around muscle lesion by vet',
+      'Strict Confinement: Keep animal calm in a shaded, well-bedded stall to prevent muscle strain',
+      'Herd Prophylaxis: Check temperatures of all remaining in-contact cattle twice daily and administer prophylactic antibiotics if advised',
     ],
     safe_dosage: [
-      'Hexaconazole 5% EC: 2 ml/litre of water (only if rust is confirmed and spreading, consult expert)',
+      'Procaine Penicillin G: 10,000-20,000 IU/kg body weight I/M every 12 hours for 5 days (strictly Veterinary Officer prescription)',
+      'Alum-precipitated BQ Vaccine: 5 ml S/C in neck region annually before monsoon onset',
     ],
-    ipm_priority_order: IPM_PRIORITY_ORDER,
-  },
-  {
-    crop_name: 'Soybean',
-    disease_name: 'Leaf Spot',
-    scientific_name: 'Cercospora sojina / Septoria glycines',
-    description:
-      'A fungal disease causing small brown/grey angular spots on leaves that can merge, leading to premature defoliation.',
-    how_it_spreads: [
-      'Spreads through infected seed and crop residue',
-      'Favoured by warm, humid weather with frequent rainfall',
-      'Splashes from soil to lower leaves during rain',
-    ],
-    prevention_steps: [
-      'Use certified, disease-free seed',
-      'Practice crop rotation with non-host crops',
-      'Remove and destroy infected crop residue after harvest',
-    ],
-    remedy_steps: [
-      'Cultural: Remove severely infected lower leaves and residue',
-      'Mechanical: Improve field drainage and airflow through proper spacing',
-      'Biological: Apply Trichoderma viride based seed/soil treatment',
-      'Chemical (only when infection is severe): Apply Mancozeb or Carbendazim based fungicide as per label',
-    ],
-    safe_dosage: ['Mancozeb 75% WP: 2.5 g/litre of water (only under high severity)'],
-    ipm_priority_order: IPM_PRIORITY_ORDER,
+    ipm_priority_order: VET_PROTOCOL_ORDER,
   },
 
-  // ---------------------- SUGARCANE ----------------------
+  // -------------------------------------------------------------------------
+  // 4. HEMORRHAGIC SEPTICEMIA (HS) - घटसर्प / गलघोंटू
+  // -------------------------------------------------------------------------
   {
-    crop_name: 'Sugarcane',
-    disease_name: 'Red Rot',
-    scientific_name: 'Colletotrichum falcatum',
+    species: 'Buffalo',
+    crop_name: 'Buffalo',
+    disease_name: 'Hemorrhagic Septicemia (HS)',
+    disease_name_hi: 'गलघोंटू रोग (HS)',
+    disease_name_mr: 'घटसर्प रोग (HS)',
+    scientific_name: 'Pasteurella multocida (Serotypes B:2 and E:2)',
+    severity_typical: 'high',
+    affected_organs: 'Submandibular throat region, brisket, respiratory tract, bloodstream',
     description:
-      'A destructive fungal disease of sugarcane causing internal reddening of the stalk with characteristic white cross-bands, leaf yellowing, and drying of crowns.',
+      'A hyper-acute, fatal bacterial disease of cattle and particularly water buffaloes. Triggered by stress, monsoon exhaustion, and high humidity. Characterized by high fever, painful swelling of the throat and neck, stertorous gasping respiration, and septicemia.',
+    visual_symptoms: [
+      'Hot, painful, firm, diffuse inflammatory edema/swelling under jaw (submandibular), extending down neck to brisket',
+      'Severe respiratory distress: open-mouth breathing, extended neck, protruding cyanotic swollen tongue',
+      'Loud stertorous, grunting, wheezing breath sounds due to tracheal compression',
+      'High continuous fever (104-107°F / 40-41.5°C) with glassy, bloodshot eyes',
+      'Profuse frothy salivation, nasal discharge, and rapid collapse within 24 hours',
+    ],
     how_it_spreads: [
-      'Primarily through infected seed setts used for planting',
-      'Fungal spores spread via irrigation water and rainwater runoff',
-      'Survives in crop residue and infected soil for multiple seasons',
+      'Latent carrier animals harbor bacteria in upper respiratory tract and shed pathogen under weather/work stress',
+      'Inhalation of infected aerosols and ingestion of feed/water contaminated by nasal secretions',
+      'Peaks during monsoon season (June to September) with high humidity, rain chill, and drafty housing',
     ],
     prevention_steps: [
-      'Use certified disease-free and heat-treated seed setts',
-      'Grow red-rot resistant varieties recommended for the region',
-      'Ensure proper field drainage and avoid water stagnation',
-      'Practice crop rotation with non-host crops like paddy or legumes',
+      'Mandatory annual pre-monsoon vaccination of all cattle and buffaloes with Alum-precipitated or Oil-adjuvant HS vaccine',
+      'Provide warm, dry, draft-free shelter during heavy monsoon downpours and avoid working draught bullocks in torrential rain',
+      'Keep buffaloes away from stagnant, shared village ponds where infected animals bathe',
     ],
     remedy_steps: [
-      'Cultural: Uproot and burn infected clumps immediately to prevent spread; avoid ratooning infected fields',
-      'Mechanical: Maintain clean irrigation channels and avoid using runoff water from affected fields',
-      'Biological: Treat setts with Trichoderma viride or Trichoderma harzianum formulation before planting',
-      'Chemical (preventive/sett treatment): Dip seed setts in Carbendazim 50% WP or Thiophanate methyl solution prior to planting',
+      'Emergency Action: Administer immediate systemic antimicrobial therapy at the earliest rise of fever, before throat swelling hardens',
+      'Veterinary Therapy: Oxytetracycline or Sulfadimidine given intravenously by registered veterinarian',
+      'Airway Maintenance: Prop up head and neck on padded straw bales to ease tracheal obstruction and prevent asphyxia',
+      'Emergency Disinfection: Spray shed with 2% Bleaching Powder solution and isolate in-contact herd',
     ],
     safe_dosage: [
-      'Carbendazim 50% WP: 1 g/litre of water for sett soaking for 15-20 minutes before planting',
-      'Always follow label instructions and observe recommended safety intervals',
+      'Oxytetracycline: 10 mg/kg body weight slow I/V or deep I/M daily (under certified vet administration only)',
+      'Sulfadimidine 33.3%: 100 mg/kg body weight slow I/V on day 1 followed by oral maintenance',
+      'Oil Adjuvant HS Vaccine: 3 ml I/M annually in May-June for long-lasting herd immunity',
     ],
-    ipm_priority_order: IPM_PRIORITY_ORDER,
-  },
-  {
-    crop_name: 'Sugarcane',
-    disease_name: 'Wilt',
-    scientific_name: 'Fusarium sacchari',
-    description:
-      'A fungal vascular disease causing gradual yellowing and withering of crown leaves, pith drying, and hollow stems with reddish-purple discoloration.',
-    how_it_spreads: [
-      'Soil-borne and sett-borne fungal pathogen',
-      'Enters plants through root injuries, nematode wounds, or borer entry holes',
-      'Accelerated by drought stress followed by waterlogging conditions',
-    ],
-    prevention_steps: [
-      'Select healthy, disease-free seed cane from certified nurseries',
-      'Avoid planting in wilt-sick soils or rotate with green manure crops',
-      'Manage root borers and nematodes that facilitate fungal entry',
-      'Avoid moisture stress during peak formative growth stages',
-    ],
-    remedy_steps: [
-      'Cultural: Rogue out and destroy affected clumps early; practice 2-3 year crop rotation',
-      'Mechanical: Prevent root damage during intercultural operations and cultivation',
-      'Biological: Apply Trichoderma viride enriched in well-decomposed farmyard manure (FYM) to soil',
-      'Chemical: Dip setts in Carbendazim 50% WP solution before planting; drench root zone in early stages if infection is localized',
-    ],
-    safe_dosage: [
-      'Carbendazim 50% WP: 1-2 g/litre of water for sett treatment (consult local Krishi Vigyan Kendra)',
-    ],
-    ipm_priority_order: IPM_PRIORITY_ORDER,
+    ipm_priority_order: VET_PROTOCOL_ORDER,
   },
 
-  // ---------------------- MAIZE ----------------------
+  // -------------------------------------------------------------------------
+  // 5. BOVINE MASTITIS - कासदाह / दगडी रोग
+  // -------------------------------------------------------------------------
   {
-    crop_name: 'Maize',
-    disease_name: 'Turcicum Leaf Blight',
-    scientific_name: 'Exserohilum turcicum',
+    species: 'Cattle',
+    crop_name: 'Cattle',
+    disease_name: 'Bovine Mastitis',
+    disease_name_hi: 'थनैला रोग (Mastitis)',
+    disease_name_mr: 'कासदाह / दगडी रोग (Mastitis)',
+    scientific_name: 'Staphylococcus aureus / Streptococcus agalactiae / E. coli',
+    severity_typical: 'moderate',
+    affected_organs: 'Mammary gland, udder quarters, teat canal, milk composition',
     description:
-      'A major fungal leaf blight producing long, elliptical, spindle-shaped greyish-green to tan lesions that coalesce and cause extensive leaf scorching.',
+      'Inflammation of the mammary gland and udder tissue, predominantly bacterial in origin. Results in physical, chemical, and microbiological changes in milk, along with pathological changes in glandular udder tissue.',
+    visual_symptoms: [
+      'Hot, swollen, red, painful udder quarter; cow kicks and resists touch during milking',
+      'Altered milk appearance: watery, yellowish serous fluid, containing white curd-like flakes, clots, or blood streaks',
+      'Udder quarter hardens into firm fibrous tissue ("dagdi / stone udder") with permanent loss of quarter',
+      'Drop in daily milk production and elevated somatic cell count (California Mastitis Test positive)',
+      'Systemic signs (in acute toxemic mastitis): fever, anorexia, depression, recumbency',
+    ],
     how_it_spreads: [
-      'Airborne conidia carried by wind and splashing rain',
-      'Thrives in cool to moderate temperatures (18-27°C) with high relative humidity and heavy dew',
-      'Survives in infected maize residue on the soil surface',
+      'Contagious transmission during milking through milkers hands, common udder cloths, and teat cups',
+      'Environmental transmission: unhygienic, wet, dung-soiled shed floors entering open teat sphincter post-milking',
+      'Teat skin cracks, wounds, tick bites, and incomplete milking leaving residual milk',
     ],
     prevention_steps: [
-      'Plant resistant or tolerant maize hybrids recommended for the zone',
-      'Practice deep summer plowing to bury crop residues',
-      'Avoid high plant density to improve canopy aeration',
-      'Follow balanced fertilization and avoid excessive nitrogen application',
+      'Post-milking teat dipping: Dip all 4 teats immediately after milking in 0.5% Povidone-Iodine solution',
+      'Keep cows standing for 45 minutes post-milking by providing fresh green feed, allowing the teat sphincter to close tightly',
+      'Clean shed flooring daily; ensure dry bedded stalls free of pooled slurry and sharp stones',
+      'Practice clean milk production: wash hands, use separate clean towels for each animal, and milk infected quarters last',
+      'Dry Cow Therapy (DCT) at the end of lactation using approved long-acting intramammary infusion',
     ],
     remedy_steps: [
-      'Cultural: Collect and destroy crop residues after harvest; rogue severely blighted lower leaves',
-      'Mechanical: Maintain optimum plant spacing to reduce leaf wetness duration',
-      'Biological: Apply Pseudomonas fluorescens or Trichoderma viride based bio-fungicide foliar spray',
-      'Chemical (at symptom onset): Spray Mancozeb or Azoxystrobin + Difenoconazole if lesions appear before silking',
+      'Stripping & Cold Fermentation: Frequent complete hand-milking/stripping of the affected quarter every 2 hours to remove bacterial toxins',
+      'Cold Water Compress: Apply cold water splash or ice packs to the hot inflamed udder quarter during acute swelling',
+      'Intramammary Infusion: Administer veterinary-prescribed intramammary antibiotic tube strictly under aseptic cannula insertion',
+      'Supportive Anti-inflammatory: Administer systemic anti-inflammatory (Meloxicam) to alleviate udder pain and fever',
+      'Proper Disposal: Never discard mastitic milk onto the shed floor or feed raw to calves; boil or safely bury with disinfectant',
     ],
     safe_dosage: [
-      'Mancozeb 75% WP: 2-2.5 g/litre of water; or Azoxystrobin 18.2% + Difenoconazole 11.4% SC: 1 ml/litre',
-      'Apply at first sign of disease and repeat after 10-14 days if humid conditions persist',
+      'Povidone-Iodine Teat Dip (0.5% active iodine): Dip 2 cm of each teat immediately post-milking daily',
+      'Trisodium Citrate (Oral): 12-15 grams daily mixed in jaggery for 7 days to restore milk pH and udder defense',
+      'Cloxacillin + Ampicillin intramammary infusion: 1 tube infused per quarter after full evacuation (veterinary advice)',
     ],
-    ipm_priority_order: IPM_PRIORITY_ORDER,
-  },
-  {
-    crop_name: 'Maize',
-    disease_name: 'Maydis Leaf Blight',
-    scientific_name: 'Bipolaris maydis',
-    description:
-      'A fungal disease producing small, elongated rectangular or diamond-shaped lesions between leaf veins, causing premature leaf drying and lodging.',
-    how_it_spreads: [
-      'Wind-borne spores and rain splash from lower leaves to upper canopy',
-      'Favoured by warm (20-32°C) and humid weather conditions',
-      'Overwinters on infected maize stubble and volunteer host grasses',
-    ],
-    prevention_steps: [
-      'Use certified disease-resistant hybrid seeds',
-      'Rotate crops with pulses or oilseeds for at least one season',
-      'Destroy previous crop stubble by plowing into the soil',
-      'Ensure balanced soil nutrition with adequate potassium',
-    ],
-    remedy_steps: [
-      'Cultural: Remove and burn infected lower leaves in smallholder plots',
-      'Mechanical: Keep field borders free from wild grasses and weed hosts',
-      'Biological: Treat seed with Trichoderma harzianum @ 4 g/kg seed before sowing',
-      'Chemical (only if disease pressure is high): Spray Mancozeb 75% WP or Zineb 75% WP at early lesion formation',
-    ],
-    safe_dosage: [
-      'Mancozeb 75% WP: 2.5 g/litre of water as foliar spray (consult local agriculture officer)',
-    ],
-    ipm_priority_order: IPM_PRIORITY_ORDER,
+    ipm_priority_order: VET_PROTOCOL_ORDER,
   },
 
-  // ---------------------- ONION ----------------------
+  // -------------------------------------------------------------------------
+  // 6. HEALTHY ANIMAL (BASELINE HEALTH) - निरोगी प्राणी / स्वस्थ पशु
+  // -------------------------------------------------------------------------
   {
-    crop_name: 'Onion',
-    disease_name: 'Purple Blotch',
-    scientific_name: 'Alternaria porri',
+    species: 'Cattle',
+    crop_name: 'Cattle',
+    disease_name: 'Healthy Animal',
+    disease_name_hi: 'स्वस्थ पशु',
+    disease_name_mr: 'निरोगी प्राणी',
+    scientific_name: 'Physiologically Normal Bovine',
+    severity_typical: 'low',
+    affected_organs: 'None - normal physiological equilibrium',
     description:
-      'A common foliar fungal disease causing small water-soaked lesions that turn brown to purplish with distinct yellow halos, blighting leaves and reducing bulb yield.',
+      'Normal, healthy livestock demonstrating active rumination, bright clear eyes, moist cool muzzle with normal perspiration droplets, smooth pliable skin coat, normal rectal temperature (38.3-38.8°C / 101-102°F), and steady milk production.',
+    visual_symptoms: [
+      'Moist, cool, clean muzzle with fine clear water beads',
+      'Bright alert eyes without excess tear staining, redness, or discharge',
+      'Smooth, lustrous, pliable skin coat free from lumps, nodular swellings, or sores',
+      'Steady, rhythmic chewing of cud (rumination 40-60 chews per bolus)',
+      'Clean, even hooves with firm gait and weight distributed equally on all four limbs',
+      'Normal rectal temperature: 101.5°F (38.6°C) and respiratory rate: 15-30 breaths/min',
+    ],
     how_it_spreads: [
-      'Spores spread by wind and rain splash during warm, humid weather',
-      'Requires prolonged leaf wetness (dew or rain) and 21-30°C temperature',
-      'Survives in crop debris and infected onion seed or sets',
+      'Non-infectious: Normal physiological health status',
     ],
     prevention_steps: [
-      'Use certified disease-free seeds or sets from reliable nurseries',
-      'Adopt a 2-3 year crop rotation without allium crops (onion, garlic, leek)',
-      'Avoid excessive overhead irrigation; prefer drip or furrow irrigation',
-      'Maintain proper plant spacing for sunlight penetration and fast foliage drying',
+      'Maintain regular vaccination schedule (FMD every 6 months, LSD, BQ, HS annually)',
+      'Supply balanced total mixed ration (TMR), daily mineral mixture @ 50g/day, and ad libitum clean drinking water',
+      'Quarterly deworming with broad-spectrum anthelmintics (Albendazole / Fenbendazole / Ivermectin)',
+      'Provide well-ventilated, dry, clean shed with comfortable rubber cow mats or dry straw bedding',
     ],
     remedy_steps: [
-      'Cultural: Avoid late-evening irrigations; destroy infected crop residue post harvest',
-      'Mechanical: Hand-pick and remove severely infected leaf tips early in the morning',
-      'Biological: Foliar application of Trichoderma viride or Pseudomonas fluorescens @ 5 g/litre',
-      'Chemical: Foliar spray of Mancozeb 75% WP or Difenoconazole 25% EC with a sticker/spreader agent',
+      'Maintain standard hygienic dairy management and daily yield recording',
+      'Inspect animals each morning during milking for early signs of skin lumps or foot soreness',
+      'Ensure adequate shade, cooling fans, and misting during peak summer heat (THI > 72)',
     ],
     safe_dosage: [
-      'Mancozeb 75% WP: 2.5 g/litre of water + sticker (0.5 ml/L); or Difenoconazole 25% EC: 1 ml/litre',
-      'Spray at 10-15 day intervals upon first appearance of purple lesions',
+      'Commercial Chelated Mineral Mixture: 50 grams per adult animal mixed in daily concentrate feed',
+      'Clean Drinking Water: 60-100 liters per day per adult dairy cow/buffalo',
     ],
-    ipm_priority_order: IPM_PRIORITY_ORDER,
-  },
-  {
-    crop_name: 'Onion',
-    disease_name: 'Stemphylium Blight',
-    scientific_name: 'Stemphylium vesicarium',
-    description:
-      'A fungal foliage disease forming small yellow-to-orange flecks that expand into elongated light brown to dark blighted patches, causing leaf dieback from tips downwards.',
-    how_it_spreads: [
-      'Airborne spores carried by wind during cool to warm humid spells',
-      'Frequently attacks leaves already weakened by thrips injury or purple blotch',
-      'Overwinters on infected plant debris and volunteer allium plants',
-    ],
-    prevention_steps: [
-      'Control thrips infestations early, as feeding injuries predispose leaves to infection',
-      'Practice crop rotation and avoid planting contiguous onion fields',
-      'Maintain good soil drainage and avoid waterlogging conditions',
-      'Avoid excess nitrogenous fertilizers which promote soft, susceptible leaf growth',
-    ],
-    remedy_steps: [
-      'Cultural: Rogue out and bury severely blighted foliage; avoid working in wet fields',
-      'Mechanical: Maintain wider spacing between beds to improve airflow',
-      'Biological: Dip seedling roots in Trichoderma viride suspension prior to transplanting',
-      'Chemical: Apply Tebuconazole + Trifloxystrobin or Mancozeb as foliar spray with adhesive sticker',
-    ],
-    safe_dosage: [
-      'Tebuconazole 50% + Trifloxystrobin 25% WG: 0.6-0.8 g/litre of water with agricultural wetting agent',
-    ],
-    ipm_priority_order: IPM_PRIORITY_ORDER,
-  },
-
-  // ---------------------- RICE ----------------------
-  {
-    crop_name: 'Rice',
-    disease_name: 'Rice Blast',
-    scientific_name: 'Magnaporthe oryzae',
-    description:
-      'A highly destructive fungal disease producing spindle-shaped lesions with greyish-white centres and brown margins on leaves, collars, nodes, and panicle necks.',
-    how_it_spreads: [
-      'Airborne fungal spores distributed widely by wind and rain',
-      'Favoured by high relative humidity (>90%), dew, cloudy skies, and cool night temperatures (18-24°C)',
-      'Heavily promoted by excessive nitrogen fertilizer application',
-    ],
-    prevention_steps: [
-      'Cultivate blast-resistant or tolerant paddy varieties',
-      'Treat seeds with bio-agent or fungicide before nursery sowing',
-      'Apply nitrogen fertilizer in split doses rather than large single applications',
-      'Maintain proper water depth in the paddy field; avoid letting the soil dry out',
-    ],
-    remedy_steps: [
-      'Cultural: Avoid excessive urea top-dressing; apply balanced potash to enhance resistance',
-      'Mechanical: Clean field bunds of alternate weed hosts (e.g. Echinochloa grass)',
-      'Biological: Seed treatment and nursery spray with Pseudomonas fluorescens @ 10 g/kg seed',
-      'Chemical (on appearance of lesions): Spray Tricyclazole 75% WP or Isoprothiolane 40% EC at early tillering or panicle emergence',
-    ],
-    safe_dosage: [
-      'Tricyclazole 75% WP: 0.6 g/litre of water (first spray at initial tillering, repeat at boot-leaf stage if needed)',
-    ],
-    ipm_priority_order: IPM_PRIORITY_ORDER,
-  },
-  {
-    crop_name: 'Rice',
-    disease_name: 'Bacterial Leaf Blight',
-    scientific_name: 'Xanthomonas oryzae pv. oryzae',
-    description:
-      'A devastating bacterial disease causing water-soaked to yellowish-white wavy stripes along leaf margins progressing downwards, causing leaf wilting and "kresek" in early stages.',
-    how_it_spreads: [
-      'Bacterial cells spread via irrigation water, rain splash, wind, and typhoons',
-      'Enters plants through hydathodes (leaf margin pores) or wounds caused during transplanting',
-      'Thrives in warm temperatures (25-34°C) and high humidity with severe winds',
-    ],
-    prevention_steps: [
-      'Plant certified disease-free seed and resistant paddy cultivars',
-      'Avoid clipping seedling leaf tips during transplanting',
-      'Ensure proper water management; avoid deep continuous flooding',
-      'Avoid excess nitrogen; ensure split applications along with recommended potassium',
-    ],
-    remedy_steps: [
-      'Cultural: Drain water from the field temporarily for 3-4 days to arrest bacterial spread; stop nitrogen top-dressing during active blight',
-      'Mechanical: Eradicate weed hosts on bunds that harbour the bacterial pathogen',
-      'Biological: Foliar spray of bio-agent Bacillus amyloliquefaciens or Pseudomonas fluorescens',
-      'Chemical: Spray Copper oxychloride 50% WP combined with Streptocycline (or Plantomycin) as per local expert recommendations',
-    ],
-    safe_dosage: [
-      'Copper oxychloride 50% WP (2 g/litre) + Streptocycline (0.1 g/litre of water); spray twice at 10-12 day intervals',
-    ],
-    ipm_priority_order: IPM_PRIORITY_ORDER,
-  },
-
-  // ---------------------- WHEAT ----------------------
-  {
-    crop_name: 'Wheat',
-    disease_name: 'Stripe Rust (Yellow Rust)',
-    scientific_name: 'Puccinia striiformis f. sp. tritici',
-    description:
-      'A major fungal rust forming vivid yellow-orange powdery pustules arranged in prominent linear stripes along leaf blades and sheaths, reducing grain filling.',
-    how_it_spreads: [
-      'Wind-borne urediniospores carried over hundreds of kilometres from Himalayan foothills or cooler zones',
-      'Favoured by cool temperatures (10-15°C), high humidity, intermittent rains, and morning dew',
-      'Rapidly spreads in dense canopies during winter months (December to February)',
-    ],
-    prevention_steps: [
-      'Sow recommended yellow rust-resistant wheat varieties (e.g. DBW / HD series)',
-      'Complete timely sowing before mid-November to avoid peak rust weather at heading stage',
-      'Avoid excessive vegetative growth by balancing nitrogen with adequate phosphorus and potassium',
-      'Scout fields weekly during winter, focusing on shady and humid field edges',
-    ],
-    remedy_steps: [
-      'Cultural: Destroy volunteer wheat plants and alternate grass hosts in surrounding areas',
-      'Mechanical: Monitor microclimates and mark initial foci patches for localized intervention',
-      'Biological: Soil and seed application of Trichoderma viride enriched organic manure',
-      'Chemical (immediately upon detecting yellow stripes): Spray Propiconazole 25% EC or Tebuconazole 25.9% EC on foliage',
-    ],
-    safe_dosage: [
-      'Propiconazole 25% EC: 1 ml/litre of water (approx 200 ml in 200 L water per acre; spray immediately on spotting yellow pustule stripes)',
-    ],
-    ipm_priority_order: IPM_PRIORITY_ORDER,
-  },
-  {
-    crop_name: 'Wheat',
-    disease_name: 'Loose Smut',
-    scientific_name: 'Ustilago tritici',
-    description:
-      'A seed-borne fungal disease that completely converts wheat earheads into a black powdery mass of smut spores covered by a delicate membrane that ruptures, leaving a bare rachis.',
-    how_it_spreads: [
-      'Internally seed-borne pathogen dormant inside the seed embryo',
-      'Wind carries smut spores from infected heads to open florets of healthy wheat during flowering',
-      'Infected seeds appear completely normal and cannot be distinguished visually from healthy seeds',
-    ],
-    prevention_steps: [
-      'Sow only certified smut-free seed procured from recognized agricultural agencies',
-      'Mandatory seed dressing with systemic fungicide before sowing',
-      'Practice solar heat seed treatment: soak seed in water for 4 hours then spread in blazing sun in May-June',
-      'Rogue out smutted heads early before spores disperse',
-    ],
-    remedy_steps: [
-      'Cultural: Practice solar heat or hot water seed treatment (52°C for 10-15 minutes) prior to planting season',
-      'Mechanical: Rogue out infected smutted earheads inside paper or polythene bags early in the morning and burn them to prevent spore release',
-      'Biological: Treat seeds with Trichoderma viride formulation @ 4-5 g/kg seed before sowing',
-      'Chemical (seed treatment - curative only before planting): Mandatory seed dressing with Carboxin 75% WP or Tebuconazole 2% DS',
-    ],
-    safe_dosage: [
-      'Carboxin 37.5% + Thiram 37.5% WS @ 2.5 g/kg seed; or Tebuconazole 2% DS @ 1.5 g/kg seed (strictly seed treatment, no standing crop foliar spray)',
-    ],
-    ipm_priority_order: IPM_PRIORITY_ORDER,
+    ipm_priority_order: VET_PROTOCOL_ORDER,
   },
 ];
 
-// Helper: look up a disease record by crop + disease name (case-insensitive)
-function findDisease(cropName, diseaseName) {
-  if (!cropName || !diseaseName) return null;
+// Helper: look up a disease record by species + disease name (case-insensitive)
+function findDisease(speciesName, diseaseName) {
+  if (!speciesName || !diseaseName) return null;
+  const s = speciesName.toLowerCase().trim();
+  const d = diseaseName.toLowerCase().trim();
+
   return (
-    DISEASE_KNOWLEDGE_BASE.find(
-      (d) =>
-        d.crop_name.toLowerCase() === cropName.toLowerCase() &&
-        d.disease_name.toLowerCase() === diseaseName.toLowerCase()
-    ) || null
+    DISEASE_KNOWLEDGE_BASE.find((item) => {
+      const matchSpecies =
+        item.species.toLowerCase() === s ||
+        item.crop_name.toLowerCase() === s ||
+        (s.includes('cattle') && item.species === 'Cattle') ||
+        (s.includes('buffalo') && (item.species === 'Buffalo' || item.species === 'Cattle')) ||
+        (s.includes('cow') && item.species === 'Cattle') ||
+        (s.includes('goat') && (item.species === 'Goat' || item.species === 'Cattle'));
+
+      const matchDisease =
+        item.disease_name.toLowerCase().includes(d) ||
+        d.includes(item.disease_name.toLowerCase()) ||
+        (d.includes('lumpy') && item.disease_name.includes('LSD')) ||
+        (d.includes('lsd') && item.disease_name.includes('LSD')) ||
+        (d.includes('fmd') && item.disease_name.includes('FMD')) ||
+        (d.includes('foot') && item.disease_name.includes('FMD')) ||
+        (d.includes('mouth') && item.disease_name.includes('FMD')) ||
+        (d.includes('healthy') && item.disease_name.includes('Healthy'));
+
+      return matchSpecies && matchDisease;
+    }) ||
+    DISEASE_KNOWLEDGE_BASE.find((item) => {
+      return (
+        item.disease_name.toLowerCase().includes(d) ||
+        d.includes(item.disease_name.toLowerCase()) ||
+        (d.includes('lumpy') && item.disease_name.includes('LSD')) ||
+        (d.includes('fmd') && item.disease_name.includes('FMD'))
+      );
+    }) ||
+    null
   );
 }
 
-// Helper: get all diseases for a given crop
-function getDiseasesByCrop(cropName) {
-  if (!cropName) return [];
-  return DISEASE_KNOWLEDGE_BASE.filter(
-    (d) => d.crop_name.toLowerCase() === cropName.toLowerCase()
+// Helper: get all diseases for a given livestock species
+function getDiseasesBySpecies(speciesName) {
+  if (!speciesName) return DISEASE_KNOWLEDGE_BASE;
+  const s = speciesName.toLowerCase().trim();
+  const matched = DISEASE_KNOWLEDGE_BASE.filter(
+    (d) =>
+      d.species.toLowerCase() === s ||
+      d.crop_name.toLowerCase() === s ||
+      (s.includes('cattle') && d.species === 'Cattle') ||
+      (s.includes('buffalo') && (d.species === 'Buffalo' || d.species === 'Cattle')) ||
+      (s.includes('goat') && (d.species === 'Goat' || d.species === 'Cattle'))
   );
+  return matched.length > 0 ? matched : DISEASE_KNOWLEDGE_BASE;
 }
+
+// Backward compatibility alias
+const getDiseasesByCrop = getDiseasesBySpecies;
+const IPM_PRIORITY_ORDER = VET_PROTOCOL_ORDER;
 
 module.exports = {
   DISEASE_KNOWLEDGE_BASE,
+  VET_PROTOCOL_ORDER,
   IPM_PRIORITY_ORDER,
   findDisease,
+  getDiseasesBySpecies,
   getDiseasesByCrop,
 };
