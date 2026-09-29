@@ -20,9 +20,9 @@ export const StatusBadge: React.FC<StatusBadgeProps> = ({
 
   // Size styles
   const sizeStyles = {
-    sm: 'px-2.5 py-0.5 text-xs font-medium gap-1',
-    md: 'px-3.5 py-1 text-sm font-semibold gap-1.5',
-    lg: 'px-4 py-2 text-base font-bold gap-2',
+    sm: 'px-2.5 py-1 text-[11px] font-bold gap-1 min-h-[26px]',
+    md: 'px-3 py-1 text-xs font-extrabold gap-1.5 min-h-[30px]',
+    lg: 'px-3.5 py-1.5 text-sm font-black gap-2 min-h-[36px]',
   }[size];
 
   // Visual variants
@@ -30,23 +30,23 @@ export const StatusBadge: React.FC<StatusBadgeProps> = ({
     switch (level) {
       case 'reliable':
         return (
-          <span className={`inline-flex items-center rounded-full bg-emerald-100/90 text-emerald-800 border border-emerald-300 shadow-sm ${sizeStyles} ${className}`}>
-            <ShieldCheck className="w-4 h-4 text-emerald-700 stroke-[2.5]" />
-            <span>{t.confidenceReliable}</span>
+          <span className={`inline-flex items-center rounded-full bg-emerald-100 text-emerald-900 border border-emerald-300 shadow-xs max-w-full text-left leading-tight ${sizeStyles} ${className}`}>
+            <ShieldCheck className="w-3.5 h-3.5 text-emerald-700 stroke-[2.5] shrink-0" />
+            <span className="min-w-0 flex-1 leading-snug">{t.confidenceReliable}</span>
           </span>
         );
       case 'monitor':
         return (
-          <span className={`inline-flex items-center rounded-full bg-amber-100/90 text-amber-800 border border-amber-300 shadow-sm ${sizeStyles} ${className}`}>
-            <AlertTriangle className="w-4 h-4 text-amber-700 stroke-[2.5]" />
-            <span>{t.confidenceMonitor}</span>
+          <span className={`inline-flex items-center rounded-full bg-amber-100 text-amber-950 border border-amber-300 shadow-xs max-w-full text-left leading-tight ${sizeStyles} ${className}`}>
+            <AlertTriangle className="w-3.5 h-3.5 text-amber-800 stroke-[2.5] shrink-0" />
+            <span className="min-w-0 flex-1 leading-snug">{t.confidenceMonitor}</span>
           </span>
         );
       case 'review':
         return (
-          <span className={`inline-flex items-center rounded-full bg-rose-100/90 text-rose-800 border border-rose-300 shadow-sm ${sizeStyles} ${className}`}>
-            <AlertCircle className="w-4 h-4 text-rose-700 stroke-[2.5]" />
-            <span>{t.confidenceReview}</span>
+          <span className={`inline-flex items-center rounded-full bg-rose-100 text-rose-950 border border-rose-300 shadow-xs max-w-full text-left leading-tight ${sizeStyles} ${className}`}>
+            <AlertCircle className="w-3.5 h-3.5 text-rose-800 stroke-[2.5] shrink-0" />
+            <span className="min-w-0 flex-1 leading-snug">{t.confidenceReview}</span>
           </span>
         );
     }
@@ -56,23 +56,23 @@ export const StatusBadge: React.FC<StatusBadgeProps> = ({
   switch (level) {
     case 'low':
       return (
-        <span className={`inline-flex items-center rounded-full bg-forest-100 text-forest-800 border border-forest-300 shadow-sm ${sizeStyles} ${className}`}>
-          <span className="w-2.5 h-2.5 rounded-full bg-forest-600 animate-pulse-subtle"></span>
-          <span>{type === 'severity' ? t.severityLow : t.statusSafe}</span>
+        <span className={`inline-flex items-center rounded-full bg-forest-100 text-forest-900 border border-forest-300 shadow-xs max-w-full text-left leading-tight ${sizeStyles} ${className}`}>
+          <span className="w-2 h-2 rounded-full bg-forest-700 animate-pulse-subtle shrink-0"></span>
+          <span className="min-w-0 flex-1 leading-snug">{type === 'severity' ? t.severityLow : t.statusSafe}</span>
         </span>
       );
     case 'moderate':
       return (
-        <span className={`inline-flex items-center rounded-full bg-amber-100 text-amber-800 border border-amber-300 shadow-sm ${sizeStyles} ${className}`}>
-          <span className="w-2.5 h-2.5 rounded-full bg-amber-500 animate-pulse-subtle"></span>
-          <span>{type === 'severity' ? t.severityModerate : t.statusAttention}</span>
+        <span className={`inline-flex items-center rounded-full bg-amber-100 text-amber-950 border border-amber-300 shadow-xs max-w-full text-left leading-tight ${sizeStyles} ${className}`}>
+          <span className="w-2 h-2 rounded-full bg-amber-600 animate-pulse-subtle shrink-0"></span>
+          <span className="min-w-0 flex-1 leading-snug">{type === 'severity' ? t.severityModerate : t.statusAttention}</span>
         </span>
       );
     case 'high':
       return (
-        <span className={`inline-flex items-center rounded-full bg-rose-100 text-rose-800 border border-rose-300 shadow-sm ${sizeStyles} ${className}`}>
-          <span className="w-2.5 h-2.5 rounded-full bg-rose-600 animate-pulse"></span>
-          <span>{type === 'severity' ? t.severityHigh : t.statusDanger}</span>
+        <span className={`inline-flex items-center rounded-full bg-rose-100 text-rose-950 border border-rose-300 shadow-xs max-w-full text-left leading-tight ${sizeStyles} ${className}`}>
+          <span className="w-2 h-2 rounded-full bg-rose-600 animate-pulse shrink-0"></span>
+          <span className="min-w-0 flex-1 leading-snug">{type === 'severity' ? t.severityHigh : t.statusDanger}</span>
         </span>
       );
     default:

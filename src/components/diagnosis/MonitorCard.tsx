@@ -8,17 +8,17 @@ export const MonitorCard: React.FC = () => {
   const { diagnosis } = useCrop();
 
   return (
-    <div className="rounded-3xl bg-white border border-stone-200 p-4 shadow-soft mb-4">
+    <div className="glass-card bg-white/85 border border-white/90 p-4.5 shadow-glass rounded-3xl mb-4">
       <div className="flex items-center gap-2 mb-3">
-        <span className="w-6 h-6 rounded-lg bg-emerald-100 text-emerald-800 flex items-center justify-center text-xs font-bold">
+        <span className="w-6 h-6 rounded-xl bg-forest-100 text-forest-800 flex items-center justify-center text-xs font-bold">
           <Eye className="w-3.5 h-3.5" />
         </span>
-        <h3 className="text-xs font-black tracking-wide text-stone-900 font-display uppercase">
+        <h3 className="text-xs font-black tracking-wide text-forest-950 font-display uppercase">
           {t.whatToMonitor}
         </h3>
       </div>
 
-      <div className="space-y-2.5">
+      <div className="space-y-2">
         {diagnosis.whatToMonitor.map((item, idx) => {
           const title =
             language === 'mr'
@@ -34,10 +34,10 @@ export const MonitorCard: React.FC = () => {
               : item.check;
 
           return (
-            <div key={idx} className="flex items-start gap-2.5 bg-stone-50/70 p-3 rounded-2xl border border-stone-200/70">
-              <CheckSquare className="w-4 h-4 text-emerald-700 shrink-0 mt-0.5" />
+            <div key={idx} className="flex items-start gap-2.5 bg-white/80 p-3 rounded-2xl border border-white/90 shadow-xs">
+              <CheckSquare className="w-4 h-4 text-forest-700 shrink-0 mt-0.5" />
               <div>
-                <div className="text-xs font-bold text-stone-900 leading-tight mb-0.5">
+                <div className="text-xs font-bold text-forest-950 leading-tight mb-0.5">
                   {title}
                 </div>
                 <div className="text-[11px] text-stone-600 leading-normal font-medium">

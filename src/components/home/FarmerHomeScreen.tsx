@@ -7,21 +7,31 @@ import { FarmerProfileCard } from './FarmerProfileCard';
 
 export const FarmerHomeScreen: React.FC = () => {
   return (
-    <div className="animate-fadeIn space-y-4 pb-2">
+    <div className="space-y-4 pb-2">
       {/* Authenticated Farmer & Farm Cloud Status */}
-      <FarmerProfileCard />
+      <div className="motion-stagger-1">
+        <FarmerProfileCard />
+      </div>
 
-      {/* 1. Main Visual Focus: Monitored Crop Status & Advisory */}
-      <CropStatusHero />
+      {/* 1. Main Visual Focus: Monitored Animal Status & Advisory */}
+      <div className="motion-stagger-2">
+        <CropStatusHero />
+      </div>
 
-      {/* 2. Primary Featured Action (Check My Crop) & Secondary Actions (Area, Audio, Expert) */}
-      <QuickActionGrid />
+      {/* 2. Primary Featured Action (Check My Animal) & Secondary Actions */}
+      <div className="motion-stagger-3">
+        <QuickActionGrid />
+      </div>
 
-      {/* 3. Weather Conditions Linked Directly to Crop Health */}
-      <WeatherAlertCard />
+      {/* 3. Weather Conditions Linked Directly to Livestock Health */}
+      <div className="motion-stagger-4">
+        <WeatherAlertCard />
+      </div>
 
-      {/* 4. Crop Recovery Follow-Up */}
-      <FollowUpBanner />
+      {/* 4. Livestock Health Recovery Follow-Up */}
+      <div className="motion-stagger-5">
+        <FollowUpBanner />
+      </div>
     </div>
   );
 };

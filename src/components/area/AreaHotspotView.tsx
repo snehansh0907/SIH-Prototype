@@ -458,40 +458,40 @@ export const AreaHotspotView: React.FC = () => {
         } cases confirmed within 5 kilometers. ${activeDataset.advisory}`;
 
   return (
-    <div className="pb-6 animate-fadeIn">
-      {/* Top Bar */}
-      <div className="flex items-center justify-between mb-4">
+    <div className="animate-fadeIn text-left w-full min-w-0 space-y-4">
+      {/* Top Bar: Navigation & Voice Advisory */}
+      <section aria-label="Area Top Navigation" className="flex items-center justify-between min-w-0 w-full h-auto">
         <button
           onClick={resetToHome}
           type="button"
-          className="flex items-center gap-1.5 text-xs font-bold text-forest-800 hover:text-forest-900 active:scale-95 transition-transform cursor-pointer"
+          className="flex items-center gap-1.5 text-xs font-bold text-forest-900 hover:text-forest-950 btn-tactile-subtle cursor-pointer bg-forest-100/80 px-3 py-1 rounded-full border border-forest-200 shadow-xs shrink-0"
         >
-          <ArrowLeft className="w-4 h-4" />
+          <ArrowLeft className="w-3.5 h-3.5" />
           <span>{t.navHome}</span>
         </button>
 
-        <VoiceButton textToSpeak={voiceText} variant="pill" />
-      </div>
+        <VoiceButton textToSpeak={voiceText} variant="pill" className="shrink-0" />
+      </section>
 
-      {/* Primary Question & Location Header */}
-      <div className="mb-4">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <span className="text-2xl">📍</span>
-            <div>
-              <h2 className="text-xl font-black text-stone-900 font-display">
-                {t.whatIsHappeningAroundMe}
-              </h2>
-              <p className="text-xs text-stone-600 font-semibold mt-0.5">
-                {language === 'mr' ? activeDataset.nameMr : language === 'hi' ? (activeDataset.nameHi || activeDataset.name) : activeDataset.name} • {language === 'mr' ? activeDataset.districtMr : language === 'hi' ? (activeDataset.districtHi || activeDataset.district) : activeDataset.district}
-              </p>
-            </div>
+      {/* Primary Question & Region Selector Section */}
+      <section aria-label="Location and Region Selection" className="min-w-0 w-full h-auto">
+        <div className="flex items-center gap-2.5 min-w-0">
+          <div className="w-10 h-10 rounded-2xl bg-forest-100 text-forest-900 flex items-center justify-center text-xl shadow-xs border border-forest-200 shrink-0">
+            📍
+          </div>
+          <div className="min-w-0 flex-1">
+            <h2 className="text-lg sm:text-xl font-black text-[#183027] font-display leading-tight truncate">
+              {t.whatIsHappeningAroundMe}
+            </h2>
+            <p className="text-xs text-[#596A61] font-bold mt-0.5 truncate">
+              {language === 'mr' ? activeDataset.nameMr : language === 'hi' ? (activeDataset.nameHi || activeDataset.name) : activeDataset.name} • {language === 'mr' ? activeDataset.districtMr : language === 'hi' ? (activeDataset.districtHi || activeDataset.district) : activeDataset.district}
+            </p>
           </div>
         </div>
 
         {/* Dynamic Location-Aware Nearby Region Selector Pills */}
-        <div className="mt-3 flex items-center gap-1.5 overflow-x-auto pb-1 scrollbar-none">
-          <span className="text-[10px] font-black uppercase text-stone-400 shrink-0 font-display mr-1">
+        <div className="mt-3 flex items-center gap-1.5 overflow-x-auto pb-1 no-scrollbar min-w-0 w-full">
+          <span className="text-[10px] font-black uppercase text-forest-900/60 shrink-0 font-display mr-1">
             {t.selectRegion}
           </span>
           {nearbyRegions.map((loc) => {
@@ -501,10 +501,10 @@ export const AreaHotspotView: React.FC = () => {
                 key={loc.id}
                 type="button"
                 onClick={() => setSelectedLocId(loc.id)}
-                className={`px-2.5 py-1 rounded-full text-[11px] font-extrabold whitespace-nowrap transition-all duration-150 cursor-pointer flex items-center gap-1 ${
+                className={`px-3 py-1 rounded-full text-[11px] font-black whitespace-nowrap transition-all duration-150 cursor-pointer flex items-center gap-1 shrink-0 ${
                   isCurrent
-                    ? 'bg-forest-800 text-white shadow-md scale-[1.02] border border-forest-900'
-                    : 'bg-white text-stone-700 hover:bg-stone-100 border border-stone-300'
+                    ? 'bg-gradient-to-r from-[#174D35] to-[#176B45] text-white shadow-md scale-[1.02] border border-forest-600/50 ring-2 ring-forest-400/30'
+                    : 'bg-white/90 hover:bg-white text-stone-700 border border-white/95 shadow-xs'
                 }`}
               >
                 <span>📍 {language === 'mr' ? loc.nameMr : language === 'hi' ? (loc.nameHi || loc.name) : loc.name}</span>
@@ -512,30 +512,31 @@ export const AreaHotspotView: React.FC = () => {
             );
           })}
         </div>
-      </div>
+      </section>
 
-      {/* Main Status Hero Card */}
-      <div
-        className={`rounded-3xl border-2 p-5 shadow-card mb-5 transition-all ${
+      {/* SECTION 1: Disease Activity Summary Card */}
+      <section
+        aria-label="Disease Activity Status"
+        className={`glass-card p-4 sm:p-5 shadow-glass rounded-3xl transition-all border min-w-0 w-full h-auto ${
           activeDataset.status === 'high'
-            ? 'bg-rose-50/80 border-rose-300'
+            ? 'bg-rose-50/85 border-rose-200'
             : activeDataset.status === 'moderate'
-            ? 'bg-amber-50/80 border-amber-300'
-            : 'bg-emerald-50/80 border-emerald-300'
+            ? 'bg-amber-50/85 border-amber-200'
+            : 'bg-emerald-50/85 border-emerald-200'
         }`}
       >
-        <div className="flex items-center justify-between mb-3">
-          <div className="flex items-center gap-2">
+        <div className="flex flex-wrap items-center justify-between gap-2 mb-3 min-w-0">
+          <div className="flex items-center gap-2 min-w-0 flex-1">
             <span
-              className={`w-3 h-3 rounded-full animate-ping ${
+              className={`w-2.5 h-2.5 rounded-full animate-ping shrink-0 ${
                 activeDataset.status === 'high'
-                  ? 'bg-rose-500'
+                  ? 'bg-rose-600'
                   : activeDataset.status === 'moderate'
                   ? 'bg-amber-500'
-                  : 'bg-emerald-500'
+                  : 'bg-emerald-600'
               }`}
-            ></span>
-            <h3 className="text-lg font-black text-stone-900 font-display">
+            />
+            <h3 className="text-base sm:text-lg font-black text-[#183027] font-display truncate min-w-0">
               {activeDataset.status === 'high'
                 ? t.highDiseaseActivity
                 : activeDataset.status === 'moderate'
@@ -543,14 +544,14 @@ export const AreaHotspotView: React.FC = () => {
                 : t.lowDiseaseActivity}
             </h3>
           </div>
-          <StatusBadge level={activeDataset.status} type="risk" size="sm" />
+          <StatusBadge level={activeDataset.status} type="risk" size="sm" className="shrink-0" />
         </div>
 
-        {/* 3 Core Status Metrics */}
-        <div className="space-y-2.5 pt-1">
-          <div className="flex items-center gap-2.5 text-xs font-bold text-stone-800">
-            <span className="text-base">🦠</span>
-            <span>
+        {/* 3 Compact Status Metrics (10-12px internal spacing) */}
+        <div className="space-y-2.5 pt-1 border-t border-stone-200/50 min-w-0 w-full">
+          <div className="flex items-center gap-2 text-xs font-bold text-[#183027] min-w-0">
+            <span className="text-base shrink-0">🦠</span>
+            <span className="truncate flex-1 min-w-0">
               {language === 'mr'
                 ? `${backendReport?.activeCasesCount ?? activeDataset.activeCasesCount} रोग अहवाल (३ किमी परिसर)`
                 : language === 'hi'
@@ -559,9 +560,9 @@ export const AreaHotspotView: React.FC = () => {
             </span>
           </div>
 
-          <div className="flex items-center gap-2.5 text-xs font-bold text-stone-800">
-            <span className="text-base">📈</span>
-            <span>
+          <div className="flex items-center gap-2 text-xs font-bold text-[#183027] min-w-0">
+            <span className="text-base shrink-0">📈</span>
+            <span className="truncate flex-1 min-w-0">
               {language === 'mr'
                 ? `रोगाचा प्रसार: ${
                     activeDataset.diseaseTrend === 'increasing'
@@ -588,63 +589,64 @@ export const AreaHotspotView: React.FC = () => {
             </span>
           </div>
 
-          <div className="flex items-center gap-2.5 text-xs font-medium text-stone-600">
+          <div className="flex items-center gap-2 text-xs font-semibold text-[#596A61] min-w-0">
             <Clock className="w-4 h-4 text-stone-400 shrink-0" />
-            <span>
+            <span className="truncate flex-1 min-w-0">
               {t.updated}: {activeDataset.lastUpdated}
             </span>
           </div>
         </div>
-      </div>
+      </section>
 
-      {/* ANONYMOUS COMMUNITY CLUSTER RADAR - Heatmap Visualization */}
-      <div className="rounded-3xl bg-white border border-stone-200/90 p-4 shadow-soft mb-5 overflow-hidden">
-        <div className="flex items-center justify-between mb-3">
-          <div className="flex items-center gap-2">
-            <Layers className="w-4 h-4 text-forest-700" />
-            <h4 className="text-xs font-extrabold uppercase tracking-wider text-stone-900 font-display">
+      {/* SECTION 2: Unified Community Disease Activity Radar */}
+      <section aria-label="Community Disease Radar" className="glass-card bg-white/90 border border-white/95 p-4 sm:p-4.5 shadow-glass rounded-3xl overflow-hidden min-w-0 w-full h-auto">
+        {/* Radar Header & Radius Pill */}
+        <div className="flex flex-wrap items-center justify-between gap-2 mb-3 min-w-0">
+          <div className="flex items-center gap-2 min-w-0 flex-1">
+            <Layers className="w-4 h-4 text-forest-800 shrink-0" />
+            <h4 className="text-xs font-black uppercase tracking-wider text-[#183027] font-display break-words">
               {t.areaMapTitle}
             </h4>
           </div>
-          <span className="text-[10px] font-black text-emerald-900 bg-emerald-100 border border-emerald-300 px-2.5 py-0.5 rounded-full">
+          <span className="text-[10px] font-black text-forest-900 bg-forest-100 border border-forest-200 px-2.5 py-1 rounded-full shadow-xs shrink-0">
             {t.radius5km}
           </span>
         </div>
 
         {/* Heatmap Spatial Radar Canvas */}
-        <div className="relative w-full h-64 sm:h-72 bg-[#041d11] rounded-2xl overflow-hidden border border-forest-800 shadow-inner flex items-center justify-center p-4">
-          {/* 1. Radar Grid & Concentric Distance Rings (1.5km, 3.0km, 5.0km) */}
+        <div className="relative w-full h-64 sm:h-72 bg-[#061e13] rounded-2xl overflow-hidden border border-forest-700/50 shadow-inner flex items-center justify-center p-4 min-w-0">
+          {/* Radar Grid & Concentric Distance Rings (Subtle reference lines) */}
           <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
             {/* 5.0 km Outer Ring */}
             <div className="w-[88%] h-[88%] rounded-full border border-emerald-500/20 relative flex items-start justify-center">
-              <span className="text-[9px] font-mono font-bold text-emerald-400/60 bg-forest-950/90 px-1.5 py-0.5 rounded -mt-2.5">
+              <span className="text-[8px] font-mono font-semibold text-emerald-400/60 bg-forest-950/80 px-1 py-0.5 rounded -mt-2 border border-emerald-500/15">
                 5.0 km
               </span>
             </div>
             {/* 3.0 km Middle Ring */}
-            <div className="absolute w-[58%] h-[58%] rounded-full border border-emerald-500/25 flex items-start justify-center">
-              <span className="text-[9px] font-mono font-bold text-emerald-400/60 bg-forest-950/90 px-1.5 py-0.5 rounded -mt-2.5">
+            <div className="absolute w-[58%] h-[58%] rounded-full border border-emerald-500/20 flex items-start justify-center">
+              <span className="text-[8px] font-mono font-semibold text-emerald-400/60 bg-forest-950/80 px-1 py-0.5 rounded -mt-2 border border-emerald-500/15">
                 3.0 km
               </span>
             </div>
             {/* 1.5 km Inner Ring */}
-            <div className="absolute w-[30%] h-[30%] rounded-full border border-emerald-500/30 flex items-start justify-center">
-              <span className="text-[9px] font-mono font-bold text-emerald-400/60 bg-forest-950/90 px-1.5 py-0.5 rounded -mt-2.5">
+            <div className="absolute w-[30%] h-[30%] rounded-full border border-emerald-500/25 flex items-start justify-center">
+              <span className="text-[8px] font-mono font-semibold text-emerald-400/60 bg-forest-950/80 px-1 py-0.5 rounded -mt-2 border border-emerald-500/15">
                 1.5 km
               </span>
             </div>
 
             {/* Crosshairs Grid Lines */}
-            <div className="absolute w-full h-[1px] bg-emerald-500/15" />
-            <div className="absolute h-full w-[1px] bg-emerald-500/15" />
+            <div className="absolute w-full h-[1px] bg-emerald-500/10" />
+            <div className="absolute h-full w-[1px] bg-emerald-500/10" />
 
-            {/* Subtle Sweeper Animation Effect */}
-            <div className="absolute w-full h-full rounded-full animate-[spin_10s_linear_infinite] origin-center opacity-25">
+            {/* Subtle Sweeper Animation */}
+            <div className="absolute w-full h-full rounded-full animate-[spin_10s_linear_infinite] origin-center opacity-20">
               <div className="w-1/2 h-1/2 bg-gradient-to-br from-emerald-400/30 via-transparent to-transparent rounded-tl-full" />
             </div>
           </div>
 
-          {/* 2. Heatmap Gradient Blooms (Soft Glow Intensity Clouds) */}
+          {/* Heatmap Gradient Blooms & Case Nodes */}
           {activeDataset.heatZones.map((zone) => {
             const isSelected = selectedZoneId === zone.id;
 
@@ -655,11 +657,18 @@ export const AreaHotspotView: React.FC = () => {
                 ? 'radial-gradient(circle, rgba(217, 119, 6, 0.8) 0%, rgba(245, 158, 11, 0.4) 45%, rgba(245, 158, 11, 0.12) 75%, transparent 100%)'
                 : 'radial-gradient(circle, rgba(16, 185, 129, 0.75) 0%, rgba(52, 211, 153, 0.35) 50%, rgba(52, 211, 153, 0.1) 75%, transparent 100%)';
 
+            const pulseClass =
+              zone.intensity === 'high'
+                ? 'radar-glow-zone-high'
+                : zone.intensity === 'moderate'
+                ? 'radar-glow-zone-med'
+                : '';
+
             return (
               <React.Fragment key={zone.id}>
-                {/* Soft Heat Cloud Gradient */}
+                {/* Soft Heat Cloud Gradient with calm ambient pulse */}
                 <div
-                  className="absolute rounded-full pointer-events-none transition-all duration-700 ease-out animate-pulse"
+                  className={`absolute rounded-full pointer-events-none transition-opacity duration-700 ease-spring ${pulseClass}`}
                   style={{
                     left: `${zone.x}%`,
                     top: `${zone.y}%`,
@@ -677,22 +686,22 @@ export const AreaHotspotView: React.FC = () => {
                   type="button"
                   onClick={() => setSelectedZoneId(zone.id)}
                   style={{ left: `${zone.x}%`, top: `${zone.y}%` }}
-                  className="absolute z-20 transform -translate-x-1/2 -translate-y-1/2 transition-all p-1 cursor-pointer group"
+                  className="absolute z-20 transform -translate-x-1/2 -translate-y-1/2 transition-transform duration-200 ease-spring p-1 cursor-pointer group active:scale-95"
                 >
                   <div
-                    className={`w-7 h-7 sm:w-8 sm:h-8 rounded-full flex items-center justify-center text-white font-extrabold text-[10px] shadow-lg border-2 backdrop-blur-md transition-all ${
+                    className={`w-7 h-7 sm:w-8 sm:h-8 rounded-full flex items-center justify-center text-white font-black text-[10px] shadow-lg border-2 backdrop-blur-md transition-all duration-200 ease-spring ${
                       zone.intensity === 'high'
-                        ? 'bg-rose-600/90 border-rose-300 ring-4 ring-rose-500/40'
+                        ? 'bg-rose-600 border-rose-300 ring-2 ring-rose-500/40'
                         : zone.intensity === 'moderate'
-                        ? 'bg-amber-500/90 border-amber-200 ring-4 ring-amber-500/40'
-                        : 'bg-emerald-600/90 border-emerald-300 ring-4 ring-emerald-500/30'
-                    } ${isSelected ? 'scale-125 ring-8 ring-amber-300/80 shadow-2xl z-30' : 'hover:scale-110'}`}
+                        ? 'bg-amber-500 border-amber-200 ring-2 ring-amber-500/40'
+                        : 'bg-emerald-600 border-emerald-300 ring-2 ring-emerald-500/30'
+                    } ${isSelected ? 'scale-115 ring-4 ring-amber-300 shadow-2xl z-30' : 'hover:scale-105'}`}
                   >
                     <span>{zone.reportedCases}</span>
                   </div>
 
                   {/* Mini Hover Tooltip */}
-                  <div className="opacity-0 group-hover:opacity-100 transition-opacity absolute bottom-full left-1/2 -translate-x-1/2 mb-1 bg-forest-950/90 text-white text-[9px] font-bold px-2 py-0.5 rounded shadow-lg whitespace-nowrap pointer-events-none z-40 border border-amber-400/40">
+                  <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-150 absolute bottom-full left-1/2 -translate-x-1/2 mb-1 bg-forest-950/95 text-white text-[9px] font-bold px-2 py-0.5 rounded shadow-lg whitespace-nowrap pointer-events-none z-40 border border-amber-400/40">
                     {language === 'mr' ? zone.areaNameMr : language === 'hi' ? (zone.areaNameHi || zone.areaName) : zone.areaName} ({zone.reportedCases})
                   </div>
                 </button>
@@ -700,86 +709,88 @@ export const AreaHotspotView: React.FC = () => {
             );
           })}
 
-          {/* 3. Center Point Pin: "Your Farm" / "आपले शेत" */}
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-30 flex flex-col items-center pointer-events-none">
+          {/* Center User Location Marker: "Your Herd Location" with calm beacon glow */}
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-30 flex flex-col items-center pointer-events-none min-w-0">
             <div className="relative flex items-center justify-center">
-              <div className="absolute w-7 h-7 rounded-full bg-amber-400/40 animate-ping" />
-              <div className="w-4.5 h-4.5 rounded-full bg-amber-400 border-2 border-white shadow-xl flex items-center justify-center">
+              <div className="absolute w-5 h-5 rounded-full bg-amber-400/30 animate-pulse-subtle" />
+              <div className="w-4 h-4 rounded-full bg-amber-400 border-2 border-white shadow-xl flex items-center justify-center">
                 <div className="w-1.5 h-1.5 rounded-full bg-stone-950" />
               </div>
             </div>
-            <span className="text-[10px] font-black text-amber-300 bg-forest-950/95 px-2.5 py-0.5 rounded-full mt-1 border border-amber-400/60 shadow-md backdrop-blur-sm tracking-wide font-display">
-              🏠 {t.radarYourFarm}
+            <span className="text-[9px] font-black text-amber-300 bg-forest-950/95 px-2 py-0.5 rounded-full mt-1 border border-amber-400/50 shadow-md backdrop-blur-sm tracking-wide font-display whitespace-nowrap">
+              📍 {t.radarYourFarm}
             </span>
           </div>
 
-          {/* 4. Heatmap Legend (Top Right Overlay) */}
-          <div className="absolute top-2 right-2 z-20 bg-forest-950/90 backdrop-blur-md px-2.5 py-1.5 rounded-xl border border-emerald-500/30 flex items-center gap-2 text-[9px] font-bold text-stone-200 shadow-md">
+          {/* Compact Radar Legend (Top Right Overlay) */}
+          <div className="absolute top-2 right-2 z-20 bg-forest-950/90 backdrop-blur-md px-2 py-1 rounded-xl border border-emerald-500/30 flex items-center gap-1.5 text-[8px] font-bold text-stone-200 shadow-md">
             <span className="flex items-center gap-1">
-              <span className="w-2 h-2 rounded-full bg-rose-500 animate-pulse" />
-              <span>{t.legendHigh}</span>
+              <span className="w-1.5 h-1.5 rounded-full bg-rose-500" />
+              <span>{t.legendHigh.split(' ')[0]}</span>
             </span>
             <span className="flex items-center gap-1">
-              <span className="w-2 h-2 rounded-full bg-amber-400" />
-              <span>{t.legendMed}</span>
+              <span className="w-1.5 h-1.5 rounded-full bg-amber-400" />
+              <span>{t.legendMed.split(' ')[0]}</span>
             </span>
             <span className="flex items-center gap-1">
-              <span className="w-2 h-2 rounded-full bg-emerald-400" />
-              <span>{t.legendLow}</span>
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
+              <span>{t.legendLow.split(' ')[0]}</span>
             </span>
-          </div>
-
-          {/* 5. Privacy Disclaimer Banner (Bottom Overlay) */}
-          <div className="absolute bottom-2 inset-x-2 z-20 text-center text-[10px] text-emerald-200/90 bg-forest-950/90 py-1 px-2 rounded-xl border border-emerald-500/30 backdrop-blur-md shadow-md">
-            🛡️ {t.areaMapNotice}
           </div>
         </div>
 
-        {/* Selected Cluster / Heat Zone Detailed Info Box */}
-        {activeZone && (
-          <div className="mt-3 bg-stone-50 rounded-2xl p-3 border border-stone-200 text-xs animate-fadeIn">
-            <div className="flex items-center justify-between">
-              <div>
-                <div className="font-extrabold text-stone-900 flex items-center gap-1.5">
-                  <MapPin className="w-3.5 h-3.5 text-forest-700 shrink-0" />
-                  <span>{language === 'mr' ? activeZone.areaNameMr : language === 'hi' ? (activeZone.areaNameHi || activeZone.areaName) : activeZone.areaName}</span>
-                </div>
-                <div className="text-[11px] text-stone-600 font-medium mt-0.5">
-                  {activeZone.crop} • {activeZone.reportedCases}{' '}
-                  {t.reportedCasesLabel}
-                </div>
-              </div>
-              <div className="text-right">
-                <span className="text-[11px] font-extrabold text-forest-900 bg-forest-100 px-2.5 py-1 rounded-lg border border-forest-200">
-                  ~{activeZone.distanceKm} km {t.awayLabel}
+        {/* Privacy Message Footer inside Radar Card */}
+        <div className="mt-2.5 p-2 rounded-xl bg-forest-50/70 border border-forest-100 text-center text-[10px] text-[#596A61] font-semibold leading-relaxed w-full min-w-0">
+          🛡️ {t.areaMapNotice}
+        </div>
+      </section>
+
+      {/* SECTION 3: Selected Nearby Herd / Area Location Card */}
+      {activeZone && (
+        <section aria-label="Selected Nearby Livestock Case" className="glass-card bg-white/90 border border-white/95 p-4 shadow-glass rounded-3xl text-xs animate-fadeIn min-w-0 w-full h-auto">
+          <div className="flex items-start justify-between gap-3 min-w-0">
+            <div className="min-w-0 flex-1">
+              <div className="font-black text-sm text-[#183027] font-display flex items-center gap-1.5 min-w-0">
+                <MapPin className="w-4 h-4 text-forest-700 shrink-0" />
+                <span className="break-words">
+                  {language === 'mr' ? activeZone.areaNameMr : language === 'hi' ? (activeZone.areaNameHi || activeZone.areaName) : activeZone.areaName}
                 </span>
               </div>
+              <div className="text-[11px] text-[#596A61] font-bold mt-1 min-w-0 break-words">
+                {activeZone.crop || 'Livestock (Cattle & Buffalo)'} • {activeZone.reportedCases} {t.reportedCasesLabel}
+              </div>
+            </div>
+
+            <div className="shrink-0">
+              <span className="text-[11px] font-black text-forest-950 bg-forest-100 px-3 py-1.5 rounded-xl border border-forest-200 shadow-xs block">
+                ~{activeZone.distanceKm} km {t.awayLabel}
+              </span>
             </div>
           </div>
-        )}
-      </div>
+        </section>
+      )}
 
-      {/* Official KVK Advisory Broadcast */}
-      <div className="rounded-3xl bg-forest-900 text-white p-5 shadow-elevated mb-5">
-        <div className="flex items-center gap-2 mb-2">
-          <span className="text-xl">🏛️</span>
-          <h4 className="text-xs font-black uppercase tracking-wider text-amber-300 font-display">
+      {/* SECTION 4: Veterinary / Animal Husbandry Dept Advisory Card */}
+      <section aria-label="Official Veterinary Advisory" className="glass-hero bg-gradient-to-br from-[#174D35] via-[#176B45] to-[#174D35] text-white p-4.5 sm:p-5 shadow-float-glow rounded-3xl border border-forest-600/40 min-w-0 w-full h-auto">
+        <div className="flex items-center gap-2 mb-2 min-w-0">
+          <span className="text-xl shrink-0">🏛️</span>
+          <h4 className="text-xs font-black uppercase tracking-wider text-[#F6BD28] font-display truncate min-w-0">
             {t.officialAdvisoryTitle}
           </h4>
         </div>
-        <p className="text-xs font-medium text-wheat-100/90 leading-relaxed mb-4">
+        <p className="text-xs font-medium text-[#D8EBDD] leading-relaxed mb-4 break-words">
           "{language === 'mr' ? activeDataset.advisoryMr : language === 'hi' ? (activeDataset.advisoryHi || activeDataset.advisory) : activeDataset.advisory}"
         </p>
 
         <button
           onClick={() => setActiveTab('expert')}
           type="button"
-          className="w-full py-3 px-4 rounded-xl bg-amber-400 hover:bg-amber-300 text-forest-950 font-extrabold text-xs active:scale-95 transition-all text-center shadow-sm flex items-center justify-center gap-1.5 cursor-pointer"
+          className="w-full py-3 px-4 rounded-2xl bg-[#F6BD28] hover:bg-amber-300 text-[#174D35] font-black text-xs active:scale-95 transition-all text-center shadow-md flex items-center justify-center gap-1.5 cursor-pointer border border-amber-300/60"
         >
           <span>{t.actionExpert}</span>
-          <ChevronRight className="w-4 h-4 text-forest-950" />
+          <ChevronRight className="w-4 h-4 text-[#174D35] shrink-0" />
         </button>
-      </div>
+      </section>
     </div>
   );
 };

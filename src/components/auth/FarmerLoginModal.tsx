@@ -27,8 +27,8 @@ export const FarmerLoginModal: React.FC = () => {
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-stone-950/70 backdrop-blur-sm animate-fadeIn">
-      <div className="w-full max-w-sm bg-[#F7F4EC] rounded-3xl border-2 border-emerald-700/60 shadow-2xl overflow-hidden relative animate-scaleUp">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-stone-950/70 backdrop-blur-sm modal-backdrop-anim">
+      <div className="w-full max-w-sm bg-[#F7F4EC] rounded-3xl border-2 border-emerald-700/60 shadow-2xl overflow-hidden relative modal-surface-anim">
         {/* Close Button */}
         <button
           type="button"

@@ -216,38 +216,38 @@ export const DiagnosisHeader: React.FC = () => {
   // 3. DISEASED STATE (Specific Pathology Detected)
   // =========================================================
   return (
-    <div className="rounded-3xl bg-white border-2 border-stone-200/90 p-5 mb-5 shadow-card animate-fadeIn text-left">
-      {/* Top Header: Back + Preliminary Notice */}
-      <div className="flex items-center justify-between mb-3">
+    <div className="glass-card bg-white/85 border border-white/90 p-5 mb-4.5 shadow-glass rounded-3xl animate-fadeIn text-left">
+      {/* Top Header: Back + Prototype Confidence Tag */}
+      <div className="flex items-center justify-between mb-3.5">
         <button
           onClick={resetToHome}
           type="button"
-          className="flex items-center gap-1.5 text-xs font-bold text-forest-800 hover:text-forest-900 active:scale-95 transition-transform cursor-pointer"
+          className="flex items-center gap-1.5 text-xs font-bold text-forest-800 hover:text-forest-900 btn-tactile-subtle cursor-pointer bg-forest-50/70 px-2.5 py-1 rounded-full border border-forest-200/50 shadow-xs"
         >
-          <ArrowLeft className="w-4 h-4" />
+          <ArrowLeft className="w-3.5 h-3.5" />
           <span>{t.navHome}</span>
         </button>
 
-        <span className="px-2.5 py-0.5 rounded-full bg-rose-100 text-rose-950 text-[10px] font-bold border border-rose-300 flex items-center gap-1">
-          <span className="w-1.5 h-1.5 rounded-full bg-rose-600 animate-pulse" />
+        <span className="px-2.5 py-0.5 rounded-full bg-gold-50 text-gold-900 text-[10px] font-bold border border-gold-300/80 flex items-center gap-1.5 shadow-xs">
+          <span className="w-1.5 h-1.5 rounded-full bg-gold-600 animate-pulse" />
           <span>{t.preliminaryNotice || 'SIH26128 Triage Report'}</span>
         </span>
       </div>
 
       {/* Main Condition Header */}
-      <div className="mb-3">
-        <div className="flex items-center gap-2 mb-1 flex-wrap">
-          <span className="px-2 py-0.5 rounded-lg bg-stone-100 text-stone-700 text-[11px] font-bold font-mono">
+      <div className="mb-3.5">
+        <div className="flex items-center gap-2 mb-1.5 flex-wrap">
+          <span className="px-2.5 py-0.5 rounded-full bg-forest-100/80 text-forest-900 text-[11px] font-bold font-mono border border-forest-200/50 shadow-xs">
             {animalDisplay}
           </span>
           {diagnosis.affectedBodyArea && (
-            <span className="px-2 py-0.5 rounded-lg bg-amber-100 text-amber-900 text-[11px] font-bold capitalize">
+            <span className="px-2.5 py-0.5 rounded-full bg-forest-800 text-white text-[11px] font-bold capitalize shadow-xs">
               {diagnosis.affectedBodyArea}
             </span>
           )}
         </div>
 
-        <h2 className="text-lg font-black text-stone-900 font-display leading-tight">
+        <h2 className="text-xl font-black text-forest-950 font-display leading-tight">
           {diseaseName}
         </h2>
         {diagnosis.pathogen && (
@@ -258,13 +258,13 @@ export const DiagnosisHeader: React.FC = () => {
       </div>
 
       {/* Severity & Confidence Row */}
-      <div className="flex items-center justify-between py-2 px-3 rounded-2xl bg-stone-50 border border-stone-200 mb-3">
+      <div className="flex items-center justify-between py-2.5 px-3.5 rounded-2xl bg-forest-50/50 border border-forest-100/80 mb-3.5 shadow-xs">
         <div className="flex items-center gap-2">
-          <span className="text-[11px] text-stone-500 font-bold uppercase">{language === 'mr' ? 'तीव्रता:' : language === 'hi' ? 'गंभीरता:' : 'Severity:'}</span>
+          <span className="text-[11px] text-forest-900/70 font-bold uppercase">{language === 'mr' ? 'तीव्रता:' : language === 'hi' ? 'गंभीरता:' : 'Severity:'}</span>
           <StatusBadge level={diagnosis.severity} type="severity" size="sm" />
         </div>
 
-        <div className="text-[11px] font-semibold text-stone-600 flex items-center gap-1">
+        <div className="text-[11px] font-semibold text-stone-600 flex items-center gap-1.5">
           <Clock className="w-3.5 h-3.5 text-stone-400" />
           <span>{diagnosis.detectedAt}</span>
         </div>
@@ -272,13 +272,13 @@ export const DiagnosisHeader: React.FC = () => {
 
       {/* Symptoms Tag Strip */}
       {diagnosis.symptomsObserved && diagnosis.symptomsObserved.length > 0 && (
-        <div className="mb-3">
-          <span className="text-[10px] font-bold text-stone-400 uppercase tracking-wider block mb-1">
+        <div className="mb-3.5">
+          <span className="text-[10px] font-bold text-forest-900/60 uppercase tracking-wider block mb-1.5">
             {language === 'mr' ? 'नोंदवलेली लक्षणे' : language === 'hi' ? 'रिपोर्ट किए गए लक्षण' : 'Observed Symptoms'}:
           </span>
-          <div className="flex flex-wrap gap-1">
+          <div className="flex flex-wrap gap-1.5">
             {diagnosis.symptomsObserved.map((sym, idx) => (
-              <span key={idx} className="text-[10px] font-semibold px-2 py-0.5 rounded-md bg-amber-50 text-amber-900 border border-amber-200">
+              <span key={idx} className="text-[10px] font-semibold px-2.5 py-1 rounded-xl bg-white/90 text-forest-950 border border-forest-200/60 shadow-xs">
                 • {sym}
               </span>
             ))}
@@ -287,7 +287,7 @@ export const DiagnosisHeader: React.FC = () => {
       )}
 
       {/* CRITICAL MEDICAL SAFETY DISCLAIMER */}
-      <div className="rounded-2xl bg-rose-50 border-2 border-rose-300 p-3.5 flex items-start gap-2.5">
+      <div className="rounded-2xl bg-rose-50/80 border border-rose-200/90 p-3.5 flex items-start gap-2.5 shadow-xs">
         <ShieldAlert className="w-5 h-5 text-rose-700 shrink-0 mt-0.5" />
         <div>
           <h4 className="text-[11px] font-black text-rose-950 uppercase tracking-tight">

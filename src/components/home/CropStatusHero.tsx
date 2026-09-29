@@ -55,25 +55,25 @@ export const CropStatusHero: React.FC = () => {
         : `Your ${user.farmName} profile is ready for livestock monitoring. Take a symptom photo of your animal to start preliminary health triage.`;
 
     return (
-      <div className="relative overflow-hidden rounded-2xl bg-gradient-to-b from-amber-50/60 to-white border border-amber-200/80 p-4 shadow-sm animate-fadeIn text-left">
-        <div className="flex items-center justify-between mb-2.5">
+      <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-amber-50/80 via-white/85 to-sage-50/80 backdrop-blur-xl border border-white/90 p-4 sm:p-5 shadow-glass text-left">
+        <div className="flex items-center justify-between mb-3">
           <div className="flex items-center gap-2">
-            <span className="text-lg">🐮</span>
-            <h2 className="text-sm font-bold text-forest-950 font-display">
+            <span className="text-xl">🐮</span>
+            <h2 className="text-sm font-black text-forest-950 font-display">
               {welcomeGreeting}
             </h2>
           </div>
-          <span className="px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 text-[10px] font-semibold border border-emerald-200/60">
+          <span className="px-2.5 py-0.5 rounded-full bg-emerald-100/90 text-emerald-900 text-[10px] font-extrabold border border-emerald-300 shadow-xs transition-transform duration-200">
             {t.newFarmerTag}
           </span>
         </div>
 
-        <div className="mb-3">
-          <h3 className="text-xs font-bold text-stone-800 mb-1 flex items-center gap-1.5 font-display">
+        <div className="mb-3.5">
+          <h3 className="text-xs font-black text-stone-800 mb-1 flex items-center gap-1.5 font-display">
             <Sparkles className="w-3.5 h-3.5 text-amber-500" />
             <span>{t.farmProfileReady}</span>
           </h3>
-          <p className="text-xs text-stone-600 leading-relaxed">
+          <p className="text-xs text-stone-600 leading-relaxed font-medium">
             {onboardingDesc}
           </p>
         </div>
@@ -82,9 +82,9 @@ export const CropStatusHero: React.FC = () => {
         <button
           onClick={() => setActiveTab('check')}
           type="button"
-          className="w-full py-2.5 px-4 rounded-xl bg-forest-800 hover:bg-forest-900 active:scale-[0.98] text-white font-bold text-xs font-display transition-all shadow-sm flex items-center justify-center gap-2 cursor-pointer"
+          className="w-full py-3 px-4 rounded-2xl bg-gradient-to-r from-[#174D35] to-[#176B45] hover:from-[#133f2b] hover:to-[#174D35] btn-tactile text-white font-extrabold text-xs font-display shadow-md flex items-center justify-center gap-2 cursor-pointer"
         >
-          <Camera className="w-4 h-4 text-amber-300 animate-pulse" />
+          <Camera className="w-4 h-4 text-amber-300" />
           <span>{t.scanFirstLeaf}</span>
           <ArrowRight className="w-3.5 h-3.5 text-amber-300" />
         </button>
@@ -107,67 +107,71 @@ export const CropStatusHero: React.FC = () => {
   );
 
   return (
-    <div className="relative overflow-hidden rounded-2xl bg-gradient-to-b from-amber-50/50 via-white to-white border border-amber-200/70 p-4 shadow-sm text-left">
-      {/* Top Header */}
-      <div className="flex items-center justify-between mb-2.5">
-        <div className="flex items-center gap-1.5">
-          <span className="text-base">🩺</span>
-          <h2 className="text-sm font-bold text-stone-800 font-display tracking-tight">
+    <div className="relative overflow-hidden rounded-3xl bg-white/88 backdrop-blur-xl border border-white/95 p-4 sm:p-5 shadow-glass text-left group min-w-0 glass-card-hover">
+      {/* Decorative ambient subtle circle with gentle slow drift */}
+      <div className="absolute top-0 right-0 w-32 h-32 rounded-full bg-amber-200/15 blur-2xl pointer-events-none ambient-bubble-drift" />
+
+      {/* Top Header - Responsive flex wrapping for title, AI pill, and Severity badge */}
+      <div className="flex flex-wrap items-center justify-between gap-2 mb-3 min-w-0">
+        <div className="flex items-center gap-2 min-w-0">
+          <span className="text-lg shrink-0">🩺</span>
+          <h2 className="text-sm font-black text-[#183027] font-display tracking-tight truncate">
             {t.myCropStatus}
           </h2>
         </div>
-        <div className="flex items-center gap-1.5">
-          <span className="px-2 py-0.5 rounded-full bg-forest-50 text-forest-800 text-[10px] font-bold border border-forest-200">
+        <div className="flex items-center gap-1.5 shrink-0 flex-wrap justify-end min-w-0">
+          <span className="min-w-[56px] px-2.5 py-1 rounded-full bg-emerald-100 text-emerald-950 text-[10px] font-extrabold border border-emerald-300 shadow-xs flex items-center justify-center shrink-0 transition-transform duration-200">
             AI {confPercent}%
           </span>
           <StatusBadge level={currentDiagnosis.severity} type="severity" size="sm" />
         </div>
       </div>
 
-      {/* Main Focus: Status Message (Non-contradictory risk explanation) */}
-      <div className="flex items-start gap-2 mb-3">
-        <AlertTriangle className="w-4 h-4 text-amber-600 shrink-0 mt-0.5" />
-        <p className="text-xs font-semibold text-stone-800 leading-relaxed">
+      {/* Main Focus: Status Message */}
+      <div className="flex items-start gap-2.5 mb-3 bg-amber-50/90 p-3 rounded-2xl border border-amber-200/90 min-w-0">
+        <AlertTriangle className="w-4 h-4 text-amber-800 shrink-0 mt-0.5" />
+        <p className="text-xs font-bold text-[#183027] leading-relaxed flex-1 min-w-0 break-words">
           {statusQuote}
         </p>
       </div>
 
       {/* Animal detail strip & scan time */}
-      <div className="py-2 px-3 rounded-xl bg-stone-50 border border-stone-200/60 mb-3 flex items-center justify-between text-xs">
-        <div className="flex items-center gap-1.5 truncate">
-          <span className="text-forest-800 font-bold">{animalDisplayName}</span>
-          <span className="text-stone-400">•</span>
-          <span className="text-stone-600 font-medium truncate">{diseaseName}</span>
+      <div className="py-2.5 px-3 rounded-2xl bg-stone-50/95 border border-stone-200/80 mb-3.5 flex flex-wrap xs:flex-nowrap items-center justify-between gap-2 text-xs shadow-xs min-w-0">
+        <div className="flex items-center gap-1.5 min-w-0 flex-1">
+          <span className="text-[#183027] font-black truncate shrink-0 max-w-[120px]">{animalDisplayName}</span>
+          <span className="text-stone-400 shrink-0">•</span>
+          <span className="text-[#596A61] font-bold truncate min-w-0 flex-1">{diseaseName}</span>
         </div>
 
-        <div className="flex items-center gap-2 text-[10px] text-stone-400 font-medium shrink-0 ml-2">
-          <span className="px-1.5 py-0.5 rounded bg-amber-50 text-amber-800 font-bold border border-amber-200 text-[9px] uppercase tracking-wide">
+        <div className="flex items-center gap-1.5 text-[10px] text-stone-500 font-medium shrink-0 ml-auto">
+          <span className="px-2 py-0.5 rounded-full bg-amber-100 text-amber-950 font-extrabold border border-amber-300 text-[9px] uppercase tracking-wide shrink-0">
             {language === 'mr' ? 'जोखीम' : language === 'hi' ? 'जोखिम' : 'Risk'}: {riskForecast?.currentLevel?.toUpperCase() || 'MODERATE'}
           </span>
-          <div className="flex items-center gap-1">
-            <Clock className="w-3 h-3 text-stone-400" />
-            <span>{t.lastScanned.split(':')[1] || 'Today'}</span>
+          <div className="flex items-center gap-1 text-stone-500 font-semibold shrink-0">
+            <Clock className="w-3 h-3 text-stone-400 shrink-0" />
+            <span className="truncate">{t.lastScanned.split(':')[1] || 'Today'}</span>
           </div>
         </div>
       </div>
 
       {/* Dual Actions: Listen + View Full Advisory */}
-      <div className="grid grid-cols-2 gap-2">
+      <div className="grid grid-cols-2 gap-2 min-w-0">
         <VoiceButton
           textToSpeak={getLocalizedAdvisoryScript(currentDiagnosis, language)}
           variant="secondary"
-          className="text-xs py-2 px-3 rounded-xl border border-stone-300 font-semibold"
+          className="text-xs py-2.5 px-3 min-h-[42px] h-auto rounded-2xl border border-stone-300 text-[#183027] font-bold bg-white/95 hover:bg-stone-50 shadow-xs btn-tactile"
         />
 
         <button
           onClick={() => requireFarmerAccess(() => setActiveTab('diagnosis'))}
           type="button"
-          className="flex items-center justify-center gap-1.5 py-2 px-3 rounded-xl bg-forest-800 text-white font-semibold text-xs hover:bg-forest-900 shadow-xs active:scale-95 transition-transform cursor-pointer"
+          className="flex items-center justify-center text-center gap-1.5 py-2.5 px-3 min-h-[42px] h-auto rounded-2xl bg-gradient-to-r from-[#174D35] to-[#176B45] text-white font-extrabold text-xs hover:shadow-md shadow-xs btn-tactile cursor-pointer leading-tight"
         >
-          <span>{language === 'mr' ? 'पूर्ण सल्ला पहा' : language === 'hi' ? 'सलाह देखें' : 'View Advice'}</span>
-          <ArrowRight className="w-3.5 h-3.5" />
+          <span className="flex-1 min-w-0">{language === 'mr' ? 'पूर्ण सल्ला पहा' : language === 'hi' ? 'सलाह देखें' : 'View Advice'}</span>
+          <ArrowRight className="w-3.5 h-3.5 text-amber-300 shrink-0" />
         </button>
       </div>
     </div>
   );
 };
+

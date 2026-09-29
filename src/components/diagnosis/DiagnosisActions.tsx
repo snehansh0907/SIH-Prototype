@@ -20,7 +20,7 @@ export const DiagnosisActions: React.FC = () => {
         textToSpeak={script}
         label={t.btnListenAdvice}
         variant="primary"
-        className="text-sm py-4 rounded-2xl"
+        className="text-sm py-3.5 rounded-2xl shadow-float-glow"
       />
 
       {/* Grid: View Area Risk + Ask Expert */}
@@ -28,16 +28,16 @@ export const DiagnosisActions: React.FC = () => {
         <button
           onClick={() => requireFarmerAccess(() => setActiveTab('area'))}
           type="button"
-          className="flex items-center justify-center gap-2 py-3 px-3 rounded-2xl bg-white border-2 border-emerald-700 text-emerald-950 font-bold text-xs hover:bg-emerald-50 active:scale-95 transition-all shadow-sm cursor-pointer"
+          className="flex items-center justify-center gap-2 py-3 px-3 rounded-2xl glass-card border border-forest-600/40 text-forest-950 font-bold text-xs hover:bg-white btn-tactile-subtle shadow-xs cursor-pointer"
         >
-          <MapPin className="w-4 h-4 text-emerald-700" />
+          <MapPin className="w-4 h-4 text-forest-700" />
           <span>{t.btnViewAreaRisk}</span>
         </button>
 
         <button
           onClick={() => requireFarmerAccess(() => setActiveTab('expert'))}
           type="button"
-          className="flex items-center justify-center gap-2 py-3 px-3 rounded-2xl bg-amber-600 hover:bg-amber-700 active:scale-95 text-white font-bold text-xs transition-all shadow-sm cursor-pointer"
+          className="flex items-center justify-center gap-2 py-3 px-3 rounded-2xl bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-white font-bold text-xs btn-tactile shadow-md cursor-pointer border border-amber-400/40"
         >
           <UserCheck className="w-4 h-4 text-amber-200" />
           <span>{t.btnAskExpert}</span>
@@ -49,7 +49,7 @@ export const DiagnosisActions: React.FC = () => {
         <button
           onClick={() => requireFarmerAccess(() => setActiveTab('herd'))}
           type="button"
-          className="py-2.5 px-3 rounded-xl bg-stone-100 hover:bg-stone-200 text-stone-800 font-bold text-xs flex items-center justify-center gap-1.5 transition-colors cursor-pointer"
+          className="py-2.5 px-3 rounded-xl glass-card hover:bg-white text-forest-950 font-bold text-xs flex items-center justify-center gap-1.5 btn-tactile-subtle cursor-pointer border border-white/80 shadow-xs"
         >
           <BookmarkCheck className="w-4 h-4 text-forest-700" />
           <span>{t.btnAddToHistory || 'Save to Records'}</span>
@@ -58,9 +58,9 @@ export const DiagnosisActions: React.FC = () => {
         <button
           onClick={() => requireFarmerAccess(() => setActiveTab('check'))}
           type="button"
-          className="py-2.5 px-3 rounded-xl bg-stone-100 hover:bg-stone-200 text-stone-800 font-bold text-xs flex items-center justify-center gap-1.5 transition-colors cursor-pointer"
+          className="py-2.5 px-3 rounded-xl glass-card hover:bg-white text-forest-950 font-bold text-xs flex items-center justify-center gap-1.5 btn-tactile-subtle cursor-pointer border border-white/80 shadow-xs"
         >
-          <RefreshCw className="w-3.5 h-3.5" />
+          <RefreshCw className="w-3.5 h-3.5 text-forest-700" />
           <span>{t.btnRetake}</span>
         </button>
       </div>

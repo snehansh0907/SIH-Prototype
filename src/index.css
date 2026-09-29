@@ -4,11 +4,38 @@
 
 @layer base {
   :root {
-    --app-bg: #F4EFE6;
-    --card-bg: #FCFAF7;
-    --primary-green: #1B4332;
-    --primary-green-light: #2D6A4F;
-    --accent-wheat: #D4A373;
+    --app-bg: #F7F6F0;
+    --card-bg: #FFFFFF;
+    --forest-deep: #174D35;
+    --forest-primary: #176B45;
+    --forest-accent: #36B98A;
+    --sage-pale: #E8F2E9;
+    --glass-white: rgba(255, 255, 255, 0.76);
+    --glass-border: rgba(255, 255, 255, 0.85);
+    --muted-text: #718078;
+    --gold-accent: #F6BD28;
+
+    /* Android Physical Motion Tokens */
+    --motion-instant: 120ms;
+    --motion-fast: 180ms;
+    --motion-normal: 240ms;
+    --motion-medium: 320ms;
+    --motion-page: 380ms;
+    --motion-modal: 420ms;
+    --motion-ambient: 6000ms;
+
+    /* Global Layout & Safe Clearance Dimensions */
+    --header-height: 3.75rem;
+    --bottom-nav-height: 4.25rem;
+    --bottom-nav-safe-inset: env(safe-area-inset-bottom, 0px);
+    --bottom-nav-clearance: calc(var(--bottom-nav-height) + var(--bottom-nav-safe-inset) + 2.5rem);
+
+    /* Custom Easing Curves (Android Material 3 & Fluid Dynamics) */
+    --ease-spring: cubic-bezier(0.22, 1, 0.36, 1);
+    --ease-spring-snappy: cubic-bezier(0.18, 0.9, 0.28, 1);
+    --ease-decelerate: cubic-bezier(0.05, 0.7, 0.1, 1);
+    --ease-standard: cubic-bezier(0.2, 0, 0, 1);
+    --ease-touch: cubic-bezier(0.25, 1, 0.5, 1);
   }
 
   html {
@@ -19,14 +46,16 @@
 
   body {
     background-color: var(--app-bg);
-    color: #1c1917;
+    color: #172B20;
     min-height: 100vh;
     overflow-x: hidden;
   }
 
   /* Custom high-touch accessibility rules */
-  button, a {
+  button, a, [role="button"] {
     touch-action: manipulation;
+    -webkit-user-select: none;
+    user-select: none;
   }
 }
 
@@ -35,25 +64,280 @@
     text-wrap: balance;
   }
   
-  /* Glassmorphism with warm tints */
+  /* Liquid Glass Bubble Cards - High Legibility & Premium Float */
   .glass-card {
-    background: rgba(252, 250, 247, 0.88);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-    border: 1px solid rgba(229, 215, 192, 0.6);
+    background: rgba(255, 255, 255, 0.86);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid rgba(255, 255, 255, 0.95);
+    box-shadow: 0 8px 24px -4px rgba(23, 77, 53, 0.08), 0 2px 6px -1px rgba(23, 77, 53, 0.03), inset 0 1px 1.5px rgba(255, 255, 255, 0.98);
+    transition: transform var(--motion-normal) var(--ease-spring), box-shadow var(--motion-normal) var(--ease-spring), border-color var(--motion-normal) var(--ease-spring);
+  }
+
+  .glass-card-hover {
+    transition: transform var(--motion-normal) var(--ease-spring), box-shadow var(--motion-normal) var(--ease-spring), border-color var(--motion-normal) var(--ease-spring);
+  }
+  .glass-card-hover:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 12px 32px -4px rgba(23, 77, 53, 0.12), 0 4px 10px -2px rgba(23, 77, 53, 0.04), inset 0 1.5px 1.5px rgba(255, 255, 255, 1);
+    border-color: rgba(255, 255, 255, 1);
+  }
+  .glass-card-hover:active {
+    transform: scale(0.99) translateY(0);
+    transition-duration: var(--motion-fast);
+  }
+
+  /* Tactile Interactive Card */
+  .glass-card-interactive {
+    transition: transform var(--motion-normal) var(--ease-spring), box-shadow var(--motion-normal) var(--ease-spring), background-color var(--motion-fast) ease;
+    cursor: pointer;
+  }
+  .glass-card-interactive:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 28px -4px rgba(23, 77, 53, 0.1), 0 3px 8px -2px rgba(23, 77, 53, 0.04);
+  }
+  .glass-card-interactive:active {
+    transform: scale(0.985);
+    transition-duration: var(--motion-fast);
+  }
+
+  .glass-bubble {
+    background: rgba(255, 255, 255, 0.88);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid rgba(255, 255, 255, 0.95);
+    border-radius: 1.5rem;
+    box-shadow: 0 8px 24px -4px rgba(23, 77, 53, 0.08), inset 0 1.5px 1.5px rgba(255, 255, 255, 1);
+  }
+
+  .glass-hero {
+    background: linear-gradient(145deg, #174D35 0%, #176B45 60%, #1F7D53 100%);
+    border: 1px solid rgba(54, 185, 138, 0.35);
+    box-shadow: 0 16px 36px -6px rgba(23, 77, 53, 0.32), 0 6px 14px -2px rgba(54, 185, 138, 0.18), inset 0 1px 1.5px rgba(255, 255, 255, 0.25);
   }
 
   .glass-header {
-    background: rgba(27, 67, 50, 0.95);
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
+    background: #174D35;
+    border-bottom: 1px solid #0F3524;
+    box-shadow: 0 4px 20px -2px rgba(15, 53, 36, 0.25);
   }
 
   .glass-nav {
     background: rgba(255, 255, 255, 0.92);
-    backdrop-filter: blur(16px);
-    -webkit-backdrop-filter: blur(16px);
-    border-top: 1px solid rgba(229, 215, 192, 0.5);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-top: 1px solid rgba(255, 255, 255, 0.95);
+    box-shadow: 0 -6px 24px -4px rgba(23, 77, 53, 0.08);
+  }
+
+  .glass-pill {
+    background: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border: 1px solid rgba(255, 255, 255, 0.95);
+    box-shadow: 0 2px 8px -1px rgba(23, 77, 53, 0.04);
+    transition: all var(--motion-fast) var(--ease-spring);
+  }
+
+  .glass-pill-active {
+    background: #174D35;
+    color: #FFFFFF;
+    border: 1px solid #36B98A;
+    box-shadow: 0 4px 14px -2px rgba(23, 77, 53, 0.3);
+  }
+
+  .glass-input {
+    background: rgba(255, 255, 255, 0.92);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(23, 77, 53, 0.18);
+    box-shadow: inset 0 2px 4px rgba(23, 77, 53, 0.03);
+    transition: border-color var(--motion-fast) var(--ease-spring), box-shadow var(--motion-fast) var(--ease-spring), background-color var(--motion-fast) var(--ease-spring);
+  }
+  .glass-input:focus {
+    background: #FFFFFF;
+    border-color: #36B98A;
+    box-shadow: 0 0 0 3px rgba(54, 185, 138, 0.25), inset 0 1px 2px rgba(23, 77, 53, 0.02);
+  }
+
+  /* Soft Ambient Glow Orbs in Background */
+  .ambient-glow-green {
+    background: radial-gradient(circle, rgba(54, 185, 138, 0.22) 0%, rgba(232, 242, 233, 0.05) 70%, transparent 100%);
+    filter: blur(28px);
+    pointer-events: none;
+  }
+
+  .ambient-glow-gold {
+    background: radial-gradient(circle, rgba(246, 189, 40, 0.18) 0%, rgba(253, 247, 231, 0.04) 70%, transparent 100%);
+    filter: blur(32px);
+    pointer-events: none;
+  }
+
+  /* ====================================================== */
+  /* SHARED TACTILE MICRO-INTERACTION BUTTONS              */
+  /* ====================================================== */
+  
+  /* Primary Tactile Button: gentle compression -> spring release */
+  .btn-tactile {
+    transition: transform var(--motion-fast) var(--ease-spring), box-shadow var(--motion-fast) var(--ease-spring), filter var(--motion-fast) ease;
+    will-change: transform;
+  }
+  .btn-tactile:hover {
+    transform: translateY(-1px);
+  }
+  .btn-tactile:active {
+    transform: scale(0.978) translateY(0);
+    filter: brightness(0.97);
+  }
+
+  /* Subtle Tactile Button (Secondary / Chips / Pills) */
+  .btn-tactile-subtle {
+    transition: transform var(--motion-fast) var(--ease-spring), background-color var(--motion-fast) ease, border-color var(--motion-fast) ease;
+    will-change: transform;
+  }
+  .btn-tactile-subtle:active {
+    transform: scale(0.97);
+  }
+
+  /* Small Action / Icon Button */
+  .btn-tactile-icon {
+    transition: transform var(--motion-fast) var(--ease-spring-snappy), background-color var(--motion-fast) ease;
+    will-change: transform;
+  }
+  .btn-tactile-icon:active {
+    transform: scale(0.92);
+  }
+
+  /* Prominent Hero CTA (Check My Animal) */
+  .btn-tactile-hero {
+    transition: transform var(--motion-normal) var(--ease-spring), box-shadow var(--motion-normal) var(--ease-spring), filter var(--motion-fast) ease;
+    will-change: transform;
+  }
+  .btn-tactile-hero:hover {
+    transform: translateY(-2px);
+  }
+  .btn-tactile-hero:active {
+    transform: scale(0.98) translateY(0);
+    filter: brightness(0.96);
+  }
+
+  /* Floating Ambient Organic Drift */
+  .ambient-bubble-drift {
+    animation: ambientBubbleDrift 8s ease-in-out infinite;
+    will-change: transform;
+    pointer-events: none;
+  }
+
+  @keyframes ambientBubbleDrift {
+    0%, 100% {
+      transform: translateY(0px);
+    }
+    50% {
+      transform: translateY(-4px);
+    }
+  }
+
+  /* ====================================================== */
+  /* SECTION STAGGER SYSTEM (Fast, 30-50ms intervals)       */
+  /* ====================================================== */
+
+  .motion-stagger-1 {
+    animation: motionSectionEnter var(--motion-medium) var(--ease-spring) 0ms both;
+  }
+  .motion-stagger-2 {
+    animation: motionSectionEnter var(--motion-medium) var(--ease-spring) 40ms both;
+  }
+  .motion-stagger-3 {
+    animation: motionSectionEnter var(--motion-medium) var(--ease-spring) 80ms both;
+  }
+  .motion-stagger-4 {
+    animation: motionSectionEnter var(--motion-medium) var(--ease-spring) 120ms both;
+  }
+  .motion-stagger-5 {
+    animation: motionSectionEnter var(--motion-medium) var(--ease-spring) 160ms both;
+  }
+
+  @keyframes motionSectionEnter {
+    0% {
+      opacity: 0;
+      transform: translateY(8px);
+    }
+    100% {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  /* ====================================================== */
+  /* MODALS & BOTTOM SHEETS                                 */
+  /* ====================================================== */
+  .modal-backdrop-anim {
+    animation: modalBackdropFade var(--motion-normal) var(--ease-decelerate) forwards;
+  }
+  @keyframes modalBackdropFade {
+    0% { opacity: 0; }
+    100% { opacity: 1; }
+  }
+
+  .modal-surface-anim {
+    animation: modalSurfaceRise var(--motion-medium) var(--ease-spring) forwards;
+    will-change: transform, opacity;
+  }
+  @keyframes modalSurfaceRise {
+    0% {
+      opacity: 0;
+      transform: scale(0.97) translateY(14px);
+    }
+    100% {
+      opacity: 1;
+      transform: scale(1) translateY(0);
+    }
+  }
+
+  .bottom-sheet-anim {
+    animation: bottomSheetRise var(--motion-medium) var(--ease-decelerate) forwards;
+    will-change: transform;
+  }
+  @keyframes bottomSheetRise {
+    0% {
+      transform: translateY(100%);
+    }
+    100% {
+      transform: translateY(0);
+    }
+  }
+
+  /* ====================================================== */
+  /* RADAR & ALERT AMBIENT PARTICLES                        */
+  /* ====================================================== */
+  .radar-glow-zone-high {
+    animation: radarHighPulse 3.4s ease-in-out infinite;
+    will-change: transform, opacity;
+  }
+  @keyframes radarHighPulse {
+    0%, 100% {
+      transform: translate(-50%, -50%) scale(1);
+      opacity: 0.8;
+    }
+    50% {
+      transform: translate(-50%, -50%) scale(1.05);
+      opacity: 0.95;
+    }
+  }
+
+  .radar-glow-zone-med {
+    animation: radarMedPulse 4.6s ease-in-out infinite;
+    will-change: transform, opacity;
+  }
+  @keyframes radarMedPulse {
+    0%, 100% {
+      transform: translate(-50%, -50%) scale(1);
+      opacity: 0.7;
+    }
+    50% {
+      transform: translate(-50%, -50%) scale(1.03);
+      opacity: 0.85;
+    }
   }
 
   /* Hide scrollbar for tabs / chips */
@@ -66,9 +350,59 @@
   }
 }
 
+/* Fallbacks for browsers without backdrop-filter support */
+@supports not ((-webkit-backdrop-filter: blur(1px)) or (backdrop-filter: blur(1px))) {
+  .glass-card,
+  .glass-bubble {
+    background: #FFFFFF;
+    border: 1px solid #E4DFD0;
+  }
+  .glass-header {
+    background: #174D35;
+  }
+  .glass-nav {
+    background: #FCFAF7;
+    border-top: 1px solid #E4DFD0;
+  }
+  .glass-pill {
+    background: #E8F2E9;
+    border: 1px solid #D5E6D8;
+  }
+}
+
 /* Custom leaflet map adjustments */
 .leaflet-container {
   font-family: inherit;
-  border-radius: 1.25rem;
+  border-radius: 1.5rem;
   z-index: 10;
+}
+
+/* ====================================================== */
+/* ACCESSIBILITY: REDUCED MOTION PREFERENCES              */
+/* ====================================================== */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  .ambient-bubble-drift,
+  .radar-glow-zone-high,
+  .radar-glow-zone-med {
+    animation: none !important;
+  }
+
+  .motion-stagger-1,
+  .motion-stagger-2,
+  .motion-stagger-3,
+  .motion-stagger-4,
+  .motion-stagger-5 {
+    animation: none !important;
+    opacity: 1 !important;
+    transform: none !important;
+  }
 }

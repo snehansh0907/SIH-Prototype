@@ -434,25 +434,29 @@ export const LoginScreen: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#ECE6DA] flex flex-col items-center justify-center p-3 sm:p-4 antialiased selection:bg-amber-200">
+    <div className="min-h-screen bg-[#F7F6F0] flex flex-col items-center justify-center p-3 sm:p-4 antialiased selection:bg-gold-200 relative overflow-hidden">
+      {/* Ambient background glow orbs for liquid glass aesthetic */}
+      <div className="fixed top-12 left-1/2 -translate-x-1/2 w-80 h-80 rounded-full bg-forest-400/15 blur-3xl pointer-events-none -z-10 animate-float-slow" />
+      <div className="fixed bottom-16 right-1/4 w-72 h-72 rounded-full bg-gold-400/10 blur-3xl pointer-events-none -z-10 animate-float-slow [animation-delay:3s]" />
+
       {/* Desktop Helper Banner */}
       <div className="hidden md:flex items-center justify-between w-full max-w-md mb-3 px-2 text-xs text-stone-600">
-        <div className="flex items-center gap-1.5 font-semibold text-emerald-900">
-          <span className="w-2 h-2 rounded-full bg-emerald-600 animate-pulse"></span>
-          <span>🐄 Pashu Sarthak Authentication</span>
+        <div className="flex items-center gap-1.5 font-bold text-forest-900">
+          <span className="w-2 h-2 rounded-full bg-forest-600 animate-pulse"></span>
+          <span>🐄 Pashu Sarthak • पशु सार्थक</span>
         </div>
-        <div className="text-stone-500 font-medium">
+        <div className="text-stone-500 font-semibold px-2 py-0.5 rounded-full bg-white/80 border border-stone-200 shadow-xs">
           SIH26128 Prototype
         </div>
       </div>
 
       {/* Main Card Shell */}
-      <div className="w-full max-w-md bg-[#F7F4EC] rounded-3xl shadow-2xl overflow-hidden border border-stone-300/80 flex flex-col relative">
-        {/* Header Bar - High Contrast Green with 3-Language Selector */}
-        <div className="bg-emerald-950 text-white px-5 py-3 flex items-center justify-between border-b border-emerald-800 relative z-30">
+      <div className="w-full max-w-md glass-card bg-white/90 rounded-3xl shadow-glass-xl overflow-hidden border border-white/90 flex flex-col relative">
+        {/* Header Bar - Deep Forest Green with 3-Language Selector */}
+        <div className="glass-header text-white px-5 py-3 flex items-center justify-between border-b border-forest-700/50 relative z-30">
           <div className="flex items-center gap-2">
-            <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse"></span>
-            <span className="text-xs font-black uppercase tracking-wider text-amber-300 font-display">
+            <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+            <span className="text-xs font-black uppercase tracking-wider text-gold-300 font-display">
               {t.farmerBadge}
             </span>
           </div>
@@ -462,16 +466,16 @@ export const LoginScreen: React.FC = () => {
             <button
               type="button"
               onClick={() => setShowLangMenu(!showLangMenu)}
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-emerald-900 hover:bg-emerald-800 text-amber-300 border-2 border-amber-400/70 font-bold text-xs transition-all active:scale-95 cursor-pointer shadow-sm"
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-forest-900/80 hover:bg-forest-800 text-gold-300 border border-gold-400/60 font-bold text-xs transition-all active:scale-95 cursor-pointer shadow-xs"
               aria-label="Select language (English / हिंदी / मराठी)"
             >
-              <Globe className="w-3.5 h-3.5 text-amber-300 shrink-0" />
+              <Globe className="w-3.5 h-3.5 text-gold-300 shrink-0" />
               <span>{language === 'en' ? '🇬🇧 English' : language === 'hi' ? '🇮🇳 हिन्दी' : '🐄 मराठी'}</span>
-              <ChevronDown className="w-3 h-3 text-amber-300/90 shrink-0" />
+              <ChevronDown className="w-3 h-3 text-gold-300/90 shrink-0" />
             </button>
 
             {showLangMenu && (
-              <div className="absolute right-0 mt-2 w-36 bg-emerald-950 border-2 border-amber-400/90 rounded-2xl shadow-2xl z-50 overflow-hidden animate-fadeIn py-1">
+              <div className="absolute right-0 mt-2 w-36 glass-header bg-forest-950/95 border border-gold-400/80 rounded-2xl shadow-glass-xl z-50 overflow-hidden animate-fadeIn py-1">
                 {[
                   { code: 'en', label: '🇬🇧 English' },
                   { code: 'hi', label: '🇮🇳 हिन्दी' },
@@ -485,12 +489,12 @@ export const LoginScreen: React.FC = () => {
                       setShowLangMenu(false);
                     }}
                     className={`w-full px-3 py-2 text-left text-xs font-bold flex items-center justify-between transition-colors ${language === langItem.code
-                        ? 'bg-amber-400 text-emerald-950 font-black'
-                        : 'text-stone-200 hover:bg-emerald-800'
+                        ? 'bg-gold-400 text-forest-950 font-black'
+                        : 'text-stone-200 hover:bg-forest-800'
                       }`}
                   >
                     <span>{langItem.label}</span>
-                    {language === langItem.code && <Check className="w-3.5 h-3.5 text-emerald-950" />}
+                    {language === langItem.code && <Check className="w-3.5 h-3.5 text-forest-950" />}
                   </button>
                 ))}
               </div>
@@ -498,12 +502,12 @@ export const LoginScreen: React.FC = () => {
           </div>
         </div>
 
-        {/* Brand Banner Hero - Clear High Contrast Contrast */}
-        <div className="bg-gradient-to-b from-emerald-900 via-emerald-800 to-emerald-900 text-white px-6 pt-5 pb-6 text-center relative overflow-hidden">
-          <div className="absolute top-0 right-0 -mr-10 -mt-10 w-36 h-36 rounded-full bg-amber-400/10 blur-2xl pointer-events-none" />
+        {/* Brand Banner Hero - Liquid Glass Forest Green */}
+        <div className="bg-gradient-to-b from-forest-900 via-forest-800 to-forest-900 text-white px-6 pt-5 pb-6 text-center relative overflow-hidden">
+          <div className="absolute top-0 right-0 -mr-10 -mt-10 w-36 h-36 rounded-full bg-gold-400/10 blur-2xl pointer-events-none" />
 
           {/* Logo Icon */}
-          <div className="w-14 h-14 rounded-2xl bg-emerald-700/90 border-2 border-amber-400/40 flex items-center justify-center text-3xl mx-auto mb-2.5 shadow-inner">
+          <div className="w-14 h-14 rounded-2xl bg-forest-700/80 border border-gold-400/40 flex items-center justify-center text-3xl mx-auto mb-2.5 shadow-float-glow">
             🐄
           </div>
 
@@ -511,19 +515,19 @@ export const LoginScreen: React.FC = () => {
           <h1 className="text-2xl font-black font-display tracking-tight text-white mb-0.5">
             {t.appName}
           </h1>
-          <p className="text-xs font-bold text-amber-300 font-display mb-2.5">
+          <p className="text-xs font-bold text-gold-300 font-display mb-2.5">
             "{t.appTagline}"
           </p>
 
-          <div className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-emerald-950/90 border border-emerald-600 text-xs font-bold text-amber-100 shadow-sm">
-            <ShieldCheck className="w-4 h-4 text-emerald-400 shrink-0" />
+          <div className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-forest-950/80 border border-forest-600/60 text-xs font-bold text-gold-100 shadow-xs backdrop-blur-md">
+            <ShieldCheck className="w-4 h-4 text-forest-300 shrink-0" />
             <span>{t.trustMessage}</span>
           </div>
         </div>
 
         {/* Two Clear Choices/Tabs: [ Login ] [ Create Account ] */}
-        <div className="px-5 pt-4 bg-[#F7F4EC]">
-          <div className="grid grid-cols-2 p-1 bg-stone-200/90 rounded-2xl border border-stone-300">
+        <div className="px-5 pt-4 bg-transparent">
+          <div className="grid grid-cols-2 p-1 bg-stone-100/90 rounded-2xl border border-stone-200/90 shadow-xs">
             <button
               type="button"
               onClick={() => {
@@ -531,7 +535,7 @@ export const LoginScreen: React.FC = () => {
                 setLoginError(null);
               }}
               className={`py-2.5 px-4 rounded-xl text-xs font-extrabold font-display transition-all duration-150 cursor-pointer flex items-center justify-center gap-1.5 ${activeTab === 'login'
-                  ? 'bg-emerald-800 text-white shadow-md'
+                  ? 'bg-gradient-to-r from-forest-800 to-forest-700 text-white shadow-md'
                   : 'text-stone-700 hover:text-stone-900'
                 }`}
             >
@@ -545,7 +549,7 @@ export const LoginScreen: React.FC = () => {
                 setRegError(null);
               }}
               className={`py-2.5 px-4 rounded-xl text-xs font-extrabold font-display transition-all duration-150 cursor-pointer flex items-center justify-center gap-1.5 ${activeTab === 'register'
-                  ? 'bg-emerald-800 text-white shadow-md'
+                  ? 'bg-gradient-to-r from-forest-800 to-forest-700 text-white shadow-md'
                   : 'text-stone-700 hover:text-stone-900'
                 }`}
             >
