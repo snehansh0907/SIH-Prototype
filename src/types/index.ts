@@ -149,6 +149,8 @@ export interface DiagnosisResult {
   confidenceLabel: ConfidenceLevel;
   confidenceScore?: number;
   isUncertain?: boolean;
+  isHealthy?: boolean;
+  type?: 'disease' | 'healthy' | 'uncertain' | 'invalid';
   isRejected?: boolean;
   diagnosisAvailable?: boolean;
   rejectionReason?: RejectionReason;

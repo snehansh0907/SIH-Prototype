@@ -12,7 +12,8 @@ export const DiagnosisResultView: React.FC = () => {
   const isInvalidOrRejected = Boolean(
     diagnosis.isRejected ||
     diagnosis.diagnosisAvailable === false ||
-    (diagnosis.rejectionReason && diagnosis.rejectionReason !== 'LOW_CONFIDENCE')
+    diagnosis.type === 'invalid' ||
+    diagnosis.rejectionReason
   );
 
   return (

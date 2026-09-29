@@ -13,7 +13,7 @@ import {
   SEEDED_DEMO_HERD,
   SEEDED_DEMO_VACCINATIONS,
 } from '../services/mockData';
-import { diagnosisService, InvalidCropImageError, type CheckAnimalOptions } from '../services/diagnosisService';
+import { diagnosisService, type CheckAnimalOptions } from '../services/diagnosisService';
 import { weatherService } from '../services/weatherService';
 import { riskService } from '../services/riskService';
 import { followUpService } from '../services/followUpService';
@@ -284,11 +284,15 @@ export const CropProvider: React.FC<{ children: React.ReactNode }> = ({ children
     imageSource?: string | File | Blob,
     options?: CheckAnimalOptions
   ): Promise<DiagnosisResult> => {
+    if (!imageSource) {
+      throw new Error('No image provided. Please select or capture a photo before diagnosing.');
+    }
+
     setIsAnalyzing(true);
     setSelectedCropId(speciesId);
 
     // Reassuring triage processing pause
-    await new Promise((res) => setTimeout(res, 1800));
+    await new Promise((res) => setTimeout(res, 1200));
 
     try {
       const result = await diagnosisService.checkCrop(speciesId, imageSource, {
@@ -303,15 +307,9 @@ export const CropProvider: React.FC<{ children: React.ReactNode }> = ({ children
       return result;
     } catch (err) {
       setIsAnalyzing(false);
-
-      if (err instanceof InvalidCropImageError || (err as Error)?.name === 'InvalidCropImageError') {
-        throw err;
-      }
-
-      const fallback = getDefaultDiagnosisForCrop(speciesId);
-      setDiagnosis(fallback);
-      setActiveTab('diagnosis');
-      return fallback;
+      console.error('[CropContext] Diagnosis execution error:', err);
+      // Surface error to the caller so user sees actual failure, never a silent fake result
+      throw err;
     }
   };
 

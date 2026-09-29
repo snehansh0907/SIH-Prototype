@@ -13,12 +13,14 @@ interface RequestOptions extends RequestInit {
 }
 
 export async function apiClient<T>(endpoint: string, options: RequestOptions = {}): Promise<T> {
-  const { timeout = 12000, ...customConfig } = options;
+  const isFormData = typeof FormData !== 'undefined' && options.body instanceof FormData;
+  const defaultTimeout = isFormData ? 25000 : 15000;
+  const { timeout = defaultTimeout, ...customConfig } = options;
 
   const controller = new AbortController();
-  const id = setTimeout(() => controller.abort(), timeout);
-
-  const isFormData = typeof FormData !== 'undefined' && customConfig.body instanceof FormData;
+  const id = setTimeout(() => {
+    controller.abort('timeout');
+  }, timeout);
 
   const defaultHeaders: Record<string, string> = {
     Accept: 'application/json',
@@ -69,7 +71,23 @@ export async function apiClient<T>(endpoint: string, options: RequestOptions = {
   } catch (error: any) {
     clearTimeout(id);
 
-    // If port 5001/5000 failed with network error, attempt alternate port fallback
+    // 1. Sanitize Abort / Timeout errors - NEVER leak "signal is aborted without reason"
+    const isAbort =
+      error.name === 'AbortError' ||
+      /abort|timed out|timeout/i.test(error.message || '') ||
+      controller.signal.aborted;
+
+    if (isAbort) {
+      console.error(`[Krishi Sarthak API] Request to ${endpoint} timed out after ${timeout}ms. Original error:`, error);
+      const friendlyTimeoutErr: any = new Error(
+        'The diagnosis server took too long to respond. Please check your connection and try again.'
+      );
+      friendlyTimeoutErr.name = 'TimeoutError';
+      friendlyTimeoutErr.isNetworkError = true;
+      throw friendlyTimeoutErr;
+    }
+
+    // 2. If port 5001/5000 failed with connection error (not timeout), attempt alternate port fallback
     if (!endpoint.startsWith('http') && (!error.status || error.name === 'TypeError')) {
       const altUrl = url.includes(':5001')
         ? url.replace(':5001', ':5000')
@@ -90,15 +108,24 @@ export async function apiClient<T>(endpoint: string, options: RequestOptions = {
       }
     }
 
+    // 3. Sanitize Connection / Network errors
     const isNetworkError =
       !error.status &&
-      (error.name === 'AbortError' ||
-        error.name === 'TypeError' ||
-        /NetworkError|Failed to fetch|network|aborted/i.test(error.message || ''));
-    error.isNetworkError = isNetworkError;
+      (error.name === 'TypeError' ||
+        /NetworkError|Failed to fetch|network|econnrefused/i.test(error.message || ''));
+
+    if (isNetworkError) {
+      console.error(`[Krishi Sarthak API] Network connection failed for ${endpoint}. Original error:`, error);
+      const friendlyNetErr: any = new Error(
+        'Unable to reach the diagnosis server. Please ensure the backend is running.'
+      );
+      friendlyNetErr.name = 'ConnectionError';
+      friendlyNetErr.isNetworkError = true;
+      throw friendlyNetErr;
+    }
 
     if (!endpoint.includes('/auth')) {
-      console.warn(`[Krishi Sarthak API] Request to ${endpoint} failed, falling back to local agricultural engine:`, error.message);
+      console.warn(`[Krishi Sarthak API] Request to ${endpoint} failed:`, error.message);
     } else {
       console.warn(`[Krishi Sarthak API] Authentication request to ${endpoint} failed:`, error.message);
     }

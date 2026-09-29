@@ -16,8 +16,11 @@ export const ImageUploader: React.FC = () => {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [isSample, setIsSample] = useState<boolean>(false);
   const [showInvalidModal, setShowInvalidModal] = useState<boolean>(false);
+  const [uploadError, setUploadError] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const cameraInputRef = useRef<HTMLInputElement>(null);
+
+  const hasImage = Boolean(selectedImage || selectedFile);
 
   // Step 3: Body Area
   const [selectedBodyArea, setSelectedBodyArea] = useState<AffectedBodyArea>('udder');
@@ -35,6 +38,7 @@ export const ImageUploader: React.FC = () => {
     const file = e.target.files?.[0];
     if (file) {
       setSelectedFile(file);
+      setUploadError(null);
       const reader = new FileReader();
       reader.onloadend = () => {
         setSelectedImage(reader.result as string);
@@ -48,6 +52,7 @@ export const ImageUploader: React.FC = () => {
     setSelectedImage(url);
     setSelectedFile(null);
     setIsSample(true);
+    setUploadError(null);
     if (sampleBodyArea) {
       setSelectedBodyArea(sampleBodyArea);
     }
@@ -64,6 +69,7 @@ export const ImageUploader: React.FC = () => {
     setSelectedImage(null);
     setSelectedFile(null);
     setIsSample(false);
+    setUploadError(null);
     if (fileInputRef.current) fileInputRef.current.value = '';
     if (cameraInputRef.current) cameraInputRef.current.value = '';
   };
@@ -77,6 +83,15 @@ export const ImageUploader: React.FC = () => {
   };
 
   const handleSubmit = async () => {
+    // 1. Strict Validation: Prevent submission without an image (Bug #1 & Task #2 fix)
+    if (!selectedImage && !selectedFile) {
+      console.warn('[ImageUploader] Submit blocked client-side: No image selected');
+      setUploadError(t.pleaseUploadImage || 'Please upload a photo of the affected animal to continue');
+      return;
+    }
+
+    setUploadError(null);
+
     const payload = {
       animalId: selectedAnimal?.id,
       animalTag: selectedAnimal?.tagNumber,
@@ -89,13 +104,20 @@ export const ImageUploader: React.FC = () => {
       otherObservations: otherNotes,
     };
 
-    if (selectedImage) {
-      await performDiagnosis(selectedCropId, selectedImage, payload);
-    } else if (selectedFile) {
-      await performDiagnosis(selectedCropId, selectedFile, payload);
-    } else {
-      const fallbackUrl = currentCrop?.sampleImages?.[0]?.url || MOCK_CROPS[0].sampleImages[0].url;
-      await performDiagnosis(selectedCropId, fallbackUrl, payload);
+    console.log('[ImageUploader] Submitting diagnosis with image source:', selectedFile ? 'File' : 'DataURL/Sample');
+
+    try {
+      const imageToDiagnose = selectedFile || selectedImage!;
+      await performDiagnosis(selectedCropId, imageToDiagnose, payload);
+    } catch (err: any) {
+      console.error('[ImageUploader] Diagnosis failed:', err);
+      let userFriendlyError = err?.message || 'An error occurred while analyzing the animal photo. Please try again.';
+      if (/signal is aborted|abort|timeout|timed out/i.test(userFriendlyError)) {
+        userFriendlyError = 'The diagnosis server took too long to respond. Please check your connection and try again.';
+      } else if (/failed to fetch|network|connection|econnrefused/i.test(userFriendlyError)) {
+        userFriendlyError = 'Unable to reach the diagnosis server. Please ensure the backend server is running.';
+      }
+      setUploadError(userFriendlyError);
     }
   };
 
@@ -401,12 +423,50 @@ export const ImageUploader: React.FC = () => {
       {/* Photo Guidance */}
       <PhotoGuidance />
 
-      {/* Primary Submit CTA */}
+      {/* Inline Upload / Validation Error Banner (Task #1 & #2 fix) */}
+      {uploadError && (
+        <div className="mb-3.5 p-3.5 rounded-2xl bg-rose-50 border-2 border-rose-300 text-rose-900 text-xs font-semibold flex items-start gap-2.5 animate-fadeIn">
+          <span className="text-base shrink-0 mt-0.5">⚠️</span>
+          <div className="leading-snug">
+            <div className="font-bold text-rose-950 mb-0.5">
+              {uploadError.toLowerCase().includes('upload a photo') ||
+              uploadError.toLowerCase().includes('फोटो') ||
+              uploadError.toLowerCase().includes('photo')
+                ? language === 'mr'
+                  ? 'फोटो आवश्यक आहे'
+                  : language === 'hi'
+                  ? 'फोटो आवश्यक है'
+                  : 'Image Required'
+                : language === 'mr'
+                ? 'सूचना'
+                : language === 'hi'
+                ? 'सूचना'
+                : 'Notice'}
+            </div>
+            <div className="text-rose-800">{uploadError}</div>
+          </div>
+        </div>
+      )}
+
+      {/* Inline helper if no image selected */}
+      {!hasImage && (
+        <p className="text-[11px] text-amber-800 bg-amber-50 border border-amber-200 rounded-xl px-3 py-2 text-center mb-2.5 font-medium animate-fadeIn">
+          📸 {t.pleaseUploadImage || 'Please upload a photo of the affected animal to continue'}
+        </p>
+      )}
+
+      {/* Primary Submit CTA (Task #2: blocks client-side with friendly message if no image) */}
       <button
         type="button"
         onClick={handleSubmit}
         disabled={isAnalyzing}
-        className="w-full py-4 px-6 rounded-2xl bg-forest-800 hover:bg-forest-900 active:scale-[0.98] text-white font-extrabold text-base transition-all duration-200 shadow-elevated flex items-center justify-center gap-2 font-display cursor-pointer"
+        className={`w-full py-4 px-6 rounded-2xl font-extrabold text-base transition-all duration-200 shadow-elevated flex items-center justify-center gap-2 font-display ${
+          isAnalyzing
+            ? 'bg-stone-200 text-stone-400 border border-stone-300 cursor-not-allowed shadow-none'
+            : !hasImage
+            ? 'bg-forest-800/85 hover:bg-forest-800 active:scale-[0.98] text-white shadow-elevated cursor-pointer'
+            : 'bg-forest-800 hover:bg-forest-900 active:scale-[0.98] text-white shadow-elevated cursor-pointer'
+        }`}
       >
         <span className="text-lg">🩺</span>
         <span>{t.btnCheckCrop}</span>

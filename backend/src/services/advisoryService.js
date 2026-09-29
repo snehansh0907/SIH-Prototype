@@ -36,6 +36,55 @@ function buildAdvisory(diagnosisCase, species = 'Cattle') {
     diagnosisCase.status === 'expert_review_pending' ||
     diagnosisCase.isUncertain;
 
+  // Healthy Animal outcome (Bug #3 fix)
+  const isHealthy = Boolean(
+    diagnosisCase.type === 'healthy' ||
+    diagnosisCase.is_healthy ||
+    (predictedDisease && predictedDisease.toLowerCase().includes('healthy'))
+  );
+
+  if (isHealthy) {
+    const immediateActions = [
+      'Maintain Balanced Nutrition Ration: Provide high-quality green fodder, dry roughage, and mineral mixture (50g/day) to sustain strong natural immunity.',
+      'Fresh Clean Water Access: Ensure continuous access to cool, unpolluted drinking water in regularly disinfected troughs.',
+      'Shed Hygiene & Ventilation: Keep cattle shed floor dry with lime powder dusting and clean bedding to prevent pathogen reservoirs.',
+    ];
+    const monitoring = [
+      'Observe daily rumination cycles (normal healthy rate: 45-60 chews per cud).',
+      'Track daily feed intake and milk yield consistency for subtle early changes.',
+      'Inspect skin coat sheen, alert eye expression, and normal gait during daily morning turnout.',
+    ];
+    const supportiveCare = [
+      'Provide mineral block licks and adequate electrolytes during warm summer periods.',
+      'Maintain vector protection with non-toxic citronella or neem oil spray against flies and ticks.',
+    ];
+    const veterinaryEscalation = [
+      'Maintain regular state vaccination schedule (FMD, LSD, HS/BQ).',
+      'Administer periodic broad-spectrum deworming every 3-4 months under veterinary guidance.',
+      'Consult nearest Government Veterinary Dispensary or call 1962 for routine herd health checks.',
+    ];
+
+    return {
+      status: 'HEALTHY',
+      what_to_do_today: immediateActions,
+      what_to_monitor: monitoring,
+      prevention: [
+        'Follow mandatory state livestock vaccination calendar (FMD twice yearly, LSD annual, HS/BQ pre-monsoon).',
+        'Quarantine newly purchased livestock for at least 14 days before introducing into the general herd.',
+      ],
+      immediateActions,
+      monitoring,
+      supportiveCare,
+      veterinaryEscalation,
+      expert_help_required: false,
+      disease_info: {
+        disease_name: 'Healthy Animal — No Disease Detected (रोगमुक्त)',
+        scientific_name: 'Physiologically Normal / Disease-Free',
+        description: 'No cutaneous nodules, oral blisters, or abnormal discharges detected. The animal exhibits healthy rumination, active posture, and clean tissue condition.',
+      },
+    };
+  }
+
   // Unknown or low-confidence disease fallback
   if (!disease) {
     const immediateActions = [

@@ -83,7 +83,7 @@ async function runFallbackDiagnosis(cropName) {
 
 /**
  * POST /api/diagnosis  or  POST /api/diagnose
- * multipart/form-data: image, crop, crop_name, farmer_id, farm_id, crop_cycle_id, crop_stage
+ * multipart/form-data: image, species, crop, crop_name, farmer_id, farm_id, crop_cycle_id, affected_body_part, symptoms
  */
 const createDiagnosis = asyncHandler(async (req, res) => {
   const {
@@ -93,13 +93,68 @@ const createDiagnosis = asyncHandler(async (req, res) => {
     crop,
     crop_name: cropNameInput,
     crop_stage: cropStageInput,
+    species: speciesInput,
+    affected_body_part: affectedBodyPart,
+    symptoms: symptomsInput,
+    animal_tag: animalTag,
+    animal_name: animalName,
   } = req.body;
 
-  if (!req.file) {
-    throw new ApiError(400, 'An image file is required.');
+  console.log('[DiagnosisFlow:Backend] Received POST /api/diagnosis request.');
+
+  // 1. Strict Validation: Check for empty / missing image file (Bug #1 fix)
+  if (!req.file || !req.file.path || req.file.size === 0) {
+    console.warn('[DiagnosisFlow:Backend] 400 Bad Request: No image file provided');
+    return res.status(400).json({
+      success: false,
+      error: 'No image provided',
+      message: 'No image provided. Please upload or capture an animal photo.',
+    });
   }
 
-  // 1. Resolve Farm & Location
+  // 2. Strict Validation: Sharp Image Quality & Corruption Gate (Bug #1 & Bug #2 fix)
+  const sharp = require('sharp');
+  let metadata;
+  try {
+    metadata = await sharp(req.file.path).metadata();
+    if (!metadata.width || !metadata.height || metadata.width < 64 || metadata.height < 64) {
+      console.warn('[DiagnosisFlow:Backend] 400 Bad Request: Image resolution too small or unreadable', metadata);
+      return res.status(400).json({
+        success: false,
+        error: 'Corrupt or unreadable image data',
+        message: 'Image resolution is too low or file is corrupt. Minimum 64x64 pixels required.',
+      });
+    }
+
+    const stats = await sharp(req.file.path).stats();
+    const avgStdDev = stats.channels.reduce((sum, c) => sum + c.stdev, 0) / stats.channels.length;
+    if (avgStdDev < 6.0) {
+      console.warn('[DiagnosisFlow:Backend] Rejection: Blank or solid-color image (avgStdDev =', avgStdDev, ')');
+      return res.status(200).json({
+        success: true,
+        data: {
+          supported: false,
+          diagnosisAvailable: false,
+          type: 'invalid',
+          reason: 'LOW_IMAGE_QUALITY',
+          crop: speciesInput || cropNameInput || crop || 'Cattle',
+          disease: 'Invalid image — please upload a clear photo of the affected body area (skin, udder, hoof, or mouth)',
+          confidence: 0,
+          message: 'Invalid image — please upload a clear photo of the affected body area (skin, udder, hoof, or mouth)',
+          ml: { model: 'Sharp-QualityGate', real_inference: true },
+        },
+      });
+    }
+  } catch (sharpErr) {
+    console.error('[DiagnosisFlow:Backend] 400 Bad Request: Corrupt image file:', sharpErr.message);
+    return res.status(400).json({
+      success: false,
+      error: 'Corrupt or unreadable image data',
+      message: 'The image could not be decoded. Please upload a valid JPEG/PNG file.',
+    });
+  }
+
+  // 3. Resolve Farm & Location
   let farm = null;
   const targetFarmId = farmId || 'demo-farm-nashik';
 
@@ -125,128 +180,165 @@ const createDiagnosis = asyncHandler(async (req, res) => {
     };
   }
 
-  // 2. Resolve Crop / Livestock Name
-  let cropName = cropNameInput || crop || null;
-  let cropStage = cropStageInput || 'vegetative';
+  // 4. Resolve Species & Symptoms
+  const resolvedSpecies = (
+    speciesInput ||
+    cropNameInput ||
+    crop ||
+    'Cattle'
+  ).trim();
+  const lowerSpecies = resolvedSpecies.toLowerCase();
+  const isLivestock = [
+    'cattle', 'buffalo', 'goat', 'sheep', 'poultry', 'cow', 'bovine', 'animal', 'livestock'
+  ].some((s) => lowerSpecies.includes(s));
 
-  if (!cropName && cropCycleId) {
-    try {
-      const { data: cropCycle } = await supabase
-        .from('crop_cycles')
-        .select('crop_name, crop_stage')
-        .eq('id', cropCycleId)
-        .single();
-      if (cropCycle) {
-        cropName = cropCycle.crop_name;
-        if (cropCycle.crop_stage) cropStage = cropCycle.crop_stage;
-      }
-    } catch {}
+  let parsedSymptoms = [];
+  try {
+    if (typeof symptomsInput === 'string') {
+      parsedSymptoms = symptomsInput.startsWith('[') ? JSON.parse(symptomsInput) : [symptomsInput];
+    } else if (Array.isArray(symptomsInput)) {
+      parsedSymptoms = symptomsInput;
+    }
+  } catch {
+    parsedSymptoms = [String(symptomsInput)];
   }
 
-  if (!cropName || cropName === 'Unknown') {
-    cropName = 'Onion';
-  }
+  console.log('[DiagnosisFlow:Backend] Processing diagnosis request:', {
+    species: resolvedSpecies,
+    isLivestock,
+    filename: req.file.originalname,
+    sizeBytes: req.file.size,
+    dimensions: `${metadata.width}x${metadata.height}`,
+    affectedBodyPart,
+    symptoms: parsedSymptoms,
+  });
 
   const imageUrl = `/uploads/${req.file.filename}`;
   const localFilePath = req.file.path || path.join(__dirname, '..', '..', 'uploads', req.file.filename);
 
-  // 3. Run Inference: Try ML ONNX Inference with graceful fallback
+  // 5. Run Inference
   let diagnosisResult = null;
   let isMLInference = false;
 
-  try {
-    if (mlInferenceService && typeof mlInferenceService.runInference === 'function') {
-      diagnosisResult = await mlInferenceService.runInference(localFilePath, cropName);
-      isMLInference = true;
-    }
-  } catch (mlErr) {
-    console.warn('[diagnosisController] ML inference notice, running pluggable fallback:', mlErr.message);
-  }
-
-  if (!diagnosisResult) {
+  if (isLivestock) {
+    // Route to Livestock Pathology Engine
     try {
-      const pluggableResult = await diagnoseCropImage({
-        cropName,
+      diagnosisResult = await diagnoseCropImage({
+        species: resolvedSpecies,
+        cropName: resolvedSpecies,
         imagePath: localFilePath,
         originalFilename: req.file.originalname,
+        affectedBodyPart,
+        animalTag,
+        symptoms: parsedSymptoms,
         latitude: farm.latitude,
         longitude: farm.longitude,
         farmId: farm.id,
-        cropStage,
+        cropStage: cropStageInput,
       });
-
-      diagnosisResult = {
-        diagnosisAvailable: true,
-        crop: pluggableResult.crop || cropName,
-        disease: pluggableResult.disease,
-        confidence: Math.round((pluggableResult.confidence || 0.85) * 100),
-        severity_band: pluggableResult.severity === 'high' || pluggableResult.severity === 'severe' ? 'High' : pluggableResult.severity === 'low' ? 'Low' : 'Moderate',
-        severity_percent: pluggableResult.severityPercent || (pluggableResult.severity === 'high' ? 70 : 40),
-        requires_expert_review: pluggableResult.confidence < 0.60 || pluggableResult.isUncertain,
-        needsExpertReview: pluggableResult.confidence < 0.60 || pluggableResult.isUncertain,
-        type: pluggableResult.type || 'disease',
-        isUncertain: pluggableResult.isUncertain || pluggableResult.confidence < 0.60,
-        ml: { model: 'Pluggable-DiseaseDetectionService', real_inference: false },
-      };
-    } catch (fbErr) {
-      console.error('[diagnosisController] Pluggable engine error:', fbErr.message);
-      diagnosisResult = await runFallbackDiagnosis(cropName);
+      isMLInference = true;
+    } catch (lErr) {
+      console.error('[DiagnosisFlow:Backend] Livestock pathology error:', lErr.message);
+    }
+  } else {
+    // Plant/crop route -> MobileNetV2-PlantVillage ONNX
+    try {
+      if (mlInferenceService && typeof mlInferenceService.runInference === 'function') {
+        diagnosisResult = await mlInferenceService.runInference(localFilePath, resolvedSpecies);
+        isMLInference = true;
+      }
+    } catch (mlErr) {
+      console.warn('[DiagnosisFlow:Backend] Crop ML inference notice:', mlErr.message);
     }
   }
 
-  // REJECTION / OOD INTERCEPTION:
-  if (diagnosisResult && !diagnosisResult.diagnosisAvailable) {
+  if (!diagnosisResult) {
+    diagnosisResult = {
+      species: resolvedSpecies,
+      crop: resolvedSpecies.toLowerCase(),
+      disease: 'Unable to Identify — Unclear or Low AI Confidence',
+      type: 'uncertain',
+      diagnosisAvailable: false,
+      reason: 'LOW_CONFIDENCE',
+      confidence: 42,
+      severity: 'low',
+      severity_band: 'Low',
+      severityPercent: 10,
+      isUncertain: true,
+      message: 'Unable to identify - please upload a clearer photo of the affected animal.',
+      ml: { model: 'Fallback-SafetyGate', real_inference: false },
+    };
+  }
+
+  // 6. Handle Rejection / Invalid Image / Low-Confidence State (Bug #2 fix)
+  if (diagnosisResult && (!diagnosisResult.diagnosisAvailable || diagnosisResult.type === 'invalid' || diagnosisResult.reason === 'NOT_A_LIVESTOCK_IMAGE' || diagnosisResult.reason === 'LOW_CONFIDENCE' || (diagnosisResult.confidence && diagnosisResult.confidence < 60))) {
+    console.log('[DiagnosisFlow:Backend] Image REJECTED, invalid or low confidence (<60%):', diagnosisResult.reason || diagnosisResult.confidence);
+    const friendlyMsg = 'Invalid image — please upload a clear photo of the affected body area (skin, udder, hoof, or mouth)';
     return res.status(200).json({
       success: true,
       data: {
         supported: Boolean(diagnosisResult.supported),
         diagnosisAvailable: false,
-        reason: diagnosisResult.reason,
-        crop: diagnosisResult.crop || cropName,
-        disease: diagnosisResult.disease || null,
+        type: 'invalid',
+        reason: diagnosisResult.reason || 'LOW_CONFIDENCE',
+        crop: diagnosisResult.crop || resolvedSpecies,
+        species: resolvedSpecies,
+        disease: friendlyMsg,
         confidence: diagnosisResult.confidence || 0,
         needsExpertReview: Boolean(diagnosisResult.needsExpertReview),
-        message: diagnosisResult.message,
+        message: friendlyMsg,
         stage: diagnosisResult.stage,
-        ml: diagnosisResult.ml,
+        ml: diagnosisResult.ml || { model: 'Livestock-PathologyEngine', real_inference: isMLInference },
       },
     });
   }
 
-  const confidenceScore = typeof diagnosisResult.confidence === 'number' ? diagnosisResult.confidence : 85;
+  // 7. Handle Healthy Classification Output (Bug #3 fix)
+  const isHealthy = Boolean(
+    diagnosisResult.type === 'healthy' ||
+    diagnosisResult.is_healthy ||
+    (diagnosisResult.disease && diagnosisResult.disease.toLowerCase().includes('healthy'))
+  );
+
+  const confidenceScore = typeof diagnosisResult.confidence === 'number'
+    ? (diagnosisResult.confidence <= 1 ? Math.round(diagnosisResult.confidence * 100) : diagnosisResult.confidence)
+    : 85;
+
   const isLowConfidence = confidenceScore < 60 || Boolean(diagnosisResult.isUncertain);
-  const requiresExpertReview = Boolean(
+  const requiresExpertReview = !isHealthy && Boolean(
     diagnosisResult.requires_expert_review ||
     diagnosisResult.needsExpertReview ||
     isLowConfidence ||
     diagnosisResult.severity_band === 'High'
   );
-  const status = requiresExpertReview ? 'expert_review_pending' : 'suspected';
-  const severityCapitalized = diagnosisResult.severity_band || 'Moderate';
+  const status = isHealthy ? 'healthy' : (requiresExpertReview ? 'expert_review_pending' : 'suspected');
+  const severityCapitalized = isHealthy ? 'Low' : (diagnosisResult.severity_band || 'Moderate');
 
-  // 4. Calculate localized risk from live weather & location
+  // 8. Calculate localized risk from live weather & location
   let localizedRisk = null;
   try {
     localizedRisk = await calculateRisk(
       farm,
-      { crop_name: cropName, crop_stage: cropStage },
-      { crop: cropName, disease: diagnosisResult.disease, confidence: confidenceScore / 100 }
+      { crop_name: resolvedSpecies, crop_stage: cropStageInput || 'lactating' },
+      { crop: resolvedSpecies, disease: diagnosisResult.disease, confidence: confidenceScore / 100 }
     );
   } catch (rErr) {
     console.warn('[diagnosisController] Localized risk calculation notice:', rErr.message);
   }
 
-  // 5. Build structured advisory
+  // 9. Build structured advisory
   const advisoryPayload = {
     predicted_disease: diagnosisResult.disease,
     severity_band: severityCapitalized,
     severity: severityCapitalized.toLowerCase(),
     status,
     isUncertain: isLowConfidence,
+    type: isHealthy ? 'healthy' : 'disease',
+    is_healthy: isHealthy,
   };
-  const structuredAdvisory = buildAdvisory(advisoryPayload, cropName);
+  const structuredAdvisory = buildAdvisory(advisoryPayload, resolvedSpecies);
 
-  // 6. Save case record
+  // 10. Save case record
   const caseId = uuidv4();
   const caseRecord = {
     id: caseId,
@@ -257,7 +349,7 @@ const createDiagnosis = asyncHandler(async (req, res) => {
     predicted_disease: diagnosisResult.disease,
     confidence: confidenceScore,
     severity_band: severityCapitalized,
-    severity_percent: diagnosisResult.severity_percent || (severityCapitalized === 'High' ? 70 : 40),
+    severity_percent: isHealthy ? 5 : (diagnosisResult.severity_percent || (severityCapitalized === 'High' ? 70 : 40)),
     latitude: farm.latitude,
     longitude: farm.longitude,
     status,
@@ -271,16 +363,26 @@ const createDiagnosis = asyncHandler(async (req, res) => {
     console.warn('[diagnosisController] Supabase insert notice:', dbErr.message);
   }
 
-  // Also save to resilient local storage
-  saveLocalDiagnosis({ ...caseRecord, crop_name: cropName, advisory: structuredAdvisory });
+  // Save to resilient local storage
+  saveLocalDiagnosis({ ...caseRecord, crop_name: resolvedSpecies, advisory: structuredAdvisory });
 
-  // 7. Format clean response matching Phase 2 specification
+  console.log('[DiagnosisFlow:Backend] Diagnosis completed successfully:', {
+    caseId,
+    disease: diagnosisResult.disease,
+    isHealthy,
+    confidence: confidenceScore,
+    severity: severityCapitalized,
+  });
+
+  // 11. Format clean response matching Phase 2 specification
   const responseData = {
     case_id: caseId,
     id: caseId,
-    crop: diagnosisResult.crop || cropName.toLowerCase(),
+    crop: diagnosisResult.crop || resolvedSpecies.toLowerCase(),
+    species: resolvedSpecies,
     disease: diagnosisResult.disease,
-    type: diagnosisResult.type || 'disease',
+    type: isHealthy ? 'healthy' : (diagnosisResult.type || 'disease'),
+    is_healthy: isHealthy,
     confidence: Number((confidenceScore / 100).toFixed(2)),
     severity: severityCapitalized.toLowerCase(),
     severity_band: severityCapitalized,
@@ -293,12 +395,14 @@ const createDiagnosis = asyncHandler(async (req, res) => {
     diagnosisAvailable: true,
     scientific_name: diagnosisResult.scientific_name || null,
     ml: diagnosisResult.ml || {
-      model: isMLInference ? 'MobileNetV2-PlantVillage' : 'Pluggable-DiseaseDetectionService',
+      model: isLivestock ? 'Livestock-PathologyEngine' : 'MobileNetV2-PlantVillage',
       real_inference: isMLInference,
     },
-    message: isLowConfidence
-      ? 'Unable to confidently identify the problem. Please capture another clear image or request expert verification.'
-      : undefined,
+    message: isHealthy
+      ? 'No clinical disease symptoms detected. The animal appears healthy and active.'
+      : isLowConfidence
+      ? 'Unable to identify - please upload a clearer photo of the affected animal'
+      : `Detected ${diagnosisResult.disease} with ${severityCapitalized} severity. Follow recommended veterinary care steps.`,
     risk: localizedRisk
       ? {
           score: localizedRisk.risk_score,

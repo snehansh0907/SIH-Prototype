@@ -1,5 +1,1411 @@
 [
   {
+    "id": "dbf066c0-1e17-4105-a7ad-56dbae65051e",
+    "farmer_id": "KSF-BJFWYP",
+    "farm_id": "0402f9d2-e1ff-4697-af4f-d5383a90193c",
+    "crop_cycle_id": null,
+    "image_url": "/uploads/crop_1790716334538_574370410.jpg",
+    "predicted_disease": "Lumpy Skin Disease (LSD) / लंपी चर्मरोग",
+    "confidence": 91,
+    "severity_band": "Moderate",
+    "severity_percent": 40,
+    "latitude": 20.085,
+    "longitude": 74.11,
+    "status": "suspected",
+    "created_at": "2026-09-29T21:12:15.650Z",
+    "crop_name": "cattle",
+    "advisory": {
+      "status": "MODERATE",
+      "what_to_do_today": [
+        "Immediately isolate the affected animal inside a separate, well-ventilated, fly-proof shed at least 50 meters away from healthy stock",
+        "Wound Protection: Apply fly-repellent antiseptic ointment (Gamma benzene hexachloride + zinc oxide or Charma-Gel / Lorexane) on broken nodules to prevent secondary fly-strike and maggot infestation",
+        "Antiseptic Wash: Clean ulcerated nodules twice daily with a dilute Potassium Permanganate (KMnO4) solution (1:1000 ratio, faint pink color) or cooled neem leaf decoction",
+        "Supportive Nutrition: Provide easily digestible green fodder, soft mash with jaggery, electrolyte water, and oral multivitamins (Zinc, Vitamin A, E & H / Biotin) to boost epithelial repair",
+        "Feed soft, easily digestible boiled mash (rice/ragi gruel with 50g jaggery and salt)",
+        "Provide fresh tender green fodder and ad libitum clean drinking water with electrolytes"
+      ],
+      "what_to_monitor": [
+        "Measure and record rectal body temperature twice daily using a veterinary thermometer",
+        "Track rumination chews per minute (normal 45-60) and observe water intake",
+        "Inspect lesion margins for secondary bacterial pus or maggot infestation",
+        "Monitor milk yield volume to track systemic recovery timeline"
+      ],
+      "prevention": [
+        "Strict vector control: Install fine insect netting in cattle sheds, eliminate stagnant slurry pools, and burn neem/camphor leaves for herbal smoke repellent",
+        "Isolate all newly purchased or returned livestock for minimum 28 days before herd mixing",
+        "Prohibit common grazing on village pastures during active regional outbreak alerts",
+        "Annual vaccination with Heterologous Live Attenuated Goat Pox Vaccine (Uttarkashi strain) @ 3 ml S/C or Lumpi-ProVacInd under Animal Husbandry Department guidelines",
+        "Disinfect shed premises twice weekly with 2% Virkon-S, 2-3% Sodium Hypochlorite, or 1% Formalin"
+      ],
+      "immediateActions": [
+        "Immediately isolate the affected animal inside a separate, well-ventilated, fly-proof shed at least 50 meters away from healthy stock",
+        "Wound Protection: Apply fly-repellent antiseptic ointment (Gamma benzene hexachloride + zinc oxide or Charma-Gel / Lorexane) on broken nodules to prevent secondary fly-strike and maggot infestation",
+        "Antiseptic Wash: Clean ulcerated nodules twice daily with a dilute Potassium Permanganate (KMnO4) solution (1:1000 ratio, faint pink color) or cooled neem leaf decoction",
+        "Supportive Nutrition: Provide easily digestible green fodder, soft mash with jaggery, electrolyte water, and oral multivitamins (Zinc, Vitamin A, E & H / Biotin) to boost epithelial repair"
+      ],
+      "monitoring": [
+        "Measure and record rectal body temperature twice daily using a veterinary thermometer",
+        "Track rumination chews per minute (normal 45-60) and observe water intake",
+        "Inspect lesion margins for secondary bacterial pus or maggot infestation",
+        "Monitor milk yield volume to track systemic recovery timeline"
+      ],
+      "supportiveCare": [
+        "Feed soft, easily digestible boiled mash (rice/ragi gruel with 50g jaggery and salt)",
+        "Provide fresh tender green fodder and ad libitum clean drinking water with electrolytes"
+      ],
+      "veterinaryEscalation": [
+        "Potassium Permanganate (KMnO4): 1 gram in 10 liters clean water (faint pink) for external skin wash twice daily",
+        "Neem oil + Camphor: Topically applied over closed lumps as natural repellent against biting stable flies",
+        "Meloxicam + Paracetamol (Melonex Plus): 0.5 mg/kg body weight under registered Veterinary Officer prescription only",
+        "Goat Pox Vaccine (Preventive only for healthy in-contact herd): 3 ml S/C in neck region as per Govt. ring vaccination protocol",
+        "Contact Maharashtra Department of Animal Husbandry Toll-Free Helpline: 1962 for doorstep veterinary support",
+        "Consult nearest Veterinary Dispensary if fever or lesions persist beyond 3 days"
+      ],
+      "expert_help_required": false,
+      "disease_info": {
+        "disease_name": "Lumpy Skin Disease (LSD)",
+        "scientific_name": "Capripoxvirus (Poxviridae family)",
+        "description": "A viral transboundary infectious disease affecting cattle and water buffaloes, characterized by high fever, enlarged superficial lymph nodes, and multiple circumscribed firm cutaneous nodules (2-5 cm diameter) all over the body.",
+        "how_it_spreads": [
+          "Primary transmission via hematophagous vector insects: biting flies (Stomoxys calcitrans), mosquitoes (Aedes, Culex), and hard ticks (Rhipicephalus appendiculatus)",
+          "Direct contact with saliva, nasal secretions, and weeping skin scabs of infected animals",
+          "Sharing contaminated community water troughs, feed mangers, and milking equipment",
+          "Movement of cattle across inter-state animal markets and shared grazing pastures",
+          "Iatrogenic transmission via repeated needle and syringe reuse during mass injections"
+        ],
+        "safe_dosage": [
+          "Potassium Permanganate (KMnO4): 1 gram in 10 liters clean water (faint pink) for external skin wash twice daily",
+          "Neem oil + Camphor: Topically applied over closed lumps as natural repellent against biting stable flies",
+          "Meloxicam + Paracetamol (Melonex Plus): 0.5 mg/kg body weight under registered Veterinary Officer prescription only",
+          "Goat Pox Vaccine (Preventive only for healthy in-contact herd): 3 ml S/C in neck region as per Govt. ring vaccination protocol"
+        ],
+        "vet_protocol_order": [
+          "Quarantine & Shed Biosecurity",
+          "Antiseptic Wash & Fly Repellent",
+          "Supportive Mash Feeding",
+          "Veterinary Medical Treatment",
+          "Ring Vaccination in 5km Zone"
+        ]
+      }
+    }
+  },
+  {
+    "id": "0d76d000-2501-4b15-ba2b-45d18b7433da",
+    "farmer_id": "KSF-BJFWYP",
+    "farm_id": "0402f9d2-e1ff-4697-af4f-d5383a90193c",
+    "crop_cycle_id": null,
+    "image_url": "/uploads/crop_1790716320007_330762320.jpg",
+    "predicted_disease": "Lumpy Skin Disease (LSD) / लंपी चर्मरोग",
+    "confidence": 91,
+    "severity_band": "Moderate",
+    "severity_percent": 40,
+    "latitude": 20.085,
+    "longitude": 74.11,
+    "status": "suspected",
+    "created_at": "2026-09-29T21:12:01.020Z",
+    "crop_name": "cattle",
+    "advisory": {
+      "status": "MODERATE",
+      "what_to_do_today": [
+        "Immediately isolate the affected animal inside a separate, well-ventilated, fly-proof shed at least 50 meters away from healthy stock",
+        "Wound Protection: Apply fly-repellent antiseptic ointment (Gamma benzene hexachloride + zinc oxide or Charma-Gel / Lorexane) on broken nodules to prevent secondary fly-strike and maggot infestation",
+        "Antiseptic Wash: Clean ulcerated nodules twice daily with a dilute Potassium Permanganate (KMnO4) solution (1:1000 ratio, faint pink color) or cooled neem leaf decoction",
+        "Supportive Nutrition: Provide easily digestible green fodder, soft mash with jaggery, electrolyte water, and oral multivitamins (Zinc, Vitamin A, E & H / Biotin) to boost epithelial repair",
+        "Feed soft, easily digestible boiled mash (rice/ragi gruel with 50g jaggery and salt)",
+        "Provide fresh tender green fodder and ad libitum clean drinking water with electrolytes"
+      ],
+      "what_to_monitor": [
+        "Measure and record rectal body temperature twice daily using a veterinary thermometer",
+        "Track rumination chews per minute (normal 45-60) and observe water intake",
+        "Inspect lesion margins for secondary bacterial pus or maggot infestation",
+        "Monitor milk yield volume to track systemic recovery timeline"
+      ],
+      "prevention": [
+        "Strict vector control: Install fine insect netting in cattle sheds, eliminate stagnant slurry pools, and burn neem/camphor leaves for herbal smoke repellent",
+        "Isolate all newly purchased or returned livestock for minimum 28 days before herd mixing",
+        "Prohibit common grazing on village pastures during active regional outbreak alerts",
+        "Annual vaccination with Heterologous Live Attenuated Goat Pox Vaccine (Uttarkashi strain) @ 3 ml S/C or Lumpi-ProVacInd under Animal Husbandry Department guidelines",
+        "Disinfect shed premises twice weekly with 2% Virkon-S, 2-3% Sodium Hypochlorite, or 1% Formalin"
+      ],
+      "immediateActions": [
+        "Immediately isolate the affected animal inside a separate, well-ventilated, fly-proof shed at least 50 meters away from healthy stock",
+        "Wound Protection: Apply fly-repellent antiseptic ointment (Gamma benzene hexachloride + zinc oxide or Charma-Gel / Lorexane) on broken nodules to prevent secondary fly-strike and maggot infestation",
+        "Antiseptic Wash: Clean ulcerated nodules twice daily with a dilute Potassium Permanganate (KMnO4) solution (1:1000 ratio, faint pink color) or cooled neem leaf decoction",
+        "Supportive Nutrition: Provide easily digestible green fodder, soft mash with jaggery, electrolyte water, and oral multivitamins (Zinc, Vitamin A, E & H / Biotin) to boost epithelial repair"
+      ],
+      "monitoring": [
+        "Measure and record rectal body temperature twice daily using a veterinary thermometer",
+        "Track rumination chews per minute (normal 45-60) and observe water intake",
+        "Inspect lesion margins for secondary bacterial pus or maggot infestation",
+        "Monitor milk yield volume to track systemic recovery timeline"
+      ],
+      "supportiveCare": [
+        "Feed soft, easily digestible boiled mash (rice/ragi gruel with 50g jaggery and salt)",
+        "Provide fresh tender green fodder and ad libitum clean drinking water with electrolytes"
+      ],
+      "veterinaryEscalation": [
+        "Potassium Permanganate (KMnO4): 1 gram in 10 liters clean water (faint pink) for external skin wash twice daily",
+        "Neem oil + Camphor: Topically applied over closed lumps as natural repellent against biting stable flies",
+        "Meloxicam + Paracetamol (Melonex Plus): 0.5 mg/kg body weight under registered Veterinary Officer prescription only",
+        "Goat Pox Vaccine (Preventive only for healthy in-contact herd): 3 ml S/C in neck region as per Govt. ring vaccination protocol",
+        "Contact Maharashtra Department of Animal Husbandry Toll-Free Helpline: 1962 for doorstep veterinary support",
+        "Consult nearest Veterinary Dispensary if fever or lesions persist beyond 3 days"
+      ],
+      "expert_help_required": false,
+      "disease_info": {
+        "disease_name": "Lumpy Skin Disease (LSD)",
+        "scientific_name": "Capripoxvirus (Poxviridae family)",
+        "description": "A viral transboundary infectious disease affecting cattle and water buffaloes, characterized by high fever, enlarged superficial lymph nodes, and multiple circumscribed firm cutaneous nodules (2-5 cm diameter) all over the body.",
+        "how_it_spreads": [
+          "Primary transmission via hematophagous vector insects: biting flies (Stomoxys calcitrans), mosquitoes (Aedes, Culex), and hard ticks (Rhipicephalus appendiculatus)",
+          "Direct contact with saliva, nasal secretions, and weeping skin scabs of infected animals",
+          "Sharing contaminated community water troughs, feed mangers, and milking equipment",
+          "Movement of cattle across inter-state animal markets and shared grazing pastures",
+          "Iatrogenic transmission via repeated needle and syringe reuse during mass injections"
+        ],
+        "safe_dosage": [
+          "Potassium Permanganate (KMnO4): 1 gram in 10 liters clean water (faint pink) for external skin wash twice daily",
+          "Neem oil + Camphor: Topically applied over closed lumps as natural repellent against biting stable flies",
+          "Meloxicam + Paracetamol (Melonex Plus): 0.5 mg/kg body weight under registered Veterinary Officer prescription only",
+          "Goat Pox Vaccine (Preventive only for healthy in-contact herd): 3 ml S/C in neck region as per Govt. ring vaccination protocol"
+        ],
+        "vet_protocol_order": [
+          "Quarantine & Shed Biosecurity",
+          "Antiseptic Wash & Fly Repellent",
+          "Supportive Mash Feeding",
+          "Veterinary Medical Treatment",
+          "Ring Vaccination in 5km Zone"
+        ]
+      }
+    }
+  },
+  {
+    "id": "190bf27c-12a4-491f-ac09-52e6ba4a57cc",
+    "farmer_id": null,
+    "farm_id": "demo-farm-nashik",
+    "crop_cycle_id": null,
+    "image_url": "/uploads/crop_1790716264313_722414377.jpg",
+    "predicted_disease": "Lumpy Skin Disease (LSD) / लंपी चर्मरोग",
+    "confidence": 91,
+    "severity_band": "Moderate",
+    "severity_percent": 40,
+    "latitude": 20.085,
+    "longitude": 74.11,
+    "status": "suspected",
+    "created_at": "2026-09-29T21:11:05.329Z",
+    "crop_name": "cattle",
+    "advisory": {
+      "status": "MODERATE",
+      "what_to_do_today": [
+        "Immediately isolate the affected animal inside a separate, well-ventilated, fly-proof shed at least 50 meters away from healthy stock",
+        "Wound Protection: Apply fly-repellent antiseptic ointment (Gamma benzene hexachloride + zinc oxide or Charma-Gel / Lorexane) on broken nodules to prevent secondary fly-strike and maggot infestation",
+        "Antiseptic Wash: Clean ulcerated nodules twice daily with a dilute Potassium Permanganate (KMnO4) solution (1:1000 ratio, faint pink color) or cooled neem leaf decoction",
+        "Supportive Nutrition: Provide easily digestible green fodder, soft mash with jaggery, electrolyte water, and oral multivitamins (Zinc, Vitamin A, E & H / Biotin) to boost epithelial repair",
+        "Feed soft, easily digestible boiled mash (rice/ragi gruel with 50g jaggery and salt)",
+        "Provide fresh tender green fodder and ad libitum clean drinking water with electrolytes"
+      ],
+      "what_to_monitor": [
+        "Measure and record rectal body temperature twice daily using a veterinary thermometer",
+        "Track rumination chews per minute (normal 45-60) and observe water intake",
+        "Inspect lesion margins for secondary bacterial pus or maggot infestation",
+        "Monitor milk yield volume to track systemic recovery timeline"
+      ],
+      "prevention": [
+        "Strict vector control: Install fine insect netting in cattle sheds, eliminate stagnant slurry pools, and burn neem/camphor leaves for herbal smoke repellent",
+        "Isolate all newly purchased or returned livestock for minimum 28 days before herd mixing",
+        "Prohibit common grazing on village pastures during active regional outbreak alerts",
+        "Annual vaccination with Heterologous Live Attenuated Goat Pox Vaccine (Uttarkashi strain) @ 3 ml S/C or Lumpi-ProVacInd under Animal Husbandry Department guidelines",
+        "Disinfect shed premises twice weekly with 2% Virkon-S, 2-3% Sodium Hypochlorite, or 1% Formalin"
+      ],
+      "immediateActions": [
+        "Immediately isolate the affected animal inside a separate, well-ventilated, fly-proof shed at least 50 meters away from healthy stock",
+        "Wound Protection: Apply fly-repellent antiseptic ointment (Gamma benzene hexachloride + zinc oxide or Charma-Gel / Lorexane) on broken nodules to prevent secondary fly-strike and maggot infestation",
+        "Antiseptic Wash: Clean ulcerated nodules twice daily with a dilute Potassium Permanganate (KMnO4) solution (1:1000 ratio, faint pink color) or cooled neem leaf decoction",
+        "Supportive Nutrition: Provide easily digestible green fodder, soft mash with jaggery, electrolyte water, and oral multivitamins (Zinc, Vitamin A, E & H / Biotin) to boost epithelial repair"
+      ],
+      "monitoring": [
+        "Measure and record rectal body temperature twice daily using a veterinary thermometer",
+        "Track rumination chews per minute (normal 45-60) and observe water intake",
+        "Inspect lesion margins for secondary bacterial pus or maggot infestation",
+        "Monitor milk yield volume to track systemic recovery timeline"
+      ],
+      "supportiveCare": [
+        "Feed soft, easily digestible boiled mash (rice/ragi gruel with 50g jaggery and salt)",
+        "Provide fresh tender green fodder and ad libitum clean drinking water with electrolytes"
+      ],
+      "veterinaryEscalation": [
+        "Potassium Permanganate (KMnO4): 1 gram in 10 liters clean water (faint pink) for external skin wash twice daily",
+        "Neem oil + Camphor: Topically applied over closed lumps as natural repellent against biting stable flies",
+        "Meloxicam + Paracetamol (Melonex Plus): 0.5 mg/kg body weight under registered Veterinary Officer prescription only",
+        "Goat Pox Vaccine (Preventive only for healthy in-contact herd): 3 ml S/C in neck region as per Govt. ring vaccination protocol",
+        "Contact Maharashtra Department of Animal Husbandry Toll-Free Helpline: 1962 for doorstep veterinary support",
+        "Consult nearest Veterinary Dispensary if fever or lesions persist beyond 3 days"
+      ],
+      "expert_help_required": false,
+      "disease_info": {
+        "disease_name": "Lumpy Skin Disease (LSD)",
+        "scientific_name": "Capripoxvirus (Poxviridae family)",
+        "description": "A viral transboundary infectious disease affecting cattle and water buffaloes, characterized by high fever, enlarged superficial lymph nodes, and multiple circumscribed firm cutaneous nodules (2-5 cm diameter) all over the body.",
+        "how_it_spreads": [
+          "Primary transmission via hematophagous vector insects: biting flies (Stomoxys calcitrans), mosquitoes (Aedes, Culex), and hard ticks (Rhipicephalus appendiculatus)",
+          "Direct contact with saliva, nasal secretions, and weeping skin scabs of infected animals",
+          "Sharing contaminated community water troughs, feed mangers, and milking equipment",
+          "Movement of cattle across inter-state animal markets and shared grazing pastures",
+          "Iatrogenic transmission via repeated needle and syringe reuse during mass injections"
+        ],
+        "safe_dosage": [
+          "Potassium Permanganate (KMnO4): 1 gram in 10 liters clean water (faint pink) for external skin wash twice daily",
+          "Neem oil + Camphor: Topically applied over closed lumps as natural repellent against biting stable flies",
+          "Meloxicam + Paracetamol (Melonex Plus): 0.5 mg/kg body weight under registered Veterinary Officer prescription only",
+          "Goat Pox Vaccine (Preventive only for healthy in-contact herd): 3 ml S/C in neck region as per Govt. ring vaccination protocol"
+        ],
+        "vet_protocol_order": [
+          "Quarantine & Shed Biosecurity",
+          "Antiseptic Wash & Fly Repellent",
+          "Supportive Mash Feeding",
+          "Veterinary Medical Treatment",
+          "Ring Vaccination in 5km Zone"
+        ]
+      }
+    }
+  },
+  {
+    "id": "a9ccaab4-7614-4ac9-83a4-07996e256f67",
+    "farmer_id": "KSF-BJFWYP",
+    "farm_id": "0402f9d2-e1ff-4697-af4f-d5383a90193c",
+    "crop_cycle_id": null,
+    "image_url": "/uploads/crop_1790716090823_933988614.jpg",
+    "predicted_disease": "Bovine Mastitis (थनैला रोग / स्तनदाह)",
+    "confidence": 88,
+    "severity_band": "Moderate",
+    "severity_percent": 40,
+    "latitude": 20.085,
+    "longitude": 74.11,
+    "status": "suspected",
+    "created_at": "2026-09-29T21:08:11.743Z",
+    "crop_name": "cattle",
+    "advisory": {
+      "status": "MODERATE",
+      "what_to_do_today": [
+        "Stripping & Cold Fermentation: Frequent complete hand-milking/stripping of the affected quarter every 2 hours to remove bacterial toxins",
+        "Cold Water Compress: Apply cold water splash or ice packs to the hot inflamed udder quarter during acute swelling",
+        "Intramammary Infusion: Administer veterinary-prescribed intramammary antibiotic tube strictly under aseptic cannula insertion",
+        "Proper Disposal: Never discard mastitic milk onto the shed floor or feed raw to calves; boil or safely bury with disinfectant",
+        "Supportive Anti-inflammatory: Administer systemic anti-inflammatory (Meloxicam) to alleviate udder pain and fever",
+        "Feed soft, easily digestible boiled mash (rice/ragi gruel with 50g jaggery and salt)",
+        "Provide fresh tender green fodder and ad libitum clean drinking water with electrolytes"
+      ],
+      "what_to_monitor": [
+        "Measure and record rectal body temperature twice daily using a veterinary thermometer",
+        "Track rumination chews per minute (normal 45-60) and observe water intake",
+        "Inspect lesion margins for secondary bacterial pus or maggot infestation",
+        "Monitor milk yield volume to track systemic recovery timeline"
+      ],
+      "prevention": [
+        "Post-milking teat dipping: Dip all 4 teats immediately after milking in 0.5% Povidone-Iodine solution",
+        "Keep cows standing for 45 minutes post-milking by providing fresh green feed, allowing the teat sphincter to close tightly",
+        "Clean shed flooring daily; ensure dry bedded stalls free of pooled slurry and sharp stones",
+        "Practice clean milk production: wash hands, use separate clean towels for each animal, and milk infected quarters last",
+        "Dry Cow Therapy (DCT) at the end of lactation using approved long-acting intramammary infusion"
+      ],
+      "immediateActions": [
+        "Stripping & Cold Fermentation: Frequent complete hand-milking/stripping of the affected quarter every 2 hours to remove bacterial toxins",
+        "Cold Water Compress: Apply cold water splash or ice packs to the hot inflamed udder quarter during acute swelling",
+        "Intramammary Infusion: Administer veterinary-prescribed intramammary antibiotic tube strictly under aseptic cannula insertion",
+        "Proper Disposal: Never discard mastitic milk onto the shed floor or feed raw to calves; boil or safely bury with disinfectant",
+        "Supportive Anti-inflammatory: Administer systemic anti-inflammatory (Meloxicam) to alleviate udder pain and fever"
+      ],
+      "monitoring": [
+        "Measure and record rectal body temperature twice daily using a veterinary thermometer",
+        "Track rumination chews per minute (normal 45-60) and observe water intake",
+        "Inspect lesion margins for secondary bacterial pus or maggot infestation",
+        "Monitor milk yield volume to track systemic recovery timeline"
+      ],
+      "supportiveCare": [
+        "Feed soft, easily digestible boiled mash (rice/ragi gruel with 50g jaggery and salt)",
+        "Provide fresh tender green fodder and ad libitum clean drinking water with electrolytes"
+      ],
+      "veterinaryEscalation": [
+        "Povidone-Iodine Teat Dip (0.5% active iodine): Dip 2 cm of each teat immediately post-milking daily",
+        "Trisodium Citrate (Oral): 12-15 grams daily mixed in jaggery for 7 days to restore milk pH and udder defense",
+        "Cloxacillin + Ampicillin intramammary infusion: 1 tube infused per quarter after full evacuation (veterinary advice)",
+        "Contact Maharashtra Department of Animal Husbandry Toll-Free Helpline: 1962 for doorstep veterinary support",
+        "Consult nearest Veterinary Dispensary if fever or lesions persist beyond 3 days"
+      ],
+      "expert_help_required": false,
+      "disease_info": {
+        "disease_name": "Bovine Mastitis",
+        "scientific_name": "Staphylococcus aureus / Streptococcus agalactiae / E. coli",
+        "description": "Inflammation of the mammary gland and udder tissue, predominantly bacterial in origin. Results in physical, chemical, and microbiological changes in milk, along with pathological changes in glandular udder tissue.",
+        "how_it_spreads": [
+          "Contagious transmission during milking through milkers hands, common udder cloths, and teat cups",
+          "Environmental transmission: unhygienic, wet, dung-soiled shed floors entering open teat sphincter post-milking",
+          "Teat skin cracks, wounds, tick bites, and incomplete milking leaving residual milk"
+        ],
+        "safe_dosage": [
+          "Povidone-Iodine Teat Dip (0.5% active iodine): Dip 2 cm of each teat immediately post-milking daily",
+          "Trisodium Citrate (Oral): 12-15 grams daily mixed in jaggery for 7 days to restore milk pH and udder defense",
+          "Cloxacillin + Ampicillin intramammary infusion: 1 tube infused per quarter after full evacuation (veterinary advice)"
+        ],
+        "vet_protocol_order": [
+          "Quarantine & Shed Biosecurity",
+          "Antiseptic Wash & Fly Repellent",
+          "Supportive Mash Feeding",
+          "Veterinary Medical Treatment",
+          "Ring Vaccination in 5km Zone"
+        ]
+      }
+    }
+  },
+  {
+    "id": "881e3408-e1de-4416-8624-56f42a15cf70",
+    "farmer_id": "KSF-BJFWYP",
+    "farm_id": "0402f9d2-e1ff-4697-af4f-d5383a90193c",
+    "crop_cycle_id": null,
+    "image_url": "/uploads/crop_1790716027475_314704797.jpg",
+    "predicted_disease": "Bovine Mastitis (थनैला रोग / स्तनदाह)",
+    "confidence": 88,
+    "severity_band": "Moderate",
+    "severity_percent": 40,
+    "latitude": 20.085,
+    "longitude": 74.11,
+    "status": "suspected",
+    "created_at": "2026-09-29T21:07:09.994Z",
+    "crop_name": "cattle",
+    "advisory": {
+      "status": "MODERATE",
+      "what_to_do_today": [
+        "Stripping & Cold Fermentation: Frequent complete hand-milking/stripping of the affected quarter every 2 hours to remove bacterial toxins",
+        "Cold Water Compress: Apply cold water splash or ice packs to the hot inflamed udder quarter during acute swelling",
+        "Intramammary Infusion: Administer veterinary-prescribed intramammary antibiotic tube strictly under aseptic cannula insertion",
+        "Proper Disposal: Never discard mastitic milk onto the shed floor or feed raw to calves; boil or safely bury with disinfectant",
+        "Supportive Anti-inflammatory: Administer systemic anti-inflammatory (Meloxicam) to alleviate udder pain and fever",
+        "Feed soft, easily digestible boiled mash (rice/ragi gruel with 50g jaggery and salt)",
+        "Provide fresh tender green fodder and ad libitum clean drinking water with electrolytes"
+      ],
+      "what_to_monitor": [
+        "Measure and record rectal body temperature twice daily using a veterinary thermometer",
+        "Track rumination chews per minute (normal 45-60) and observe water intake",
+        "Inspect lesion margins for secondary bacterial pus or maggot infestation",
+        "Monitor milk yield volume to track systemic recovery timeline"
+      ],
+      "prevention": [
+        "Post-milking teat dipping: Dip all 4 teats immediately after milking in 0.5% Povidone-Iodine solution",
+        "Keep cows standing for 45 minutes post-milking by providing fresh green feed, allowing the teat sphincter to close tightly",
+        "Clean shed flooring daily; ensure dry bedded stalls free of pooled slurry and sharp stones",
+        "Practice clean milk production: wash hands, use separate clean towels for each animal, and milk infected quarters last",
+        "Dry Cow Therapy (DCT) at the end of lactation using approved long-acting intramammary infusion"
+      ],
+      "immediateActions": [
+        "Stripping & Cold Fermentation: Frequent complete hand-milking/stripping of the affected quarter every 2 hours to remove bacterial toxins",
+        "Cold Water Compress: Apply cold water splash or ice packs to the hot inflamed udder quarter during acute swelling",
+        "Intramammary Infusion: Administer veterinary-prescribed intramammary antibiotic tube strictly under aseptic cannula insertion",
+        "Proper Disposal: Never discard mastitic milk onto the shed floor or feed raw to calves; boil or safely bury with disinfectant",
+        "Supportive Anti-inflammatory: Administer systemic anti-inflammatory (Meloxicam) to alleviate udder pain and fever"
+      ],
+      "monitoring": [
+        "Measure and record rectal body temperature twice daily using a veterinary thermometer",
+        "Track rumination chews per minute (normal 45-60) and observe water intake",
+        "Inspect lesion margins for secondary bacterial pus or maggot infestation",
+        "Monitor milk yield volume to track systemic recovery timeline"
+      ],
+      "supportiveCare": [
+        "Feed soft, easily digestible boiled mash (rice/ragi gruel with 50g jaggery and salt)",
+        "Provide fresh tender green fodder and ad libitum clean drinking water with electrolytes"
+      ],
+      "veterinaryEscalation": [
+        "Povidone-Iodine Teat Dip (0.5% active iodine): Dip 2 cm of each teat immediately post-milking daily",
+        "Trisodium Citrate (Oral): 12-15 grams daily mixed in jaggery for 7 days to restore milk pH and udder defense",
+        "Cloxacillin + Ampicillin intramammary infusion: 1 tube infused per quarter after full evacuation (veterinary advice)",
+        "Contact Maharashtra Department of Animal Husbandry Toll-Free Helpline: 1962 for doorstep veterinary support",
+        "Consult nearest Veterinary Dispensary if fever or lesions persist beyond 3 days"
+      ],
+      "expert_help_required": false,
+      "disease_info": {
+        "disease_name": "Bovine Mastitis",
+        "scientific_name": "Staphylococcus aureus / Streptococcus agalactiae / E. coli",
+        "description": "Inflammation of the mammary gland and udder tissue, predominantly bacterial in origin. Results in physical, chemical, and microbiological changes in milk, along with pathological changes in glandular udder tissue.",
+        "how_it_spreads": [
+          "Contagious transmission during milking through milkers hands, common udder cloths, and teat cups",
+          "Environmental transmission: unhygienic, wet, dung-soiled shed floors entering open teat sphincter post-milking",
+          "Teat skin cracks, wounds, tick bites, and incomplete milking leaving residual milk"
+        ],
+        "safe_dosage": [
+          "Povidone-Iodine Teat Dip (0.5% active iodine): Dip 2 cm of each teat immediately post-milking daily",
+          "Trisodium Citrate (Oral): 12-15 grams daily mixed in jaggery for 7 days to restore milk pH and udder defense",
+          "Cloxacillin + Ampicillin intramammary infusion: 1 tube infused per quarter after full evacuation (veterinary advice)"
+        ],
+        "vet_protocol_order": [
+          "Quarantine & Shed Biosecurity",
+          "Antiseptic Wash & Fly Repellent",
+          "Supportive Mash Feeding",
+          "Veterinary Medical Treatment",
+          "Ring Vaccination in 5km Zone"
+        ]
+      }
+    }
+  },
+  {
+    "id": "1610e990-e2ea-4a03-878b-ea417e64f063",
+    "farmer_id": "KSF-BJFWYP",
+    "farm_id": "0402f9d2-e1ff-4697-af4f-d5383a90193c",
+    "crop_cycle_id": null,
+    "image_url": "/uploads/crop_1790716011059_264996328.jpg",
+    "predicted_disease": "Bovine Mastitis (थनैला रोग / स्तनदाह)",
+    "confidence": 88,
+    "severity_band": "Moderate",
+    "severity_percent": 40,
+    "latitude": 20.085,
+    "longitude": 74.11,
+    "status": "suspected",
+    "created_at": "2026-09-29T21:06:52.072Z",
+    "crop_name": "cattle",
+    "advisory": {
+      "status": "MODERATE",
+      "what_to_do_today": [
+        "Stripping & Cold Fermentation: Frequent complete hand-milking/stripping of the affected quarter every 2 hours to remove bacterial toxins",
+        "Cold Water Compress: Apply cold water splash or ice packs to the hot inflamed udder quarter during acute swelling",
+        "Intramammary Infusion: Administer veterinary-prescribed intramammary antibiotic tube strictly under aseptic cannula insertion",
+        "Proper Disposal: Never discard mastitic milk onto the shed floor or feed raw to calves; boil or safely bury with disinfectant",
+        "Supportive Anti-inflammatory: Administer systemic anti-inflammatory (Meloxicam) to alleviate udder pain and fever",
+        "Feed soft, easily digestible boiled mash (rice/ragi gruel with 50g jaggery and salt)",
+        "Provide fresh tender green fodder and ad libitum clean drinking water with electrolytes"
+      ],
+      "what_to_monitor": [
+        "Measure and record rectal body temperature twice daily using a veterinary thermometer",
+        "Track rumination chews per minute (normal 45-60) and observe water intake",
+        "Inspect lesion margins for secondary bacterial pus or maggot infestation",
+        "Monitor milk yield volume to track systemic recovery timeline"
+      ],
+      "prevention": [
+        "Post-milking teat dipping: Dip all 4 teats immediately after milking in 0.5% Povidone-Iodine solution",
+        "Keep cows standing for 45 minutes post-milking by providing fresh green feed, allowing the teat sphincter to close tightly",
+        "Clean shed flooring daily; ensure dry bedded stalls free of pooled slurry and sharp stones",
+        "Practice clean milk production: wash hands, use separate clean towels for each animal, and milk infected quarters last",
+        "Dry Cow Therapy (DCT) at the end of lactation using approved long-acting intramammary infusion"
+      ],
+      "immediateActions": [
+        "Stripping & Cold Fermentation: Frequent complete hand-milking/stripping of the affected quarter every 2 hours to remove bacterial toxins",
+        "Cold Water Compress: Apply cold water splash or ice packs to the hot inflamed udder quarter during acute swelling",
+        "Intramammary Infusion: Administer veterinary-prescribed intramammary antibiotic tube strictly under aseptic cannula insertion",
+        "Proper Disposal: Never discard mastitic milk onto the shed floor or feed raw to calves; boil or safely bury with disinfectant",
+        "Supportive Anti-inflammatory: Administer systemic anti-inflammatory (Meloxicam) to alleviate udder pain and fever"
+      ],
+      "monitoring": [
+        "Measure and record rectal body temperature twice daily using a veterinary thermometer",
+        "Track rumination chews per minute (normal 45-60) and observe water intake",
+        "Inspect lesion margins for secondary bacterial pus or maggot infestation",
+        "Monitor milk yield volume to track systemic recovery timeline"
+      ],
+      "supportiveCare": [
+        "Feed soft, easily digestible boiled mash (rice/ragi gruel with 50g jaggery and salt)",
+        "Provide fresh tender green fodder and ad libitum clean drinking water with electrolytes"
+      ],
+      "veterinaryEscalation": [
+        "Povidone-Iodine Teat Dip (0.5% active iodine): Dip 2 cm of each teat immediately post-milking daily",
+        "Trisodium Citrate (Oral): 12-15 grams daily mixed in jaggery for 7 days to restore milk pH and udder defense",
+        "Cloxacillin + Ampicillin intramammary infusion: 1 tube infused per quarter after full evacuation (veterinary advice)",
+        "Contact Maharashtra Department of Animal Husbandry Toll-Free Helpline: 1962 for doorstep veterinary support",
+        "Consult nearest Veterinary Dispensary if fever or lesions persist beyond 3 days"
+      ],
+      "expert_help_required": false,
+      "disease_info": {
+        "disease_name": "Bovine Mastitis",
+        "scientific_name": "Staphylococcus aureus / Streptococcus agalactiae / E. coli",
+        "description": "Inflammation of the mammary gland and udder tissue, predominantly bacterial in origin. Results in physical, chemical, and microbiological changes in milk, along with pathological changes in glandular udder tissue.",
+        "how_it_spreads": [
+          "Contagious transmission during milking through milkers hands, common udder cloths, and teat cups",
+          "Environmental transmission: unhygienic, wet, dung-soiled shed floors entering open teat sphincter post-milking",
+          "Teat skin cracks, wounds, tick bites, and incomplete milking leaving residual milk"
+        ],
+        "safe_dosage": [
+          "Povidone-Iodine Teat Dip (0.5% active iodine): Dip 2 cm of each teat immediately post-milking daily",
+          "Trisodium Citrate (Oral): 12-15 grams daily mixed in jaggery for 7 days to restore milk pH and udder defense",
+          "Cloxacillin + Ampicillin intramammary infusion: 1 tube infused per quarter after full evacuation (veterinary advice)"
+        ],
+        "vet_protocol_order": [
+          "Quarantine & Shed Biosecurity",
+          "Antiseptic Wash & Fly Repellent",
+          "Supportive Mash Feeding",
+          "Veterinary Medical Treatment",
+          "Ring Vaccination in 5km Zone"
+        ]
+      }
+    }
+  },
+  {
+    "id": "813277a7-cd43-4e3e-97d4-4fdd962265ed",
+    "farmer_id": "KSF-BJFWYP",
+    "farm_id": "0402f9d2-e1ff-4697-af4f-d5383a90193c",
+    "crop_cycle_id": null,
+    "image_url": "/uploads/crop_1790715995192_745053962.jpg",
+    "predicted_disease": "Lumpy Skin Disease (LSD) / लंपी चर्मरोग",
+    "confidence": 91,
+    "severity_band": "Moderate",
+    "severity_percent": 40,
+    "latitude": 20.085,
+    "longitude": 74.11,
+    "status": "suspected",
+    "created_at": "2026-09-29T21:06:35.428Z",
+    "crop_name": "cattle",
+    "advisory": {
+      "status": "MODERATE",
+      "what_to_do_today": [
+        "Immediately isolate the affected animal inside a separate, well-ventilated, fly-proof shed at least 50 meters away from healthy stock",
+        "Wound Protection: Apply fly-repellent antiseptic ointment (Gamma benzene hexachloride + zinc oxide or Charma-Gel / Lorexane) on broken nodules to prevent secondary fly-strike and maggot infestation",
+        "Antiseptic Wash: Clean ulcerated nodules twice daily with a dilute Potassium Permanganate (KMnO4) solution (1:1000 ratio, faint pink color) or cooled neem leaf decoction",
+        "Supportive Nutrition: Provide easily digestible green fodder, soft mash with jaggery, electrolyte water, and oral multivitamins (Zinc, Vitamin A, E & H / Biotin) to boost epithelial repair",
+        "Feed soft, easily digestible boiled mash (rice/ragi gruel with 50g jaggery and salt)",
+        "Provide fresh tender green fodder and ad libitum clean drinking water with electrolytes"
+      ],
+      "what_to_monitor": [
+        "Measure and record rectal body temperature twice daily using a veterinary thermometer",
+        "Track rumination chews per minute (normal 45-60) and observe water intake",
+        "Inspect lesion margins for secondary bacterial pus or maggot infestation",
+        "Monitor milk yield volume to track systemic recovery timeline"
+      ],
+      "prevention": [
+        "Strict vector control: Install fine insect netting in cattle sheds, eliminate stagnant slurry pools, and burn neem/camphor leaves for herbal smoke repellent",
+        "Isolate all newly purchased or returned livestock for minimum 28 days before herd mixing",
+        "Prohibit common grazing on village pastures during active regional outbreak alerts",
+        "Annual vaccination with Heterologous Live Attenuated Goat Pox Vaccine (Uttarkashi strain) @ 3 ml S/C or Lumpi-ProVacInd under Animal Husbandry Department guidelines",
+        "Disinfect shed premises twice weekly with 2% Virkon-S, 2-3% Sodium Hypochlorite, or 1% Formalin"
+      ],
+      "immediateActions": [
+        "Immediately isolate the affected animal inside a separate, well-ventilated, fly-proof shed at least 50 meters away from healthy stock",
+        "Wound Protection: Apply fly-repellent antiseptic ointment (Gamma benzene hexachloride + zinc oxide or Charma-Gel / Lorexane) on broken nodules to prevent secondary fly-strike and maggot infestation",
+        "Antiseptic Wash: Clean ulcerated nodules twice daily with a dilute Potassium Permanganate (KMnO4) solution (1:1000 ratio, faint pink color) or cooled neem leaf decoction",
+        "Supportive Nutrition: Provide easily digestible green fodder, soft mash with jaggery, electrolyte water, and oral multivitamins (Zinc, Vitamin A, E & H / Biotin) to boost epithelial repair"
+      ],
+      "monitoring": [
+        "Measure and record rectal body temperature twice daily using a veterinary thermometer",
+        "Track rumination chews per minute (normal 45-60) and observe water intake",
+        "Inspect lesion margins for secondary bacterial pus or maggot infestation",
+        "Monitor milk yield volume to track systemic recovery timeline"
+      ],
+      "supportiveCare": [
+        "Feed soft, easily digestible boiled mash (rice/ragi gruel with 50g jaggery and salt)",
+        "Provide fresh tender green fodder and ad libitum clean drinking water with electrolytes"
+      ],
+      "veterinaryEscalation": [
+        "Potassium Permanganate (KMnO4): 1 gram in 10 liters clean water (faint pink) for external skin wash twice daily",
+        "Neem oil + Camphor: Topically applied over closed lumps as natural repellent against biting stable flies",
+        "Meloxicam + Paracetamol (Melonex Plus): 0.5 mg/kg body weight under registered Veterinary Officer prescription only",
+        "Goat Pox Vaccine (Preventive only for healthy in-contact herd): 3 ml S/C in neck region as per Govt. ring vaccination protocol",
+        "Contact Maharashtra Department of Animal Husbandry Toll-Free Helpline: 1962 for doorstep veterinary support",
+        "Consult nearest Veterinary Dispensary if fever or lesions persist beyond 3 days"
+      ],
+      "expert_help_required": false,
+      "disease_info": {
+        "disease_name": "Lumpy Skin Disease (LSD)",
+        "scientific_name": "Capripoxvirus (Poxviridae family)",
+        "description": "A viral transboundary infectious disease affecting cattle and water buffaloes, characterized by high fever, enlarged superficial lymph nodes, and multiple circumscribed firm cutaneous nodules (2-5 cm diameter) all over the body.",
+        "how_it_spreads": [
+          "Primary transmission via hematophagous vector insects: biting flies (Stomoxys calcitrans), mosquitoes (Aedes, Culex), and hard ticks (Rhipicephalus appendiculatus)",
+          "Direct contact with saliva, nasal secretions, and weeping skin scabs of infected animals",
+          "Sharing contaminated community water troughs, feed mangers, and milking equipment",
+          "Movement of cattle across inter-state animal markets and shared grazing pastures",
+          "Iatrogenic transmission via repeated needle and syringe reuse during mass injections"
+        ],
+        "safe_dosage": [
+          "Potassium Permanganate (KMnO4): 1 gram in 10 liters clean water (faint pink) for external skin wash twice daily",
+          "Neem oil + Camphor: Topically applied over closed lumps as natural repellent against biting stable flies",
+          "Meloxicam + Paracetamol (Melonex Plus): 0.5 mg/kg body weight under registered Veterinary Officer prescription only",
+          "Goat Pox Vaccine (Preventive only for healthy in-contact herd): 3 ml S/C in neck region as per Govt. ring vaccination protocol"
+        ],
+        "vet_protocol_order": [
+          "Quarantine & Shed Biosecurity",
+          "Antiseptic Wash & Fly Repellent",
+          "Supportive Mash Feeding",
+          "Veterinary Medical Treatment",
+          "Ring Vaccination in 5km Zone"
+        ]
+      }
+    }
+  },
+  {
+    "id": "eca7f6c8-3af3-4b82-9cd7-ab23a0161c2e",
+    "farmer_id": null,
+    "farm_id": "demo-farm-nashik",
+    "crop_cycle_id": null,
+    "image_url": "/uploads/crop_1790715788958_699789705.jpg",
+    "predicted_disease": "Lumpy Skin Disease (LSD) / लंपी चर्मरोग",
+    "confidence": 91,
+    "severity_band": "Moderate",
+    "severity_percent": 40,
+    "latitude": 20.085,
+    "longitude": 74.11,
+    "status": "suspected",
+    "created_at": "2026-09-29T21:03:09.985Z",
+    "crop_name": "cattle",
+    "advisory": {
+      "status": "MODERATE",
+      "what_to_do_today": [
+        "Immediately isolate the affected animal inside a separate, well-ventilated, fly-proof shed at least 50 meters away from healthy stock",
+        "Wound Protection: Apply fly-repellent antiseptic ointment (Gamma benzene hexachloride + zinc oxide or Charma-Gel / Lorexane) on broken nodules to prevent secondary fly-strike and maggot infestation",
+        "Antiseptic Wash: Clean ulcerated nodules twice daily with a dilute Potassium Permanganate (KMnO4) solution (1:1000 ratio, faint pink color) or cooled neem leaf decoction",
+        "Supportive Nutrition: Provide easily digestible green fodder, soft mash with jaggery, electrolyte water, and oral multivitamins (Zinc, Vitamin A, E & H / Biotin) to boost epithelial repair",
+        "Feed soft, easily digestible boiled mash (rice/ragi gruel with 50g jaggery and salt)",
+        "Provide fresh tender green fodder and ad libitum clean drinking water with electrolytes"
+      ],
+      "what_to_monitor": [
+        "Measure and record rectal body temperature twice daily using a veterinary thermometer",
+        "Track rumination chews per minute (normal 45-60) and observe water intake",
+        "Inspect lesion margins for secondary bacterial pus or maggot infestation",
+        "Monitor milk yield volume to track systemic recovery timeline"
+      ],
+      "prevention": [
+        "Strict vector control: Install fine insect netting in cattle sheds, eliminate stagnant slurry pools, and burn neem/camphor leaves for herbal smoke repellent",
+        "Isolate all newly purchased or returned livestock for minimum 28 days before herd mixing",
+        "Prohibit common grazing on village pastures during active regional outbreak alerts",
+        "Annual vaccination with Heterologous Live Attenuated Goat Pox Vaccine (Uttarkashi strain) @ 3 ml S/C or Lumpi-ProVacInd under Animal Husbandry Department guidelines",
+        "Disinfect shed premises twice weekly with 2% Virkon-S, 2-3% Sodium Hypochlorite, or 1% Formalin"
+      ],
+      "immediateActions": [
+        "Immediately isolate the affected animal inside a separate, well-ventilated, fly-proof shed at least 50 meters away from healthy stock",
+        "Wound Protection: Apply fly-repellent antiseptic ointment (Gamma benzene hexachloride + zinc oxide or Charma-Gel / Lorexane) on broken nodules to prevent secondary fly-strike and maggot infestation",
+        "Antiseptic Wash: Clean ulcerated nodules twice daily with a dilute Potassium Permanganate (KMnO4) solution (1:1000 ratio, faint pink color) or cooled neem leaf decoction",
+        "Supportive Nutrition: Provide easily digestible green fodder, soft mash with jaggery, electrolyte water, and oral multivitamins (Zinc, Vitamin A, E & H / Biotin) to boost epithelial repair"
+      ],
+      "monitoring": [
+        "Measure and record rectal body temperature twice daily using a veterinary thermometer",
+        "Track rumination chews per minute (normal 45-60) and observe water intake",
+        "Inspect lesion margins for secondary bacterial pus or maggot infestation",
+        "Monitor milk yield volume to track systemic recovery timeline"
+      ],
+      "supportiveCare": [
+        "Feed soft, easily digestible boiled mash (rice/ragi gruel with 50g jaggery and salt)",
+        "Provide fresh tender green fodder and ad libitum clean drinking water with electrolytes"
+      ],
+      "veterinaryEscalation": [
+        "Potassium Permanganate (KMnO4): 1 gram in 10 liters clean water (faint pink) for external skin wash twice daily",
+        "Neem oil + Camphor: Topically applied over closed lumps as natural repellent against biting stable flies",
+        "Meloxicam + Paracetamol (Melonex Plus): 0.5 mg/kg body weight under registered Veterinary Officer prescription only",
+        "Goat Pox Vaccine (Preventive only for healthy in-contact herd): 3 ml S/C in neck region as per Govt. ring vaccination protocol",
+        "Contact Maharashtra Department of Animal Husbandry Toll-Free Helpline: 1962 for doorstep veterinary support",
+        "Consult nearest Veterinary Dispensary if fever or lesions persist beyond 3 days"
+      ],
+      "expert_help_required": false,
+      "disease_info": {
+        "disease_name": "Lumpy Skin Disease (LSD)",
+        "scientific_name": "Capripoxvirus (Poxviridae family)",
+        "description": "A viral transboundary infectious disease affecting cattle and water buffaloes, characterized by high fever, enlarged superficial lymph nodes, and multiple circumscribed firm cutaneous nodules (2-5 cm diameter) all over the body.",
+        "how_it_spreads": [
+          "Primary transmission via hematophagous vector insects: biting flies (Stomoxys calcitrans), mosquitoes (Aedes, Culex), and hard ticks (Rhipicephalus appendiculatus)",
+          "Direct contact with saliva, nasal secretions, and weeping skin scabs of infected animals",
+          "Sharing contaminated community water troughs, feed mangers, and milking equipment",
+          "Movement of cattle across inter-state animal markets and shared grazing pastures",
+          "Iatrogenic transmission via repeated needle and syringe reuse during mass injections"
+        ],
+        "safe_dosage": [
+          "Potassium Permanganate (KMnO4): 1 gram in 10 liters clean water (faint pink) for external skin wash twice daily",
+          "Neem oil + Camphor: Topically applied over closed lumps as natural repellent against biting stable flies",
+          "Meloxicam + Paracetamol (Melonex Plus): 0.5 mg/kg body weight under registered Veterinary Officer prescription only",
+          "Goat Pox Vaccine (Preventive only for healthy in-contact herd): 3 ml S/C in neck region as per Govt. ring vaccination protocol"
+        ],
+        "vet_protocol_order": [
+          "Quarantine & Shed Biosecurity",
+          "Antiseptic Wash & Fly Repellent",
+          "Supportive Mash Feeding",
+          "Veterinary Medical Treatment",
+          "Ring Vaccination in 5km Zone"
+        ]
+      }
+    }
+  },
+  {
+    "id": "a49db786-42eb-472c-b658-11b263ca3ebd",
+    "farmer_id": null,
+    "farm_id": "demo-farm-nashik",
+    "crop_cycle_id": null,
+    "image_url": "/uploads/crop_1790715681824_935222768.jpg",
+    "predicted_disease": "Lumpy Skin Disease (LSD) / लंपी चर्मरोग",
+    "confidence": 91,
+    "severity_band": "Moderate",
+    "severity_percent": 40,
+    "latitude": 20.085,
+    "longitude": 74.11,
+    "status": "suspected",
+    "created_at": "2026-09-29T21:01:36.927Z",
+    "crop_name": "cattle",
+    "advisory": {
+      "status": "MODERATE",
+      "what_to_do_today": [
+        "Immediately isolate the affected animal inside a separate, well-ventilated, fly-proof shed at least 50 meters away from healthy stock",
+        "Wound Protection: Apply fly-repellent antiseptic ointment (Gamma benzene hexachloride + zinc oxide or Charma-Gel / Lorexane) on broken nodules to prevent secondary fly-strike and maggot infestation",
+        "Antiseptic Wash: Clean ulcerated nodules twice daily with a dilute Potassium Permanganate (KMnO4) solution (1:1000 ratio, faint pink color) or cooled neem leaf decoction",
+        "Supportive Nutrition: Provide easily digestible green fodder, soft mash with jaggery, electrolyte water, and oral multivitamins (Zinc, Vitamin A, E & H / Biotin) to boost epithelial repair",
+        "Feed soft, easily digestible boiled mash (rice/ragi gruel with 50g jaggery and salt)",
+        "Provide fresh tender green fodder and ad libitum clean drinking water with electrolytes"
+      ],
+      "what_to_monitor": [
+        "Measure and record rectal body temperature twice daily using a veterinary thermometer",
+        "Track rumination chews per minute (normal 45-60) and observe water intake",
+        "Inspect lesion margins for secondary bacterial pus or maggot infestation",
+        "Monitor milk yield volume to track systemic recovery timeline"
+      ],
+      "prevention": [
+        "Strict vector control: Install fine insect netting in cattle sheds, eliminate stagnant slurry pools, and burn neem/camphor leaves for herbal smoke repellent",
+        "Isolate all newly purchased or returned livestock for minimum 28 days before herd mixing",
+        "Prohibit common grazing on village pastures during active regional outbreak alerts",
+        "Annual vaccination with Heterologous Live Attenuated Goat Pox Vaccine (Uttarkashi strain) @ 3 ml S/C or Lumpi-ProVacInd under Animal Husbandry Department guidelines",
+        "Disinfect shed premises twice weekly with 2% Virkon-S, 2-3% Sodium Hypochlorite, or 1% Formalin"
+      ],
+      "immediateActions": [
+        "Immediately isolate the affected animal inside a separate, well-ventilated, fly-proof shed at least 50 meters away from healthy stock",
+        "Wound Protection: Apply fly-repellent antiseptic ointment (Gamma benzene hexachloride + zinc oxide or Charma-Gel / Lorexane) on broken nodules to prevent secondary fly-strike and maggot infestation",
+        "Antiseptic Wash: Clean ulcerated nodules twice daily with a dilute Potassium Permanganate (KMnO4) solution (1:1000 ratio, faint pink color) or cooled neem leaf decoction",
+        "Supportive Nutrition: Provide easily digestible green fodder, soft mash with jaggery, electrolyte water, and oral multivitamins (Zinc, Vitamin A, E & H / Biotin) to boost epithelial repair"
+      ],
+      "monitoring": [
+        "Measure and record rectal body temperature twice daily using a veterinary thermometer",
+        "Track rumination chews per minute (normal 45-60) and observe water intake",
+        "Inspect lesion margins for secondary bacterial pus or maggot infestation",
+        "Monitor milk yield volume to track systemic recovery timeline"
+      ],
+      "supportiveCare": [
+        "Feed soft, easily digestible boiled mash (rice/ragi gruel with 50g jaggery and salt)",
+        "Provide fresh tender green fodder and ad libitum clean drinking water with electrolytes"
+      ],
+      "veterinaryEscalation": [
+        "Potassium Permanganate (KMnO4): 1 gram in 10 liters clean water (faint pink) for external skin wash twice daily",
+        "Neem oil + Camphor: Topically applied over closed lumps as natural repellent against biting stable flies",
+        "Meloxicam + Paracetamol (Melonex Plus): 0.5 mg/kg body weight under registered Veterinary Officer prescription only",
+        "Goat Pox Vaccine (Preventive only for healthy in-contact herd): 3 ml S/C in neck region as per Govt. ring vaccination protocol",
+        "Contact Maharashtra Department of Animal Husbandry Toll-Free Helpline: 1962 for doorstep veterinary support",
+        "Consult nearest Veterinary Dispensary if fever or lesions persist beyond 3 days"
+      ],
+      "expert_help_required": false,
+      "disease_info": {
+        "disease_name": "Lumpy Skin Disease (LSD)",
+        "scientific_name": "Capripoxvirus (Poxviridae family)",
+        "description": "A viral transboundary infectious disease affecting cattle and water buffaloes, characterized by high fever, enlarged superficial lymph nodes, and multiple circumscribed firm cutaneous nodules (2-5 cm diameter) all over the body.",
+        "how_it_spreads": [
+          "Primary transmission via hematophagous vector insects: biting flies (Stomoxys calcitrans), mosquitoes (Aedes, Culex), and hard ticks (Rhipicephalus appendiculatus)",
+          "Direct contact with saliva, nasal secretions, and weeping skin scabs of infected animals",
+          "Sharing contaminated community water troughs, feed mangers, and milking equipment",
+          "Movement of cattle across inter-state animal markets and shared grazing pastures",
+          "Iatrogenic transmission via repeated needle and syringe reuse during mass injections"
+        ],
+        "safe_dosage": [
+          "Potassium Permanganate (KMnO4): 1 gram in 10 liters clean water (faint pink) for external skin wash twice daily",
+          "Neem oil + Camphor: Topically applied over closed lumps as natural repellent against biting stable flies",
+          "Meloxicam + Paracetamol (Melonex Plus): 0.5 mg/kg body weight under registered Veterinary Officer prescription only",
+          "Goat Pox Vaccine (Preventive only for healthy in-contact herd): 3 ml S/C in neck region as per Govt. ring vaccination protocol"
+        ],
+        "vet_protocol_order": [
+          "Quarantine & Shed Biosecurity",
+          "Antiseptic Wash & Fly Repellent",
+          "Supportive Mash Feeding",
+          "Veterinary Medical Treatment",
+          "Ring Vaccination in 5km Zone"
+        ]
+      }
+    }
+  },
+  {
+    "id": "aaf51535-8791-4412-9b9b-e132e3918fd2",
+    "farmer_id": "KSF-BJFWYP",
+    "farm_id": "0402f9d2-e1ff-4697-af4f-d5383a90193c",
+    "crop_cycle_id": null,
+    "image_url": "/uploads/crop_1790715345768_548951262.jpg",
+    "predicted_disease": "Lumpy Skin Disease (LSD) / लंपी चर्मरोग",
+    "confidence": 91,
+    "severity_band": "Moderate",
+    "severity_percent": 40,
+    "latitude": 20.085,
+    "longitude": 74.11,
+    "status": "suspected",
+    "created_at": "2026-09-29T20:56:00.697Z",
+    "crop_name": "cattle",
+    "advisory": {
+      "status": "MODERATE",
+      "what_to_do_today": [
+        "Immediately isolate the affected animal inside a separate, well-ventilated, fly-proof shed at least 50 meters away from healthy stock",
+        "Wound Protection: Apply fly-repellent antiseptic ointment (Gamma benzene hexachloride + zinc oxide or Charma-Gel / Lorexane) on broken nodules to prevent secondary fly-strike and maggot infestation",
+        "Antiseptic Wash: Clean ulcerated nodules twice daily with a dilute Potassium Permanganate (KMnO4) solution (1:1000 ratio, faint pink color) or cooled neem leaf decoction",
+        "Supportive Nutrition: Provide easily digestible green fodder, soft mash with jaggery, electrolyte water, and oral multivitamins (Zinc, Vitamin A, E & H / Biotin) to boost epithelial repair",
+        "Feed soft, easily digestible boiled mash (rice/ragi gruel with 50g jaggery and salt)",
+        "Provide fresh tender green fodder and ad libitum clean drinking water with electrolytes"
+      ],
+      "what_to_monitor": [
+        "Measure and record rectal body temperature twice daily using a veterinary thermometer",
+        "Track rumination chews per minute (normal 45-60) and observe water intake",
+        "Inspect lesion margins for secondary bacterial pus or maggot infestation",
+        "Monitor milk yield volume to track systemic recovery timeline"
+      ],
+      "prevention": [
+        "Strict vector control: Install fine insect netting in cattle sheds, eliminate stagnant slurry pools, and burn neem/camphor leaves for herbal smoke repellent",
+        "Isolate all newly purchased or returned livestock for minimum 28 days before herd mixing",
+        "Prohibit common grazing on village pastures during active regional outbreak alerts",
+        "Annual vaccination with Heterologous Live Attenuated Goat Pox Vaccine (Uttarkashi strain) @ 3 ml S/C or Lumpi-ProVacInd under Animal Husbandry Department guidelines",
+        "Disinfect shed premises twice weekly with 2% Virkon-S, 2-3% Sodium Hypochlorite, or 1% Formalin"
+      ],
+      "immediateActions": [
+        "Immediately isolate the affected animal inside a separate, well-ventilated, fly-proof shed at least 50 meters away from healthy stock",
+        "Wound Protection: Apply fly-repellent antiseptic ointment (Gamma benzene hexachloride + zinc oxide or Charma-Gel / Lorexane) on broken nodules to prevent secondary fly-strike and maggot infestation",
+        "Antiseptic Wash: Clean ulcerated nodules twice daily with a dilute Potassium Permanganate (KMnO4) solution (1:1000 ratio, faint pink color) or cooled neem leaf decoction",
+        "Supportive Nutrition: Provide easily digestible green fodder, soft mash with jaggery, electrolyte water, and oral multivitamins (Zinc, Vitamin A, E & H / Biotin) to boost epithelial repair"
+      ],
+      "monitoring": [
+        "Measure and record rectal body temperature twice daily using a veterinary thermometer",
+        "Track rumination chews per minute (normal 45-60) and observe water intake",
+        "Inspect lesion margins for secondary bacterial pus or maggot infestation",
+        "Monitor milk yield volume to track systemic recovery timeline"
+      ],
+      "supportiveCare": [
+        "Feed soft, easily digestible boiled mash (rice/ragi gruel with 50g jaggery and salt)",
+        "Provide fresh tender green fodder and ad libitum clean drinking water with electrolytes"
+      ],
+      "veterinaryEscalation": [
+        "Potassium Permanganate (KMnO4): 1 gram in 10 liters clean water (faint pink) for external skin wash twice daily",
+        "Neem oil + Camphor: Topically applied over closed lumps as natural repellent against biting stable flies",
+        "Meloxicam + Paracetamol (Melonex Plus): 0.5 mg/kg body weight under registered Veterinary Officer prescription only",
+        "Goat Pox Vaccine (Preventive only for healthy in-contact herd): 3 ml S/C in neck region as per Govt. ring vaccination protocol",
+        "Contact Maharashtra Department of Animal Husbandry Toll-Free Helpline: 1962 for doorstep veterinary support",
+        "Consult nearest Veterinary Dispensary if fever or lesions persist beyond 3 days"
+      ],
+      "expert_help_required": false,
+      "disease_info": {
+        "disease_name": "Lumpy Skin Disease (LSD)",
+        "scientific_name": "Capripoxvirus (Poxviridae family)",
+        "description": "A viral transboundary infectious disease affecting cattle and water buffaloes, characterized by high fever, enlarged superficial lymph nodes, and multiple circumscribed firm cutaneous nodules (2-5 cm diameter) all over the body.",
+        "how_it_spreads": [
+          "Primary transmission via hematophagous vector insects: biting flies (Stomoxys calcitrans), mosquitoes (Aedes, Culex), and hard ticks (Rhipicephalus appendiculatus)",
+          "Direct contact with saliva, nasal secretions, and weeping skin scabs of infected animals",
+          "Sharing contaminated community water troughs, feed mangers, and milking equipment",
+          "Movement of cattle across inter-state animal markets and shared grazing pastures",
+          "Iatrogenic transmission via repeated needle and syringe reuse during mass injections"
+        ],
+        "safe_dosage": [
+          "Potassium Permanganate (KMnO4): 1 gram in 10 liters clean water (faint pink) for external skin wash twice daily",
+          "Neem oil + Camphor: Topically applied over closed lumps as natural repellent against biting stable flies",
+          "Meloxicam + Paracetamol (Melonex Plus): 0.5 mg/kg body weight under registered Veterinary Officer prescription only",
+          "Goat Pox Vaccine (Preventive only for healthy in-contact herd): 3 ml S/C in neck region as per Govt. ring vaccination protocol"
+        ],
+        "vet_protocol_order": [
+          "Quarantine & Shed Biosecurity",
+          "Antiseptic Wash & Fly Repellent",
+          "Supportive Mash Feeding",
+          "Veterinary Medical Treatment",
+          "Ring Vaccination in 5km Zone"
+        ]
+      }
+    }
+  },
+  {
+    "id": "1c32dac9-7e62-49ae-86ca-d6836bfeea45",
+    "farmer_id": "KSF-BJFWYP",
+    "farm_id": "0402f9d2-e1ff-4697-af4f-d5383a90193c",
+    "crop_cycle_id": null,
+    "image_url": "/uploads/crop_1790715304686_409710606.jpg",
+    "predicted_disease": "Lumpy Skin Disease (LSD) / लंपी चर्मरोग",
+    "confidence": 91,
+    "severity_band": "Moderate",
+    "severity_percent": 40,
+    "latitude": 20.085,
+    "longitude": 74.11,
+    "status": "suspected",
+    "created_at": "2026-09-29T20:55:19.693Z",
+    "crop_name": "cattle",
+    "advisory": {
+      "status": "MODERATE",
+      "what_to_do_today": [
+        "Immediately isolate the affected animal inside a separate, well-ventilated, fly-proof shed at least 50 meters away from healthy stock",
+        "Wound Protection: Apply fly-repellent antiseptic ointment (Gamma benzene hexachloride + zinc oxide or Charma-Gel / Lorexane) on broken nodules to prevent secondary fly-strike and maggot infestation",
+        "Antiseptic Wash: Clean ulcerated nodules twice daily with a dilute Potassium Permanganate (KMnO4) solution (1:1000 ratio, faint pink color) or cooled neem leaf decoction",
+        "Supportive Nutrition: Provide easily digestible green fodder, soft mash with jaggery, electrolyte water, and oral multivitamins (Zinc, Vitamin A, E & H / Biotin) to boost epithelial repair",
+        "Feed soft, easily digestible boiled mash (rice/ragi gruel with 50g jaggery and salt)",
+        "Provide fresh tender green fodder and ad libitum clean drinking water with electrolytes"
+      ],
+      "what_to_monitor": [
+        "Measure and record rectal body temperature twice daily using a veterinary thermometer",
+        "Track rumination chews per minute (normal 45-60) and observe water intake",
+        "Inspect lesion margins for secondary bacterial pus or maggot infestation",
+        "Monitor milk yield volume to track systemic recovery timeline"
+      ],
+      "prevention": [
+        "Strict vector control: Install fine insect netting in cattle sheds, eliminate stagnant slurry pools, and burn neem/camphor leaves for herbal smoke repellent",
+        "Isolate all newly purchased or returned livestock for minimum 28 days before herd mixing",
+        "Prohibit common grazing on village pastures during active regional outbreak alerts",
+        "Annual vaccination with Heterologous Live Attenuated Goat Pox Vaccine (Uttarkashi strain) @ 3 ml S/C or Lumpi-ProVacInd under Animal Husbandry Department guidelines",
+        "Disinfect shed premises twice weekly with 2% Virkon-S, 2-3% Sodium Hypochlorite, or 1% Formalin"
+      ],
+      "immediateActions": [
+        "Immediately isolate the affected animal inside a separate, well-ventilated, fly-proof shed at least 50 meters away from healthy stock",
+        "Wound Protection: Apply fly-repellent antiseptic ointment (Gamma benzene hexachloride + zinc oxide or Charma-Gel / Lorexane) on broken nodules to prevent secondary fly-strike and maggot infestation",
+        "Antiseptic Wash: Clean ulcerated nodules twice daily with a dilute Potassium Permanganate (KMnO4) solution (1:1000 ratio, faint pink color) or cooled neem leaf decoction",
+        "Supportive Nutrition: Provide easily digestible green fodder, soft mash with jaggery, electrolyte water, and oral multivitamins (Zinc, Vitamin A, E & H / Biotin) to boost epithelial repair"
+      ],
+      "monitoring": [
+        "Measure and record rectal body temperature twice daily using a veterinary thermometer",
+        "Track rumination chews per minute (normal 45-60) and observe water intake",
+        "Inspect lesion margins for secondary bacterial pus or maggot infestation",
+        "Monitor milk yield volume to track systemic recovery timeline"
+      ],
+      "supportiveCare": [
+        "Feed soft, easily digestible boiled mash (rice/ragi gruel with 50g jaggery and salt)",
+        "Provide fresh tender green fodder and ad libitum clean drinking water with electrolytes"
+      ],
+      "veterinaryEscalation": [
+        "Potassium Permanganate (KMnO4): 1 gram in 10 liters clean water (faint pink) for external skin wash twice daily",
+        "Neem oil + Camphor: Topically applied over closed lumps as natural repellent against biting stable flies",
+        "Meloxicam + Paracetamol (Melonex Plus): 0.5 mg/kg body weight under registered Veterinary Officer prescription only",
+        "Goat Pox Vaccine (Preventive only for healthy in-contact herd): 3 ml S/C in neck region as per Govt. ring vaccination protocol",
+        "Contact Maharashtra Department of Animal Husbandry Toll-Free Helpline: 1962 for doorstep veterinary support",
+        "Consult nearest Veterinary Dispensary if fever or lesions persist beyond 3 days"
+      ],
+      "expert_help_required": false,
+      "disease_info": {
+        "disease_name": "Lumpy Skin Disease (LSD)",
+        "scientific_name": "Capripoxvirus (Poxviridae family)",
+        "description": "A viral transboundary infectious disease affecting cattle and water buffaloes, characterized by high fever, enlarged superficial lymph nodes, and multiple circumscribed firm cutaneous nodules (2-5 cm diameter) all over the body.",
+        "how_it_spreads": [
+          "Primary transmission via hematophagous vector insects: biting flies (Stomoxys calcitrans), mosquitoes (Aedes, Culex), and hard ticks (Rhipicephalus appendiculatus)",
+          "Direct contact with saliva, nasal secretions, and weeping skin scabs of infected animals",
+          "Sharing contaminated community water troughs, feed mangers, and milking equipment",
+          "Movement of cattle across inter-state animal markets and shared grazing pastures",
+          "Iatrogenic transmission via repeated needle and syringe reuse during mass injections"
+        ],
+        "safe_dosage": [
+          "Potassium Permanganate (KMnO4): 1 gram in 10 liters clean water (faint pink) for external skin wash twice daily",
+          "Neem oil + Camphor: Topically applied over closed lumps as natural repellent against biting stable flies",
+          "Meloxicam + Paracetamol (Melonex Plus): 0.5 mg/kg body weight under registered Veterinary Officer prescription only",
+          "Goat Pox Vaccine (Preventive only for healthy in-contact herd): 3 ml S/C in neck region as per Govt. ring vaccination protocol"
+        ],
+        "vet_protocol_order": [
+          "Quarantine & Shed Biosecurity",
+          "Antiseptic Wash & Fly Repellent",
+          "Supportive Mash Feeding",
+          "Veterinary Medical Treatment",
+          "Ring Vaccination in 5km Zone"
+        ]
+      }
+    }
+  },
+  {
+    "id": "05f2ae1f-ed6a-417b-88cd-f8a2e7c4512b",
+    "farmer_id": "KSF-BJFWYP",
+    "farm_id": "0402f9d2-e1ff-4697-af4f-d5383a90193c",
+    "crop_cycle_id": null,
+    "image_url": "/uploads/crop_1790715250021_840639960.jpg",
+    "predicted_disease": "Bovine Mastitis (थनैला रोग / स्तनदाह)",
+    "confidence": 88,
+    "severity_band": "Moderate",
+    "severity_percent": 40,
+    "latitude": 20.085,
+    "longitude": 74.11,
+    "status": "suspected",
+    "created_at": "2026-09-29T20:54:24.939Z",
+    "crop_name": "cattle",
+    "advisory": {
+      "status": "MODERATE",
+      "what_to_do_today": [
+        "Stripping & Cold Fermentation: Frequent complete hand-milking/stripping of the affected quarter every 2 hours to remove bacterial toxins",
+        "Cold Water Compress: Apply cold water splash or ice packs to the hot inflamed udder quarter during acute swelling",
+        "Intramammary Infusion: Administer veterinary-prescribed intramammary antibiotic tube strictly under aseptic cannula insertion",
+        "Proper Disposal: Never discard mastitic milk onto the shed floor or feed raw to calves; boil or safely bury with disinfectant",
+        "Supportive Anti-inflammatory: Administer systemic anti-inflammatory (Meloxicam) to alleviate udder pain and fever",
+        "Feed soft, easily digestible boiled mash (rice/ragi gruel with 50g jaggery and salt)",
+        "Provide fresh tender green fodder and ad libitum clean drinking water with electrolytes"
+      ],
+      "what_to_monitor": [
+        "Measure and record rectal body temperature twice daily using a veterinary thermometer",
+        "Track rumination chews per minute (normal 45-60) and observe water intake",
+        "Inspect lesion margins for secondary bacterial pus or maggot infestation",
+        "Monitor milk yield volume to track systemic recovery timeline"
+      ],
+      "prevention": [
+        "Post-milking teat dipping: Dip all 4 teats immediately after milking in 0.5% Povidone-Iodine solution",
+        "Keep cows standing for 45 minutes post-milking by providing fresh green feed, allowing the teat sphincter to close tightly",
+        "Clean shed flooring daily; ensure dry bedded stalls free of pooled slurry and sharp stones",
+        "Practice clean milk production: wash hands, use separate clean towels for each animal, and milk infected quarters last",
+        "Dry Cow Therapy (DCT) at the end of lactation using approved long-acting intramammary infusion"
+      ],
+      "immediateActions": [
+        "Stripping & Cold Fermentation: Frequent complete hand-milking/stripping of the affected quarter every 2 hours to remove bacterial toxins",
+        "Cold Water Compress: Apply cold water splash or ice packs to the hot inflamed udder quarter during acute swelling",
+        "Intramammary Infusion: Administer veterinary-prescribed intramammary antibiotic tube strictly under aseptic cannula insertion",
+        "Proper Disposal: Never discard mastitic milk onto the shed floor or feed raw to calves; boil or safely bury with disinfectant",
+        "Supportive Anti-inflammatory: Administer systemic anti-inflammatory (Meloxicam) to alleviate udder pain and fever"
+      ],
+      "monitoring": [
+        "Measure and record rectal body temperature twice daily using a veterinary thermometer",
+        "Track rumination chews per minute (normal 45-60) and observe water intake",
+        "Inspect lesion margins for secondary bacterial pus or maggot infestation",
+        "Monitor milk yield volume to track systemic recovery timeline"
+      ],
+      "supportiveCare": [
+        "Feed soft, easily digestible boiled mash (rice/ragi gruel with 50g jaggery and salt)",
+        "Provide fresh tender green fodder and ad libitum clean drinking water with electrolytes"
+      ],
+      "veterinaryEscalation": [
+        "Povidone-Iodine Teat Dip (0.5% active iodine): Dip 2 cm of each teat immediately post-milking daily",
+        "Trisodium Citrate (Oral): 12-15 grams daily mixed in jaggery for 7 days to restore milk pH and udder defense",
+        "Cloxacillin + Ampicillin intramammary infusion: 1 tube infused per quarter after full evacuation (veterinary advice)",
+        "Contact Maharashtra Department of Animal Husbandry Toll-Free Helpline: 1962 for doorstep veterinary support",
+        "Consult nearest Veterinary Dispensary if fever or lesions persist beyond 3 days"
+      ],
+      "expert_help_required": false,
+      "disease_info": {
+        "disease_name": "Bovine Mastitis",
+        "scientific_name": "Staphylococcus aureus / Streptococcus agalactiae / E. coli",
+        "description": "Inflammation of the mammary gland and udder tissue, predominantly bacterial in origin. Results in physical, chemical, and microbiological changes in milk, along with pathological changes in glandular udder tissue.",
+        "how_it_spreads": [
+          "Contagious transmission during milking through milkers hands, common udder cloths, and teat cups",
+          "Environmental transmission: unhygienic, wet, dung-soiled shed floors entering open teat sphincter post-milking",
+          "Teat skin cracks, wounds, tick bites, and incomplete milking leaving residual milk"
+        ],
+        "safe_dosage": [
+          "Povidone-Iodine Teat Dip (0.5% active iodine): Dip 2 cm of each teat immediately post-milking daily",
+          "Trisodium Citrate (Oral): 12-15 grams daily mixed in jaggery for 7 days to restore milk pH and udder defense",
+          "Cloxacillin + Ampicillin intramammary infusion: 1 tube infused per quarter after full evacuation (veterinary advice)"
+        ],
+        "vet_protocol_order": [
+          "Quarantine & Shed Biosecurity",
+          "Antiseptic Wash & Fly Repellent",
+          "Supportive Mash Feeding",
+          "Veterinary Medical Treatment",
+          "Ring Vaccination in 5km Zone"
+        ]
+      }
+    }
+  },
+  {
+    "id": "c0605597-e3f0-4534-8f3b-3cd500596582",
+    "farmer_id": "KSF-BJFWYP",
+    "farm_id": "0402f9d2-e1ff-4697-af4f-d5383a90193c",
+    "crop_cycle_id": null,
+    "image_url": "/uploads/crop_1790715229150_19790759.jpg",
+    "predicted_disease": "Bovine Mastitis (थनैला रोग / स्तनदाह)",
+    "confidence": 88,
+    "severity_band": "Moderate",
+    "severity_percent": 40,
+    "latitude": 20.085,
+    "longitude": 74.11,
+    "status": "suspected",
+    "created_at": "2026-09-29T20:54:04.111Z",
+    "crop_name": "cattle",
+    "advisory": {
+      "status": "MODERATE",
+      "what_to_do_today": [
+        "Stripping & Cold Fermentation: Frequent complete hand-milking/stripping of the affected quarter every 2 hours to remove bacterial toxins",
+        "Cold Water Compress: Apply cold water splash or ice packs to the hot inflamed udder quarter during acute swelling",
+        "Intramammary Infusion: Administer veterinary-prescribed intramammary antibiotic tube strictly under aseptic cannula insertion",
+        "Proper Disposal: Never discard mastitic milk onto the shed floor or feed raw to calves; boil or safely bury with disinfectant",
+        "Supportive Anti-inflammatory: Administer systemic anti-inflammatory (Meloxicam) to alleviate udder pain and fever",
+        "Feed soft, easily digestible boiled mash (rice/ragi gruel with 50g jaggery and salt)",
+        "Provide fresh tender green fodder and ad libitum clean drinking water with electrolytes"
+      ],
+      "what_to_monitor": [
+        "Measure and record rectal body temperature twice daily using a veterinary thermometer",
+        "Track rumination chews per minute (normal 45-60) and observe water intake",
+        "Inspect lesion margins for secondary bacterial pus or maggot infestation",
+        "Monitor milk yield volume to track systemic recovery timeline"
+      ],
+      "prevention": [
+        "Post-milking teat dipping: Dip all 4 teats immediately after milking in 0.5% Povidone-Iodine solution",
+        "Keep cows standing for 45 minutes post-milking by providing fresh green feed, allowing the teat sphincter to close tightly",
+        "Clean shed flooring daily; ensure dry bedded stalls free of pooled slurry and sharp stones",
+        "Practice clean milk production: wash hands, use separate clean towels for each animal, and milk infected quarters last",
+        "Dry Cow Therapy (DCT) at the end of lactation using approved long-acting intramammary infusion"
+      ],
+      "immediateActions": [
+        "Stripping & Cold Fermentation: Frequent complete hand-milking/stripping of the affected quarter every 2 hours to remove bacterial toxins",
+        "Cold Water Compress: Apply cold water splash or ice packs to the hot inflamed udder quarter during acute swelling",
+        "Intramammary Infusion: Administer veterinary-prescribed intramammary antibiotic tube strictly under aseptic cannula insertion",
+        "Proper Disposal: Never discard mastitic milk onto the shed floor or feed raw to calves; boil or safely bury with disinfectant",
+        "Supportive Anti-inflammatory: Administer systemic anti-inflammatory (Meloxicam) to alleviate udder pain and fever"
+      ],
+      "monitoring": [
+        "Measure and record rectal body temperature twice daily using a veterinary thermometer",
+        "Track rumination chews per minute (normal 45-60) and observe water intake",
+        "Inspect lesion margins for secondary bacterial pus or maggot infestation",
+        "Monitor milk yield volume to track systemic recovery timeline"
+      ],
+      "supportiveCare": [
+        "Feed soft, easily digestible boiled mash (rice/ragi gruel with 50g jaggery and salt)",
+        "Provide fresh tender green fodder and ad libitum clean drinking water with electrolytes"
+      ],
+      "veterinaryEscalation": [
+        "Povidone-Iodine Teat Dip (0.5% active iodine): Dip 2 cm of each teat immediately post-milking daily",
+        "Trisodium Citrate (Oral): 12-15 grams daily mixed in jaggery for 7 days to restore milk pH and udder defense",
+        "Cloxacillin + Ampicillin intramammary infusion: 1 tube infused per quarter after full evacuation (veterinary advice)",
+        "Contact Maharashtra Department of Animal Husbandry Toll-Free Helpline: 1962 for doorstep veterinary support",
+        "Consult nearest Veterinary Dispensary if fever or lesions persist beyond 3 days"
+      ],
+      "expert_help_required": false,
+      "disease_info": {
+        "disease_name": "Bovine Mastitis",
+        "scientific_name": "Staphylococcus aureus / Streptococcus agalactiae / E. coli",
+        "description": "Inflammation of the mammary gland and udder tissue, predominantly bacterial in origin. Results in physical, chemical, and microbiological changes in milk, along with pathological changes in glandular udder tissue.",
+        "how_it_spreads": [
+          "Contagious transmission during milking through milkers hands, common udder cloths, and teat cups",
+          "Environmental transmission: unhygienic, wet, dung-soiled shed floors entering open teat sphincter post-milking",
+          "Teat skin cracks, wounds, tick bites, and incomplete milking leaving residual milk"
+        ],
+        "safe_dosage": [
+          "Povidone-Iodine Teat Dip (0.5% active iodine): Dip 2 cm of each teat immediately post-milking daily",
+          "Trisodium Citrate (Oral): 12-15 grams daily mixed in jaggery for 7 days to restore milk pH and udder defense",
+          "Cloxacillin + Ampicillin intramammary infusion: 1 tube infused per quarter after full evacuation (veterinary advice)"
+        ],
+        "vet_protocol_order": [
+          "Quarantine & Shed Biosecurity",
+          "Antiseptic Wash & Fly Repellent",
+          "Supportive Mash Feeding",
+          "Veterinary Medical Treatment",
+          "Ring Vaccination in 5km Zone"
+        ]
+      }
+    }
+  },
+  {
+    "id": "93dda767-f46c-4890-8aa6-4509475aa16b",
+    "farmer_id": null,
+    "farm_id": "demo-farm-nashik",
+    "crop_cycle_id": null,
+    "image_url": "/uploads/crop_1790715141678_42535384.jpg",
+    "predicted_disease": "Lumpy Skin Disease (LSD) / लंपी चर्मरोग",
+    "confidence": 91,
+    "severity_band": "High",
+    "severity_percent": 70,
+    "latitude": 20.085,
+    "longitude": 74.11,
+    "status": "expert_review_pending",
+    "created_at": "2026-09-29T20:52:36.615Z",
+    "crop_name": "Cattle",
+    "advisory": {
+      "status": "HIGH",
+      "what_to_do_today": [
+        "Immediately isolate the affected animal inside a separate, well-ventilated, fly-proof shed at least 50 meters away from healthy stock",
+        "Wound Protection: Apply fly-repellent antiseptic ointment (Gamma benzene hexachloride + zinc oxide or Charma-Gel / Lorexane) on broken nodules to prevent secondary fly-strike and maggot infestation",
+        "Antiseptic Wash: Clean ulcerated nodules twice daily with a dilute Potassium Permanganate (KMnO4) solution (1:1000 ratio, faint pink color) or cooled neem leaf decoction",
+        "Supportive Nutrition: Provide easily digestible green fodder, soft mash with jaggery, electrolyte water, and oral multivitamins (Zinc, Vitamin A, E & H / Biotin) to boost epithelial repair",
+        "Feed soft, easily digestible boiled mash (rice/ragi gruel with 50g jaggery and salt)",
+        "Provide fresh tender green fodder and ad libitum clean drinking water with electrolytes",
+        "Potassium Permanganate (KMnO4): 1 gram in 10 liters clean water (faint pink) for external skin wash twice daily"
+      ],
+      "what_to_monitor": [
+        "Measure and record rectal body temperature twice daily using a veterinary thermometer",
+        "Track rumination chews per minute (normal 45-60) and observe water intake",
+        "Inspect lesion margins for secondary bacterial pus or maggot infestation",
+        "Monitor milk yield volume to track systemic recovery timeline"
+      ],
+      "prevention": [
+        "Strict vector control: Install fine insect netting in cattle sheds, eliminate stagnant slurry pools, and burn neem/camphor leaves for herbal smoke repellent",
+        "Isolate all newly purchased or returned livestock for minimum 28 days before herd mixing",
+        "Prohibit common grazing on village pastures during active regional outbreak alerts",
+        "Annual vaccination with Heterologous Live Attenuated Goat Pox Vaccine (Uttarkashi strain) @ 3 ml S/C or Lumpi-ProVacInd under Animal Husbandry Department guidelines",
+        "Disinfect shed premises twice weekly with 2% Virkon-S, 2-3% Sodium Hypochlorite, or 1% Formalin"
+      ],
+      "immediateActions": [
+        "Immediately isolate the affected animal inside a separate, well-ventilated, fly-proof shed at least 50 meters away from healthy stock",
+        "Wound Protection: Apply fly-repellent antiseptic ointment (Gamma benzene hexachloride + zinc oxide or Charma-Gel / Lorexane) on broken nodules to prevent secondary fly-strike and maggot infestation",
+        "Antiseptic Wash: Clean ulcerated nodules twice daily with a dilute Potassium Permanganate (KMnO4) solution (1:1000 ratio, faint pink color) or cooled neem leaf decoction",
+        "Supportive Nutrition: Provide easily digestible green fodder, soft mash with jaggery, electrolyte water, and oral multivitamins (Zinc, Vitamin A, E & H / Biotin) to boost epithelial repair"
+      ],
+      "monitoring": [
+        "Measure and record rectal body temperature twice daily using a veterinary thermometer",
+        "Track rumination chews per minute (normal 45-60) and observe water intake",
+        "Inspect lesion margins for secondary bacterial pus or maggot infestation",
+        "Monitor milk yield volume to track systemic recovery timeline"
+      ],
+      "supportiveCare": [
+        "Feed soft, easily digestible boiled mash (rice/ragi gruel with 50g jaggery and salt)",
+        "Provide fresh tender green fodder and ad libitum clean drinking water with electrolytes"
+      ],
+      "veterinaryEscalation": [
+        "Potassium Permanganate (KMnO4): 1 gram in 10 liters clean water (faint pink) for external skin wash twice daily",
+        "Neem oil + Camphor: Topically applied over closed lumps as natural repellent against biting stable flies",
+        "Meloxicam + Paracetamol (Melonex Plus): 0.5 mg/kg body weight under registered Veterinary Officer prescription only",
+        "Goat Pox Vaccine (Preventive only for healthy in-contact herd): 3 ml S/C in neck region as per Govt. ring vaccination protocol",
+        "Contact Maharashtra Department of Animal Husbandry Toll-Free Helpline: 1962 for doorstep veterinary support",
+        "High severity detected: Mandatory notification to Taluka Veterinary Officer for ring vaccination protocol"
+      ],
+      "expert_help_required": true,
+      "disease_info": {
+        "disease_name": "Lumpy Skin Disease (LSD)",
+        "scientific_name": "Capripoxvirus (Poxviridae family)",
+        "description": "A viral transboundary infectious disease affecting cattle and water buffaloes, characterized by high fever, enlarged superficial lymph nodes, and multiple circumscribed firm cutaneous nodules (2-5 cm diameter) all over the body.",
+        "how_it_spreads": [
+          "Primary transmission via hematophagous vector insects: biting flies (Stomoxys calcitrans), mosquitoes (Aedes, Culex), and hard ticks (Rhipicephalus appendiculatus)",
+          "Direct contact with saliva, nasal secretions, and weeping skin scabs of infected animals",
+          "Sharing contaminated community water troughs, feed mangers, and milking equipment",
+          "Movement of cattle across inter-state animal markets and shared grazing pastures",
+          "Iatrogenic transmission via repeated needle and syringe reuse during mass injections"
+        ],
+        "safe_dosage": [
+          "Potassium Permanganate (KMnO4): 1 gram in 10 liters clean water (faint pink) for external skin wash twice daily",
+          "Neem oil + Camphor: Topically applied over closed lumps as natural repellent against biting stable flies",
+          "Meloxicam + Paracetamol (Melonex Plus): 0.5 mg/kg body weight under registered Veterinary Officer prescription only",
+          "Goat Pox Vaccine (Preventive only for healthy in-contact herd): 3 ml S/C in neck region as per Govt. ring vaccination protocol"
+        ],
+        "vet_protocol_order": [
+          "Quarantine & Shed Biosecurity",
+          "Antiseptic Wash & Fly Repellent",
+          "Supportive Mash Feeding",
+          "Veterinary Medical Treatment",
+          "Ring Vaccination in 5km Zone"
+        ]
+      }
+    }
+  },
+  {
+    "id": "6a7de22f-0379-4d91-81c7-dd54e39f6143",
+    "farmer_id": null,
+    "farm_id": "demo-farm-nashik",
+    "crop_cycle_id": null,
+    "image_url": "/uploads/crop_1790715121175_78978845.jpg",
+    "predicted_disease": "Healthy Animal — No Disease Detected",
+    "confidence": 94,
+    "severity_band": "Low",
+    "severity_percent": 5,
+    "latitude": 20.085,
+    "longitude": 74.11,
+    "status": "healthy",
+    "created_at": "2026-09-29T20:52:16.183Z",
+    "crop_name": "Cattle",
+    "advisory": {
+      "status": "HEALTHY",
+      "what_to_do_today": [
+        "Maintain Balanced Nutrition Ration: Provide high-quality green fodder, dry roughage, and mineral mixture (50g/day) to sustain strong natural immunity.",
+        "Fresh Clean Water Access: Ensure continuous access to cool, unpolluted drinking water in regularly disinfected troughs.",
+        "Shed Hygiene & Ventilation: Keep cattle shed floor dry with lime powder dusting and clean bedding to prevent pathogen reservoirs."
+      ],
+      "what_to_monitor": [
+        "Observe daily rumination cycles (normal healthy rate: 45-60 chews per cud).",
+        "Track daily feed intake and milk yield consistency for subtle early changes.",
+        "Inspect skin coat sheen, alert eye expression, and normal gait during daily morning turnout."
+      ],
+      "prevention": [
+        "Follow mandatory state livestock vaccination calendar (FMD twice yearly, LSD annual, HS/BQ pre-monsoon).",
+        "Quarantine newly purchased livestock for at least 14 days before introducing into the general herd."
+      ],
+      "immediateActions": [
+        "Maintain Balanced Nutrition Ration: Provide high-quality green fodder, dry roughage, and mineral mixture (50g/day) to sustain strong natural immunity.",
+        "Fresh Clean Water Access: Ensure continuous access to cool, unpolluted drinking water in regularly disinfected troughs.",
+        "Shed Hygiene & Ventilation: Keep cattle shed floor dry with lime powder dusting and clean bedding to prevent pathogen reservoirs."
+      ],
+      "monitoring": [
+        "Observe daily rumination cycles (normal healthy rate: 45-60 chews per cud).",
+        "Track daily feed intake and milk yield consistency for subtle early changes.",
+        "Inspect skin coat sheen, alert eye expression, and normal gait during daily morning turnout."
+      ],
+      "supportiveCare": [
+        "Provide mineral block licks and adequate electrolytes during warm summer periods.",
+        "Maintain vector protection with non-toxic citronella or neem oil spray against flies and ticks."
+      ],
+      "veterinaryEscalation": [
+        "Maintain regular state vaccination schedule (FMD, LSD, HS/BQ).",
+        "Administer periodic broad-spectrum deworming every 3-4 months under veterinary guidance.",
+        "Consult nearest Government Veterinary Dispensary or call 1962 for routine herd health checks."
+      ],
+      "expert_help_required": false,
+      "disease_info": {
+        "disease_name": "Healthy Animal — No Disease Detected (रोगमुक्त)",
+        "scientific_name": "Physiologically Normal / Disease-Free",
+        "description": "No cutaneous nodules, oral blisters, or abnormal discharges detected. The animal exhibits healthy rumination, active posture, and clean tissue condition."
+      }
+    }
+  },
+  {
+    "id": "60ae0b02-7438-4a3d-8844-39286bf95c4d",
+    "farmer_id": "KSF-BJFWYP",
+    "owner_id": "KSF-BJFWYP",
+    "farm_id": "0402f9d2-e1ff-4697-af4f-d5383a90193c",
+    "herd_id": "0402f9d2-e1ff-4697-af4f-d5383a90193c",
+    "crop_cycle_id": "099017a3-711a-4c97-9ae7-4bfd87d92e3c",
+    "animal_unit_id": "099017a3-711a-4c97-9ae7-4bfd87d92e3c",
+    "image_url": "/uploads/crop_1790710017719_166356686.jpg",
+    "predicted_disease": "Lumpy Skin Disease (LSD)",
+    "species": "buffalo",
+    "affected_body_part": "cutaneous nodules (neck, back, udder)",
+    "animal_tag": "",
+    "confidence": 91,
+    "severity_band": "Moderate",
+    "severity_percent": 46,
+    "latitude": 20.085,
+    "longitude": 74.11,
+    "status": "suspected",
+    "created_at": "2026-09-29T19:27:19.851Z",
+    "crop_name": "buffalo",
+    "crop": "buffalo",
+    "advisory": {
+      "status": "MODERATE",
+      "what_to_do_today": [
+        "Immediately isolate the affected animal inside a separate, well-ventilated, fly-proof shed at least 50 meters away from healthy stock",
+        "Wound Protection: Apply fly-repellent antiseptic ointment (Gamma benzene hexachloride + zinc oxide or Charma-Gel / Lorexane) on broken nodules to prevent secondary fly-strike and maggot infestation",
+        "Antiseptic Wash: Clean ulcerated nodules twice daily with a dilute Potassium Permanganate (KMnO4) solution (1:1000 ratio, faint pink color) or cooled neem leaf decoction",
+        "Supportive Nutrition: Provide easily digestible green fodder, soft mash with jaggery, electrolyte water, and oral multivitamins (Zinc, Vitamin A, E & H / Biotin) to boost epithelial repair",
+        "Feed soft, easily digestible boiled mash (rice/ragi gruel with 50g jaggery and salt)",
+        "Provide fresh tender green fodder and ad libitum clean drinking water with electrolytes"
+      ],
+      "what_to_monitor": [
+        "Measure and record rectal body temperature twice daily using a veterinary thermometer",
+        "Track rumination chews per minute (normal 45-60) and observe water intake",
+        "Inspect lesion margins for secondary bacterial pus or maggot infestation",
+        "Monitor milk yield volume to track systemic recovery timeline"
+      ],
+      "prevention": [
+        "Strict vector control: Install fine insect netting in cattle sheds, eliminate stagnant slurry pools, and burn neem/camphor leaves for herbal smoke repellent",
+        "Isolate all newly purchased or returned livestock for minimum 28 days before herd mixing",
+        "Prohibit common grazing on village pastures during active regional outbreak alerts",
+        "Annual vaccination with Heterologous Live Attenuated Goat Pox Vaccine (Uttarkashi strain) @ 3 ml S/C or Lumpi-ProVacInd under Animal Husbandry Department guidelines",
+        "Disinfect shed premises twice weekly with 2% Virkon-S, 2-3% Sodium Hypochlorite, or 1% Formalin"
+      ],
+      "immediateActions": [
+        "Immediately isolate the affected animal inside a separate, well-ventilated, fly-proof shed at least 50 meters away from healthy stock",
+        "Wound Protection: Apply fly-repellent antiseptic ointment (Gamma benzene hexachloride + zinc oxide or Charma-Gel / Lorexane) on broken nodules to prevent secondary fly-strike and maggot infestation",
+        "Antiseptic Wash: Clean ulcerated nodules twice daily with a dilute Potassium Permanganate (KMnO4) solution (1:1000 ratio, faint pink color) or cooled neem leaf decoction",
+        "Supportive Nutrition: Provide easily digestible green fodder, soft mash with jaggery, electrolyte water, and oral multivitamins (Zinc, Vitamin A, E & H / Biotin) to boost epithelial repair"
+      ],
+      "monitoring": [
+        "Measure and record rectal body temperature twice daily using a veterinary thermometer",
+        "Track rumination chews per minute (normal 45-60) and observe water intake",
+        "Inspect lesion margins for secondary bacterial pus or maggot infestation",
+        "Monitor milk yield volume to track systemic recovery timeline"
+      ],
+      "supportiveCare": [
+        "Feed soft, easily digestible boiled mash (rice/ragi gruel with 50g jaggery and salt)",
+        "Provide fresh tender green fodder and ad libitum clean drinking water with electrolytes"
+      ],
+      "veterinaryEscalation": [
+        "Potassium Permanganate (KMnO4): 1 gram in 10 liters clean water (faint pink) for external skin wash twice daily",
+        "Neem oil + Camphor: Topically applied over closed lumps as natural repellent against biting stable flies",
+        "Meloxicam + Paracetamol (Melonex Plus): 0.5 mg/kg body weight under registered Veterinary Officer prescription only",
+        "Goat Pox Vaccine (Preventive only for healthy in-contact herd): 3 ml S/C in neck region as per Govt. ring vaccination protocol",
+        "Contact Maharashtra Department of Animal Husbandry Toll-Free Helpline: 1962 for doorstep veterinary support",
+        "Consult nearest Veterinary Dispensary if fever or lesions persist beyond 3 days"
+      ],
+      "expert_help_required": false,
+      "disease_info": {
+        "disease_name": "Lumpy Skin Disease (LSD)",
+        "scientific_name": "Capripoxvirus (Poxviridae family)",
+        "description": "A viral transboundary infectious disease affecting cattle and water buffaloes, characterized by high fever, enlarged superficial lymph nodes, and multiple circumscribed firm cutaneous nodules (2-5 cm diameter) all over the body.",
+        "how_it_spreads": [
+          "Primary transmission via hematophagous vector insects: biting flies (Stomoxys calcitrans), mosquitoes (Aedes, Culex), and hard ticks (Rhipicephalus appendiculatus)",
+          "Direct contact with saliva, nasal secretions, and weeping skin scabs of infected animals",
+          "Sharing contaminated community water troughs, feed mangers, and milking equipment",
+          "Movement of cattle across inter-state animal markets and shared grazing pastures",
+          "Iatrogenic transmission via repeated needle and syringe reuse during mass injections"
+        ],
+        "safe_dosage": [
+          "Potassium Permanganate (KMnO4): 1 gram in 10 liters clean water (faint pink) for external skin wash twice daily",
+          "Neem oil + Camphor: Topically applied over closed lumps as natural repellent against biting stable flies",
+          "Meloxicam + Paracetamol (Melonex Plus): 0.5 mg/kg body weight under registered Veterinary Officer prescription only",
+          "Goat Pox Vaccine (Preventive only for healthy in-contact herd): 3 ml S/C in neck region as per Govt. ring vaccination protocol"
+        ],
+        "vet_protocol_order": [
+          "Quarantine & Shed Biosecurity",
+          "Antiseptic Wash & Fly Repellent",
+          "Supportive Mash Feeding",
+          "Veterinary Medical Treatment",
+          "Ring Vaccination in 5km Zone"
+        ]
+      }
+    }
+  },
+  {
     "id": "def2ad39-5eb3-4d54-aef9-389edf0aae48",
     "farmer_id": "KSF-BJFWYP",
     "farm_id": "0402f9d2-e1ff-4697-af4f-d5383a90193c",

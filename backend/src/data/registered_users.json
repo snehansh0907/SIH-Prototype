@@ -1,5 +1,47 @@
 [
   {
+    "id": "e57a8786-1392-42b7-9428-a644a6721b0a",
+    "farmerId": "KSF-BJFWYP",
+    "name": "Snehansh Tripathy",
+    "nameMr": "Snehansh Tripathy",
+    "phone": "7300917774",
+    "password": "aadi1234",
+    "emailOrPhone": "7300917774",
+    "state": "Rajasthan",
+    "village": "Dahmi Kalan",
+    "taluka": "Sanganer",
+    "district": "Jaipur",
+    "pincode": "303007",
+    "location": "Dahmi Kalan, Sanganer",
+    "locationMr": "Dahmi Kalan, Sanganer",
+    "latitude": 26.8429063,
+    "longitude": 75.5654289,
+    "userType": "registered",
+    "farmId": "0402f9d2-e1ff-4697-af4f-d5383a90193c",
+    "farmName": "Kheti",
+    "areaAcres": 50,
+    "monitoredCrop": "Sugarcane",
+    "monitoredCropMr": "Sugarcane",
+    "cropCycleId": "099017a3-711a-4c97-9ae7-4bfd87d92e3c",
+    "isDemo": false,
+    "isNewUser": false,
+    "ownerId": "KSF-BJFWYP",
+    "shedId": "0402f9d2-e1ff-4697-af4f-d5383a90193c",
+    "shedName": "Kheti",
+    "species": "Sugarcane",
+    "breed": "Gir",
+    "totalAnimals": 6,
+    "ageRange": "2 calves, 3 lactating adults, 1 dry",
+    "vaccinationHistory": [
+      "LSD Goat Pox 2026",
+      "FMD NADCP 2026"
+    ],
+    "monitoredAnimal": "Sugarcane",
+    "monitoredAnimalHi": "Sugarcane",
+    "monitoredAnimalMr": "Sugarcane",
+    "monitoredCropHi": "Sugarcane"
+  },
+  {
     "id": "7d8ae2f6-8461-4950-a873-486e071b6ffd",
     "farmerId": "PSF-SURESH",
     "ownerId": "PSF-SURESH",
@@ -34,39 +76,12 @@
       "HS/BQ Dual Vaccine"
     ],
     "monitoredAnimal": "Cattle",
-    "monitoredAnimalHi": "गाय (गीर व साहिवाल)",
-    "monitoredAnimalMr": "गाय (गीर व साहिवाल)",
+    "monitoredAnimalHi": "गाय (गोवंश)",
+    "monitoredAnimalMr": "गाय (गोवंश)",
     "monitoredCrop": "Cattle",
-    "monitoredCropHi": "गाय (गीर व साहिवाल)",
-    "monitoredCropMr": "गाय (गीर व साहिवाल)",
+    "monitoredCropHi": "गाय (गोवंश)",
+    "monitoredCropMr": "गाय (गोवंश)",
     "cropCycleId": "7d8ae2f6-8461-4950-a873-486e071b6fc1",
-    "isDemo": false,
-    "isNewUser": false
-  },
-  {
-    "id": "e57a8786-1392-42b7-9428-a644a6721b0a",
-    "farmerId": "KSF-BJFWYP",
-    "name": "Snehansh Tripathy",
-    "nameMr": "Snehansh Tripathy",
-    "phone": "7300917774",
-    "password": "aadi1234",
-    "emailOrPhone": "7300917774",
-    "state": "Rajasthan",
-    "village": "Dahmi Kalan",
-    "taluka": "Sanganer",
-    "district": "Jaipur",
-    "pincode": "303007",
-    "location": "Dahmi Kalan, Sanganer",
-    "locationMr": "Dahmi Kalan, Sanganer",
-    "latitude": 26.8429063,
-    "longitude": 75.5654289,
-    "userType": "registered",
-    "farmId": "0402f9d2-e1ff-4697-af4f-d5383a90193c",
-    "farmName": "Kheti",
-    "areaAcres": 50,
-    "monitoredCrop": "Sugarcane",
-    "monitoredCropMr": "ऊस",
-    "cropCycleId": "099017a3-711a-4c97-9ae7-4bfd87d92e3c",
     "isDemo": false,
     "isNewUser": false
   },
@@ -93,10 +108,25 @@
     "farmName": "Pooja Green Fields",
     "areaAcres": 10,
     "monitoredCrop": "Soybean",
-    "monitoredCropMr": "सोयाबीन",
+    "monitoredCropMr": "Soybean",
     "cropCycleId": "7eed23cf-c9a8-4227-88fc-618d4c8284dd",
     "isDemo": false,
-    "isNewUser": false
+    "isNewUser": false,
+    "ownerId": "KSF-UWFKSP",
+    "shedId": "9808330a-3b51-4a36-939e-169a404318dd",
+    "shedName": "Pooja Green Fields",
+    "species": "Soybean",
+    "breed": "Gir",
+    "totalAnimals": 6,
+    "ageRange": "2 calves, 3 lactating adults, 1 dry",
+    "vaccinationHistory": [
+      "LSD Goat Pox 2026",
+      "FMD NADCP 2026"
+    ],
+    "monitoredAnimal": "Soybean",
+    "monitoredAnimalHi": "Soybean",
+    "monitoredAnimalMr": "Soybean",
+    "monitoredCropHi": "Soybean"
   },
   {
     "id": "6e5785d4-4013-4a2a-8abf-53ac92a31add",
@@ -121,10 +151,25 @@
     "farmName": "Golden Fields",
     "areaAcres": 12,
     "monitoredCrop": "Wheat",
-    "monitoredCropMr": "गहू",
+    "monitoredCropMr": "Wheat",
     "cropCycleId": "b6194148-4536-4c37-9007-882c963da049",
     "isDemo": false,
-    "isNewUser": false
+    "isNewUser": false,
+    "ownerId": "KSF-XVA2S4",
+    "shedId": "252d4a56-1a4a-4e73-9f90-b0140702e131",
+    "shedName": "Golden Fields",
+    "species": "Wheat",
+    "breed": "Gir",
+    "totalAnimals": 6,
+    "ageRange": "2 calves, 3 lactating adults, 1 dry",
+    "vaccinationHistory": [
+      "LSD Goat Pox 2026",
+      "FMD NADCP 2026"
+    ],
+    "monitoredAnimal": "Wheat",
+    "monitoredAnimalHi": "Wheat",
+    "monitoredAnimalMr": "Wheat",
+    "monitoredCropHi": "Wheat"
   },
   {
     "id": "7ecaf5eb-40b0-4723-b218-8bc526c10d78",
@@ -149,10 +194,25 @@
     "farmName": "Aditya's Cotton Fields",
     "areaAcres": 6,
     "monitoredCrop": "Cotton",
-    "monitoredCropMr": "कापूस",
+    "monitoredCropMr": "Cotton",
     "cropCycleId": "e9225291-732d-410f-aec3-75e8e20cce0a",
     "isDemo": false,
-    "isNewUser": false
+    "isNewUser": false,
+    "ownerId": "KSF-3EG9GM",
+    "shedId": "7e86c74a-d68f-4013-b266-8893535eaf54",
+    "shedName": "Aditya's Cotton Fields",
+    "species": "Cotton",
+    "breed": "Gir",
+    "totalAnimals": 6,
+    "ageRange": "2 calves, 3 lactating adults, 1 dry",
+    "vaccinationHistory": [
+      "LSD Goat Pox 2026",
+      "FMD NADCP 2026"
+    ],
+    "monitoredAnimal": "Cotton",
+    "monitoredAnimalHi": "Cotton",
+    "monitoredAnimalMr": "Cotton",
+    "monitoredCropHi": "Cotton"
   },
   {
     "id": "d88b32a9-6699-4775-8e00-0a6655e2cb83",
@@ -177,10 +237,25 @@
     "farmName": "Rohit's Sugarcane Plantation",
     "areaAcres": 18.5,
     "monitoredCrop": "Sugarcane",
-    "monitoredCropMr": "ऊस",
+    "monitoredCropMr": "Sugarcane",
     "cropCycleId": "62cd93ec-01c1-4057-9150-505ea7e872ee",
     "isDemo": false,
-    "isNewUser": false
+    "isNewUser": false,
+    "ownerId": "KSF-H5ABX9",
+    "shedId": "a4fa49cd-a77c-47d1-af72-c524acade64c",
+    "shedName": "Rohit's Sugarcane Plantation",
+    "species": "Sugarcane",
+    "breed": "Gir",
+    "totalAnimals": 6,
+    "ageRange": "2 calves, 3 lactating adults, 1 dry",
+    "vaccinationHistory": [
+      "LSD Goat Pox 2026",
+      "FMD NADCP 2026"
+    ],
+    "monitoredAnimal": "Sugarcane",
+    "monitoredAnimalHi": "Sugarcane",
+    "monitoredAnimalMr": "Sugarcane",
+    "monitoredCropHi": "Sugarcane"
   },
   {
     "id": "0026a9dd-7285-45aa-bfc9-86ae306befb3",
@@ -205,10 +280,25 @@
     "farmName": "Amravati Soybean Fields",
     "areaAcres": 7.5,
     "monitoredCrop": "Soybean",
-    "monitoredCropMr": "सोयाबीन",
+    "monitoredCropMr": "Soybean",
     "cropCycleId": "6599eeb8-cc17-459d-97ed-bff73648c8ad",
     "isDemo": false,
-    "isNewUser": false
+    "isNewUser": false,
+    "ownerId": "KSF-7S6EEP",
+    "shedId": "7efd81f4-2755-4c43-ad7e-1bdb6bc1e5e7",
+    "shedName": "Amravati Soybean Fields",
+    "species": "Soybean",
+    "breed": "Gir",
+    "totalAnimals": 6,
+    "ageRange": "2 calves, 3 lactating adults, 1 dry",
+    "vaccinationHistory": [
+      "LSD Goat Pox 2026",
+      "FMD NADCP 2026"
+    ],
+    "monitoredAnimal": "Soybean",
+    "monitoredAnimalHi": "Soybean",
+    "monitoredAnimalMr": "Soybean",
+    "monitoredCropHi": "Soybean"
   },
   {
     "id": "cc25b9df-2931-4df5-a34e-d2f6fe1b41f7",
@@ -233,10 +323,25 @@
     "farmName": "Snehansh ki Kheti",
     "areaAcres": 50,
     "monitoredCrop": "Soybean",
-    "monitoredCropMr": "सोयाबीन",
+    "monitoredCropMr": "Soybean",
     "cropCycleId": "360e83ce-d42c-4d32-8caf-94c7e080a30a",
     "isDemo": false,
-    "isNewUser": false
+    "isNewUser": false,
+    "ownerId": "KSF-XUXJWR",
+    "shedId": "8f47c725-3286-4ec2-9d08-a8ab388a3678",
+    "shedName": "Snehansh ki Kheti",
+    "species": "Soybean",
+    "breed": "Gir",
+    "totalAnimals": 6,
+    "ageRange": "2 calves, 3 lactating adults, 1 dry",
+    "vaccinationHistory": [
+      "LSD Goat Pox 2026",
+      "FMD NADCP 2026"
+    ],
+    "monitoredAnimal": "Soybean",
+    "monitoredAnimalHi": "Soybean",
+    "monitoredAnimalMr": "Soybean",
+    "monitoredCropHi": "Soybean"
   },
   {
     "id": "706f3408-e0be-452a-ada4-64fd66b6481f",
@@ -261,10 +366,25 @@
     "farmName": "Aditya's Cotton Fields",
     "areaAcres": 6,
     "monitoredCrop": "Cotton",
-    "monitoredCropMr": "कापूस",
+    "monitoredCropMr": "Cotton",
     "cropCycleId": "f51dbfe0-cc2c-4057-be5c-614c8c3f1bae",
     "isDemo": false,
-    "isNewUser": false
+    "isNewUser": false,
+    "ownerId": "KSF-R5KZGV",
+    "shedId": "0234ffe4-4f5d-41d5-89d0-d5769b662eef",
+    "shedName": "Aditya's Cotton Fields",
+    "species": "Cotton",
+    "breed": "Gir",
+    "totalAnimals": 6,
+    "ageRange": "2 calves, 3 lactating adults, 1 dry",
+    "vaccinationHistory": [
+      "LSD Goat Pox 2026",
+      "FMD NADCP 2026"
+    ],
+    "monitoredAnimal": "Cotton",
+    "monitoredAnimalHi": "Cotton",
+    "monitoredAnimalMr": "Cotton",
+    "monitoredCropHi": "Cotton"
   },
   {
     "id": "48f9b05c-d43a-4aa0-8e39-c1152cf6d7eb",
@@ -289,10 +409,25 @@
     "farmName": "Ananya Orange Orchard",
     "areaAcres": 8.5,
     "monitoredCrop": "Cotton",
-    "monitoredCropMr": "कापूस",
+    "monitoredCropMr": "Cotton",
     "cropCycleId": "4abbd50b-6d84-4ece-9c5c-e0f6fb5b9423",
     "isDemo": false,
-    "isNewUser": false
+    "isNewUser": false,
+    "ownerId": "KSF-CYCKKY",
+    "shedId": "d3318dcd-9361-428f-81f1-c11b5a5ea089",
+    "shedName": "Ananya Orange Orchard",
+    "species": "Cotton",
+    "breed": "Gir",
+    "totalAnimals": 6,
+    "ageRange": "2 calves, 3 lactating adults, 1 dry",
+    "vaccinationHistory": [
+      "LSD Goat Pox 2026",
+      "FMD NADCP 2026"
+    ],
+    "monitoredAnimal": "Cotton",
+    "monitoredAnimalHi": "Cotton",
+    "monitoredAnimalMr": "Cotton",
+    "monitoredCropHi": "Cotton"
   },
   {
     "id": "308ac7d2-cd33-49a4-b6f3-9cb1fc867e08",
@@ -317,10 +452,25 @@
     "farmName": "Amravati Soybean Fields",
     "areaAcres": 7.5,
     "monitoredCrop": "Soybean",
-    "monitoredCropMr": "सोयाबीन",
+    "monitoredCropMr": "Soybean",
     "cropCycleId": "9e758676-3b45-4a1a-9c64-2acbb4b12f10",
     "isDemo": false,
-    "isNewUser": false
+    "isNewUser": false,
+    "ownerId": "KSF-6G7ZAJ",
+    "shedId": "c620c148-8054-4e41-bb2d-795b92c43cdb",
+    "shedName": "Amravati Soybean Fields",
+    "species": "Soybean",
+    "breed": "Gir",
+    "totalAnimals": 6,
+    "ageRange": "2 calves, 3 lactating adults, 1 dry",
+    "vaccinationHistory": [
+      "LSD Goat Pox 2026",
+      "FMD NADCP 2026"
+    ],
+    "monitoredAnimal": "Soybean",
+    "monitoredAnimalHi": "Soybean",
+    "monitoredAnimalMr": "Soybean",
+    "monitoredCropHi": "Soybean"
   },
   {
     "id": "e90cb016-df4c-4a5a-bfec-f7a0449e515a",
@@ -345,10 +495,25 @@
     "farmName": "Snehansh ki Kheti",
     "areaAcres": 50,
     "monitoredCrop": "Soybean",
-    "monitoredCropMr": "सोयाबीन",
+    "monitoredCropMr": "Soybean",
     "cropCycleId": "9f5a8bc8-4f87-48d3-9209-1de11b597d5a",
     "isDemo": false,
-    "isNewUser": false
+    "isNewUser": false,
+    "ownerId": "KSF-N6XQW3",
+    "shedId": "490f6f10-f3f3-4652-a322-959034bb3461",
+    "shedName": "Snehansh ki Kheti",
+    "species": "Soybean",
+    "breed": "Gir",
+    "totalAnimals": 6,
+    "ageRange": "2 calves, 3 lactating adults, 1 dry",
+    "vaccinationHistory": [
+      "LSD Goat Pox 2026",
+      "FMD NADCP 2026"
+    ],
+    "monitoredAnimal": "Soybean",
+    "monitoredAnimalHi": "Soybean",
+    "monitoredAnimalMr": "Soybean",
+    "monitoredCropHi": "Soybean"
   },
   {
     "id": "dddb9fd2-9a9f-4fde-bc52-3fc206ee9441",
@@ -373,10 +538,25 @@
     "farmName": "Pooja Green Fields",
     "areaAcres": 10,
     "monitoredCrop": "Soybean",
-    "monitoredCropMr": "सोयाबीन",
+    "monitoredCropMr": "Soybean",
     "cropCycleId": "db85c3e2-619e-4e55-b5fb-000e438eecfe",
     "isDemo": false,
-    "isNewUser": false
+    "isNewUser": false,
+    "ownerId": "KSF-93MDF5",
+    "shedId": "0b1bd385-6b72-4707-81d9-21fbe0655a38",
+    "shedName": "Pooja Green Fields",
+    "species": "Soybean",
+    "breed": "Gir",
+    "totalAnimals": 6,
+    "ageRange": "2 calves, 3 lactating adults, 1 dry",
+    "vaccinationHistory": [
+      "LSD Goat Pox 2026",
+      "FMD NADCP 2026"
+    ],
+    "monitoredAnimal": "Soybean",
+    "monitoredAnimalHi": "Soybean",
+    "monitoredAnimalMr": "Soybean",
+    "monitoredCropHi": "Soybean"
   },
   {
     "id": "67b01fca-5185-4b71-abe7-5431798ccf78",
@@ -401,10 +581,25 @@
     "farmName": "Rahul's Organic Plot",
     "areaAcres": 4.5,
     "monitoredCrop": "Soybean",
-    "monitoredCropMr": "सोयाबीन",
+    "monitoredCropMr": "Soybean",
     "cropCycleId": "58ec99fa-3be8-4475-9352-f7946391a186",
     "isDemo": false,
-    "isNewUser": false
+    "isNewUser": false,
+    "ownerId": "KSF-E8VECU",
+    "shedId": "e2a7dbfe-b3b3-429d-ae41-caa4965aa1b3",
+    "shedName": "Rahul's Organic Plot",
+    "species": "Soybean",
+    "breed": "Gir",
+    "totalAnimals": 6,
+    "ageRange": "2 calves, 3 lactating adults, 1 dry",
+    "vaccinationHistory": [
+      "LSD Goat Pox 2026",
+      "FMD NADCP 2026"
+    ],
+    "monitoredAnimal": "Soybean",
+    "monitoredAnimalHi": "Soybean",
+    "monitoredAnimalMr": "Soybean",
+    "monitoredCropHi": "Soybean"
   },
   {
     "id": "c8d071c5-d15a-433f-b4a0-95a42c77173a",
@@ -429,10 +624,25 @@
     "farmName": "Snehansh ki Kheti",
     "areaAcres": 50,
     "monitoredCrop": "Soybean",
-    "monitoredCropMr": "सोयाबीन",
+    "monitoredCropMr": "Soybean",
     "cropCycleId": "249ffd74-69fe-4665-ae20-10face592eeb",
     "isDemo": false,
-    "isNewUser": false
+    "isNewUser": false,
+    "ownerId": "KSF-E28V76",
+    "shedId": "3508b578-8e59-4975-9614-3f30a38ae1ad",
+    "shedName": "Snehansh ki Kheti",
+    "species": "Soybean",
+    "breed": "Gir",
+    "totalAnimals": 6,
+    "ageRange": "2 calves, 3 lactating adults, 1 dry",
+    "vaccinationHistory": [
+      "LSD Goat Pox 2026",
+      "FMD NADCP 2026"
+    ],
+    "monitoredAnimal": "Soybean",
+    "monitoredAnimalHi": "Soybean",
+    "monitoredAnimalMr": "Soybean",
+    "monitoredCropHi": "Soybean"
   },
   {
     "id": "95febee7-1b7e-49d4-a6e1-226c4ad16b0c",
@@ -457,10 +667,25 @@
     "farmName": "Pooja Green Fields",
     "areaAcres": 10,
     "monitoredCrop": "Soybean",
-    "monitoredCropMr": "सोयाबीन",
+    "monitoredCropMr": "Soybean",
     "cropCycleId": "a26e4b09-c84f-4ffc-ac65-07f34f3f0db8",
     "isDemo": false,
-    "isNewUser": false
+    "isNewUser": false,
+    "ownerId": "KSF-NND5AK",
+    "shedId": "2dfb7599-dd25-4e87-9bcb-7b0ef9562af4",
+    "shedName": "Pooja Green Fields",
+    "species": "Soybean",
+    "breed": "Gir",
+    "totalAnimals": 6,
+    "ageRange": "2 calves, 3 lactating adults, 1 dry",
+    "vaccinationHistory": [
+      "LSD Goat Pox 2026",
+      "FMD NADCP 2026"
+    ],
+    "monitoredAnimal": "Soybean",
+    "monitoredAnimalHi": "Soybean",
+    "monitoredAnimalMr": "Soybean",
+    "monitoredCropHi": "Soybean"
   },
   {
     "id": "acc3760c-fead-4a8f-bd56-67c883e9d8ce",
@@ -485,10 +710,25 @@
     "farmName": "Amravati Soybean Fields",
     "areaAcres": 7.5,
     "monitoredCrop": "Soybean",
-    "monitoredCropMr": "सोयाबीन",
+    "monitoredCropMr": "Soybean",
     "cropCycleId": "2f25ec80-2e80-4000-8c15-8f4e8559c47b",
     "isDemo": false,
-    "isNewUser": false
+    "isNewUser": false,
+    "ownerId": "KSF-4NSFP2",
+    "shedId": "b6ad28b6-dfe9-4492-a576-b13a4d997ca9",
+    "shedName": "Amravati Soybean Fields",
+    "species": "Soybean",
+    "breed": "Gir",
+    "totalAnimals": 6,
+    "ageRange": "2 calves, 3 lactating adults, 1 dry",
+    "vaccinationHistory": [
+      "LSD Goat Pox 2026",
+      "FMD NADCP 2026"
+    ],
+    "monitoredAnimal": "Soybean",
+    "monitoredAnimalHi": "Soybean",
+    "monitoredAnimalMr": "Soybean",
+    "monitoredCropHi": "Soybean"
   },
   {
     "id": "34495426-9950-42ec-9eb6-b2dc0518dd46",
@@ -513,10 +753,25 @@
     "farmName": "Snehansh ki Kheti",
     "areaAcres": 50,
     "monitoredCrop": "Soybean",
-    "monitoredCropMr": "सोयाबीन",
+    "monitoredCropMr": "Soybean",
     "cropCycleId": "9c05ddf9-84da-4d67-8078-c4e8f6836054",
     "isDemo": false,
-    "isNewUser": false
+    "isNewUser": false,
+    "ownerId": "KSF-3JNUZT",
+    "shedId": "c5e050bd-266a-4e07-bb3a-de6da65f7c36",
+    "shedName": "Snehansh ki Kheti",
+    "species": "Soybean",
+    "breed": "Gir",
+    "totalAnimals": 6,
+    "ageRange": "2 calves, 3 lactating adults, 1 dry",
+    "vaccinationHistory": [
+      "LSD Goat Pox 2026",
+      "FMD NADCP 2026"
+    ],
+    "monitoredAnimal": "Soybean",
+    "monitoredAnimalHi": "Soybean",
+    "monitoredAnimalMr": "Soybean",
+    "monitoredCropHi": "Soybean"
   },
   {
     "id": "609e1fa5-aa54-4ed3-bdc3-48ec4861f3bd",
@@ -541,10 +796,25 @@
     "farmName": "Pooja Green Fields",
     "areaAcres": 10,
     "monitoredCrop": "Soybean",
-    "monitoredCropMr": "सोयाबीन",
+    "monitoredCropMr": "Soybean",
     "cropCycleId": "37d03362-9356-40fe-9cc0-b59946cc58a2",
     "isDemo": false,
-    "isNewUser": false
+    "isNewUser": false,
+    "ownerId": "KSF-7AKXF6",
+    "shedId": "e33b4cc0-a1f9-45aa-b6d6-be8481d189a8",
+    "shedName": "Pooja Green Fields",
+    "species": "Soybean",
+    "breed": "Gir",
+    "totalAnimals": 6,
+    "ageRange": "2 calves, 3 lactating adults, 1 dry",
+    "vaccinationHistory": [
+      "LSD Goat Pox 2026",
+      "FMD NADCP 2026"
+    ],
+    "monitoredAnimal": "Soybean",
+    "monitoredAnimalHi": "Soybean",
+    "monitoredAnimalMr": "Soybean",
+    "monitoredCropHi": "Soybean"
   },
   {
     "id": "5930899c-7d41-41c5-8821-5490500484ef",
@@ -569,10 +839,25 @@
     "farmName": "Amravati Soybean Fields",
     "areaAcres": 7.5,
     "monitoredCrop": "Soybean",
-    "monitoredCropMr": "सोयाबीन",
+    "monitoredCropMr": "Soybean",
     "cropCycleId": "d1ed8e60-303d-4c1f-ae80-b25df398405d",
     "isDemo": false,
-    "isNewUser": false
+    "isNewUser": false,
+    "ownerId": "KSF-Q5HUS3",
+    "shedId": "05d9d5bd-fac1-4011-a3b2-e93897b9fdca",
+    "shedName": "Amravati Soybean Fields",
+    "species": "Soybean",
+    "breed": "Gir",
+    "totalAnimals": 6,
+    "ageRange": "2 calves, 3 lactating adults, 1 dry",
+    "vaccinationHistory": [
+      "LSD Goat Pox 2026",
+      "FMD NADCP 2026"
+    ],
+    "monitoredAnimal": "Soybean",
+    "monitoredAnimalHi": "Soybean",
+    "monitoredAnimalMr": "Soybean",
+    "monitoredCropHi": "Soybean"
   },
   {
     "id": "a3c51fb2-f295-4d30-8e6f-e45fa160165f",
@@ -597,10 +882,25 @@
     "farmName": "Snehansh ki Kheti",
     "areaAcres": 50,
     "monitoredCrop": "Soybean",
-    "monitoredCropMr": "सोयाबीन",
+    "monitoredCropMr": "Soybean",
     "cropCycleId": "a9720197-ed83-4997-8fb3-869c02943c7a",
     "isDemo": false,
-    "isNewUser": false
+    "isNewUser": false,
+    "ownerId": "KSF-R4KBHJ",
+    "shedId": "2a94e82f-c5ed-4ffc-a3ea-cb8786bd0678",
+    "shedName": "Snehansh ki Kheti",
+    "species": "Soybean",
+    "breed": "Gir",
+    "totalAnimals": 6,
+    "ageRange": "2 calves, 3 lactating adults, 1 dry",
+    "vaccinationHistory": [
+      "LSD Goat Pox 2026",
+      "FMD NADCP 2026"
+    ],
+    "monitoredAnimal": "Soybean",
+    "monitoredAnimalHi": "Soybean",
+    "monitoredAnimalMr": "Soybean",
+    "monitoredCropHi": "Soybean"
   },
   {
     "id": "42417e66-d545-4a39-83ec-a865d14a9b5f",
@@ -625,10 +925,25 @@
     "farmName": "Pooja Green Fields",
     "areaAcres": 10,
     "monitoredCrop": "Soybean",
-    "monitoredCropMr": "सोयाबीन",
+    "monitoredCropMr": "Soybean",
     "cropCycleId": "fa767137-b1a1-494d-bcba-3f3ada7db5db",
     "isDemo": false,
-    "isNewUser": false
+    "isNewUser": false,
+    "ownerId": "KSF-GSFFH9",
+    "shedId": "97db0b05-560c-476c-b511-7f37c0743a27",
+    "shedName": "Pooja Green Fields",
+    "species": "Soybean",
+    "breed": "Gir",
+    "totalAnimals": 6,
+    "ageRange": "2 calves, 3 lactating adults, 1 dry",
+    "vaccinationHistory": [
+      "LSD Goat Pox 2026",
+      "FMD NADCP 2026"
+    ],
+    "monitoredAnimal": "Soybean",
+    "monitoredAnimalHi": "Soybean",
+    "monitoredAnimalMr": "Soybean",
+    "monitoredCropHi": "Soybean"
   },
   {
     "id": "ff7f1937-922d-4adf-b684-777ae0cb381b",
@@ -653,10 +968,25 @@
     "farmName": "Amravati Soybean Fields",
     "areaAcres": 7.5,
     "monitoredCrop": "Soybean",
-    "monitoredCropMr": "सोयाबीन",
+    "monitoredCropMr": "Soybean",
     "cropCycleId": "790fe8f4-9d62-4516-aa95-3a9e3959bb23",
     "isDemo": false,
-    "isNewUser": false
+    "isNewUser": false,
+    "ownerId": "KSF-DJ9AG9",
+    "shedId": "967d453f-4cdf-4848-8d2c-c1419749ed9c",
+    "shedName": "Amravati Soybean Fields",
+    "species": "Soybean",
+    "breed": "Gir",
+    "totalAnimals": 6,
+    "ageRange": "2 calves, 3 lactating adults, 1 dry",
+    "vaccinationHistory": [
+      "LSD Goat Pox 2026",
+      "FMD NADCP 2026"
+    ],
+    "monitoredAnimal": "Soybean",
+    "monitoredAnimalHi": "Soybean",
+    "monitoredAnimalMr": "Soybean",
+    "monitoredCropHi": "Soybean"
   },
   {
     "id": "39e6b707-7dd2-4894-842d-1bf4b42c6ac0",
@@ -681,10 +1011,25 @@
     "farmName": "Rahul's Organic Plot",
     "areaAcres": 4.5,
     "monitoredCrop": "Soybean",
-    "monitoredCropMr": "सोयाबीन",
+    "monitoredCropMr": "Soybean",
     "cropCycleId": "7ce9ac1d-0b31-46fb-acc5-91cbb77422ba",
     "isDemo": false,
-    "isNewUser": false
+    "isNewUser": false,
+    "ownerId": "KSF-3WDPRH",
+    "shedId": "b6e74465-11fb-4aec-9d2f-5dbe2eea9ced",
+    "shedName": "Rahul's Organic Plot",
+    "species": "Soybean",
+    "breed": "Gir",
+    "totalAnimals": 6,
+    "ageRange": "2 calves, 3 lactating adults, 1 dry",
+    "vaccinationHistory": [
+      "LSD Goat Pox 2026",
+      "FMD NADCP 2026"
+    ],
+    "monitoredAnimal": "Soybean",
+    "monitoredAnimalHi": "Soybean",
+    "monitoredAnimalMr": "Soybean",
+    "monitoredCropHi": "Soybean"
   },
   {
     "id": "4eb03ff5-2121-4587-b482-2990734da03c",
@@ -709,10 +1054,25 @@
     "farmName": "Amravati Soybean Fields",
     "areaAcres": 7.5,
     "monitoredCrop": "Soybean",
-    "monitoredCropMr": "सोयाबीन",
+    "monitoredCropMr": "Soybean",
     "cropCycleId": "43ff629b-da6b-4b0a-9562-ecd5d0797f4d",
     "isDemo": false,
-    "isNewUser": false
+    "isNewUser": false,
+    "ownerId": "KSF-FBY2XL",
+    "shedId": "84900968-3987-40c5-821e-e560dd436251",
+    "shedName": "Amravati Soybean Fields",
+    "species": "Soybean",
+    "breed": "Gir",
+    "totalAnimals": 6,
+    "ageRange": "2 calves, 3 lactating adults, 1 dry",
+    "vaccinationHistory": [
+      "LSD Goat Pox 2026",
+      "FMD NADCP 2026"
+    ],
+    "monitoredAnimal": "Soybean",
+    "monitoredAnimalHi": "Soybean",
+    "monitoredAnimalMr": "Soybean",
+    "monitoredCropHi": "Soybean"
   },
   {
     "id": "cf361e70-f569-4b95-9350-f8fce779ff9f",
@@ -737,10 +1097,25 @@
     "farmName": "Rathore Organic Estate",
     "areaAcres": 35.5,
     "monitoredCrop": "Soybean",
-    "monitoredCropMr": "सोयाबीन",
+    "monitoredCropMr": "Soybean",
     "cropCycleId": "111292d3-a978-4b0f-be94-3fd60aca8e4b",
     "isDemo": false,
-    "isNewUser": false
+    "isNewUser": false,
+    "ownerId": "KSF-STNAQA",
+    "shedId": "75ddc8cd-3a25-4725-b439-e74197bc54cd",
+    "shedName": "Rathore Organic Estate",
+    "species": "Soybean",
+    "breed": "Gir",
+    "totalAnimals": 6,
+    "ageRange": "2 calves, 3 lactating adults, 1 dry",
+    "vaccinationHistory": [
+      "LSD Goat Pox 2026",
+      "FMD NADCP 2026"
+    ],
+    "monitoredAnimal": "Soybean",
+    "monitoredAnimalHi": "Soybean",
+    "monitoredAnimalMr": "Soybean",
+    "monitoredCropHi": "Soybean"
   },
   {
     "id": "8385307c-04e6-4014-a92b-3821483b5495",
@@ -765,10 +1140,25 @@
     "farmName": "Rathore Organic Estate",
     "areaAcres": 35.5,
     "monitoredCrop": "Soybean",
-    "monitoredCropMr": "सोयाबीन",
+    "monitoredCropMr": "Soybean",
     "cropCycleId": "4fa47cb4-dcb3-41fa-9e4a-f5158c0ae072",
     "isDemo": false,
-    "isNewUser": false
+    "isNewUser": false,
+    "ownerId": "KSF-F5V852",
+    "shedId": "cf5df0e6-a784-46b3-b27c-9090224291d7",
+    "shedName": "Rathore Organic Estate",
+    "species": "Soybean",
+    "breed": "Gir",
+    "totalAnimals": 6,
+    "ageRange": "2 calves, 3 lactating adults, 1 dry",
+    "vaccinationHistory": [
+      "LSD Goat Pox 2026",
+      "FMD NADCP 2026"
+    ],
+    "monitoredAnimal": "Soybean",
+    "monitoredAnimalHi": "Soybean",
+    "monitoredAnimalMr": "Soybean",
+    "monitoredCropHi": "Soybean"
   },
   {
     "id": "6a916360-56a3-46e2-8f9e-8cc861e8e837",
@@ -793,9 +1183,24 @@
     "farmName": "Rahul's Organic Plot",
     "areaAcres": 4.5,
     "monitoredCrop": "Soybean",
-    "monitoredCropMr": "सोयाबीन",
+    "monitoredCropMr": "Soybean",
     "cropCycleId": "5dde80e7-78e8-4a9a-912f-77d852e4d5c1",
     "isDemo": false,
-    "isNewUser": false
+    "isNewUser": false,
+    "ownerId": "KSF-G7UYPV",
+    "shedId": "6b73ac2b-87fb-4e78-b5d6-82030d180e41",
+    "shedName": "Rahul's Organic Plot",
+    "species": "Soybean",
+    "breed": "Gir",
+    "totalAnimals": 6,
+    "ageRange": "2 calves, 3 lactating adults, 1 dry",
+    "vaccinationHistory": [
+      "LSD Goat Pox 2026",
+      "FMD NADCP 2026"
+    ],
+    "monitoredAnimal": "Soybean",
+    "monitoredAnimalHi": "Soybean",
+    "monitoredAnimalMr": "Soybean",
+    "monitoredCropHi": "Soybean"
   }
 ]

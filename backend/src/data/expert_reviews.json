@@ -1,5 +1,15 @@
 [
   {
+    "id": "7d359e16-f2e2-4474-a118-7c802c99b773",
+    "case_id": "diag-lsd-default",
+    "expert_id": "exp-patil-1",
+    "expert_name": "Dr. Ashok Kulkarni (Senior Agronomist, Nashik)",
+    "expert_diagnosis": "Foot-and-Mouth Disease",
+    "review_status": "corrected",
+    "remarks": "Reclassified as Foot-and-Mouth Disease based on oral mucosal lesions.",
+    "reviewed_at": "2026-09-29T19:27:41.493Z"
+  },
+  {
     "id": "bd111aef-dfe5-43ca-b7cc-c7c10ef31d3b",
     "case_id": "diag-onion-default",
     "expert_id": "exp-patil-1",
