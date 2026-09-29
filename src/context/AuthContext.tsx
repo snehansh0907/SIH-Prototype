@@ -9,11 +9,13 @@ interface AuthContextType {
   user: FarmerUser | null;
   isAuthenticated: boolean;
   isFarmer: boolean;
+  isVetOfficial: boolean;
   isDemo: boolean;
   isLoginModalOpen: boolean;
   login: (idOrEmail: string, pass: string) => Promise<{ success: boolean; message?: string }>;
   register: (payload: RegisterPayload) => Promise<{ success: boolean; message?: string; user?: FarmerUser }>;
-  loginAsDemo: (specificKey?: 'ramesh' | 'vikas' | 'anita' | 'sunita' | 'suresh') => void;
+  loginAsDemo: (specificKey?: 'ramesh' | 'vikas' | 'anita' | 'sunita' | 'suresh' | 'vet_kadam') => void;
+  loginAsVetOfficial: () => void;
   logout: () => void;
   openLoginModal: () => void;
   closeLoginModal: () => void;
@@ -39,7 +41,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const login = async (idOrEmail: string, pass: string) => {
     const res = await authService.login(idOrEmail, pass);
     if (res.success && res.user) {
-      setAuthState('farmer');
+      const nextRole: AuthRole = res.user.role === 'vet_official' ? 'vet_official' : 'farmer';
+      setAuthState(nextRole);
       setUser(res.user);
       setIsLoginModalOpen(false);
       return { success: true };
@@ -50,7 +53,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const register = async (payload: RegisterPayload) => {
     const res = await authService.register(payload);
     if (res.success && res.user) {
-      setAuthState('farmer');
+      const nextRole: AuthRole = res.user.role === 'vet_official' ? 'vet_official' : 'farmer';
+      setAuthState(nextRole);
       setUser(res.user);
       setIsLoginModalOpen(false);
       return { success: true, user: res.user };
@@ -58,11 +62,16 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     return { success: false, message: res.message || 'Registration failed' };
   };
 
-  const loginAsDemo = async (specificKey?: 'ramesh' | 'vikas' | 'anita' | 'sunita' | 'suresh') => {
+  const loginAsDemo = async (specificKey?: 'ramesh' | 'vikas' | 'anita' | 'sunita' | 'suresh' | 'vet_kadam') => {
     const res = await authService.loginAsDemo(specificKey);
-    setAuthState('demo');
+    const nextRole: AuthRole = res.user.role === 'vet_official' ? 'vet_official' : 'demo';
+    setAuthState(nextRole);
     setUser(res.user);
     setIsLoginModalOpen(false);
+  };
+
+  const loginAsVetOfficial = async () => {
+    await loginAsDemo('vet_kadam');
   };
 
   const logout = () => {
@@ -76,12 +85,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const closeLoginModal = () => setIsLoginModalOpen(false);
 
   /**
-   * Guard function: checks if active session is 'farmer'.
-   * If yes, returns true and executes optional callback.
-   * If no (demo mode or unauthenticated), opens the friendly Farmer Login Required modal and returns false.
+   * Guard function: checks if active session is 'farmer' or 'vet_official'.
    */
   const requireFarmerAccess = (onSuccessAction?: () => void): boolean => {
-    if (authState === 'farmer') {
+    if (authState === 'farmer' || authState === 'vet_official') {
       if (onSuccessAction) onSuccessAction();
       return true;
     }
@@ -91,18 +98,22 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     return false;
   };
 
+  const isVetOfficial = authState === 'vet_official' || user?.role === 'vet_official';
+
   return (
     <AuthContext.Provider
       value={{
         authState,
         user,
-        isAuthenticated: authState === 'farmer' || authState === 'demo',
+        isAuthenticated: authState === 'farmer' || authState === 'demo' || authState === 'vet_official',
         isFarmer: authState === 'farmer',
+        isVetOfficial,
         isDemo: authState === 'demo',
         isLoginModalOpen,
         login,
         register,
         loginAsDemo,
+        loginAsVetOfficial,
         logout,
         openLoginModal,
         closeLoginModal,

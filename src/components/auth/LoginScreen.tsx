@@ -53,20 +53,25 @@ export const LoginScreen: React.FC = () => {
   // Active Tab: 'login' | 'register'
   const [activeTab, setActiveTab] = useState<'login' | 'register'>('login');
 
+  // Active Role Selection: 'farmer' | 'vet_official'
+  const [roleSelector, setRoleSelector] = useState<'farmer' | 'vet_official'>('farmer');
+
   // Login Form State
   const [loginIdentifier, setLoginIdentifier] = useState('');
   const [loginPassword, setLoginPassword] = useState('');
   const [loginError, setLoginError] = useState<string | null>(null);
   const [isLoggingIn, setIsLoggingIn] = useState(false);
 
-  // Quick Demo Autofill Selector ('suresh' | 'ramesh' | 'vikas')
-  const [selectedDemoKey, setSelectedDemoKey] = useState<'suresh' | 'ramesh' | 'vikas'>('suresh');
+  // Quick Demo Autofill Selector ('suresh' | 'ramesh' | 'vikas' | 'vet_kadam')
+  const [selectedDemoKey, setSelectedDemoKey] = useState<'suresh' | 'ramesh' | 'vikas' | 'vet_kadam'>('suresh');
 
   // Registration Form State: Personal Details
   const [regName, setRegName] = useState('');
   const [regPhone, setRegPhone] = useState('');
   const [regEmail, setRegEmail] = useState('');
   const [regPassword, setRegPassword] = useState('');
+  const [regDesignation, setRegDesignation] = useState('Taluka Veterinary Officer');
+  const [regDepartment, setRegDepartment] = useState('Department of Animal Husbandry, Govt. of Maharashtra');
 
   // India-Wide Location Search State
   const [searchQuery, setSearchQuery] = useState('');
@@ -111,11 +116,11 @@ export const LoginScreen: React.FC = () => {
   }, [searchDebounceTimer]);
 
   // Auto-fill Demo credentials without automatically logging in
-  const handleAutofillDemo = (farmerKey: 'suresh' | 'ramesh' | 'vikas' = 'suresh') => {
-    setSelectedDemoKey(farmerKey);
-    const demo = SEEDED_DEMO_FARMERS[farmerKey];
+  const handleAutofillDemo = (demoKey: 'suresh' | 'ramesh' | 'vikas' | 'vet_kadam' = 'suresh') => {
+    setSelectedDemoKey(demoKey);
+    const demo = SEEDED_DEMO_FARMERS[demoKey];
     if (demo) {
-      setLoginIdentifier(demo.farmerId);
+      setLoginIdentifier(demo.email || demo.farmerId);
       setLoginPassword(demo.passwords[0]);
       setLoginError(null);
     }
@@ -394,7 +399,8 @@ export const LoginScreen: React.FC = () => {
       setRegError(t.valLocationFields);
       return;
     }
-    if (!regFarmName.trim()) {
+    const isVet = roleSelector === 'vet_official';
+    if (!isVet && !regFarmName.trim()) {
       setRegError(isMarathi ? 'कृपया गोठा / डेअरी नाव प्रविष्ट करा' : language === 'hi' ? 'कृपया डेयरी/पशुपालन फार्म का नाम दर्ज करें।' : 'Please enter your dairy or herd name.');
       return;
     }
@@ -410,9 +416,13 @@ export const LoginScreen: React.FC = () => {
       taluka: regTaluka.trim() || regVillage.trim(),
       village: regVillage.trim(),
       pincode: regPincode.trim() || undefined,
-      farmName: regFarmName.trim(),
-      areaAcres: Number(regHerdCount) || 5,
-      mainCrop: regMainSpecies,
+      farmName: isVet ? (regFarmName.trim() || 'Taluka Veterinary Hospital & Surveillance Unit') : regFarmName.trim(),
+      areaAcres: isVet ? 0 : Number(regHerdCount) || 5,
+      mainCrop: isVet ? 'All Livestock' : regMainSpecies,
+      role: isVet ? 'vet_official' : 'farmer',
+      designation: isVet ? (regDesignation.trim() || 'Taluka Veterinary Officer') : undefined,
+      department: isVet ? (regDepartment.trim() || 'Department of Animal Husbandry, Govt. of Maharashtra') : undefined,
+      jurisdiction: isVet ? `${regTaluka.trim() || 'Niphad'} Taluka, ${regDistrict.trim() || 'Nashik'} District` : undefined,
       latitude: regLatitude,
       longitude: regLongitude,
     });
@@ -521,8 +531,55 @@ export const LoginScreen: React.FC = () => {
           </div>
         </div>
 
+        {/* ROLE SELECTOR: Livestock Owner vs Veterinary Official */}
+        <div className="px-5 pt-3.5 bg-[#F7F4EC]">
+          <div className="flex items-center justify-between mb-1.5">
+            <label className="text-[10px] font-black uppercase tracking-wider text-stone-600 font-display">
+              User Role / वापरकर्ता भूमिका
+            </label>
+            <span className="text-[10px] font-bold text-indigo-800 bg-indigo-100 px-2 py-0.2 rounded-full">
+              SIH Role Switch
+            </span>
+          </div>
+          <div className="grid grid-cols-2 p-1 bg-stone-200/90 rounded-2xl border border-stone-300">
+            <button
+              type="button"
+              onClick={() => {
+                setRoleSelector('farmer');
+                setLoginError(null);
+                setLoginIdentifier('suresh123');
+                setLoginPassword('farmer123');
+              }}
+              className={`py-2 px-3 rounded-xl text-xs font-black font-display transition-all duration-150 cursor-pointer flex items-center justify-center gap-1.5 ${
+                roleSelector === 'farmer'
+                  ? 'bg-emerald-800 text-white shadow-md'
+                  : 'text-stone-700 hover:text-stone-900'
+              }`}
+            >
+              <span>🐄 Livestock Owner</span>
+            </button>
+
+            <button
+              type="button"
+              onClick={() => {
+                setRoleSelector('vet_official');
+                setLoginError(null);
+                setLoginIdentifier('vet_niphad@gov.in');
+                setLoginPassword('vet123');
+              }}
+              className={`py-2 px-3 rounded-xl text-xs font-black font-display transition-all duration-150 cursor-pointer flex items-center justify-center gap-1.5 ${
+                roleSelector === 'vet_official'
+                  ? 'bg-indigo-900 text-white shadow-md'
+                  : 'text-stone-700 hover:text-stone-900'
+              }`}
+            >
+              <span>🦁 Veterinary Officer</span>
+            </button>
+          </div>
+        </div>
+
         {/* Two Clear Choices/Tabs: [ Login ] [ Create Account ] */}
-        <div className="px-5 pt-4 bg-[#F7F4EC]">
+        <div className="px-5 pt-3 bg-[#F7F4EC]">
           <div className="grid grid-cols-2 p-1 bg-stone-200/90 rounded-2xl border border-stone-300">
             <button
               type="button"
@@ -530,10 +587,11 @@ export const LoginScreen: React.FC = () => {
                 setActiveTab('login');
                 setLoginError(null);
               }}
-              className={`py-2.5 px-4 rounded-xl text-xs font-extrabold font-display transition-all duration-150 cursor-pointer flex items-center justify-center gap-1.5 ${activeTab === 'login'
-                  ? 'bg-emerald-800 text-white shadow-md'
+              className={`py-2 px-4 rounded-xl text-xs font-extrabold font-display transition-all duration-150 cursor-pointer flex items-center justify-center gap-1.5 ${
+                activeTab === 'login'
+                  ? roleSelector === 'vet_official' ? 'bg-indigo-900 text-white shadow-md' : 'bg-emerald-800 text-white shadow-md'
                   : 'text-stone-700 hover:text-stone-900'
-                }`}
+              }`}
             >
               <span>🔑 {t.loginTab}</span>
             </button>
@@ -544,12 +602,13 @@ export const LoginScreen: React.FC = () => {
                 setActiveTab('register');
                 setRegError(null);
               }}
-              className={`py-2.5 px-4 rounded-xl text-xs font-extrabold font-display transition-all duration-150 cursor-pointer flex items-center justify-center gap-1.5 ${activeTab === 'register'
-                  ? 'bg-emerald-800 text-white shadow-md'
+              className={`py-2 px-4 rounded-xl text-xs font-extrabold font-display transition-all duration-150 cursor-pointer flex items-center justify-center gap-1.5 ${
+                activeTab === 'register'
+                  ? roleSelector === 'vet_official' ? 'bg-indigo-900 text-white shadow-md' : 'bg-emerald-800 text-white shadow-md'
                   : 'text-stone-700 hover:text-stone-900'
-                }`}
+              }`}
             >
-              <span>🐄 {t.createAccountTab}</span>
+              <span>{roleSelector === 'vet_official' ? '🦁 Register Officer' : `🐄 ${t.createAccountTab}`}</span>
             </button>
           </div>
         </div>
@@ -560,10 +619,12 @@ export const LoginScreen: React.FC = () => {
             <div>
               <div className="text-center mb-4">
                 <h2 className="text-base font-black text-stone-900 font-display">
-                  {t.loginTitle}
+                  {roleSelector === 'vet_official' ? 'Veterinary Officer Login' : t.loginTitle}
                 </h2>
                 <p className="text-xs text-stone-500 font-medium mt-0.5">
-                  {t.loginSubtitle}
+                  {roleSelector === 'vet_official'
+                    ? 'Official Maharashtra Animal Husbandry Disease Surveillance Network'
+                    : t.loginSubtitle}
                 </p>
               </div>
 
@@ -576,67 +637,103 @@ export const LoginScreen: React.FC = () => {
               )}
 
               {/* Evaluator 1-Click Autofill Area */}
-              <div className="mb-4 bg-amber-50 rounded-2xl p-3 border border-amber-300/90 shadow-sm">
-                <div className="flex items-center justify-between mb-2">
-                  <div className="flex items-center gap-1.5 text-xs font-extrabold text-amber-950 font-display">
-                    <Sparkles className="w-3.5 h-3.5 text-amber-600" />
-                    <span>{t.autofillCredentials}</span>
+              {roleSelector === 'vet_official' ? (
+                <div className="mb-4 bg-indigo-50 rounded-2xl p-3 border border-indigo-200 shadow-sm">
+                  <div className="flex items-center justify-between mb-2">
+                    <div className="flex items-center gap-1.5 text-xs font-extrabold text-indigo-950 font-display">
+                      <Sparkles className="w-3.5 h-3.5 text-indigo-600" />
+                      <span>Govt. Veterinary Officer Portal</span>
+                    </div>
+                    <span className="text-[10px] font-bold text-indigo-800 bg-indigo-200 px-2 py-0.5 rounded-full">
+                      Demo Account
+                    </span>
                   </div>
-                  <span className="text-[10px] font-bold text-amber-800 bg-amber-200/80 px-2 py-0.5 rounded-full">
-                    Evaluator Demo
-                  </span>
-                </div>
-
-                <div className="grid grid-cols-3 gap-1.5">
-                  <button
-                    type="button"
-                    onClick={() => handleAutofillDemo('ramesh')}
-                    className={`py-2 px-2 rounded-xl text-[10px] font-bold border transition-all active:scale-95 flex flex-col items-start ${
-                      selectedDemoKey === 'ramesh' && loginIdentifier === 'farmer123'
-                        ? 'bg-amber-200/90 border-amber-400 text-amber-950 font-black shadow-sm'
-                        : 'bg-white border-amber-200 text-stone-700 hover:bg-amber-100/60'
-                    }`}
-                  >
-                    <span className="font-extrabold truncate w-full text-left">🐄 Ramesh Patil</span>
-                    <span className="text-[9px] text-stone-500">farmer123 (Gir)</span>
-                  </button>
 
                   <button
                     type="button"
-                    onClick={() => handleAutofillDemo('vikas')}
-                    className={`py-2 px-2 rounded-xl text-[10px] font-bold border transition-all active:scale-95 flex flex-col items-start ${
-                      selectedDemoKey === 'vikas' && loginIdentifier === 'vikas123'
-                        ? 'bg-amber-200/90 border-amber-400 text-amber-950 font-black shadow-sm'
-                        : 'bg-white border-amber-200 text-stone-700 hover:bg-amber-100/60'
-                    }`}
+                    onClick={() => handleAutofillDemo('vet_kadam')}
+                    className="w-full p-2.5 rounded-xl bg-white border border-indigo-300 hover:bg-indigo-100/60 active:scale-95 transition-all text-left flex items-center justify-between shadow-xs cursor-pointer"
                   >
-                    <span className="font-extrabold truncate w-full text-left">🐃 Vikas More</span>
-                    <span className="text-[9px] text-stone-500">vikas123 (Murrah)</span>
-                  </button>
-
-                  <button
-                    type="button"
-                    onClick={() => handleAutofillDemo('suresh')}
-                    className={`py-2 px-2 rounded-xl text-[10px] font-bold border transition-all active:scale-95 flex flex-col items-start ${
-                      selectedDemoKey === 'suresh' && loginIdentifier === 'suresh123'
-                        ? 'bg-amber-200/90 border-amber-400 text-amber-950 font-black shadow-sm'
-                        : 'bg-white border-amber-200 text-stone-700 hover:bg-amber-100/60'
-                    }`}
-                  >
-                    <span className="font-extrabold truncate w-full text-left">🐐 Suresh Jadhav</span>
-                    <span className="text-[9px] text-stone-500">suresh123 (Goats)</span>
+                    <div>
+                      <div className="font-extrabold text-xs text-indigo-950 flex items-center gap-1.5">
+                        <span>🦁 Dr. Rajesh Kadam</span>
+                        <span className="text-[9px] px-1.5 py-0.2 rounded bg-indigo-100 text-indigo-800 font-bold">Class-I</span>
+                      </div>
+                      <div className="text-[10px] text-slate-500 font-medium mt-0.5">
+                        Taluka Veterinary Officer • Niphad, Nashik
+                      </div>
+                      <div className="text-[9px] font-mono text-indigo-700 mt-0.5">
+                        vet_niphad@gov.in / vet123
+                      </div>
+                    </div>
+                    <span className="text-xs font-bold text-indigo-700 bg-indigo-50 px-2.5 py-1 rounded-lg border border-indigo-200">
+                      Autofill ➔
+                    </span>
                   </button>
                 </div>
-                <p className="text-[10px] text-stone-500 mt-1.5 text-center font-medium">
-                  {t.autofillPrompt}
-                </p>
-              </div>
+              ) : (
+                <div className="mb-4 bg-amber-50 rounded-2xl p-3 border border-amber-300/90 shadow-sm">
+                  <div className="flex items-center justify-between mb-2">
+                    <div className="flex items-center gap-1.5 text-xs font-extrabold text-amber-950 font-display">
+                      <Sparkles className="w-3.5 h-3.5 text-amber-600" />
+                      <span>{t.autofillCredentials}</span>
+                    </div>
+                    <span className="text-[10px] font-bold text-amber-800 bg-amber-200/80 px-2 py-0.5 rounded-full">
+                      Evaluator Demo
+                    </span>
+                  </div>
+
+                  <div className="grid grid-cols-3 gap-1.5">
+                    <button
+                      type="button"
+                      onClick={() => handleAutofillDemo('ramesh')}
+                      className={`py-2 px-2 rounded-xl text-[10px] font-bold border transition-all active:scale-95 flex flex-col items-start ${
+                        selectedDemoKey === 'ramesh' && loginIdentifier === 'farmer123'
+                          ? 'bg-amber-200/90 border-amber-400 text-amber-950 font-black shadow-sm'
+                          : 'bg-white border-amber-200 text-stone-700 hover:bg-amber-100/60'
+                      }`}
+                    >
+                      <span className="font-extrabold truncate w-full text-left">🐄 Ramesh Patil</span>
+                      <span className="text-[9px] text-stone-500">farmer123 (Gir)</span>
+                    </button>
+
+                    <button
+                      type="button"
+                      onClick={() => handleAutofillDemo('vikas')}
+                      className={`py-2 px-2 rounded-xl text-[10px] font-bold border transition-all active:scale-95 flex flex-col items-start ${
+                        selectedDemoKey === 'vikas' && loginIdentifier === 'vikas123'
+                          ? 'bg-amber-200/90 border-amber-400 text-amber-950 font-black shadow-sm'
+                          : 'bg-white border-amber-200 text-stone-700 hover:bg-amber-100/60'
+                      }`}
+                    >
+                      <span className="font-extrabold truncate w-full text-left">🐃 Vikas More</span>
+                      <span className="text-[9px] text-stone-500">vikas123 (Murrah)</span>
+                    </button>
+
+                    <button
+                      type="button"
+                      onClick={() => handleAutofillDemo('suresh')}
+                      className={`py-2 px-2 rounded-xl text-[10px] font-bold border transition-all active:scale-95 flex flex-col items-start ${
+                        selectedDemoKey === 'suresh' && loginIdentifier === 'suresh123'
+                          ? 'bg-amber-200/90 border-amber-400 text-amber-950 font-black shadow-sm'
+                          : 'bg-white border-amber-200 text-stone-700 hover:bg-amber-100/60'
+                      }`}
+                    >
+                      <span className="font-extrabold truncate w-full text-left">🐐 Suresh Jadhav</span>
+                      <span className="text-[9px] text-stone-500">suresh123 (Goats)</span>
+                    </button>
+                  </div>
+                  <p className="text-[10px] text-stone-500 mt-1.5 text-center font-medium">
+                    {t.autofillPrompt}
+                  </p>
+                </div>
+              )}
 
               {/* Login Form */}
               <form onSubmit={handleLoginSubmit} className="space-y-3.5">
                 <div>
                   <label className="block text-[11px] font-bold uppercase tracking-wider text-stone-700 mb-1 font-display">
-                    {t.farmerIdLabel} / {t.mobile}
+                    {roleSelector === 'vet_official' ? 'Official Govt Email / Officer ID' : `${t.farmerIdLabel} / ${t.mobile}`}
                   </label>
                   <div className="relative">
                     <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-stone-400">
@@ -646,7 +743,7 @@ export const LoginScreen: React.FC = () => {
                       type="text"
                       value={loginIdentifier}
                       onChange={(e) => setLoginIdentifier(e.target.value)}
-                      placeholder={t.loginIdPlaceholder}
+                      placeholder={roleSelector === 'vet_official' ? 'vet_niphad@gov.in or vet123' : t.loginIdPlaceholder}
                       className="w-full pl-10 pr-3.5 py-3 rounded-2xl bg-white border border-stone-300 text-stone-900 text-xs font-semibold placeholder:text-stone-400 focus:outline-none focus:ring-2 focus:ring-emerald-600 focus:border-transparent transition-all shadow-sm"
                       required
                     />
@@ -676,9 +773,19 @@ export const LoginScreen: React.FC = () => {
                 <button
                   type="submit"
                   disabled={isLoggingIn}
-                  className="w-full py-3.5 rounded-2xl bg-emerald-800 hover:bg-emerald-900 active:scale-[0.98] text-white font-black text-sm font-display transition-all duration-200 shadow-elevated flex items-center justify-center gap-2 cursor-pointer border-2 border-emerald-700 disabled:opacity-75"
+                  className={`w-full py-3.5 rounded-2xl active:scale-[0.98] text-white font-black text-sm font-display transition-all duration-200 shadow-elevated flex items-center justify-center gap-2 cursor-pointer border-2 disabled:opacity-75 ${
+                    roleSelector === 'vet_official'
+                      ? 'bg-indigo-900 hover:bg-indigo-950 border-indigo-700'
+                      : 'bg-emerald-800 hover:bg-emerald-900 border-emerald-700'
+                  }`}
                 >
-                  <span>{isLoggingIn ? t.loading : t.btnLogin}</span>
+                  <span>
+                    {isLoggingIn
+                      ? t.loading
+                      : roleSelector === 'vet_official'
+                      ? 'Login to Veterinary Portal'
+                      : t.btnLogin}
+                  </span>
                   <ArrowRight className="w-4 h-4 text-amber-300" />
                 </button>
               </form>
@@ -688,14 +795,20 @@ export const LoginScreen: React.FC = () => {
             <div className="mt-5 pt-3.5 border-t border-stone-200 text-center">
               <button
                 type="button"
-                onClick={() => loginAsDemo(selectedDemoKey)}
+                onClick={() => loginAsDemo(roleSelector === 'vet_official' ? 'vet_kadam' : selectedDemoKey)}
                 className="w-full py-3 px-4 rounded-2xl bg-white border-2 border-stone-300 hover:bg-stone-50 active:scale-[0.98] text-stone-800 font-extrabold text-xs transition-all shadow-soft flex items-center justify-center gap-2 cursor-pointer font-display"
               >
-                <span>{t.btnDemoUser}</span>
+                <span>
+                  {roleSelector === 'vet_official'
+                    ? '🦁 Quick Enter as Dr. Rajesh Kadam (Taluka Vet Officer)'
+                    : t.btnDemoUser}
+                </span>
                 <ArrowRight className="w-3.5 h-3.5 text-stone-500" />
               </button>
               <p className="text-[10px] text-stone-500 font-medium mt-1.5">
-                {t.demoNoticeSub}
+                {roleSelector === 'vet_official'
+                  ? 'Access the Govt. of Maharashtra Veterinary Surveillance Dashboard'
+                  : t.demoNoticeSub}
               </p>
             </div>
           </div>
@@ -790,11 +903,40 @@ export const LoginScreen: React.FC = () => {
                         type="email"
                         value={regEmail}
                         onChange={(e) => setRegEmail(e.target.value)}
-                        placeholder="owner@example.com"
+                        placeholder={roleSelector === 'vet_official' ? "officer@gov.in" : "owner@example.com"}
                         className="w-full pl-8 pr-2.5 py-2 rounded-xl bg-stone-50 border border-stone-300 text-stone-900 text-xs font-semibold focus:outline-none focus:ring-2 focus:ring-emerald-600"
                       />
                     </div>
                   </div>
+
+                  {roleSelector === 'vet_official' && (
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 pt-1 border-t border-stone-100">
+                      <div>
+                        <label className="block text-[10px] font-bold uppercase tracking-wider text-stone-600 mb-0.5">
+                          Official Designation
+                        </label>
+                        <input
+                          type="text"
+                          value={regDesignation}
+                          onChange={(e) => setRegDesignation(e.target.value)}
+                          placeholder="e.g. Taluka Veterinary Officer"
+                          className="w-full px-3 py-2 rounded-xl bg-stone-50 border border-stone-300 text-stone-900 text-xs font-semibold focus:outline-none focus:ring-2 focus:ring-indigo-600"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-[10px] font-bold uppercase tracking-wider text-stone-600 mb-0.5">
+                          Department
+                        </label>
+                        <input
+                          type="text"
+                          value={regDepartment}
+                          onChange={(e) => setRegDepartment(e.target.value)}
+                          placeholder="Dept. of Animal Husbandry"
+                          className="w-full px-3 py-2 rounded-xl bg-stone-50 border border-stone-300 text-stone-900 text-xs font-semibold focus:outline-none focus:ring-2 focus:ring-indigo-600"
+                        />
+                      </div>
+                    </div>
+                  )}
                 </div>
 
                 {/* SECTION 2: 📍 Farm / Barn Location */}

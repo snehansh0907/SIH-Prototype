@@ -28,6 +28,10 @@ export interface RegisterPayload {
   latitude?: number;
   longitude?: number;
   mainCrop: 'Tomato' | 'Cotton' | 'Soybean' | 'Sugarcane' | 'Maize' | 'Onion' | 'Rice' | 'Wheat' | string;
+  role?: 'farmer' | 'vet_official';
+  designation?: string;
+  department?: string;
+  jurisdiction?: string;
 }
 
 export const CROP_MR_MAP: Record<string, string> = {
@@ -42,7 +46,7 @@ export const CROP_MR_MAP: Record<string, string> = {
 };
 
 // ----------------------------------------------------
-// Seeded Demo Farmers (Mapped directly to Supabase data)
+// Seeded Demo Users (Farmers & Veterinary Officials)
 // ----------------------------------------------------
 export interface DemoFarmerConfig extends FarmerUser {
   loginAliases: string[];
@@ -50,6 +54,40 @@ export interface DemoFarmerConfig extends FarmerUser {
 }
 
 export const SEEDED_DEMO_FARMERS: Record<string, DemoFarmerConfig> = {
+  vet_kadam: {
+    id: 'vet-niphad-gov-001',
+    farmerId: 'vet123',
+    name: 'Dr. Rajesh Kadam',
+    nameHi: 'डॉ. राजेश कदम',
+    nameMr: 'डॉ. राजेश कदम',
+    phone: '9820005555',
+    email: 'vet_niphad@gov.in',
+    emailOrPhone: 'vet_niphad@gov.in',
+    village: 'Niphad Central',
+    taluka: 'Niphad',
+    district: 'Nashik',
+    location: 'Niphad Taluka Veterinary Dispensary, Nashik',
+    locationHi: 'निफाड तालुका पशुवैद्यकीय दवाखाना, नासिक',
+    locationMr: 'निफाड तालुका पशुवैद्यकीय दवाखाना, नाशिक',
+    latitude: 20.0825,
+    longitude: 74.1112,
+    userType: 'demo',
+    farmId: 'gov-vet-dispensary-niphad',
+    farmName: 'Taluka Veterinary Hospital & Surveillance Unit',
+    areaAcres: 0,
+    monitoredCrop: 'All Livestock',
+    monitoredCropHi: 'समस्त पशुधन',
+    monitoredCropMr: 'सर्व पशुधन',
+    cropCycleId: 'vet-surveillance-cycle-niphad',
+    role: 'vet_official',
+    designation: 'Taluka Veterinary Officer (Class-I)',
+    department: 'Department of Animal Husbandry, Govt. of Maharashtra',
+    jurisdiction: 'Niphad Taluka, Nashik District (134 Gram Panchayats)',
+    isDemo: false,
+    avatar: 'https://images.unsplash.com/photo-1622253692010-333f2da6031d?auto=format&fit=crop&w=200&q=80',
+    loginAliases: ['vet123', 'vet_kadam', 'vet_niphad@gov.in', '9820005555', 'dr.kadam', 'kadam'],
+    passwords: ['vet123', 'officer123', 'password123', 'demo123', '123456'],
+  },
   ramesh: {
     id: '542d3fbc-f0f7-4e82-84b9-f8394659b61b',
     farmerId: 'farmer123',
@@ -443,7 +481,7 @@ export const authService = {
 
     if (backendSuccess && backendUser) {
       saveLocalRegisteredUser(backendUser);
-      const role: AuthRole = backendUser.userType === 'demo' ? 'demo' : 'farmer';
+      const role: AuthRole = backendUser.role === 'vet_official' ? 'vet_official' : backendUser.userType === 'demo' ? 'demo' : 'farmer';
       if (typeof localStorage !== 'undefined') {
         localStorage.setItem(STORAGE_KEY_ROLE, role);
         localStorage.setItem(STORAGE_KEY_USER, JSON.stringify(backendUser));
@@ -489,7 +527,8 @@ export const authService = {
 
         saveLocalRegisteredUser(userToSave);
         if (typeof localStorage !== 'undefined') {
-          localStorage.setItem(STORAGE_KEY_ROLE, 'farmer');
+          const role: AuthRole = userToSave.role === 'vet_official' ? 'vet_official' : 'farmer';
+          localStorage.setItem(STORAGE_KEY_ROLE, role);
           localStorage.setItem(STORAGE_KEY_USER, JSON.stringify(userToSave));
           localStorage.setItem(STORAGE_KEY_LEGACY_USER, JSON.stringify(userToSave));
         }
@@ -631,7 +670,8 @@ export const authService = {
         const savedUser: FarmerUser = { ...res.user, password };
         saveLocalRegisteredUser(savedUser);
         if (typeof localStorage !== 'undefined') {
-          localStorage.setItem(STORAGE_KEY_ROLE, 'farmer');
+          const role: AuthRole = savedUser.role === 'vet_official' ? 'vet_official' : 'farmer';
+          localStorage.setItem(STORAGE_KEY_ROLE, role);
           localStorage.setItem(STORAGE_KEY_USER, JSON.stringify(savedUser));
           localStorage.setItem(STORAGE_KEY_LEGACY_USER, JSON.stringify(savedUser));
         }
@@ -671,19 +711,21 @@ export const authService = {
   /**
    * Continue as Demo User (Guest mode)
    */
-  async loginAsDemo(specificKey: 'ramesh' | 'vikas' | 'anita' | 'sunita' | 'suresh' = 'suresh'): Promise<{ user: FarmerUser }> {
+  async loginAsDemo(specificKey: 'ramesh' | 'vikas' | 'anita' | 'sunita' | 'suresh' | 'vet_kadam' = 'suresh'): Promise<{ user: FarmerUser }> {
     const demo = SEEDED_DEMO_FARMERS[specificKey] || SEEDED_DEMO_FARMERS.suresh || SEEDED_DEMO_FARMERS.ramesh;
+    const isVet = demo.role === 'vet_official';
     const demoUser: FarmerUser = {
       ...demo,
-      name: `Demo Explorer (${demo.name})`,
-      nameMr: `डेमो वापरकर्ता (${demo.nameMr})`,
-      emailOrPhone: 'demo@krishisarthak.in',
-      userType: 'demo',
-      isDemo: true,
+      name: isVet ? demo.name : `Demo Explorer (${demo.name})`,
+      nameMr: isVet ? demo.nameMr : `डेमो वापरकर्ता (${demo.nameMr})`,
+      emailOrPhone: isVet ? (demo.email || 'vet_niphad@gov.in') : 'demo@krishisarthak.in',
+      userType: isVet ? 'registered' : 'demo',
+      isDemo: !isVet,
     };
 
+    const role: AuthRole = isVet ? 'vet_official' : 'demo';
     if (typeof localStorage !== 'undefined') {
-      localStorage.setItem(STORAGE_KEY_ROLE, 'demo');
+      localStorage.setItem(STORAGE_KEY_ROLE, role);
       localStorage.setItem(STORAGE_KEY_USER, JSON.stringify(demoUser));
       localStorage.setItem(STORAGE_KEY_LEGACY_USER, JSON.stringify(demoUser));
     }
@@ -710,9 +752,9 @@ export const authService = {
         const storedRole = localStorage.getItem(STORAGE_KEY_ROLE) as AuthRole | null;
         const storedUser = localStorage.getItem(STORAGE_KEY_USER) || localStorage.getItem(STORAGE_KEY_LEGACY_USER);
 
-        if ((storedRole === 'farmer' || storedRole === 'demo') && storedUser) {
+        if ((storedRole === 'farmer' || storedRole === 'demo' || storedRole === 'vet_official') && storedUser) {
           const parsed = JSON.parse(storedUser);
-          if (parsed && (parsed.id || parsed.farmerId || parsed.phone)) {
+          if (parsed && (parsed.id || parsed.farmerId || parsed.phone || parsed.email)) {
             return { role: storedRole, user: parsed };
           }
         }

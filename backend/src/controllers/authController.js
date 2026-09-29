@@ -95,6 +95,10 @@ function normalizeUserRecord(u) {
     monitoredCropHi: SPECIES_HI_MAP[species] || species,
     monitoredCropMr: SPECIES_MR_MAP[species] || species,
     cropCycleId,
+    role: base.role || (base.designation || (base.email && base.email.includes('gov.in')) ? 'vet_official' : 'farmer'),
+    designation: base.designation || (base.role === 'vet_official' ? 'Taluka Veterinary Officer' : undefined),
+    department: base.department || (base.role === 'vet_official' ? 'Department of Animal Husbandry, Govt. of Maharashtra' : undefined),
+    jurisdiction: base.jurisdiction || (base.taluka && base.district ? `${base.taluka} Taluka, ${base.district} District` : undefined),
     isDemo: false,
     isNewUser: false,
   };
@@ -551,6 +555,40 @@ const SEEDED_DEMO_FARMERS = {
     loginAliases: ['shobha123', 'shobha', 'shobha.bhosale@example.com', '9820011106', 'psf-shobha', 'ksf-shobha'],
     passwords: ['shobha123', 'farmer123', 'password123', 'demo123', '123456'],
   },
+  vet_kadam: {
+    id: 'vet-rajesh-kadam-01',
+    farmerId: 'VET-MH-NIPHAD-01',
+    ownerId: 'VET-MH-NIPHAD-01',
+    role: 'vet_official',
+    designation: 'Taluka Veterinary Officer (LDO)',
+    department: 'Department of Animal Husbandry, Govt. of Maharashtra',
+    jurisdiction: 'Niphad Taluka, Nashik District',
+    name: 'Dr. Rajesh Kadam',
+    nameHi: 'डॉ. राजेश कदम (पशु चिकित्सा अधिकारी)',
+    nameMr: 'डॉ. राजेश कदम (पशुधन विकास अधिकारी)',
+    phone: '9820011223',
+    email: 'vet_niphad@gov.in',
+    emailOrPhone: 'vet_niphad@gov.in',
+    village: 'Niphad',
+    taluka: 'Niphad',
+    district: 'Nashik',
+    location: 'Niphad Taluka Veterinary Dispensary, Nashik',
+    locationHi: 'निफाड तालुका पशु चिकित्सालय, नासिक',
+    locationMr: 'निफाड तालुका पशुवैद्यकीय दवाखाना, नाशिक',
+    latitude: 20.085,
+    longitude: 74.11,
+    userType: 'registered',
+    farmId: 'gov-dispensary-niphad',
+    shedId: 'gov-dispensary-niphad',
+    farmName: 'Taluka Veterinary Dispensary, Niphad',
+    shedName: 'Taluka Veterinary Dispensary, Niphad',
+    species: 'Cattle',
+    monitoredAnimal: 'Cattle',
+    isDemo: false,
+    avatar: 'https://images.unsplash.com/photo-1622253692010-333f2da6031d?auto=format&fit=crop&w=200&q=80',
+    loginAliases: ['vet', 'vet123', 'kadam', 'vet_kadam', 'vet_niphad@gov.in', '9820011223', 'dr_kadam'],
+    passwords: ['vet123', 'farmer123', 'admin123', 'password123', 'demo123', '123456'],
+  },
 };
 
 function normalizePhone(rawPhone) {
@@ -867,6 +905,10 @@ const register = asyncHandler(async (req, res) => {
     monitoredCropHi: SPECIES_HI_MAP[finalSpecies] || finalSpecies,
     monitoredCropMr: SPECIES_MR_MAP[finalSpecies] || finalSpecies,
     cropCycleId,
+    role: req.body.role === 'vet_official' ? 'vet_official' : 'farmer',
+    designation: req.body.designation || (req.body.role === 'vet_official' ? 'Taluka Veterinary Officer' : undefined),
+    department: req.body.department || (req.body.role === 'vet_official' ? 'Department of Animal Husbandry, Govt. of Maharashtra' : undefined),
+    jurisdiction: req.body.jurisdiction || (cleanTaluka && cleanDistrict ? `${cleanTaluka} Taluka, ${cleanDistrict} District` : undefined),
     isDemo: false,
     isNewUser: true,
   };
@@ -888,10 +930,8 @@ const register = asyncHandler(async (req, res) => {
  * Verifies credentials against registered accounts, Supabase database, or demo farmers.
  */
 const login = asyncHandler(async (req, res) => {
-  const { identifier, password } = req.body;
-
-  const cleanInput = (identifier || '').trim();
-  const cleanPassword = (password || '').trim();
+  const cleanInput = (req.body.identifier || req.body.idOrEmail || req.body.loginInput || req.body.email || req.body.phone || '').trim();
+  const cleanPassword = (req.body.password || req.body.pass || '').trim();
 
   if (!cleanInput || !cleanPassword) {
     throw new ApiError(400, 'Please enter both Mobile Number / Farmer ID and Password.');
@@ -1105,6 +1145,10 @@ const login = asyncHandler(async (req, res) => {
       monitoredCropHi: matchedDemo.monitoredCropHi || SPECIES_HI_MAP[matchedDemo.species] || matchedDemo.species,
       monitoredCropMr: matchedDemo.monitoredCropMr || SPECIES_MR_MAP[matchedDemo.species] || matchedDemo.species,
       cropCycleId: matchedDemo.cropCycleId,
+      role: matchedDemo.role || 'farmer',
+      designation: matchedDemo.designation || (matchedDemo.role === 'vet_official' ? 'Taluka Veterinary Officer' : undefined),
+      department: matchedDemo.department || (matchedDemo.role === 'vet_official' ? 'Department of Animal Husbandry, Govt. of Maharashtra' : undefined),
+      jurisdiction: matchedDemo.jurisdiction || (matchedDemo.role === 'vet_official' ? `${matchedDemo.taluka} Taluka, ${matchedDemo.district} District` : undefined),
       isDemo: false,
       avatar: matchedDemo.avatar,
     };
@@ -1216,6 +1260,10 @@ const login = asyncHandler(async (req, res) => {
     monitoredCropHi: SPECIES_HI_MAP[finalSpecies] || finalSpecies,
     monitoredCropMr: SPECIES_MR_MAP[finalSpecies] || finalSpecies,
     cropCycleId: finalCycleId,
+    role: matchedUser.role || (matchedUser.email && matchedUser.email.includes('gov.in') ? 'vet_official' : 'farmer'),
+    designation: matchedUser.designation || (matchedUser.role === 'vet_official' ? 'Taluka Veterinary Officer' : undefined),
+    department: matchedUser.department || (matchedUser.role === 'vet_official' ? 'Department of Animal Husbandry, Govt. of Maharashtra' : undefined),
+    jurisdiction: matchedUser.jurisdiction || (finalTaluka && finalDistrict ? `${finalTaluka} Taluka, ${finalDistrict} District` : undefined),
     isDemo: false,
     isNewUser: false,
   };

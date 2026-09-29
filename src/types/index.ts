@@ -1,6 +1,8 @@
 export type Language = 'en' | 'hi' | 'mr';
 
-export type AuthRole = 'unauthenticated' | 'demo' | 'farmer' | 'owner';
+export type AuthRole = 'unauthenticated' | 'demo' | 'farmer' | 'owner' | 'vet_official';
+
+export type UserRole = 'farmer' | 'vet_official';
 
 export type AnimalSpecies = 'cattle' | 'buffalo' | 'goat' | 'sheep' | 'poultry';
 export type AnimalGender = 'female' | 'male';
@@ -79,11 +81,84 @@ export interface FarmerUser {
   herdSize?: number | string;
   vaccinationHistory?: string;
   avatar?: string;
+  role?: 'farmer' | 'vet_official';
+  designation?: string;
+  department?: string;
+  jurisdiction?: string;
   isDemo?: boolean;
   isNewUser?: boolean;
 }
 
 export type LivestockOwnerUser = FarmerUser;
+
+export type CaseStatus = 'New' | 'Under Review' | 'Sample Collected' | 'Escalated' | 'Resolved';
+
+export interface StatusHistoryItem {
+  from_status?: string;
+  to_status: CaseStatus;
+  timestamp: string;
+  updated_by?: string;
+  notes?: string;
+  sample_id?: string;
+  lab_referral?: string;
+}
+
+export interface VeterinaryCaseRecord {
+  id: string;
+  case_id?: string;
+  report_type?: 'symptom' | 'mortality';
+  farmer_id?: string;
+  farmer_name?: string;
+  farmer_phone?: string;
+  village?: string;
+  taluka?: string;
+  district?: string;
+  latitude?: number;
+  longitude?: number;
+  species?: string;
+  disease_name?: string;
+  disease_name_hi?: string;
+  disease_name_mr?: string;
+  severity?: SeverityLevel;
+  confidence?: number;
+  status: CaseStatus;
+  status_history?: StatusHistoryItem[];
+  vet_notes?: string;
+  sample_id?: string;
+  lab_referral?: string;
+  outbreak_id?: string;
+  is_outbreak_flagged?: boolean;
+  image_url?: string;
+  created_at: string;
+  updated_at?: string;
+  date_of_death?: string;
+  approximate_age?: string;
+  suspected_cause?: string;
+  notes?: string;
+}
+
+export interface OutbreakAlert {
+  id: string;
+  disease_name: string;
+  species: string;
+  cluster_center: {
+    latitude: number;
+    longitude: number;
+    village?: string;
+    taluka?: string;
+    district?: string;
+  };
+  radius_km: number;
+  time_window_days: number;
+  symptom_case_count: number;
+  mortality_case_count: number;
+  total_case_count: number;
+  threshold_crossed: number;
+  case_ids: string[];
+  status: 'ACTIVE' | 'INVESTIGATING' | 'CONTAINED';
+  flagged_at: string;
+  notes?: string;
+}
 
 export type SeverityLevel = 'low' | 'moderate' | 'high';
 export type ConfidenceLevel = 'reliable' | 'monitor' | 'review';

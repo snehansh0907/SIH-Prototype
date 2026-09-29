@@ -12,10 +12,11 @@ import { AreaHotspotView } from './components/area/AreaHotspotView';
 import { ExpertConsultView } from './components/expert/ExpertConsultView';
 import { LoginScreen } from './components/auth/LoginScreen';
 import { FarmerLoginModal } from './components/auth/FarmerLoginModal';
+import { VetOfficialDashboard } from './components/vet/VetOfficialDashboard';
 
 const AppContent: React.FC = () => {
   const { activeTab } = useCrop();
-  const { authState } = useAuth();
+  const { authState, isVetOfficial } = useAuth();
 
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -23,6 +24,11 @@ const AppContent: React.FC = () => {
 
   if (authState === 'unauthenticated') {
     return <LoginScreen />;
+  }
+
+  // Dedicated Veterinary Official Surveillance Portal
+  if (isVetOfficial || authState === 'vet_official') {
+    return <VetOfficialDashboard />;
   }
 
   return (

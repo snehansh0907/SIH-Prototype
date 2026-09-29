@@ -572,10 +572,112 @@ const getMLHealth = asyncHandler(async (req, res) => {
   });
 });
 
+/**
+ * GET /api/diagnosis
+ * Fetches all diagnosis cases with optional regional, status, and report_type filtering.
+ * Used by Veterinary Official Dashboard to monitor cases across talukas and districts.
+ */
+const getAllDiagnosisCases = asyncHandler(async (req, res) => {
+  const { status, district, taluka, species, report_type, limit = 100 } = req.query;
+  let cases = getLocalDiagnoses();
+
+  if (status && status !== 'all' && status !== 'All') {
+    const sLower = status.toLowerCase().replace(/\s+/g, '_');
+    cases = cases.filter((c) => {
+      const cStatus = (c.status || '').toLowerCase().replace(/\s+/g, '_');
+      return cStatus === sLower;
+    });
+  }
+  if (district) {
+    cases = cases.filter((c) => (c.district || '').toLowerCase().includes(district.toLowerCase()));
+  }
+  if (taluka) {
+    cases = cases.filter((c) => (c.taluka || '').toLowerCase().includes(taluka.toLowerCase()));
+  }
+  if (species) {
+    cases = cases.filter((c) => (c.crop_name || c.species || '').toLowerCase().includes(species.toLowerCase()));
+  }
+  if (report_type) {
+    cases = cases.filter((c) => (c.report_type || 'symptom') === report_type);
+  }
+
+  res.json({
+    success: true,
+    data: cases.slice(0, parseInt(limit, 10)),
+    count: cases.length,
+  });
+});
+
+/**
+ * PATCH /api/diagnosis/:caseId/status
+ * Veterinary Official updates case status (New -> Under Review -> Sample Collected -> Escalated -> Resolved)
+ * and records official audit log history.
+ */
+const updateCaseStatus = asyncHandler(async (req, res) => {
+  const { caseId } = req.params;
+  const { status, notes, updated_by, lab_referral, sample_id } = req.body;
+
+  if (!status) {
+    throw new ApiError(400, 'Status is required.');
+  }
+
+  const list = getLocalDiagnoses();
+  const target = list.find((c) => c.id === caseId || c.case_id === caseId);
+
+  if (!target) {
+    throw new ApiError(404, 'Case record not found.');
+  }
+
+  const previousStatus = target.status || 'New';
+  target.status = status;
+  if (!target.status_history) {
+    target.status_history = [];
+  }
+
+  target.status_history.push({
+    from_status: previousStatus,
+    to_status: status,
+    timestamp: new Date().toISOString(),
+    updated_by: updated_by || 'Veterinary Officer',
+    notes: notes || '',
+    sample_id: sample_id || undefined,
+    lab_referral: lab_referral || undefined,
+  });
+
+  if (notes) target.vet_notes = notes;
+  if (lab_referral) target.lab_referral = lab_referral;
+  if (sample_id) target.sample_id = sample_id;
+  target.updated_at = new Date().toISOString();
+
+  // Persist to local JSON fallback
+  try {
+    fs.writeFileSync(LOCAL_DIAGNOSES_FILE, JSON.stringify(list, null, 2));
+  } catch (err) {
+    console.warn('[diagnosisController] Failed to persist updated case:', err.message);
+  }
+
+  // Also attempt Supabase update
+  try {
+    await supabase.from('diagnosis_cases').update({
+      status,
+      updated_at: new Date().toISOString(),
+    }).eq('id', caseId);
+  } catch {}
+
+  res.json({
+    success: true,
+    data: target,
+    message: `Case status successfully updated to "${status}".`,
+  });
+});
+
 module.exports = {
   createDiagnosis,
   getDiagnosisById,
+  getAllDiagnosisCases,
+  updateCaseStatus,
   getLatestDiagnosisByFarm,
   getLatestDiagnosisByFarmer,
   getMLHealth,
 };
+

@@ -1,5 +1,54 @@
 [
   {
+    "id": "vet-rajesh-kadam-01",
+    "farmerId": "VET-MH-NIPHAD-01",
+    "ownerId": "VET-MH-NIPHAD-01",
+    "role": "vet_official",
+    "designation": "Taluka Veterinary Officer (LDO)",
+    "department": "Department of Animal Husbandry, Govt. of Maharashtra",
+    "jurisdiction": "Niphad Taluka, Nashik District",
+    "name": "Dr. Rajesh Kadam",
+    "nameHi": "डॉ. राजेश कदम (पशु चिकित्सा अधिकारी)",
+    "nameMr": "डॉ. राजेश कदम (पशुधन विकास अधिकारी)",
+    "phone": "9820011223",
+    "email": "vet_niphad@gov.in",
+    "password": "vet123",
+    "emailOrPhone": "9820011223",
+    "state": "Maharashtra",
+    "village": "Niphad",
+    "taluka": "Niphad",
+    "district": "Nashik",
+    "pincode": "422303",
+    "location": "Niphad, Niphad",
+    "locationHi": "निफाड तालुका पशु चिकित्सालय, नासिक",
+    "locationMr": "Niphad, Niphad",
+    "latitude": 20.085,
+    "longitude": 74.11,
+    "userType": "registered",
+    "farmId": "gov-dispensary-niphad",
+    "shedId": "gov-dispensary-niphad",
+    "farmName": "Taluka Veterinary Dispensary, Niphad",
+    "shedName": "Taluka Veterinary Dispensary, Niphad",
+    "areaAcres": 0,
+    "species": "Cattle",
+    "monitoredAnimal": "Cattle",
+    "monitoredCrop": "Cattle",
+    "isDemo": false,
+    "isNewUser": false,
+    "breed": "Gir",
+    "totalAnimals": 6,
+    "ageRange": "2 calves, 3 lactating adults, 1 dry",
+    "vaccinationHistory": [
+      "LSD Goat Pox 2026",
+      "FMD NADCP 2026"
+    ],
+    "monitoredAnimalHi": "गाय (गोवंश)",
+    "monitoredAnimalMr": "गाय (गोवंश)",
+    "monitoredCropHi": "गाय (गोवंश)",
+    "monitoredCropMr": "गाय (गोवंश)",
+    "cropCycleId": "unit-gov-dispensary-niphad"
+  },
+  {
     "id": "e57a8786-1392-42b7-9428-a644a6721b0a",
     "farmerId": "KSF-BJFWYP",
     "name": "Snehansh Tripathy",
@@ -39,7 +88,9 @@
     "monitoredAnimal": "Sugarcane",
     "monitoredAnimalHi": "Sugarcane",
     "monitoredAnimalMr": "Sugarcane",
-    "monitoredCropHi": "Sugarcane"
+    "monitoredCropHi": "Sugarcane",
+    "role": "farmer",
+    "jurisdiction": "Sanganer Taluka, Jaipur District"
   },
   {
     "id": "7d8ae2f6-8461-4950-a873-486e071b6ffd",
@@ -83,7 +134,9 @@
     "monitoredCropMr": "गाय (गोवंश)",
     "cropCycleId": "7d8ae2f6-8461-4950-a873-486e071b6fc1",
     "isDemo": false,
-    "isNewUser": false
+    "isNewUser": false,
+    "role": "farmer",
+    "jurisdiction": "Niphad Taluka, Nashik District"
   },
   {
     "id": "48366990-3319-4d56-b95f-c7c4cc9d3eb9",
@@ -126,7 +179,9 @@
     "monitoredAnimal": "Soybean",
     "monitoredAnimalHi": "Soybean",
     "monitoredAnimalMr": "Soybean",
-    "monitoredCropHi": "Soybean"
+    "monitoredCropHi": "Soybean",
+    "role": "farmer",
+    "jurisdiction": "Sanwer Taluka, Indore District"
   },
   {
     "id": "6e5785d4-4013-4a2a-8abf-53ac92a31add",
@@ -169,7 +224,9 @@
     "monitoredAnimal": "Wheat",
     "monitoredAnimalHi": "Wheat",
     "monitoredAnimalMr": "Wheat",
-    "monitoredCropHi": "Wheat"
+    "monitoredCropHi": "Wheat",
+    "role": "farmer",
+    "jurisdiction": "Khanna Taluka, Ludhiana District"
   },
   {
     "id": "7ecaf5eb-40b0-4723-b218-8bc526c10d78",
@@ -212,7 +269,9 @@
     "monitoredAnimal": "Cotton",
     "monitoredAnimalHi": "Cotton",
     "monitoredAnimalMr": "Cotton",
-    "monitoredCropHi": "Cotton"
+    "monitoredCropHi": "Cotton",
+    "role": "farmer",
+    "jurisdiction": "Sanganer Taluka, Jaipur District"
   },
   {
     "id": "d88b32a9-6699-4775-8e00-0a6655e2cb83",
@@ -255,7 +314,9 @@
     "monitoredAnimal": "Sugarcane",
     "monitoredAnimalHi": "Sugarcane",
     "monitoredAnimalMr": "Sugarcane",
-    "monitoredCropHi": "Sugarcane"
+    "monitoredCropHi": "Sugarcane",
+    "role": "farmer",
+    "jurisdiction": "Karvir Taluka, Kolhapur District"
   },
   {
     "id": "0026a9dd-7285-45aa-bfc9-86ae306befb3",
@@ -298,7 +359,9 @@
     "monitoredAnimal": "Soybean",
     "monitoredAnimalHi": "Soybean",
     "monitoredAnimalMr": "Soybean",
-    "monitoredCropHi": "Soybean"
+    "monitoredCropHi": "Soybean",
+    "role": "farmer",
+    "jurisdiction": "Achalpur Taluka, Amravati District"
   },
   {
     "id": "cc25b9df-2931-4df5-a34e-d2f6fe1b41f7",
@@ -341,7 +404,9 @@
     "monitoredAnimal": "Soybean",
     "monitoredAnimalHi": "Soybean",
     "monitoredAnimalMr": "Soybean",
-    "monitoredCropHi": "Soybean"
+    "monitoredCropHi": "Soybean",
+    "role": "farmer",
+    "jurisdiction": "Sanganer Taluka, Jaipur District"
   },
   {
     "id": "706f3408-e0be-452a-ada4-64fd66b6481f",
@@ -384,7 +449,9 @@
     "monitoredAnimal": "Cotton",
     "monitoredAnimalHi": "Cotton",
     "monitoredAnimalMr": "Cotton",
-    "monitoredCropHi": "Cotton"
+    "monitoredCropHi": "Cotton",
+    "role": "farmer",
+    "jurisdiction": "Sanganer Taluka, Jaipur District"
   },
   {
     "id": "48f9b05c-d43a-4aa0-8e39-c1152cf6d7eb",
@@ -427,7 +494,9 @@
     "monitoredAnimal": "Cotton",
     "monitoredAnimalHi": "Cotton",
     "monitoredAnimalMr": "Cotton",
-    "monitoredCropHi": "Cotton"
+    "monitoredCropHi": "Cotton",
+    "role": "farmer",
+    "jurisdiction": "Morshi Taluka, Amravati District"
   },
   {
     "id": "308ac7d2-cd33-49a4-b6f3-9cb1fc867e08",
@@ -470,7 +539,9 @@
     "monitoredAnimal": "Soybean",
     "monitoredAnimalHi": "Soybean",
     "monitoredAnimalMr": "Soybean",
-    "monitoredCropHi": "Soybean"
+    "monitoredCropHi": "Soybean",
+    "role": "farmer",
+    "jurisdiction": "Achalpur Taluka, Amravati District"
   },
   {
     "id": "e90cb016-df4c-4a5a-bfec-f7a0449e515a",
@@ -513,7 +584,9 @@
     "monitoredAnimal": "Soybean",
     "monitoredAnimalHi": "Soybean",
     "monitoredAnimalMr": "Soybean",
-    "monitoredCropHi": "Soybean"
+    "monitoredCropHi": "Soybean",
+    "role": "farmer",
+    "jurisdiction": "Sanganer Taluka, Jaipur District"
   },
   {
     "id": "dddb9fd2-9a9f-4fde-bc52-3fc206ee9441",
@@ -556,7 +629,9 @@
     "monitoredAnimal": "Soybean",
     "monitoredAnimalHi": "Soybean",
     "monitoredAnimalMr": "Soybean",
-    "monitoredCropHi": "Soybean"
+    "monitoredCropHi": "Soybean",
+    "role": "farmer",
+    "jurisdiction": "Sanwer Taluka, Indore District"
   },
   {
     "id": "67b01fca-5185-4b71-abe7-5431798ccf78",
@@ -599,7 +674,9 @@
     "monitoredAnimal": "Soybean",
     "monitoredAnimalHi": "Soybean",
     "monitoredAnimalMr": "Soybean",
-    "monitoredCropHi": "Soybean"
+    "monitoredCropHi": "Soybean",
+    "role": "farmer",
+    "jurisdiction": "Niphad Taluka, Nashik District"
   },
   {
     "id": "c8d071c5-d15a-433f-b4a0-95a42c77173a",
@@ -642,7 +719,9 @@
     "monitoredAnimal": "Soybean",
     "monitoredAnimalHi": "Soybean",
     "monitoredAnimalMr": "Soybean",
-    "monitoredCropHi": "Soybean"
+    "monitoredCropHi": "Soybean",
+    "role": "farmer",
+    "jurisdiction": "Sanganer Taluka, Jaipur District"
   },
   {
     "id": "95febee7-1b7e-49d4-a6e1-226c4ad16b0c",
@@ -685,7 +764,9 @@
     "monitoredAnimal": "Soybean",
     "monitoredAnimalHi": "Soybean",
     "monitoredAnimalMr": "Soybean",
-    "monitoredCropHi": "Soybean"
+    "monitoredCropHi": "Soybean",
+    "role": "farmer",
+    "jurisdiction": "Sanwer Taluka, Indore District"
   },
   {
     "id": "acc3760c-fead-4a8f-bd56-67c883e9d8ce",
@@ -728,7 +809,9 @@
     "monitoredAnimal": "Soybean",
     "monitoredAnimalHi": "Soybean",
     "monitoredAnimalMr": "Soybean",
-    "monitoredCropHi": "Soybean"
+    "monitoredCropHi": "Soybean",
+    "role": "farmer",
+    "jurisdiction": "Achalpur Taluka, Amravati District"
   },
   {
     "id": "34495426-9950-42ec-9eb6-b2dc0518dd46",
@@ -771,7 +854,9 @@
     "monitoredAnimal": "Soybean",
     "monitoredAnimalHi": "Soybean",
     "monitoredAnimalMr": "Soybean",
-    "monitoredCropHi": "Soybean"
+    "monitoredCropHi": "Soybean",
+    "role": "farmer",
+    "jurisdiction": "Sanganer Taluka, Jaipur District"
   },
   {
     "id": "609e1fa5-aa54-4ed3-bdc3-48ec4861f3bd",
@@ -814,7 +899,9 @@
     "monitoredAnimal": "Soybean",
     "monitoredAnimalHi": "Soybean",
     "monitoredAnimalMr": "Soybean",
-    "monitoredCropHi": "Soybean"
+    "monitoredCropHi": "Soybean",
+    "role": "farmer",
+    "jurisdiction": "Sanwer Taluka, Indore District"
   },
   {
     "id": "5930899c-7d41-41c5-8821-5490500484ef",
@@ -857,7 +944,9 @@
     "monitoredAnimal": "Soybean",
     "monitoredAnimalHi": "Soybean",
     "monitoredAnimalMr": "Soybean",
-    "monitoredCropHi": "Soybean"
+    "monitoredCropHi": "Soybean",
+    "role": "farmer",
+    "jurisdiction": "Achalpur Taluka, Amravati District"
   },
   {
     "id": "a3c51fb2-f295-4d30-8e6f-e45fa160165f",
@@ -900,7 +989,9 @@
     "monitoredAnimal": "Soybean",
     "monitoredAnimalHi": "Soybean",
     "monitoredAnimalMr": "Soybean",
-    "monitoredCropHi": "Soybean"
+    "monitoredCropHi": "Soybean",
+    "role": "farmer",
+    "jurisdiction": "Sanganer Taluka, Jaipur District"
   },
   {
     "id": "42417e66-d545-4a39-83ec-a865d14a9b5f",
@@ -943,7 +1034,9 @@
     "monitoredAnimal": "Soybean",
     "monitoredAnimalHi": "Soybean",
     "monitoredAnimalMr": "Soybean",
-    "monitoredCropHi": "Soybean"
+    "monitoredCropHi": "Soybean",
+    "role": "farmer",
+    "jurisdiction": "Sanwer Taluka, Indore District"
   },
   {
     "id": "ff7f1937-922d-4adf-b684-777ae0cb381b",
@@ -986,7 +1079,9 @@
     "monitoredAnimal": "Soybean",
     "monitoredAnimalHi": "Soybean",
     "monitoredAnimalMr": "Soybean",
-    "monitoredCropHi": "Soybean"
+    "monitoredCropHi": "Soybean",
+    "role": "farmer",
+    "jurisdiction": "Achalpur Taluka, Amravati District"
   },
   {
     "id": "39e6b707-7dd2-4894-842d-1bf4b42c6ac0",
@@ -1029,7 +1124,9 @@
     "monitoredAnimal": "Soybean",
     "monitoredAnimalHi": "Soybean",
     "monitoredAnimalMr": "Soybean",
-    "monitoredCropHi": "Soybean"
+    "monitoredCropHi": "Soybean",
+    "role": "farmer",
+    "jurisdiction": "Niphad Taluka, Nashik District"
   },
   {
     "id": "4eb03ff5-2121-4587-b482-2990734da03c",
@@ -1072,7 +1169,9 @@
     "monitoredAnimal": "Soybean",
     "monitoredAnimalHi": "Soybean",
     "monitoredAnimalMr": "Soybean",
-    "monitoredCropHi": "Soybean"
+    "monitoredCropHi": "Soybean",
+    "role": "farmer",
+    "jurisdiction": "Achalpur Taluka, Amravati District"
   },
   {
     "id": "cf361e70-f569-4b95-9350-f8fce779ff9f",
@@ -1115,7 +1214,9 @@
     "monitoredAnimal": "Soybean",
     "monitoredAnimalHi": "Soybean",
     "monitoredAnimalMr": "Soybean",
-    "monitoredCropHi": "Soybean"
+    "monitoredCropHi": "Soybean",
+    "role": "farmer",
+    "jurisdiction": "Sanganer Taluka, Jaipur District"
   },
   {
     "id": "8385307c-04e6-4014-a92b-3821483b5495",
@@ -1158,7 +1259,9 @@
     "monitoredAnimal": "Soybean",
     "monitoredAnimalHi": "Soybean",
     "monitoredAnimalMr": "Soybean",
-    "monitoredCropHi": "Soybean"
+    "monitoredCropHi": "Soybean",
+    "role": "farmer",
+    "jurisdiction": "Sanganer Taluka, Jaipur District"
   },
   {
     "id": "6a916360-56a3-46e2-8f9e-8cc861e8e837",
@@ -1201,6 +1304,8 @@
     "monitoredAnimal": "Soybean",
     "monitoredAnimalHi": "Soybean",
     "monitoredAnimalMr": "Soybean",
-    "monitoredCropHi": "Soybean"
+    "monitoredCropHi": "Soybean",
+    "role": "farmer",
+    "jurisdiction": "Niphad Taluka, Nashik District"
   }
 ]
