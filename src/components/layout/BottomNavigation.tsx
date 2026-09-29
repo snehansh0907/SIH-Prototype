@@ -1,5 +1,5 @@
 import React from 'react';
-import { Home, Camera, MapPin, MessageSquareText } from 'lucide-react';
+import { Home, Camera, MapPin, MessageSquareText, ShieldCheck } from 'lucide-react';
 import { useLanguage } from '../../context/LanguageContext';
 import { useCrop } from '../../context/CropContext';
 import { useAuth } from '../../context/AuthContext';
@@ -16,7 +16,7 @@ export const BottomNavigation: React.FC = () => {
       return;
     }
 
-    // Protect check, area, and expert tabs for Demo users
+    // Protect check, herd, area, and expert tabs for Demo users
     requireFarmerAccess(() => setActiveTab(tabId));
   };
 
@@ -25,6 +25,11 @@ export const BottomNavigation: React.FC = () => {
       id: 'home',
       label: t.navHome,
       icon: <Home className="w-5 h-5" />,
+    },
+    {
+      id: 'herd',
+      label: t.navHerd || 'My Herd',
+      icon: <ShieldCheck className="w-5 h-5" />,
     },
     {
       id: 'check',
@@ -46,9 +51,12 @@ export const BottomNavigation: React.FC = () => {
 
   return (
     <nav className="fixed bottom-0 left-0 right-0 z-40 bg-white/95 backdrop-blur-md border-t border-stone-200/70 shadow-sm">
-      <div className="max-w-md mx-auto px-4 h-15 flex items-center justify-around">
+      <div className="max-w-md mx-auto px-2 h-15 flex items-center justify-around">
         {navItems.map((item) => {
-          const isActive = activeTab === item.id || (item.id === 'check' && (activeTab === 'check' || activeTab === 'diagnosis'));
+          const isActive =
+            activeTab === item.id ||
+            (item.id === 'check' && (activeTab === 'check' || activeTab === 'diagnosis')) ||
+            (item.id === 'herd' && (activeTab === 'herd' || activeTab === 'vaccination' || activeTab === 'history'));
 
           if (item.isAction) {
             return (
@@ -59,16 +67,20 @@ export const BottomNavigation: React.FC = () => {
                 className="relative -top-3 flex flex-col items-center group focus:outline-none cursor-pointer"
                 aria-label={item.label}
               >
-                <div className={`w-12 h-12 rounded-full flex items-center justify-center transition-all duration-200 shadow-md ${
-                  isActive
-                    ? 'bg-forest-800 ring-3 ring-forest-200 scale-105'
-                    : 'bg-forest-800 hover:bg-forest-900 active:scale-95'
-                }`}>
-                  <Camera className="w-5 h-5 text-white" />
+                <div
+                  className={`w-12 h-12 rounded-full flex items-center justify-center transition-all duration-200 shadow-md ${
+                    isActive
+                      ? 'bg-forest-800 ring-3 ring-amber-300 scale-105'
+                      : 'bg-forest-800 hover:bg-forest-900 active:scale-95'
+                  }`}
+                >
+                  <Camera className="w-5 h-5 text-amber-300" />
                 </div>
-                <span className={`text-[10px] font-bold mt-1 tracking-tight transition-colors ${
-                  isActive ? 'text-forest-800' : 'text-stone-600'
-                }`}>
+                <span
+                  className={`text-[10px] font-bold mt-1 tracking-tight transition-colors ${
+                    isActive ? 'text-forest-800' : 'text-stone-600'
+                  }`}
+                >
                   {item.label}
                 </span>
               </button>
@@ -80,18 +92,18 @@ export const BottomNavigation: React.FC = () => {
               key={item.id}
               onClick={() => handleNavClick(item.id)}
               type="button"
-              className={`flex flex-col items-center justify-center w-16 py-1 rounded-xl transition-all duration-150 active:scale-95 cursor-pointer ${
+              className={`flex flex-col items-center justify-center w-14 py-1 rounded-xl transition-all duration-150 active:scale-95 cursor-pointer ${
                 isActive ? 'text-forest-800 font-bold' : 'text-stone-400 hover:text-stone-600'
               }`}
             >
-              <div className={`p-1 rounded-lg transition-colors ${
-                isActive ? 'bg-forest-50 text-forest-800' : ''
-              }`}>
+              <div className={`p-1 rounded-lg transition-colors ${isActive ? 'bg-forest-50 text-forest-800' : ''}`}>
                 {item.icon}
               </div>
-              <span className={`text-[10px] mt-0.5 tracking-tight font-medium ${
-                isActive ? 'text-forest-800 font-bold' : 'text-stone-500'
-              }`}>
+              <span
+                className={`text-[9px] mt-0.5 tracking-tight font-medium truncate max-w-[56px] ${
+                  isActive ? 'text-forest-800 font-bold' : 'text-stone-500'
+                }`}
+              >
                 {item.label}
               </span>
             </button>

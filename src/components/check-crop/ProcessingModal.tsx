@@ -14,9 +14,9 @@ export const ProcessingModal: React.FC = () => {
   ];
 
   useEffect(() => {
-    const timer1 = setTimeout(() => setCurrentStep(1), 600);
-    const timer2 = setTimeout(() => setCurrentStep(2), 1200);
-    const timer3 = setTimeout(() => setCurrentStep(3), 1800);
+    const timer1 = setTimeout(() => setCurrentStep(1), 450);
+    const timer2 = setTimeout(() => setCurrentStep(2), 900);
+    const timer3 = setTimeout(() => setCurrentStep(3), 1350);
 
     return () => {
       clearTimeout(timer1);
@@ -28,11 +28,11 @@ export const ProcessingModal: React.FC = () => {
   return (
     <div className="fixed inset-0 z-50 bg-stone-900/75 backdrop-blur-sm flex items-center justify-center p-4">
       <div className="bg-[#FCFAF7] border border-amber-200/80 rounded-3xl p-6 w-full max-w-sm text-center shadow-2xl animate-scaleUp">
-        {/* Animated Animal Diagnostic Icon */}
+        {/* Animated Animal Icon */}
         <div className="relative mb-6 mx-auto w-20 h-20">
           <div className="w-20 h-20 rounded-full bg-forest-100 animate-ping absolute inset-0 opacity-40"></div>
           <div className="w-20 h-20 rounded-full bg-forest-800 flex items-center justify-center text-3xl shadow-elevated border-2 border-forest-600">
-            🩺
+            🐮
           </div>
         </div>
 

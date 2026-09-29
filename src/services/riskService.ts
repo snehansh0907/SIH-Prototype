@@ -85,7 +85,7 @@ export const riskService = {
     farmId: string = SEEDED_DEMO_FARM_ID,
     liveWeather?: WeatherCondition
   ): Promise<RiskForecast> {
-    const defaultForecast = getDefaultRiskForecastForCrop(cropId, liveWeather);
+    const defaultForecast = getDefaultRiskForecastForCrop(cropId);
 
     try {
       const cropQuery = cropId ? `?crop=${encodeURIComponent(cropId)}` : '';

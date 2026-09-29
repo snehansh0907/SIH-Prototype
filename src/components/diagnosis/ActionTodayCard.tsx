@@ -6,112 +6,96 @@ export const ActionTodayCard: React.FC = () => {
   const { language, t } = useLanguage();
   const { diagnosis } = useCrop();
 
-  const getIpmCategoryBadge = (category?: string) => {
+  const getCategoryBadge = (category?: string) => {
     switch (category) {
       case 'biosecurity':
+      case 'isolation':
         return {
-          label: language === 'mr' ? 'जैविक सुरक्षा / विलगीकरण' : language === 'hi' ? 'जैव-सुरक्षा / पृथक्करण' : 'Biosecurity / Quarantine',
+          label: language === 'mr' ? 'विलगीकरण / जैविक सुरक्षा' : language === 'hi' ? 'पृथक्करण / जैव-सुरक्षा' : 'Isolation & Quarantine',
           bg: 'bg-rose-100 text-rose-900 border-rose-300',
-          icon: '🛡️'
+          icon: '🛑',
         };
+      case 'first_aid':
       case 'antiseptic':
         return {
-          label: language === 'mr' ? 'जंतुनाशक स्वच्छता' : language === 'hi' ? 'रोगाणुरोधी सफाई' : 'Antiseptic Care',
-          bg: 'bg-sky-100 text-sky-900 border-sky-300',
-          icon: '🧴'
+          label: language === 'mr' ? 'प्रथमोपचार व स्वच्छता' : language === 'hi' ? 'प्राथमिक उपचार' : 'First Aid & Antiseptic',
+          bg: 'bg-amber-100 text-amber-900 border-amber-300',
+          icon: '🩹',
         };
+      case 'hygiene':
+        return {
+          label: language === 'mr' ? 'स्वच्छता व निर्जंतुकीकरण' : language === 'hi' ? 'सफाई व निसंक्रमण' : 'Sanitation & Disinfection',
+          bg: 'bg-emerald-100 text-emerald-900 border-emerald-300',
+          icon: '🧼',
+        };
+      case 'nutrition':
       case 'supportive':
         return {
-          label: language === 'mr' ? 'पोषक आहार व देखभाल' : language === 'hi' ? 'सहायक पोषण व देखभाल' : 'Supportive Care',
-          bg: 'bg-amber-100 text-amber-900 border-amber-300',
-          icon: '🥣'
+          label: language === 'mr' ? 'आहार व पाणी' : language === 'hi' ? 'आहार व इलेक्ट्रोलाइट' : 'Oral Fluids & Nutrition',
+          bg: 'bg-sky-100 text-sky-900 border-sky-300',
+          icon: '🥣',
         };
       case 'veterinary':
         return {
           label: language === 'mr' ? 'पशुवैद्यकीय उपचार (१९६२)' : language === 'hi' ? 'पशुचिकित्सा परामर्श (1962)' : 'Veterinary Care (1962)',
           bg: 'bg-emerald-100 text-emerald-900 border-emerald-300',
-          icon: '🩺'
-        };
-      case 'cultural':
-        return {
-          label: t.ipmCultural,
-          bg: 'bg-emerald-100 text-emerald-900 border-emerald-300',
-          icon: '🌾'
-        };
-      case 'mechanical':
-        return {
-          label: t.ipmMechanical,
-          bg: 'bg-amber-100 text-amber-900 border-amber-300',
-          icon: '✂️'
-        };
-      case 'biological':
-        return {
-          label: t.ipmBiological,
-          bg: 'bg-sky-100 text-sky-900 border-sky-300',
-          icon: '🧫'
-        };
-      case 'chemical':
-        return {
-          label: t.ipmChemical,
-          bg: 'bg-rose-100 text-rose-900 border-rose-300',
-          icon: '🧪'
+          icon: '🩺',
         };
       default:
         return {
           label: language === 'mr' ? 'उपाययोजना' : language === 'hi' ? 'उपाय' : 'Action Step',
           bg: 'bg-stone-100 text-stone-800 border-stone-300',
-          icon: '⚡'
+          icon: '⚡',
         };
     }
   };
 
   return (
-    <div className="rounded-3xl bg-white border-2 border-forest-700/60 p-5 shadow-card mb-4">
-      {/* Prominent Section Header: WHAT SHOULD I DO NOW? */}
+    <div className="rounded-3xl bg-white border-2 border-forest-700/60 p-5 shadow-card mb-4 text-left">
+      {/* Prominent Section Header */}
       <div className="flex items-center gap-2.5 mb-4 pb-3 border-b border-stone-200">
         <span className="w-8 h-8 rounded-xl bg-forest-800 text-amber-300 flex items-center justify-center text-base font-bold shadow-sm">
-          🛡️
+          🩺
         </span>
         <div>
           <h3 className="text-base font-black tracking-tight text-forest-950 font-display">
-            {t.whatShouldIDoNow}
+            {t.whatToDoToday || 'WHAT YOU SHOULD DO TODAY'}
           </h3>
           <p className="text-xs text-stone-600 font-medium">
-            {t.ipmPrioritizedSteps}
+            {language === 'mr' ? 'प्रथमोपचार, विलगीकरण व गोठा स्वच्छता पायऱ्या' : language === 'hi' ? 'प्राथमिक उपचार, अलग करना व पशुशाला स्वच्छता' : 'Immediate First Aid & Isolation Steps'}
           </p>
         </div>
       </div>
 
-      {/* Numbered IPM Action Steps */}
+      {/* Action Steps */}
       <div className="space-y-3">
         {diagnosis.whatToDoToday.map((action) => {
           const title =
             language === 'mr'
               ? action.titleMr
               : language === 'hi'
-              ? (action.titleHi || action.title)
+              ? action.titleHi || action.title
               : action.title;
           const desc =
             language === 'mr'
               ? action.descriptionMr
               : language === 'hi'
-              ? (action.descriptionHi || action.description)
+              ? action.descriptionHi || action.description
               : action.description;
-          const ipm = getIpmCategoryBadge(action.category);
+          const badge = getCategoryBadge(action.category);
 
           return (
             <div
               key={action.step}
               className="p-4 rounded-2xl bg-stone-50/90 border border-stone-200/90 shadow-soft"
             >
-              {/* IPM Category Tag */}
               <div className="flex items-center justify-between mb-2">
-                <span className={`text-[10px] font-extrabold px-2.5 py-0.5 rounded-full border flex items-center gap-1 ${ipm.bg}`}>
-                  <span>{ipm.icon}</span>
-                  <span>{ipm.label}</span>
+                <span className={`text-[10px] font-extrabold px-2.5 py-0.5 rounded-full border flex items-center gap-1 ${badge.bg}`}>
+                  <span>{badge.icon}</span>
+                  <span>{badge.label}</span>
                 </span>
                 <span className="text-[11px] font-bold text-stone-400">
-                  {t.stepLabel} {action.step}
+                  Step {action.step}
                 </span>
               </div>
 

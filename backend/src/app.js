@@ -21,6 +21,7 @@ const expertRoutes = require('./routes/expertRoutes');
 const followUpRoutes = require('./routes/followUpRoutes');
 const advisoryRoutes = require('./routes/advisoryRoutes');
 const authRoutes = require('./routes/authRoutes');
+const locationRoutes = require('./routes/locationRoutes');
 
 const app = express();
 
@@ -63,8 +64,18 @@ app.use(express.urlencoded({ extended: true }));
 app.use('/uploads', express.static(path.join(__dirname, '..', 'uploads')));
 
 // ---------------- Health Check ----------------
+const mlInferenceService = require('./services/mlInferenceService');
+
 app.get('/api/health', (req, res) => {
   res.json({ success: true, message: 'Pashu Sarthak API is running' });
+});
+
+app.get('/api/ml/health', (req, res) => {
+  const status = mlInferenceService.getHealthStatus();
+  res.json({
+    success: status.available,
+    data: status,
+  });
 });
 
 // ---------------- Weather ----------------
@@ -94,6 +105,7 @@ app.use('/api/expert', expertRoutes);
 app.use('/api/follow-ups', followUpRoutes);
 app.use('/api/advisory', advisoryRoutes);
 app.use('/api/auth', authRoutes);
+app.use('/api/location', locationRoutes);
 
 // ---------------- TTS Streaming Proxy ----------------
 app.get(

@@ -78,12 +78,21 @@ let modelPromise: Promise<any> | null = null;
 export async function getMobileNetModel() {
   if (!modelPromise) {
     modelPromise = (async () => {
-      const [tf, mobilenet] = await Promise.all([
-        import('@tensorflow/tfjs'),
-        import('@tensorflow-models/mobilenet'),
-      ]);
-      await tf.ready();
-      return mobilenet.load({ version: 2, alpha: 1.0 });
+      try {
+        // Dynamic load if present in environment
+        // @ts-ignore
+        const tfModule = '@tensorflow/tfjs';
+        // @ts-ignore
+        const mobilenetModule = '@tensorflow-models/mobilenet';
+        const [tf, mobilenet] = await Promise.all([
+          import(/* @vite-ignore */ tfModule),
+          import(/* @vite-ignore */ mobilenetModule),
+        ]);
+        await tf.ready();
+        return mobilenet.load({ version: 2, alpha: 1.0 });
+      } catch {
+        return null;
+      }
     })();
   }
   return modelPromise;

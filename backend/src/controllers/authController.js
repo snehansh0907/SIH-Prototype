@@ -10,6 +10,7 @@ const path = require('path');
 const { v4: uuidv4 } = require('uuid');
 const supabase = require('../config/supabase');
 const { asyncHandler, ApiError } = require('../middleware/errorHandler');
+const { DISTRICT_COORDINATES } = require('../data/districtCoordinates');
 
 const REGISTERED_USERS_FILE = path.resolve(__dirname, '../data/registered_users.json');
 
@@ -711,8 +712,32 @@ const register = asyncHandler(async (req, res) => {
   const cropCycleId = req.body.cropCycleId || req.body.unitId || uuidv4();
   const farmerId = req.body.farmerId || req.body.ownerId || generateFarmerId();
 
-  const finalLat = typeof latitude === 'number' ? latitude : 20.085;
-  const finalLng = typeof longitude === 'number' ? longitude : 74.11;
+  let finalLat = typeof latitude === 'number' && !isNaN(latitude) ? latitude : undefined;
+  let finalLng = typeof longitude === 'number' && !isNaN(longitude) ? longitude : undefined;
+
+  if (finalLat === undefined || finalLng === undefined) {
+    const distKey = (cleanDistrict || '').toLowerCase();
+    const villKey = (cleanVillage || '').toLowerCase();
+    const talKey = (cleanTaluka || '').toLowerCase();
+    const stateKey = (cleanState || '').toLowerCase();
+
+    if (DISTRICT_COORDINATES[villKey]) {
+      finalLat = DISTRICT_COORDINATES[villKey].lat;
+      finalLng = DISTRICT_COORDINATES[villKey].lng;
+    } else if (DISTRICT_COORDINATES[talKey]) {
+      finalLat = DISTRICT_COORDINATES[talKey].lat;
+      finalLng = DISTRICT_COORDINATES[talKey].lng;
+    } else if (DISTRICT_COORDINATES[distKey]) {
+      finalLat = DISTRICT_COORDINATES[distKey].lat;
+      finalLng = DISTRICT_COORDINATES[distKey].lng;
+    } else if (DISTRICT_COORDINATES[stateKey]) {
+      finalLat = DISTRICT_COORDINATES[stateKey].lat;
+      finalLng = DISTRICT_COORDINATES[stateKey].lng;
+    } else {
+      finalLat = 20.085;
+      finalLng = 74.11;
+    }
+  }
 
   // Metadata bundle stored in Supabase
   const meta = JSON.stringify({
