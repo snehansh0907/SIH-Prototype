@@ -22,7 +22,7 @@ export const weatherService = {
    * Fetches real-time weather data for a given farm latitude & longitude using Open-Meteo.
    * Dynamically formats disease impact summary based on active crop.
    */
-  async getWeather(latitude: number, longitude: number, cropIdOrName?: string): Promise<WeatherCondition> {
+  async getWeather(latitude: number, longitude: number, _cropIdOrName?: string): Promise<WeatherCondition> {
     if (latitude === undefined || longitude === undefined || isNaN(latitude) || isNaN(longitude)) {
       throw new Error('Valid latitude and longitude coordinates are required to fetch weather.');
     }
@@ -79,48 +79,39 @@ export const weatherService = {
           ? `हलक्या सरी किंवा ढगाळ वातावरण (${rainfallChance}%)`
           : `कोरडे हवामान (${rainfallChance}%)`;
 
-      // Dynamically compute disease risk impact summary based on REAL conditions and active crop
-      const cropKey = (cropIdOrName || 'tomato').toLowerCase().trim();
+      // Calculate Temperature-Humidity Index (THI) for cattle & buffalo
+      const rawTHI = 0.8 * temp + (humidity / 100) * (temp - 14.4) + 46.4;
+      const thi = Math.round(rawTHI * 10) / 10;
+      let thiStatus = 'Comfortable';
+      if (thi >= 89) thiStatus = 'Severe Heat Stress';
+      else if (thi >= 79) thiStatus = 'Moderate Heat Stress';
+      else if (thi >= 72) thiStatus = 'Mild Heat Stress';
+
+      // Dynamically compute livestock disease and heat stress impact summary
       let cropImpactSummary = '';
       let cropImpactSummaryHi = '';
       let cropImpactSummaryMr = '';
 
-      if (humidity >= 80 && rainfallChance >= 50) {
-        if (cropKey === 'soybean') {
-          cropImpactSummary = `High humidity (${humidity}%) and rain (${rainfallChance}%) significantly increase Soybean Rust and foliar fungal pressure. Ensure clear drainage between crop ridges.`;
-          cropImpactSummaryHi = `उच्च आर्द्रता (${humidity}%) और बारिश (${rainfallChance}%) सोयाबीन गेरुआ (रस्ट) और फफूंद का खतरा बढ़ाती है। क्यारियों में जल निकासी रखें।`;
-          cropImpactSummaryMr = `जास्त हवेतील आर्द्रता (${humidity}%) व पाऊस (${rainfallChance}%) यामुळे सोयाबीन तांबेरा रोगाचा धोका वाढतो. वाफ्यांमध्ये पाणी साचू देऊ नका.`;
-        } else if (cropKey === 'cotton') {
-          cropImpactSummary = `High humidity (${humidity}%) and rain (${rainfallChance}%) elevate fungal leaf spot and boll rot risk in cotton. Inspect lower bolls and foliage.`;
-          cropImpactSummaryHi = `उच्च आर्द्रता (${humidity}%) और बारिश (${rainfallChance}%) कपास में पत्ती धब्बा व गूलर सड़न का जोखिम बढ़ाती है।`;
-          cropImpactSummaryMr = `जास्त आर्द्रता व पावसामुळे कापूस पिकात बोंड सड व पानावरील ठिपके रोगाचा धोका वाढतो.`;
-        } else {
-          cropImpactSummary = `High atmospheric humidity (${humidity}%) and impending rain (${rainfallChance}%) significantly increase fungal disease pressure. Apply preventive measures on lower leaf canopy.`;
-          cropImpactSummaryHi = `उच्च वायुमंडलीय आर्द्रता (${humidity}%) और संभावित बारिश (${rainfallChance}%) फफूंद जनित रोगों का खतरा काफी बढ़ा देती है। निचली पत्तियों पर निवारक उपाय करें।`;
-          cropImpactSummaryMr = `जास्त हवेतील आर्द्रता (${humidity}%) आणि पाऊस (${rainfallChance}%) यामुळे पानांवर करपा व बुरशीजन्य रोगांचा धोका मोठ्या प्रमाणावर वाढतो.`;
-        }
-      } else if (humidity >= 75) {
-        if (cropKey === 'soybean') {
-          cropImpactSummary = `High relative humidity (${humidity}%) creates favorable micro-climate for soybean rust spore multiplication. Inspect lower canopy foliage.`;
-          cropImpactSummaryHi = `उच्च सापेक्ष आर्द्रता (${humidity}%) सोयाबीन रस्ट के बीजाणुओं के अंकुरण के लिए अनुकूल है। निचली पत्तियों की जांच करें।`;
-          cropImpactSummaryMr = `हवेतील जास्त आर्द्रतेमुळे (${humidity}%) सोयाबीनच्या खालच्या पानांवर तांबेरा बुरशी वाढण्याचा धोका आहे.`;
-        } else {
-          cropImpactSummary = `High relative humidity (${humidity}%) creates favorable micro-climate for fungal spore germination. Ensure field aeration and inspect lower foliage.`;
-          cropImpactSummaryHi = `उच्च सापेक्ष आर्द्रता (${humidity}%) फंगल बीजाणुओं के अंकुरण के लिए अनुकूल वातावरण बनाती है। खेत में वायु प्रवाह सुनिश्चित करें।`;
-          cropImpactSummaryMr = `हवेतील जास्त आर्द्रतेमुळे (${humidity}%) पानांवर बुरशीचे बीजाणू वेगाने वाढण्यास पोषक वातावरण तयार झाले आहे.`;
-        }
+      if (thi >= 79) {
+        cropImpactSummary = `Elevated Heat Stress Index (THI ${thi}). Cattle prone to 15-20% drop in milk yield, reduced feed intake, and high respiration. Provide shed shade, fans/sprinklers, and abundant fresh drinking water.`;
+        cropImpactSummaryHi = `उच्च ताप-तनाव सूचकांक (THI ${thi})। दुधारू पशुओं में दूध उत्पादन में 15-20% गिरावट और सांस फूलने का खतरा। गोठे में पंखे, छाया और ठंडा पानी उपलब्ध कराएं।`;
+        cropImpactSummaryMr = `वाढता उष्णता ताण निर्देशांक (THI ${thi}). दुधाळ जनावरांचे दूध १५-२०% घटण्याची आणि धाप लागण्याची शक्यता. गोठ्यात सावली, पंखे, गारवा आणि मुबलक थंड पिण्याचे पाणी ठेवा.`;
+      } else if (humidity >= 70 && temp >= 22 && temp <= 35) {
+        cropImpactSummary = `Humid environment (${humidity}%) and warm weather (${temp}°C) accelerate biting fly (Stomoxys) and mosquito breeding—the primary vectors for Lumpy Skin Disease (LSD). Apply shed vector netting and smoke repellant.`;
+        cropImpactSummaryHi = `उच्च आर्द्रता (${humidity}%) और तापमान (${temp}°C) डास व गोचीड मक्खियों को बढ़ाते हैं, जो लम्पी त्वचा रोग (LSD) फैलाती हैं। गोठे में धुआं या मच्छरदानी का उपयोग करें।`;
+        cropImpactSummaryMr = `जास्त आर्द्रता (${humidity}%) व उष्ण वातावरणामुळे (${temp}°C) डास, गोचीड आणि चावणाऱ्या माश्यांची पैदास वाढून लंपी रोगाचा (LSD) प्रसार वेगाने होऊ शकतो. गोठ्यात धूर व कीटक प्रतिबंधक उपाय करा.`;
+      } else if (humidity >= 65 && temp >= 15 && temp <= 28) {
+        cropImpactSummary = `Moderate temperatures (${temp}°C) and damp air (${humidity}%) favor aerosol stability of Foot-and-Mouth Disease (FMD) virus. Disinfect shed entrances with 4% sodium carbonate.`;
+        cropImpactSummaryHi = `हल्की ठंड और नमी (${humidity}%) खुरपका-मुंहपका (FMD) वायरस के फैलाव के लिए अनुकूल हैं। गोठे के प्रवेश द्वार पर चूना या सोडियम कार्बोनेट छिड़कें।`;
+        cropImpactSummaryMr = `दमट हवामानामुळे (${humidity}%) लाळ्या खुरकूत (FMD) विषाणू हवेत जास्त काळ टिकून राहतो. गोठ्याच्या प्रवेशद्वारावर पोटॅशियम परमँगनेट किंवा चुन्याचे निर्जंतुकीकरण करा.`;
       } else if (rainfallChance >= 60) {
-        cropImpactSummary = `Expected rainfall (${rainfallChance}%) may cause water splashing of soil-borne pathogens onto foliage. Inspect field drainage.`;
-        cropImpactSummaryHi = `संभावित वर्षा (${rainfallChance}%) के कारण मिट्टी जनित रोगजनक पत्तियों पर छिटक सकते हैं। खेत में जल निकासी की जांच करें।`;
-        cropImpactSummaryMr = `पावसाच्या पाण्यामुळे (${rainfallChance}%) जमिनीतील जंतू पानांवर उडण्याचा धोका आहे. पाण्याचा निचरा सुरळीत ठेवा.`;
-      } else if (temp >= 33) {
-        cropImpactSummary = `High temperatures (${temp}°C) combined with moderate humidity accelerate insect pest development (thrips/mites). Maintain soil moisture.`;
-        cropImpactSummaryHi = `अधिक तापमान (${temp}°C) और आर्द्रता कीटों (थ्रिप्स/माइट्स) के विकास को तेज करते हैं। मिट्टी में उचित नमी बनाए रखें।`;
-        cropImpactSummaryMr = `जास्त तापमान (${temp}°C) व आर्द्रतेमुळे रसशोषक किडींचा प्रादुर्भाव वाढू शकतो. जमिनीत पुरेसा ओलावा ठेवा.`;
+        cropImpactSummary = `Anticipated rainfall (${rainfallChance}%) may lead to shed waterlogging and foot rot infections. Ensure dry, clean bedding and hoof hygiene.`;
+        cropImpactSummaryHi = `संभावित बारिश (${rainfallChance}%) से गोठे में कीचड़ और खुर सड़न (फुट रॉट) का खतरा हो सकता है। फर्श सूखा व साफ रखें।`;
+        cropImpactSummaryMr = `पावसामुळे (${rainfallChance}%) गोठ्यात ओल व चिखल होऊन जनावरांच्या खुरांमध्ये सडण (फूट रॉट) होण्याचा धोका आहे. गोठा कोरडा व स्वच्छ ठेवा.`;
       } else {
-        cropImpactSummary = `Current humidity (${humidity}%) and low rain chance (${rainfallChance}%) indicate stable conditions with low immediate fungal risk.`;
-        cropImpactSummaryHi = `वर्तमान आर्द्रता (${humidity}%) और कम वर्षा की संभावना (${rainfallChance}%) स्थिर स्थिति और कम फंगल जोखिम दर्शाती है।`;
-        cropImpactSummaryMr = `सध्याची आर्द्रता (${humidity}%) व कमी पाऊस (${rainfallChance}%) यामुळे रोगाचा तात्काळ धोका कमी आहे.`;
+        cropImpactSummary = `Current microclimate (THI ${thi}, Humidity ${humidity}%) is favorable with stable livestock physiological parameters. Maintain routine shed sanitation.`;
+        cropImpactSummaryHi = `वर्तमान मौसम (THI ${thi}, आर्द्रता ${humidity}%) पशु स्वास्थ्य के लिए अनुकूल है। गोठे की नियमित सफाई बनाए रखें।`;
+        cropImpactSummaryMr = `सध्याचे वातावरण (THI ${thi}, आर्द्रता ${humidity}%) जनावरांच्या आरोग्यासाठी अनुकूल आहे. गोठ्यात नियमित स्वच्छता ठेवा.`;
       }
 
       return {
@@ -134,6 +125,8 @@ export const weatherService = {
         cropImpactSummary,
         cropImpactSummaryHi,
         cropImpactSummaryMr,
+        thi,
+        thiStatus,
       };
     } catch (err) {
       clearTimeout(timeoutId);

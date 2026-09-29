@@ -125,6 +125,8 @@ export interface WeatherCondition {
   cropImpactSummary: string;
   cropImpactSummaryHi?: string;
   cropImpactSummaryMr: string;
+  thi?: number;
+  thiStatus?: string;
 }
 
 export interface RiskDay {
@@ -164,6 +166,8 @@ export interface RiskForecast {
     temperatureValue?: string;
     humidity: string;
     humidityValue?: string;
+    thi?: string;
+    vectorRisk?: string;
     rainfall: string;
     rainfallValue?: string;
     nearbyReports: number;

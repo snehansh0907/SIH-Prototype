@@ -54,7 +54,7 @@ export const RiskForecastView: React.FC = () => {
         </div>
         <div className="flex items-center gap-2 mb-2">
           <span className="text-xs font-bold text-forest-800 bg-forest-100 px-2.5 py-0.5 rounded-full border border-forest-300">
-            {t.cropStageFlowering}
+            {riskForecast.breakdown?.cropStage || (language === 'mr' ? 'दुधाळ गोठा' : language === 'hi' ? 'दुधारू पशुधन' : 'Milch Cattle Herd')}
           </span>
         </div>
         <p className="text-xs text-stone-700 font-bold bg-amber-50 p-3 rounded-2xl border border-amber-300/80 leading-relaxed">
@@ -179,6 +179,17 @@ export const RiskForecastView: React.FC = () => {
                   </span>
                 </span>
               </div>
+
+              {riskForecast.breakdown?.thi && (
+                <div className="py-2.5 flex items-center justify-between">
+                  <span className="font-semibold text-stone-600">
+                    {language === 'mr' ? 'उष्णता ताण निर्देशांक (THI)' : language === 'hi' ? 'ताप-तनाव सूचकांक (THI)' : 'Heat Stress Index (THI)'}
+                  </span>
+                  <span className="font-extrabold text-amber-900 px-2 py-0.5 rounded-md bg-amber-100 text-[11px]">
+                    {riskForecast.breakdown.thi}
+                  </span>
+                </div>
+              )}
 
               <div className="py-2.5 flex items-center justify-between">
                 <span className="font-semibold text-stone-600">{t.rainfallLabel}</span>

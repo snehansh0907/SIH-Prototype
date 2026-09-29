@@ -1,188 +1,225 @@
 // =========================================================
-// Krishi Sarthak - Agronomic Crop Disease Risk Engine
+// Pashu Sarthak - Livestock Bioclimatic Disease & Heat Stress Risk Engine
 // =========================================================
-// Combines:
-//   - Crop species & stage susceptibility
-//   - Diagnosed disease / pest pathogen biology
-//   - AI detection confidence
-//   - Real-time & forecast weather (temperature, humidity, rainfall)
-//   - Spatial disease cluster pressure (nearby confirmed reports)
+// Implements veterinary epidemiological models for livestock health:
+//   1. Temperature-Humidity Index (THI) for cattle & buffalo heat stress
+//      Equation (National Research Council / Dairy Science):
+//      THI = 0.8 * T + (RH / 100) * (T - 14.4) + 46.4
+//      - THI < 72: Normal / Comfortable
+//      - 72 <= THI <= 78: Mild Heat Stress (respiration up, 5-10% milk yield decline)
+//      - 79 <= THI <= 88: Moderate Heat Stress (salivation, 15-25% milk drop, immunosuppression)
+//      - THI > 88: Severe Heat Stress / Emergency (panting, danger of heat stroke & death)
 //
-// NOTE FOR AGRONOMISTS:
-// The thresholds below are transparent prototype heuristics designed
-// for the SIH Maharashtra scenario (e.g. Onion Purple Blotch, Tomato
-// Early Blight, Soybean Rust). They are modularized so validated ICAR /
-// MPKV Rahuri agronomic epidemiological models can replace them cleanly.
+//   2. Vector-Borne Disease Proliferation Risk (Lumpy Skin Disease - LSD)
+//      - Mechanically transmitted by biting stable flies (Stomoxys calcitrans),
+//        mosquitoes (Aedes, Culex), and ticks (Rhipicephalus appendiculatus).
+//      - Proliferation peaks during warm (22°C - 35°C), high humidity (> 70%),
+//        and stagnant post-rainfall conditions.
+//
+//   3. Seasonal Foot-and-Mouth Disease (FMD) Environmental Factor
+//      - Aphthovirus aerosol survival and transmission peak during cool-to-moderate
+//        temperatures (15°C - 28°C) with elevated relative humidity (> 60%).
+//
+//   4. Species & Physiological Stage Vulnerability
+//      - High-yielding crossbred cattle (HF/Jersey) & lactating cows (high metabolic load)
+//      - Buffaloes (poor thermoregulation due to fewer sweat glands)
+//      - Calves and young stock (developing immunity)
+//      - Indigenous cattle (Gir/Sahiwal/Khillari - hardier)
+//
+//   5. Nearby Outbreak Ring Surveillance Pressure (3 km - 10 km)
 // =========================================================
 
 /**
- * Vulnerability weights for crop phenological stages.
- * Flowering and bulb formation / fruiting create dense canopies and high nutrient demand.
+ * Vulnerability weights for livestock species and life/production stages.
  */
-const CROP_STAGE_VULNERABILITY = {
-  sowing: { weight: 0.3, label: 'Sowing / Germination', susceptibility: 'Low' },
-  seedling: { weight: 0.5, label: 'Seedling Stage', susceptibility: 'Moderate' },
-  vegetative: { weight: 0.7, label: 'Vegetative Growth', susceptibility: 'Moderate' },
-  flowering: { weight: 1.0, label: 'Flowering Stage', susceptibility: 'Susceptible' },
-  fruiting: { weight: 0.95, label: 'Bulb / Fruit Formation', susceptibility: 'Susceptible' },
-  maturity: { weight: 0.4, label: 'Maturity / Ripening', susceptibility: 'Low' },
-  harvested: { weight: 0.1, label: 'Harvested', susceptibility: 'Minimal' },
+const LIVESTOCK_VULNERABILITY = {
+  crossbred_lactating: { weight: 1.0, label: 'Crossbred Lactating Cattle (HF/Jersey)', susceptibility: 'High' },
+  buffalo_milch: { weight: 0.9, label: 'Milch Buffalo (Murrah/Jafrabadi)', susceptibility: 'High (Heat Sensitive)' },
+  indigenous_cattle: { weight: 0.65, label: 'Indigenous Cattle (Gir/Sahiwal/Khillari)', susceptibility: 'Moderate' },
+  calves_young: { weight: 0.85, label: 'Calves & Young Stock (< 1 Year)', susceptibility: 'High (Immunity Developing)' },
+  goat_sheep: { weight: 0.6, label: 'Small Ruminants (Goat/Sheep)', susceptibility: 'Moderate' },
+  poultry_flock: { weight: 0.8, label: 'Poultry Flock (Broiler/Layer)', susceptibility: 'Moderate-High (Heat Sensitive)' },
+  dry_cattle: { weight: 0.5, label: 'Dry / Non-Lactating Cattle', susceptibility: 'Low-Moderate' },
+  // Backwards compatibility mappings for existing crop stages
+  flowering: { weight: 0.95, label: 'Milch / Peak Lactation Herd', susceptibility: 'High' },
+  vegetative: { weight: 0.7, label: 'Growing Stock / Heifers', susceptibility: 'Moderate' },
+  seedling: { weight: 0.85, label: 'Young Calves', susceptibility: 'High' },
+  fruiting: { weight: 0.95, label: 'Lactating Cows', susceptibility: 'High' },
+  maturity: { weight: 0.5, label: 'Mature / Dry Cows', susceptibility: 'Low' },
+  sowing: { weight: 0.4, label: 'Calf Pens', susceptibility: 'Moderate' },
 };
 
 /**
- * Pathogen weather preferences (temperature windows and humidity thresholds).
+ * Livestock Pathogen Bioclimatic Profiles.
  */
-const PATHOGEN_PROFILES = {
-  purple_blotch: {
-    name: 'Purple Blotch (Alternaria porri)',
-    optimalTempMin: 21,
-    optimalTempMax: 30,
-    criticalHumidity: 80,
-    rainDriven: true,
-  },
-  early_blight: {
-    name: 'Early Blight (Alternaria solani)',
+const LIVESTOCK_PATHOGEN_PROFILES = {
+  lumpy_skin_disease: {
+    name: 'Lumpy Skin Disease (Capripoxvirus)',
     optimalTempMin: 22,
-    optimalTempMax: 30,
-    criticalHumidity: 75,
-    rainDriven: true,
-  },
-  late_blight: {
-    name: 'Late Blight (Phytophthora infestans)',
-    optimalTempMin: 12,
-    optimalTempMax: 22,
-    criticalHumidity: 85,
-    rainDriven: true,
-  },
-  rust: {
-    name: 'Foliar Rust',
-    optimalTempMin: 18,
-    optimalTempMax: 28,
-    criticalHumidity: 80,
-    rainDriven: true,
-  },
-  leaf_curl: {
-    name: 'Leaf Curl Virus',
-    optimalTempMin: 25,
     optimalTempMax: 35,
+    criticalHumidity: 70,
+    vectorDriven: true,
+    description: 'Biting flies (Stomoxys) and mosquitoes thrive in warm humid conditions',
+  },
+  foot_and_mouth_disease: {
+    name: 'Foot-and-Mouth Disease (Aphthovirus)',
+    optimalTempMin: 15,
+    optimalTempMax: 28,
+    criticalHumidity: 65,
+    vectorDriven: false,
+    aerosolDriven: true,
+    description: 'Aerosol viral transmission is prolonged under cool, damp conditions',
+  },
+  hemorrhagic_septicemia: {
+    name: 'Hemorrhagic Septicemia (Pasteurella multocida)',
+    optimalTempMin: 20,
+    optimalTempMax: 34,
+    criticalHumidity: 75,
+    vectorDriven: false,
+    rainDriven: true,
+    description: 'Post-monsoon water logging, stress, and sudden temperature shifts',
+  },
+  heat_stress: {
+    name: 'Bovine Heat Stress & Milk Drop',
+    optimalTempMin: 28,
+    optimalTempMax: 45,
     criticalHumidity: 60,
-    rainDriven: false, // insect vector (whitefly) driven
+    vectorDriven: false,
+    description: 'Combined high ambient heat and humidity impairs ruminant cooling',
   },
   default: {
-    name: 'General Foliar Disease',
+    name: 'Livestock Epizootic Risk',
     optimalTempMin: 20,
-    optimalTempMax: 32,
-    criticalHumidity: 75,
-    rainDriven: true,
+    optimalTempMax: 35,
+    criticalHumidity: 70,
+    vectorDriven: true,
   },
 };
 
-function getPathogenProfile(diseaseName = '') {
-  const d = diseaseName.toLowerCase().replace(/[\s-]+/g, '_');
-  for (const [key, profile] of Object.entries(PATHOGEN_PROFILES)) {
-    if (d.includes(key)) return profile;
-  }
-  return PATHOGEN_PROFILES.default;
-}
-
 /**
- * Calculates humidity score (0 - 25 points).
- * Prolonged relative humidity above 75-80% enables fungal spore germination.
+ * Calculates Temperature-Humidity Index (THI) for cattle and buffalo.
+ * Standard National Research Council formula:
+ * THI = 0.8 * T + (RH / 100) * (T - 14.4) + 46.4
  */
-function computeHumidityFactor(humidityPercent, criticalThreshold = 75) {
-  if (humidityPercent === null || humidityPercent === undefined || isNaN(humidityPercent)) {
-    return { score: 12, status: 'Moderate', value: 65 };
-  }
-  const hum = Math.max(0, Math.min(100, Number(humidityPercent)));
-  let score = 0;
-  let status = 'Low';
+function computeTHI(temperatureC, relativeHumidity) {
+  const T = Number(temperatureC) || 25;
+  const RH = Math.max(0, Math.min(100, Number(relativeHumidity) || 65));
+  const thi = 0.8 * T + (RH / 100) * (T - 14.4) + 46.4;
+  const roundedTHI = Math.round(thi * 10) / 10;
 
-  if (hum >= criticalThreshold) {
-    // 18 - 25 points for high humidity
-    score = 18 + Math.round(((hum - criticalThreshold) / (100 - criticalThreshold)) * 7);
-    status = 'High';
-  } else if (hum >= 60) {
-    // 10 - 17 points for moderate humidity
-    score = 10 + Math.round(((hum - 60) / (criticalThreshold - 60)) * 7);
-    status = 'Moderate';
-  } else {
-    // 0 - 9 points for dry conditions
-    score = Math.round((hum / 60) * 9);
-    status = 'Low';
-  }
-
-  return { score: Math.min(score, 25), status, value: Math.round(hum) };
-}
-
-/**
- * Calculates rainfall score (0 - 25 points).
- * Rain splashes spores from soil and infected leaves onto fresh canopy.
- */
-function computeRainFactor(rainfallMm = 0, rainProbPercent = 0, rainDriven = true) {
-  const mm = Math.max(0, Number(rainfallMm) || 0);
-  const prob = Math.max(0, Math.min(100, Number(rainProbPercent) || 0));
-
-  if (!rainDriven) {
-    // For vector-driven pests (e.g. whitefly), heavy rain actually washes vectors away
-    const dryBonus = prob < 30 ? 15 : 5;
-    return { score: dryBonus, status: prob < 30 ? 'Dry (Favorable for vector)' : 'Rainy (Suppresses vector)', rainfallMm: mm, rainProbability: prob };
-  }
-
-  // Amount score up to 15 points
-  const amountScore = Math.min(mm / 15, 1) * 15;
-  // Probability score up to 10 points
-  const probScore = (prob / 100) * 10;
-
-  const totalScore = Math.round(Math.min(amountScore + probScore, 25));
-  let status = 'Low';
-  if (totalScore >= 16 || prob >= 60 || mm >= 10) status = 'High';
-  else if (totalScore >= 8 || prob >= 30 || mm >= 2) status = 'Moderate';
-
-  return { score: totalScore, status, rainfallMm: mm, rainProbability: prob };
-}
-
-/**
- * Calculates temperature suitability factor (0 - 15 points).
- */
-function computeTemperatureFactor(tempC, profile) {
-  if (tempC === null || tempC === undefined || isNaN(tempC)) {
-    return { score: 8, status: 'Suitable', value: 25 };
-  }
-  const temp = Number(tempC);
+  let status = 'Comfortable';
+  let category = 'normal';
   let score = 5;
-  let status = 'Moderate';
+  let milkDropPercent = 0;
 
-  if (temp >= profile.optimalTempMin && temp <= profile.optimalTempMax) {
-    score = 15; // Optimal temperature for disease spread
-    status = 'Suitable';
-  } else if (temp >= profile.optimalTempMin - 4 && temp <= profile.optimalTempMax + 4) {
-    score = 9;
-    status = 'Moderate';
+  if (roundedTHI >= 89) {
+    status = 'Severe Heat Stress (Emergency)';
+    category = 'severe';
+    score = 30;
+    milkDropPercent = 25;
+  } else if (roundedTHI >= 79) {
+    status = 'Moderate Heat Stress';
+    category = 'moderate';
+    score = 22;
+    milkDropPercent = 15;
+  } else if (roundedTHI >= 72) {
+    status = 'Mild Heat Stress';
+    category = 'mild';
+    score = 12;
+    milkDropPercent = 5;
   } else {
-    score = 3;
-    status = 'Unfavorable';
+    status = 'Comfortable / Normal';
+    category = 'normal';
+    score = 4;
+    milkDropPercent = 0;
   }
 
-  return { score, status, value: Math.round(temp) };
+  return {
+    thi: roundedTHI,
+    status,
+    category,
+    score,
+    milkDropEstimate: `${milkDropPercent}% expected decline if uncooled`,
+  };
 }
 
 /**
- * Calculates crop stage vulnerability score (0 - 15 points).
+ * Calculates Vector Proliferation Risk (0 - 25 points).
+ * Evaluates biting fly (Stomoxys calcitrans) and mosquito population boom.
  */
-function computeCropStageFactor(cropStage = 'vegetative') {
-  const key = String(cropStage).toLowerCase().trim();
-  const stageInfo = CROP_STAGE_VULNERABILITY[key] || CROP_STAGE_VULNERABILITY.vegetative;
-  const score = Math.round(stageInfo.weight * 15);
-  return { score, stage: stageInfo.label, susceptibility: stageInfo.susceptibility };
+function computeVectorProliferationFactor(temperatureC, humidityPercent, rainfallMm = 0) {
+  const temp = Number(temperatureC) || 25;
+  const hum = Math.max(0, Math.min(100, Number(humidityPercent) || 65));
+  const rain = Math.max(0, Number(rainfallMm) || 0);
+
+  let score = 5;
+  let status = 'Low Vector Activity';
+
+  // Peak vector conditions: 22°C - 35°C and RH > 70% or standing rain
+  const tempOptimal = temp >= 22 && temp <= 35;
+  const humHigh = hum >= 70;
+  const standingWater = rain >= 3;
+
+  if (tempOptimal && humHigh && standingWater) {
+    score = 25;
+    status = 'High Vector Proliferation (Stomoxys & Mosquitoes Active)';
+  } else if (tempOptimal && (humHigh || standingWater)) {
+    score = 19;
+    status = 'Elevated Vector Activity (LSD Risk Warning)';
+  } else if (temp >= 20 && hum >= 55) {
+    score = 12;
+    status = 'Moderate Fly & Vector Presence';
+  } else {
+    score = 4;
+    status = 'Low Vector Pressure (Dry / Cool)';
+  }
+
+  return { score, status, isFavorableForVectors: score >= 15 };
 }
 
 /**
- * Calculates nearby disease pressure score (0 - 20 points).
+ * Calculates Seasonal Foot-and-Mouth Disease (FMD) Environmental Correlation (0 - 20 points).
+ * Aphthovirus thrives in aerosol at cool-to-moderate temperatures (15°C - 28°C) and high humidity.
  */
-function computeNearbyCasesFactor(nearbyCases = []) {
+function computeFMDEnvironmentalFactor(temperatureC, humidityPercent) {
+  const temp = Number(temperatureC) || 25;
+  const hum = Math.max(0, Math.min(100, Number(humidityPercent) || 65));
+
+  let score = 4;
+  let status = 'Low Aerosol Persistence';
+
+  if (temp >= 15 && temp <= 27 && hum >= 65) {
+    score = 20;
+    status = 'High Aphthovirus Aerosol Transmission Risk';
+  } else if (temp >= 15 && temp <= 30 && hum >= 50) {
+    score = 12;
+    status = 'Moderate Viral Persistence in Air';
+  } else if (temp > 35 || hum < 40) {
+    score = 3;
+    status = 'Unfavorable for Viral Aerosol (Dry/Hot Inactivation)';
+  }
+
+  return { score, status };
+}
+
+/**
+ * Calculates livestock herd species/stage vulnerability (0 - 15 points).
+ */
+function computeLivestockVulnerabilityFactor(stageOrSpecies = 'crossbred_lactating') {
+  const key = String(stageOrSpecies).toLowerCase().trim().replace(/[\s-]+/g, '_');
+  const info = LIVESTOCK_VULNERABILITY[key] || LIVESTOCK_VULNERABILITY.crossbred_lactating;
+  const score = Math.round(info.weight * 15);
+  return { score, stage: info.label, susceptibility: info.susceptibility };
+}
+
+/**
+ * Calculates nearby livestock disease outbreak pressure (0 - 20 points).
+ * Focuses on ring vaccination zones (3 km ring and 10 km surveillance).
+ */
+function computeNearbyOutbreakFactor(nearbyCases = []) {
   const cases = Array.isArray(nearbyCases) ? nearbyCases : [];
   if (cases.length === 0) {
-    return { score: 0, count: 0, status: 'No nearby reports', closestKm: null };
+    return { score: 0, count: 0, status: 'No nearby livestock outbreaks', closestKm: null };
   }
 
   let score = 0;
@@ -192,8 +229,8 @@ function computeNearbyCasesFactor(nearbyCases = []) {
     const dist = typeof c.distance_km === 'number' ? c.distance_km : typeof c.distanceKm === 'number' ? c.distanceKm : 5;
     if (dist < closestKm) closestKm = dist;
 
-    // Recent confirmed cases within 3km give the highest risk weight
-    if (dist <= 3) score += 6;
+    // Cases within 3 km ring vaccination zone trigger critical alert
+    if (dist <= 3) score += 7;
     else if (dist <= 6) score += 4;
     else score += 2;
   });
@@ -201,21 +238,20 @@ function computeNearbyCasesFactor(nearbyCases = []) {
   return {
     score: Math.min(Math.round(score), 20),
     count: cases.length,
-    status: cases.length >= 6 ? 'High Cluster Pressure' : cases.length >= 2 ? 'Moderate Area Reports' : 'Isolated Cases',
+    status: cases.length >= 4 ? 'Active Outbreak Cluster (Ring Vaccination Zone)' : cases.length >= 2 ? 'Local Village Cases Reported' : 'Isolated Case in Taluka',
     closestKm: closestKm === Infinity ? null : Math.round(closestKm * 10) / 10,
   };
 }
 
 /**
- * Calculates AI confidence modifier (-5 to +5 points).
- * If AI is very confident (> 85%), risk assessment holds higher weight.
+ * Confidence score modifier (-5 to +5 points).
  */
 function computeConfidenceFactor(confidence) {
   if (confidence === null || confidence === undefined) return 0;
-  const conf = confidence > 1 ? confidence / 100 : confidence; // normalize 0-1
+  const conf = confidence > 1 ? confidence / 100 : confidence;
   if (conf >= 0.85) return 5;
   if (conf >= 0.65) return 0;
-  return -5; // lower confidence attenuates risk alarm
+  return -5;
 }
 
 function getRiskLevel(score) {
@@ -225,110 +261,136 @@ function getRiskLevel(score) {
 }
 
 /**
- * Evaluates comprehensive crop risk.
+ * Calculates comprehensive livestock disease and heat stress risk.
  *
  * @param {object} params
- * @param {string} params.crop - e.g. "onion", "tomato"
- * @param {string} [params.disease] - e.g. "purple_blotch"
- * @param {number} [params.confidence] - e.g. 0.91 or 91
- * @param {number} params.temperature - current or forecasted temp in °C
+ * @param {string} [params.species] - e.g. "cattle", "buffalo", "goat"
+ * @param {string} [params.disease] - e.g. "lumpy_skin_disease", "foot_and_mouth_disease"
+ * @param {number} params.temperature - in °C
  * @param {number} params.humidity - relative humidity in %
  * @param {number} [params.rainfallMm] - rainfall in mm
  * @param {number} [params.rainProbability] - rain chance in %
- * @param {string} [params.cropStage] - e.g. "flowering", "vegetative"
- * @param {Array}  [params.nearbyCases] - array of nearby diagnosis reports
- * @param {object} [params.location] - { latitude, longitude, taluka, district }
+ * @param {string} [params.cropStage] - species/stage key
+ * @param {Array}  [params.nearbyCases] - array of nearby outbreak cases
  *
  * @returns {object} { score, level, reasons, factors, breakdown }
  */
-function calculateCropRisk(params = {}) {
+function calculateLivestockRisk(params = {}) {
   const {
-    crop = 'onion',
-    disease = 'purple_blotch',
+    crop = 'cattle',
+    species = 'cattle',
+    disease = 'lumpy_skin_disease',
     confidence = 0.91,
-    temperature = 26,
-    humidity = 82,
-    rainfallMm = 4,
+    temperature = 28,
+    humidity = 80,
+    rainfallMm = 5,
     rainProbability = 65,
-    cropStage = 'flowering',
+    cropStage = 'crossbred_lactating',
     nearbyCases = [],
   } = params;
 
-  const profile = getPathogenProfile(disease);
-  const humidityFactor = computeHumidityFactor(humidity, profile.criticalHumidity);
-  const rainFactor = computeRainFactor(rainfallMm, rainProbability, profile.rainDriven);
-  const tempFactor = computeTemperatureFactor(temperature, profile);
-  const stageFactor = computeCropStageFactor(cropStage);
-  const nearbyFactor = computeNearbyCasesFactor(nearbyCases);
+  const targetDisease = (disease || '').toLowerCase().includes('foot') || (disease || '').toLowerCase().includes('fmd')
+    ? 'foot_and_mouth_disease'
+    : 'lumpy_skin_disease';
+
+  // 1. NRC Temperature-Humidity Index (THI)
+  const thiData = computeTHI(temperature, humidity);
+
+  // 2. Vector proliferation (LSD biting flies)
+  const vectorData = computeVectorProliferationFactor(temperature, humidity, rainfallMm);
+
+  // 3. FMD viral aerosol transmission factor
+  const fmdData = computeFMDEnvironmentalFactor(temperature, humidity);
+
+  // 4. Animal stage and species susceptibility
+  const vulData = computeLivestockVulnerabilityFactor(cropStage);
+
+  // 5. Outbreak pressure in nearby villages
+  const nearbyData = computeNearbyOutbreakFactor(nearbyCases);
+
+  // 6. Confidence modifier
   const confModifier = computeConfidenceFactor(confidence);
 
-  // Sum factors (Max: 25 + 25 + 15 + 15 + 20 = 100 pts)
+  // Disease-weighted risk combination:
+  let diseaseScore = 0;
+  if (targetDisease === 'lumpy_skin_disease') {
+    diseaseScore = vectorData.score + Math.round(thiData.score * 0.7);
+  } else {
+    diseaseScore = fmdData.score + Math.round(thiData.score * 0.6);
+  }
+
   const rawScore =
-    humidityFactor.score +
-    rainFactor.score +
-    tempFactor.score +
-    stageFactor.score +
-    nearbyFactor.score +
+    diseaseScore +
+    vulData.score +
+    nearbyData.score +
     confModifier;
 
   const finalScore = Math.max(5, Math.min(100, Math.round(rawScore)));
   const level = getRiskLevel(finalScore);
 
-  // Build transparent, non-contradictory reasons
+  // Build transparent reasons for veterinary action
   const reasons = [];
 
-  if (humidityFactor.status === 'High') {
-    reasons.push(`High relative humidity (${humidityFactor.value}%) creates favorable conditions for ${profile.name}`);
-  } else if (humidityFactor.status === 'Moderate') {
-    reasons.push(`Moderate humidity (${humidityFactor.value}%) supports pathogen incubation`);
-  } else {
-    reasons.push(`Lower humidity (${humidityFactor.value}%) helps suppress disease development`);
+  if (thiData.category === 'severe') {
+    reasons.push(`Severe heat stress warning (THI ${thiData.thi}): High risk of panting, acute milk yield decline, and heat exhaustion`);
+  } else if (thiData.category === 'moderate') {
+    reasons.push(`Moderate heat stress (THI ${thiData.thi}): Ruminants prone to ~${thiData.milkDropEstimate}; provide shaded ventilation`);
+  } else if (thiData.category === 'mild') {
+    reasons.push(`Mild heat discomfort (THI ${thiData.thi}): Ensure abundant cool drinking water`);
   }
 
-  if (rainFactor.status === 'High') {
-    reasons.push(`Rainfall forecast (${rainFactor.rainProbability}% probability) accelerates spore dispersal via rain splash`);
-  } else if (rainFactor.status === 'Moderate') {
-    reasons.push(`Scattered rainfall / cloudiness (${rainFactor.rainProbability}%) maintains leaf moisture`);
-  } else {
-    reasons.push('Dry weather conditions expected with minimal rain-driven risk');
+  if (vectorData.isFavorableForVectors) {
+    reasons.push(`Humid conditions (${humidity}%) accelerate biting fly (Stomoxys) & mosquito proliferation (primary LSD vector)`);
   }
 
-  if (stageFactor.susceptibility === 'Susceptible') {
-    reasons.push(`Crop is in susceptible ${stageFactor.stage}`);
+  if (targetDisease === 'foot_and_mouth_disease' && fmdData.score >= 12) {
+    reasons.push(`Current temperature (${temperature}°C) and humidity favor Aphthovirus aerosol survival and transmission`);
   }
 
-  if (nearbyFactor.count > 0) {
-    const distText = nearbyFactor.closestKm ? ` (closest: ${nearbyFactor.closestKm} km)` : '';
-    reasons.push(`${nearbyFactor.count} nearby disease report(s) in active area${distText}`);
+  if (nearbyData.count > 0) {
+    const distText = nearbyData.closestKm ? ` (closest: ${nearbyData.closestKm} km)` : '';
+    reasons.push(`${nearbyData.count} nearby livestock disease case(s) reported${distText}`);
+  }
+
+  if (vulData.susceptibility.includes('High')) {
+    reasons.push(`Herd contains highly susceptible stock: ${vulData.stage}`);
   }
 
   if (reasons.length === 0) {
-    reasons.push('Favorable, stable conditions across crop canopy');
+    reasons.push('Current shed microclimate and biosecurity conditions are within normal limits');
   }
 
   return {
     score: finalScore,
     level,
-    crop,
-    disease,
+    species: species || crop,
+    crop: species || crop,
+    disease: targetDisease,
     reasons,
+    thi: thiData.thi,
+    thiStatus: thiData.status,
     breakdown: {
-      temperature: tempFactor.status,
-      temperatureValue: `${tempFactor.value}°C`,
-      humidity: humidityFactor.status,
-      humidityValue: `${humidityFactor.value}%`,
-      rainfall: rainFactor.status,
-      rainfallValue: `${rainFactor.rainProbability}% chance (${rainFactor.rainfallMm}mm)`,
-      nearbyReports: nearbyFactor.count,
-      cropStage: `${stageFactor.stage} (${stageFactor.susceptibility})`,
+      temperature: `${temperature}°C`,
+      temperatureValue: `${temperature}°C`,
+      humidity: `${humidity}%`,
+      humidityValue: `${humidity}%`,
+      thi: `${thiData.thi} (${thiData.status})`,
+      vectorRisk: vectorData.status,
+      rainfall: `${rainProbability}% chance (${rainfallMm}mm)`,
+      rainfallValue: `${rainProbability}% chance (${rainfallMm}mm)`,
+      nearbyReports: nearbyData.count,
+      cropStage: `${vulData.stage} (${vulData.susceptibility})`,
       overallRisk: `${finalScore} / 100`,
     },
     factors: {
-      humidity_factor: humidityFactor.score,
-      rain_factor: rainFactor.score,
-      temperature_factor: tempFactor.score,
-      crop_stage_factor: stageFactor.score,
-      nearby_cases_factor: nearbyFactor.score,
+      thi_factor: thiData.score,
+      vector_factor: vectorData.score,
+      fmd_factor: fmdData.score,
+      humidity_factor: Math.round((humidity / 100) * 20),
+      rain_factor: Math.min(20, Math.round(rainfallMm * 2 + rainProbability * 0.1)),
+      temperature_factor: thiData.score,
+      crop_stage_factor: vulData.score,
+      nearby_cases_factor: nearbyData.score,
     },
   };
 }
@@ -338,19 +400,18 @@ function calculateCropRisk(params = {}) {
  */
 function calculate5DayRiskForecast(baseParams = {}, dailyForecast = []) {
   if (!Array.isArray(dailyForecast) || dailyForecast.length === 0) {
-    // Generate deterministic 5-day series based on base params
     const days = [];
     const baseDate = new Date();
     for (let i = 0; i < 5; i++) {
       const d = new Date(baseDate);
       d.setDate(d.getDate() + i);
-      const dayOffset = (i === 1 || i === 2) ? 8 : (i === 4 ? -6 : 0);
-      const dayHum = Math.min(95, Math.max(50, (baseParams.humidity || 80) + dayOffset));
-      const dayRain = Math.min(95, Math.max(10, (baseParams.rainProbability || 60) + dayOffset * 2));
-      const dayRisk = calculateCropRisk({
+      const dayOffset = (i === 1 || i === 2) ? 6 : (i === 4 ? -4 : 0);
+      const dayHum = Math.min(95, Math.max(50, (baseParams.humidity || 78) + dayOffset));
+      const dayTemp = Math.min(42, Math.max(20, (baseParams.temperature || 28) + (i === 2 ? 3 : 0)));
+      const dayRisk = calculateLivestockRisk({
         ...baseParams,
+        temperature: dayTemp,
         humidity: dayHum,
-        rainProbability: dayRain,
       });
 
       days.push({
@@ -358,8 +419,9 @@ function calculate5DayRiskForecast(baseParams = {}, dailyForecast = []) {
         date: d.toISOString().slice(0, 10),
         score: dayRisk.score,
         level: dayRisk.level,
+        thi: dayRisk.thi,
         humidity: dayHum,
-        rainProbability: dayRain,
+        temperature: dayTemp,
         reasons: dayRisk.reasons,
         breakdown: dayRisk.breakdown,
       });
@@ -368,12 +430,14 @@ function calculate5DayRiskForecast(baseParams = {}, dailyForecast = []) {
   }
 
   return dailyForecast.slice(0, 5).map((df, index) => {
-    const dayRisk = calculateCropRisk({
+    const dayTemp = df.max_temp_c ?? df.temperature_c ?? baseParams.temperature ?? 28;
+    const dayHum = df.humidity_percent ?? baseParams.humidity ?? 75;
+    const dayRisk = calculateLivestockRisk({
       ...baseParams,
-      temperature: df.max_temp_c ?? df.temperature_c ?? baseParams.temperature,
-      humidity: df.humidity_percent ?? baseParams.humidity,
+      temperature: dayTemp,
+      humidity: dayHum,
       rainfallMm: df.rainfall_mm ?? 0,
-      rainProbability: df.rain_probability_percent ?? baseParams.rainProbability,
+      rainProbability: df.rain_probability_percent ?? baseParams.rainProbability ?? 40,
     });
 
     return {
@@ -381,6 +445,7 @@ function calculate5DayRiskForecast(baseParams = {}, dailyForecast = []) {
       date: df.date || new Date(Date.now() + index * 86400000).toISOString().slice(0, 10),
       score: dayRisk.score,
       level: dayRisk.level,
+      thi: dayRisk.thi,
       max_temp_c: df.max_temp_c,
       min_temp_c: df.min_temp_c,
       humidity: df.humidity_percent,
@@ -393,9 +458,13 @@ function calculate5DayRiskForecast(baseParams = {}, dailyForecast = []) {
 }
 
 module.exports = {
-  calculateCropRisk,
+  calculateLivestockRisk,
+  calculateCropRisk: calculateLivestockRisk, // 100% backwards compatible alias
   calculate5DayRiskForecast,
+  computeTHI,
   getRiskLevel,
-  CROP_STAGE_VULNERABILITY,
-  PATHOGEN_PROFILES,
+  LIVESTOCK_VULNERABILITY,
+  CROP_STAGE_VULNERABILITY: LIVESTOCK_VULNERABILITY, // compatibility
+  LIVESTOCK_PATHOGEN_PROFILES,
+  PATHOGEN_PROFILES: LIVESTOCK_PATHOGEN_PROFILES, // compatibility
 };

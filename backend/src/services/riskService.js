@@ -1,38 +1,39 @@
 // =========================================================
-// Risk Service
+// Pashu Sarthak - Livestock Risk Service
 // =========================================================
-// Integrates live weather, nearby disease hotspot cases,
-// farm crop stage, and disease pathogen profile via the
-// unified risk engine (riskEngine.js).
+// Integrates live weather (Open-Meteo), nearby livestock disease
+// outbreak clusters (hotspotService), and herd bioclimatic factors
+// (THI heat stress + vector proliferation) via riskEngine.js.
 // =========================================================
 
 const { getWeather } = require('./weatherService');
 const { findNearbyCases, DEFAULT_RADIUS_KM } = require('./hotspotService');
-const { calculateCropRisk, calculate5DayRiskForecast, getRiskLevel } = require('./riskEngine');
+const { calculateLivestockRisk, calculate5DayRiskForecast, getRiskLevel, computeTHI } = require('./riskEngine');
 
 /**
- * Calculate a full risk forecast for a farm + active crop cycle.
- * @param {object} farm - { id, latitude, longitude, taluka, district }
- * @param {object} cropCycle - { id, crop_name, variety, crop_stage }
- * @param {object} [options] - optional overrides (e.g. specific disease, confidence)
+ * Calculate a full livestock risk forecast for a herd / shed.
+ * @param {object} herdOrFarm - { id, latitude, longitude, taluka, district, shed_name }
+ * @param {object} animalUnit - { id, species, breed, production_stage, animal_tag }
+ * @param {object} [options] - optional overrides (e.g. disease, confidence)
  */
-async function calculateRisk(farm, cropCycle, options = {}) {
-  const weather = await getWeather(farm.latitude, farm.longitude);
-  const nearbyCases = await findNearbyCases(farm.latitude, farm.longitude, DEFAULT_RADIUS_KM, farm.id);
+async function calculateRisk(herdOrFarm, animalUnit, options = {}) {
+  const weather = await getWeather(herdOrFarm.latitude, herdOrFarm.longitude);
+  const nearbyCases = await findNearbyCases(herdOrFarm.latitude, herdOrFarm.longitude, DEFAULT_RADIUS_KM, herdOrFarm.id);
 
-  const crop = (options.crop || cropCycle?.crop_name || 'Onion').toLowerCase().trim();
-  const disease = options.disease || (crop === 'onion' ? 'purple_blotch' : crop === 'tomato' ? 'early_blight' : 'rust');
-  const cropStage = cropCycle?.crop_stage || options.cropStage || 'vegetative';
+  const species = (options.species || options.crop || animalUnit?.species || herdOrFarm?.primary_species || 'Cattle').toLowerCase().trim();
+  const disease = options.disease || (species.includes('buffalo') || species.includes('cattle') ? 'lumpy_skin_disease' : 'foot_and_mouth_disease');
+  const cropStage = animalUnit?.production_stage || options.cropStage || 'crossbred_lactating';
   const confidence = options.confidence ?? 0.91;
 
-  const currentTemp = weather.current.temperature_c ?? 25;
+  const currentTemp = weather.current.temperature_c ?? 28;
   const currentHumidity = weather.current.humidity_percent ?? 78;
   const currentRainfall = weather.current.rainfall_mm ?? 0;
-  const currentRainProb = weather.forecast?.[0]?.rain_probability_percent ?? 60;
+  const currentRainProb = weather.forecast?.[0]?.rain_probability_percent ?? 55;
 
-  // Run unified risk engine
-  const riskResult = calculateCropRisk({
-    crop,
+  // Run unified livestock risk engine
+  const riskResult = calculateLivestockRisk({
+    crop: species,
+    species,
     disease,
     confidence,
     temperature: currentTemp,
@@ -42,17 +43,18 @@ async function calculateRisk(farm, cropCycle, options = {}) {
     cropStage,
     nearbyCases,
     location: {
-      latitude: farm.latitude,
-      longitude: farm.longitude,
-      taluka: farm.taluka,
-      district: farm.district,
+      latitude: herdOrFarm.latitude,
+      longitude: herdOrFarm.longitude,
+      taluka: herdOrFarm.taluka,
+      district: herdOrFarm.district,
     },
   });
 
-  // Calculate 5-day risk forecast
+  // Calculate 5-day risk trajectory
   const fiveDayForecast = calculate5DayRiskForecast(
     {
-      crop,
+      crop: species,
+      species,
       disease,
       confidence,
       temperature: currentTemp,
@@ -68,8 +70,13 @@ async function calculateRisk(farm, cropCycle, options = {}) {
   return {
     risk_score: riskResult.score,
     risk_level: riskResult.level,
-    score: riskResult.score, // alias for standard format
-    level: riskResult.level, // alias for standard format
+    score: riskResult.score,
+    level: riskResult.level,
+    thi: riskResult.thi,
+    thi_status: riskResult.thiStatus,
+    vector_factor: riskResult.factors.vector_factor,
+    fmd_factor: riskResult.factors.fmd_factor,
+    thi_factor: riskResult.factors.thi_factor,
     humidity_factor: riskResult.factors.humidity_factor,
     rain_factor: riskResult.factors.rain_factor,
     temperature_factor: riskResult.factors.temperature_factor,
@@ -86,8 +93,9 @@ async function calculateRisk(farm, cropCycle, options = {}) {
       humidity: currentHumidity,
       rainfallMm: currentRainfall,
       rainProbability: currentRainProb,
+      thi: riskResult.thi,
     },
   };
 }
 
-module.exports = { calculateRisk, getRiskLevel };
+module.exports = { calculateRisk, getRiskLevel, computeTHI };

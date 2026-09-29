@@ -107,66 +107,75 @@ export const riskService = {
         };
       });
 
-      const humidity = liveWeather?.humidity ?? 84;
-      const rainChance = liveWeather?.rainfallChance ?? 70;
+      const humidity = liveWeather?.humidity ?? 78;
+      const rainChance = liveWeather?.rainfallChance ?? 55;
+      const temp = liveWeather?.temp ?? 28;
+      const rawTHI = 0.8 * temp + (humidity / 100) * (temp - 14.4) + 46.4;
+      const thi = Math.round(rawTHI * 10) / 10;
 
-      // Map factors into agricultural reasons
+      // Map factors into veterinary risk reasons
       const reasons: RiskReason[] = [
         {
           id: 'r1',
-          title: `High Humidity Forecast (${humidity}%)`,
-          titleHi: `उच्च सापेक्ष आर्द्रता (${humidity}%)`,
-          titleMr: `अपेक्षित जास्त हवेतील आर्द्रता (${humidity}%)`,
-          icon: 'droplet',
-          detail: `${data.explanation?.[0] || `Relative humidity at ${humidity}%`} creates ideal incubation for fungal spores.`,
-          detailHi: `${humidity}% उच्च आर्द्रता फंगल बीजाणुओं के पनपने के लिए अनुकूल वातावरण बनाती है।`,
-          detailMr: `${humidity}% हवेतील जास्त आर्द्रतेमुळे बुरशीची वाढ वेगाने होते.`,
+          title: `NRC Heat Stress Index: THI ${thi}`,
+          titleHi: `पशु ताप-तनाव सूचकांक: THI ${thi}`,
+          titleMr: `उष्णता ताण निर्देशांक: THI ${thi}`,
+          icon: 'wind',
+          detail: thi >= 79
+            ? `THI at ${thi} triggers moderate heat stress. Milch cattle susceptible to 15-20% drop in milk yield and rapid respiration.`
+            : `Current THI at ${thi} is manageable. Ensure plenty of cool drinking water and shed air circulation.`,
+          detailHi: thi >= 79
+            ? `THI ${thi} मध्यम ताप-तनाव का संकेत है। दुधारू पशुओं में 15-20% दूध गिरावट और सांस की गति तेज हो सकती है।`
+            : `वर्तमान THI ${thi} सामान्य है। गोठे में ठंडा पेयजल और उचित हवा उपलब्ध कराएं।`,
+          detailMr: thi >= 79
+            ? `THI ${thi} उष्णता ताण दर्शवतो. दुधाळ जनावरांचे दूध १५-२०% कमी होण्याची आणि धाप लागण्याची शक्यता.`
+            : `सध्याचा THI ${thi} सामान्य आहे. गोठ्यात मुबलक पिण्याचे पाणी आणि खेळती हवा ठेवा.`,
         },
         {
           id: 'r2',
-          title: `Rainfall Conditions (${rainChance}% Chance)`,
-          titleHi: `बारिश की संभावना (${rainChance}%)`,
-          titleMr: `पावसाची शक्यता (${rainChance}%)`,
-          icon: 'cloud-rain',
-          detail: `${data.explanation?.[1] || `${rainChance}% probability of rain`} can cause water splashing of soil-borne pathogens.`,
-          detailHi: `बारिश की बूंदों से मिट्टी के रोगाणु ऊपरी पत्तियों पर फैल सकते हैं।`,
-          detailMr: `पावसाच्या पाण्यामुळे जमिनीतील जंतू पानांवर उडण्याचा धोका वाढतो.`,
+          title: `LSD Vector Proliferation (${humidity}% Humidity)`,
+          titleHi: `लम्पी वाहक मक्खी व मच्छर सक्रियता (${humidity}%)`,
+          titleMr: `लंपी कीटक व डास पैदास धोका (${humidity}%)`,
+          icon: 'droplet',
+          detail: `Warm, humid conditions (${humidity}% humidity, ${rainChance}% rain chance) accelerate biting fly (Stomoxys) and mosquito breeding—the primary vectors of Lumpy Skin Disease.`,
+          detailHi: `उच्च आर्द्रता (${humidity}%) और बारिश की संभावना (${rainChance}%) चावने वाली मक्खियों और मच्छरों को बढ़ाती है जो लम्पी वायरस फैलाते हैं।`,
+          detailMr: `जास्त आर्द्रतेमुळे (${humidity}%) व पावसाच्या शक्यतेमुळे (${rainChance}%) चावणाऱ्या माश्या व डासांची पैदास वाढून लंपी रोगाचा प्रसार वेगाने होऊ शकतो.`,
         },
         {
           id: 'r3',
-          title: `${data.nearby_confirmed_cases || 5} Disease Cases in 10km Area`,
-          titleHi: `10 किमी क्षेत्र में रोग के पुष्ट मामले`,
-          titleMr: 'परिसरात आढळलेली रोग प्रकरणे',
+          title: `${data.nearby_confirmed_cases || 4} Livestock Outbreaks in 10km Area`,
+          titleHi: `10 किमी क्षेत्र में पशु रोग प्रकोप (रिंग सर्विलांस)`,
+          titleMr: '१० किमी परिसरात जनावरांच्या आजाराची नोंद',
           icon: 'map-pin',
-          detail: defaultForecast.reasons.find((r) => r.id === 'r-cluster')?.detail || `${data.nearby_confirmed_cases || 5} confirmed disease detections reported nearby in the last 14 days.`,
-          detailHi: defaultForecast.reasons.find((r) => r.id === 'r-cluster')?.detailHi || 'मागील 14 दिनों में आस-पास के खेतों में रोग की पुष्टि हुई है।',
-          detailMr: defaultForecast.reasons.find((r) => r.id === 'r-cluster')?.detailMr || 'मागील १४ दिवसांत परिसरातील शेतांमध्ये रोगाची नोंद झाली आहे.',
+          detail: defaultForecast.reasons.find((r) => r.id === 'r-cluster')?.detail || `${data.nearby_confirmed_cases || 4} livestock disease cases reported nearby in the active taluka surveillance ring.`,
+          detailHi: defaultForecast.reasons.find((r) => r.id === 'r-cluster')?.detailHi || 'तालुका पशुधन निगरानी क्षेत्र में हाल ही में रोग के मामले दर्ज किए गए हैं।',
+          detailMr: defaultForecast.reasons.find((r) => r.id === 'r-cluster')?.detailMr || 'तालुका पशुसंवर्धन निगराणी क्षेत्रात नजीकच्या गावांमध्ये आजाराची नोंद झाली आहे.',
         },
         {
           id: 'r4',
-          title: `Crop Stage: ${data.crop_cycle?.crop_stage || 'Active Growth'}`,
-          titleHi: `फसल अवस्था: ${data.crop_cycle?.crop_stage || 'सक्रिय वृद्धि'}`,
-          titleMr: `पीक वाढ अवस्था: ${data.crop_cycle?.crop_stage || 'सक्रिय वाढ'}`,
-          icon: 'wind',
-          detail: data.explanation?.[2] || 'Canopy density requires adequate aeration and preventative monitoring.',
-          detailHi: 'कैनोपी घनत्व के लिए उचित वायु संचरण और निगरानी आवश्यक है।',
-          detailMr: 'फुलोरा आणि फळधारणा काळात पिकाची प्रतिकारशक्ती टिकवून ठेवणे आवश्यक आहे.',
+          title: `Herd Status: ${data.crop_cycle?.crop_stage || 'Crossbred Milch Herd'}`,
+          titleHi: `पशुधन स्थिति: ${data.crop_cycle?.crop_stage || 'दुधारू पशु कळप'}`,
+          titleMr: `गोठा स्थिती: ${data.crop_cycle?.crop_stage || 'दुधाळ जनावरांचा गोठा'}`,
+          icon: 'cloud-rain',
+          detail: data.explanation?.[2] || 'High-yielding lactating cows require strict shed biosecurity and preventive vaccination.',
+          detailHi: 'उच्च दुग्ध उत्पादन वाली गायों को सख्त जैव-सुरक्षा और टीकाकरण की आवश्यकता होती है।',
+          detailMr: 'जास्त दूध देणाऱ्या गाई-म्हशींमध्ये रोगप्रतिकारशक्ती टिकवण्यासाठी लसीकरण व गोठा स्वच्छता आवश्यक आहे.',
         },
       ];
 
-      const summary = `Disease risk score is ${data.risk_score}/100 (${data.risk_level}). Primary drivers: atmospheric humidity (${humidity}%) and rainfall chance (${rainChance}%).`;
-      const summaryHi = `रोग जोखिम स्कोर: ${data.risk_score}/100 (${data.risk_level})। मुख्य कारक: आर्द्रता (${humidity}%) और बारिश की संभावना (${rainChance}%)।`;
-      const summaryMr = `रोगाचा धोका स्तर: ${data.risk_level} (${data.risk_score}/100). हवेतील आर्द्रता (${humidity}%) व पावसाची शक्यता (${rainChance}%) यामुळे दक्षता घेणे आवश्यक आहे.`;
+      const summary = `Livestock disease & bioclimatic risk score is ${data.risk_score}/100 (${data.risk_level}). Primary drivers: NRC Heat Stress Index (THI ${thi}) and vector proliferation humidity (${humidity}%).`;
+      const summaryHi = `पशुधन रोग व मौसम जोखिम स्कोर: ${data.risk_score}/100 (${data.risk_level})। मुख्य कारक: ताप-तनाव सूचकांक (THI ${thi}) और वाहक मक्खी आर्द्रता (${humidity}%)।`;
+      const summaryMr = `जनावरांचा आजार व हवामान ताण निर्देशांक: ${data.risk_level} (${data.risk_score}/100). मुख्य घटक: उष्णता ताण (THI ${thi}) आणि डास/माश्यांची वाढ (${humidity}% आर्द्रता).`;
 
       const recommendation = currentLevel === 'high'
-        ? 'Apply protective bio-fungicide or copper spray before oncoming rains. Avoid water stagnation.'
-        : 'Maintain regular field scouting on lower leaf canopy and balance irrigation.';
+        ? 'Isolate sick cattle immediately. Hang vector-proof netting or herbal neem smoke in shed to stop LSD biting flies. Disinfect shed with 1:1000 potassium permanganate and call 1962.'
+        : 'Maintain shaded shed ventilation and provide cool drinking water with electrolytes. Inspect cattle hides for nodules and hooves for lesions daily.';
       const recommendationHi = currentLevel === 'high'
-        ? 'बारिश से पहले जैविक कवकनाशी या कॉपर का छिड़काव करें। जल भराव से बचें।'
-        : 'निचली पत्तियों की नियमित जांच करें और संतुलित सिंचाई रखें।';
+        ? 'बीमार पशु को तुरंत अलग करें। गोठे में नीम की पत्ती का धुआं करें। फर्श को पोटेशियम परमैंगनेट के घोल से साफ करें और 1962 पर संपर्क करें।'
+        : 'गोठे में छायादार वेंटिलेशन रखें और इलेक्ट्रोल युक्त पानी दें। प्रतिदिन पशु की त्वचा और खुरों की जांच करें।';
       const recommendationMr = currentLevel === 'high'
-        ? 'पावसापूर्वी ट्रायकोडर्मा किंवा कॉपर बुरशीनाशकाची फवारणी करा. शेतात पाणी साचू देऊ नका.'
-        : 'खालच्या पानांची नियमित तपासणी करा आणि पाण्याचा निचरा व्यवस्थित ठेवा.';
+        ? 'आजारी जनावरास तात्काळ वेगळे करा. लंपी पसरवणाऱ्या माश्या रोखण्यासाठी गोठ्यात कडुनिंबाचा धूर करा. १:१००० पोटॅशियम परमँगनेटने गोठा निर्जंतुक करा आणि १९६२ वर संपर्क साधा.'
+        : 'गोठ्यात सावली व हवेशीर वातावरण ठेवा. जनावरांच्या त्वचेवर गाठी किंवा लाळेची तपासणी दररोज सकाळी करा.';
 
       return {
         cropId,
