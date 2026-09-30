@@ -116,12 +116,12 @@ const createDiagnosis = asyncHandler(async (req, res) => {
   console.log('[DiagnosisFlow:Backend] Received POST /api/diagnosis request.');
 
   // 1. Strict Validation: Check for empty / missing image file (Bug #1 fix)
-  if (!req.file || !req.file.path || req.file.size === 0) {
-    console.warn('[DiagnosisFlow:Backend] 400 Bad Request: No image file provided');
+  if (!req.file || !req.file.path || req.file.size === 0 || req.file.size < 100) {
+    console.warn('[DiagnosisFlow:Backend] 400 Bad Request: Missing, empty, or corrupt image file provided');
     return res.status(400).json({
       success: false,
       error: 'No image provided',
-      message: 'No image provided. Please upload or capture an animal photo.',
+      message: 'No image provided or uploaded file is empty. Please upload a clear photo of the animal.',
     });
   }
 
@@ -141,7 +141,7 @@ const createDiagnosis = asyncHandler(async (req, res) => {
 
     const stats = await sharp(req.file.path).stats();
     const avgStdDev = stats.channels.reduce((sum, c) => sum + c.stdev, 0) / stats.channels.length;
-    if (avgStdDev < 6.0) {
+    if (avgStdDev < 7.5) {
       console.warn('[DiagnosisFlow:Backend] Rejection: Blank or solid-color image (avgStdDev =', avgStdDev, ')');
       return res.status(200).json({
         success: true,
@@ -149,14 +149,52 @@ const createDiagnosis = asyncHandler(async (req, res) => {
           supported: false,
           diagnosisAvailable: false,
           type: 'invalid',
-          reason: 'LOW_IMAGE_QUALITY',
+          reason: 'BLANK_OR_SOLID_IMAGE',
           crop: speciesInput || cropNameInput || crop || 'Cattle',
           disease: 'Invalid image — please upload a clear photo of the affected body area (skin, udder, hoof, or mouth)',
           confidence: 0,
-          message: 'Invalid image — please upload a clear photo of the affected body area (skin, udder, hoof, or mouth)',
+          severity: 'low',
+          severity_band: 'Low',
+          severityPercent: 0,
+          message: 'The uploaded photo is blank or solid color. Please upload a clear photo of the animal in natural daylight.',
           ml: { model: 'Sharp-QualityGate', real_inference: true },
         },
       });
+    }
+
+    // Edge variance / blur check using Laplacian convolution kernel
+    try {
+      const laplacianStats = await sharp(req.file.path)
+        .greyscale()
+        .convolve({
+          width: 3,
+          height: 3,
+          kernel: [0, 1, 0, 1, -4, 1, 0, 1, 0],
+        })
+        .stats();
+      const edgeDev = laplacianStats.channels[0]?.stdev || 10;
+      if (edgeDev < 3.0) {
+        console.warn('[DiagnosisFlow:Backend] Rejection: Blurry or out-of-focus image (edgeDev =', edgeDev, ')');
+        return res.status(200).json({
+          success: true,
+          data: {
+            supported: false,
+            diagnosisAvailable: false,
+            type: 'invalid',
+            reason: 'BLURRY_OR_OUT_OF_FOCUS',
+            crop: speciesInput || cropNameInput || crop || 'Cattle',
+            disease: 'Invalid image — photo is too blurry or out of focus. Please retake a clear photo.',
+            confidence: 0,
+            severity: 'low',
+            severity_band: 'Low',
+            severityPercent: 0,
+            message: 'The photo is excessively blurry or out of focus. Hold the camera steady 20-30 cm from the animal.',
+            ml: { model: 'Sharp-QualityGate', real_inference: true },
+          },
+        });
+      }
+    } catch (edgeErr) {
+      console.warn('[DiagnosisFlow:Backend] Laplacian edge check notice:', edgeErr.message);
     }
   } catch (sharpErr) {
     console.error('[DiagnosisFlow:Backend] 400 Bad Request: Corrupt image file:', sharpErr.message);

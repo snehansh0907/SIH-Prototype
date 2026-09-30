@@ -14,12 +14,18 @@ interface RequestOptions extends RequestInit {
 
 export async function apiClient<T>(endpoint: string, options: RequestOptions = {}): Promise<T> {
   const isFormData = typeof FormData !== 'undefined' && options.body instanceof FormData;
-  const defaultTimeout = isFormData ? 25000 : 15000;
+  const defaultTimeout = isFormData ? 45000 : 15000;
   const { timeout = defaultTimeout, ...customConfig } = options;
 
+  let isTimedOut = false;
   const controller = new AbortController();
   const id = setTimeout(() => {
-    controller.abort('timeout');
+    isTimedOut = true;
+    try {
+      controller.abort(new DOMException('Request timed out', 'TimeoutError'));
+    } catch {
+      controller.abort();
+    }
   }, timeout);
 
   const defaultHeaders: Record<string, string> = {
@@ -73,9 +79,11 @@ export async function apiClient<T>(endpoint: string, options: RequestOptions = {
 
     // 1. Sanitize Abort / Timeout errors - NEVER leak "signal is aborted without reason"
     const isAbort =
+      isTimedOut ||
       error.name === 'AbortError' ||
-      /abort|timed out|timeout/i.test(error.message || '') ||
-      controller.signal.aborted;
+      error.name === 'TimeoutError' ||
+      controller.signal.aborted ||
+      /abort|timed out|timeout|signal is aborted/i.test(error.message || '');
 
     if (isAbort) {
       console.error(`[Krishi Sarthak API] Request to ${endpoint} timed out after ${timeout}ms. Original error:`, error);
@@ -98,7 +106,9 @@ export async function apiClient<T>(endpoint: string, options: RequestOptions = {
       if (altUrl) {
         try {
           const retryController = new AbortController();
-          const retryId = setTimeout(() => retryController.abort(), 4000);
+          const retryId = setTimeout(() => {
+            try { retryController.abort(); } catch {}
+          }, 4000);
           const altResponse = await fetch(altUrl, { ...config, signal: retryController.signal });
           clearTimeout(retryId);
           if (altResponse.ok) {
@@ -122,6 +132,12 @@ export async function apiClient<T>(endpoint: string, options: RequestOptions = {
       friendlyNetErr.name = 'ConnectionError';
       friendlyNetErr.isNetworkError = true;
       throw friendlyNetErr;
+    }
+
+    if (/signal is aborted/i.test(error.message || '')) {
+      const sanitizedErr: any = new Error('The diagnosis request was interrupted. Please try again.');
+      sanitizedErr.name = 'AbortError';
+      throw sanitizedErr;
     }
 
     if (!endpoint.includes('/auth')) {

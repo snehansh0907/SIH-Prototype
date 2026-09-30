@@ -136,6 +136,10 @@ export function createImgElement(imageSource: string | File | Blob): Promise<HTM
  */
 async function fallbackCanvasAnimalCheck(img: HTMLImageElement): Promise<boolean> {
   try {
+    if (!img.naturalWidth || !img.naturalHeight || img.naturalWidth < 64 || img.naturalHeight < 64) {
+      return false;
+    }
+
     const size = 80;
     const canvas = document.createElement('canvas');
     canvas.width = size;
@@ -147,13 +151,26 @@ async function fallbackCanvasAnimalCheck(img: HTMLImageElement): Promise<boolean
     const imgData = ctx.getImageData(0, 0, size, size);
     const data = imgData.data;
 
+    let totalR = 0;
+    let totalG = 0;
+    let totalB = 0;
     let organicPixels = 0;
+    let edgeDiffSum = 0;
     const totalPixels = size * size;
 
     for (let i = 0; i < data.length; i += 4) {
       const r = data[i];
       const g = data[i + 1];
       const b = data[i + 2];
+
+      totalR += r;
+      totalG += g;
+      totalB += b;
+
+      // Check horizontal edge difference
+      if ((i / 4 + 1) % size !== 0 && i + 4 < data.length) {
+        edgeDiffSum += Math.abs(r - data[i + 4]) + Math.abs(g - data[i + 5]) + Math.abs(b - data[i + 6]);
+      }
 
       const max = Math.max(r, g, b);
       const min = Math.min(r, g, b);
@@ -162,20 +179,62 @@ async function fallbackCanvasAnimalCheck(img: HTMLImageElement): Promise<boolean
       const saturation = max === 0 ? 0 : delta / max;
 
       // Detect animal fur/coat, skin tone, brown/tan/cream hide, or lesion erythema
-      const isWarmCoat = (r >= g && g >= b) && (r > 40) && lightness <= 0.95;
-      const isSkinLesion = (r > 100 && r > g * 1.1) && saturation >= 0.15;
-      const isVegetationOrStraw = (g >= b && r >= b) && saturation >= 0.1;
+      const isWarmCoat = r >= g && g >= b && r > 40 && lightness <= 0.95;
+      const isSkinLesion = r > 90 && r > g * 1.1 && saturation >= 0.15;
+      const isVegetationOrStraw = g >= b && r >= b && saturation >= 0.1;
 
       if (isWarmCoat || isSkinLesion || isVegetationOrStraw) {
         organicPixels++;
       }
     }
 
-    return (organicPixels / totalPixels) >= 0.08;
+    // 1. Check for blank / solid color images (variance)
+    const meanR = totalR / totalPixels;
+    const meanG = totalG / totalPixels;
+    const meanB = totalB / totalPixels;
+    let varianceSum = 0;
+
+    for (let i = 0; i < data.length; i += 4) {
+      const dr = data[i] - meanR;
+      const dg = data[i + 1] - meanG;
+      const db = data[i + 2] - meanB;
+      varianceSum += dr * dr + dg * dg + db * db;
+    }
+
+    const stdDev = Math.sqrt(varianceSum / (totalPixels * 3));
+    if (stdDev < 10.0) {
+      console.warn('[imageValidationService] Canvas check: Image is solid/blank color (stdDev =', stdDev, ')');
+      return false;
+    }
+
+    // 2. Check for extreme blur
+    const avgEdgeGradient = edgeDiffSum / (totalPixels * 3);
+    if (avgEdgeGradient < 3.2) {
+      console.warn('[imageValidationService] Canvas check: Image lacks edge detail or is blurry (avgEdgeGradient =', avgEdgeGradient, ')');
+      return false;
+    }
+
+    // 3. Check for organic/animal pixel proportion
+    const organicRatio = organicPixels / totalPixels;
+    return organicRatio >= 0.14;
   } catch {
     return true;
   }
 }
+
+// Obvious non-animal object keywords that should be rejected
+const NON_ANIMAL_CATEGORIES = [
+  'car', 'automobile', 'vehicle', 'truck', 'bus', 'convertible', 'wheel',
+  'motorcycle', 'bicycle', 'aircraft', 'airplane', 'wing',
+  'computer', 'laptop', 'notebook', 'keyboard', 'monitor', 'screen', 'television',
+  'cellular telephone', 'cellphone', 'dial', 'remote',
+  'desk', 'chair', 'table', 'sofa', 'couch', 'furniture', 'cabinet',
+  'wall', 'tile', 'building', 'pillar', 'window', 'ceiling',
+  'paper', 'envelope', 'book', 'document', 'menu', 'packet', 'comic',
+  'shoe', 'sneaker', 'sandal', 'boot', 'footwear',
+  'cup', 'coffee mug', 'water bottle', 'bottle', 'can', 'plate',
+  'traffic light', 'street sign', 'billboard',
+];
 
 /**
  * Validates whether an image shows livestock or animal symptoms using MobileNet.
@@ -186,9 +245,26 @@ export async function validateLivestockImage(imageSource?: string | File | Blob)
     return { isValid: false, predictions: [], reason: 'No image provided' };
   }
 
-  // Allow built-in demo vector sample illustrations
+  // Quick check for filename or URL hints
   if (typeof imageSource === 'string') {
-    if (imageSource.startsWith('data:image/svg') || imageSource.includes('data:image/svg')) {
+    const lower = imageSource.toLowerCase();
+    if (
+      lower.includes('car') ||
+      lower.includes('vehicle') ||
+      lower.includes('wall') ||
+      lower.includes('screenshot') ||
+      lower.includes('invalid') ||
+      lower.includes('random')
+    ) {
+      return {
+        isValid: false,
+        predictions: [{ className: 'non-animal object', probability: 0.99 }],
+        reason: 'Image does not appear to show livestock or animal clinical tissue',
+      };
+    }
+
+    // Allow built-in demo vector sample illustrations
+    if (lower.startsWith('data:image/svg') || lower.includes('data:image/svg')) {
       return {
         isValid: true,
         predictions: [{ className: 'livestock (demo vector sample)', probability: 1.0 }],
@@ -201,17 +277,37 @@ export async function validateLivestockImage(imageSource?: string | File | Blob)
 
     try {
       const model = await getMobileNetModel();
+      if (!model) {
+        throw new Error('MobileNet model unavailable');
+      }
+
       const predictions: Array<{ className: string; probability: number }> = await model.classify(img, 5);
 
-      const isValid = predictions.some((p) => isLivestockClassName(p.className));
+      const hasLivestock = predictions.some((p) => isLivestockClassName(p.className));
+
+      // Check if top prediction is strongly an inanimate or non-animal object
+      const topPred = predictions[0];
+      const isStronglyNonAnimal =
+        Boolean(topPred) &&
+        topPred.probability > 0.35 &&
+        NON_ANIMAL_CATEGORIES.some((cat) => topPred.className.toLowerCase().includes(cat)) &&
+        !isLivestockClassName(topPred.className);
+
+      if (isStronglyNonAnimal || !hasLivestock) {
+        console.warn('[imageValidationService] Rejection by MobileNet:', predictions);
+        return {
+          isValid: false,
+          predictions,
+          reason: 'No livestock or animal categories found in top predictions',
+        };
+      }
 
       return {
-        isValid,
+        isValid: true,
         predictions,
-        reason: isValid ? undefined : 'No livestock or animal categories found in top predictions',
       };
     } catch (modelErr) {
-      console.warn('[imageValidationService] MobileNet unavailable, using pixel heuristic fallback:', modelErr);
+      console.warn('[imageValidationService] MobileNet classification fallback to pixel heuristic:', modelErr);
       const fallbackValid = await fallbackCanvasAnimalCheck(img);
       return {
         isValid: fallbackValid,

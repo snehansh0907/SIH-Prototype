@@ -361,6 +361,7 @@ export const translations = {
     bodyAreaOther: 'Other / General Weakness',
 
     // Symptoms,
+    symptomNormal: 'None / Normal (No Visible Disease)',
     symptomFever: 'High Fever / Shivering',
     symptomLossOfAppetite: 'Loss of Appetite / Off-feed',
     symptomDropInMilk: 'Sharp Drop in Milk Yield',
@@ -372,6 +373,9 @@ export const translations = {
     symptomCoughing: 'Rapid Breathing / Coughing',
     symptomNasalDischarge: 'Thick Nasal Discharge',
     symptomLethargy: 'Lethargy / Dullness',
+    symptomBloat: 'Stomach Bloating / Tympany (Afra)',
+    symptomThroatSwelling: 'Neck / Throat Swelling',
+    symptomMouthUlcers: 'Mouth / Gum Blisters or Ulcers',
 
     // Duration & Intake,
     durationLabel: 'Symptom Duration',
@@ -809,6 +813,7 @@ export const translations = {
     bodyAreaOther: 'अन्य / सामान्य कमजोरी',
 
     // Symptoms,
+    symptomNormal: 'कोई लक्षण नहीं / स्वस्थ सामान्य स्थिति',
     symptomFever: 'तेज बुखार / कंपकंपी',
     symptomLossOfAppetite: 'भूख में कमी / चारा न खाना',
     symptomDropInMilk: 'दूध उत्पादन में अचानक गिरावट',
@@ -820,6 +825,9 @@ export const translations = {
     symptomCoughing: 'खांसी / तेज सांस लेना',
     symptomNasalDischarge: 'नाक से गाढ़ा स्राव',
     symptomLethargy: 'सुस्ती / सिर झुकाकर खड़ा रहना',
+    symptomBloat: 'पेट फूलना / अफरा',
+    symptomThroatSwelling: 'गले व जबड़े में सूजन (गलघोंटू)',
+    symptomMouthUlcers: 'मुंह व मसूड़ों में छाले / घाव',
 
     // Duration & Intake,
     durationLabel: 'लक्षणों की अवधि',
@@ -1257,6 +1265,7 @@ export const translations = {
     bodyAreaOther: 'इतर / अशक्तपणा',
 
     // Symptoms,
+    symptomNormal: 'कोणतीही लक्षणे नाहीत / सामान्य निरोगी',
     symptomFever: 'तीव्र ताप / थरथरणे',
     symptomLossOfAppetite: 'चारा न खाणे / भूक मंदावणे',
     symptomDropInMilk: 'दूध उत्पादनात अचानक घट',
@@ -1268,6 +1277,9 @@ export const translations = {
     symptomCoughing: 'खोकला / धाप लागणे',
     symptomNasalDischarge: 'नाकातून शेंबूड / स्त्राव',
     symptomLethargy: 'सुस्त उभे राहणे / डोके खाली घालणे',
+    symptomBloat: 'पोटफुगी / अफ़रा',
+    symptomThroatSwelling: 'घशाला / जबड्याला सूज (घटसर्प)',
+    symptomMouthUlcers: 'तोंडात / हिरड्यांवर फोड व जखमा',
 
     // Duration & Intake,
     durationLabel: 'लक्षणांचा कालावधी',

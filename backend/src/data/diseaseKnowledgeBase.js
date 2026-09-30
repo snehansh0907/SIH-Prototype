@@ -312,6 +312,388 @@ const DISEASE_KNOWLEDGE_BASE = [
     ],
     ipm_priority_order: VET_PROTOCOL_ORDER,
   },
+
+  // -------------------------------------------------------------------------
+  // 7. BLOAT / RUMINAL TYMPANY (अफ़रा / पोटफुगी)
+  // -------------------------------------------------------------------------
+  {
+    species: 'Cattle',
+    crop_name: 'Cattle',
+    disease_name: 'Ruminal Tympany / Bloat',
+    disease_name_hi: 'अफरा रोग / पेट फूलना (Bloat)',
+    disease_name_mr: 'पोटफुगी / अफ़रा (Bloat)',
+    scientific_name: 'Acute Ruminal Tympany (Frothy or Free-gas Bloat)',
+    severity_typical: 'high',
+    affected_organs: 'Rumen, left paralumbar fossa, thoracic respiratory capacity',
+    description:
+      'Sudden accumulation of fermentation gases in the rumen that the animal is unable to eructate (belch). Causes rapid distension of the left flank, acute pain, respiratory distress from diaphragm compression, and potential asphyxiation if untreated.',
+    visual_symptoms: [
+      'Severe, drum-like ballooning and swelling of the left flank (paralumbar fossa)',
+      'Animal kicks at belly, stamps feet, grunts in pain, and frequently lies down and rises',
+      'Open-mouth breathing with extended tongue, laboured wheezing, and nostrils dilated',
+      'Complete cessation of rumination and off-feed condition',
+      'Frequent straining to urinate and defecate; rapid weak pulse',
+    ],
+    how_it_spreads: [
+      'Non-contagious digestive metabolic disorder',
+      'Ingestion of excess succulent young legumes (lucerne, clover, berseem) causing frothy stable foam in rumen',
+      'Sudden gorging on easily fermentable cereal grains (wheat, maize, rice bran) or frosted greens',
+      'Physical obstruction of esophagus by whole potato, turnip, or cloth rags preventing gas belching',
+    ],
+    prevention_steps: [
+      'Feed dry coarse roughage (sorghum straw, wheat straw) before allowing animals onto succulent lush green legume pasture',
+      'Never allow sudden unlimited access to concentrates or grain heaps',
+      'Cut lush legumes and wilt in sun for 4-6 hours before offering to cattle and buffaloes',
+      'Avoid sudden drastic changes in daily feed ration; transition feeds gradually over 7-10 days',
+    ],
+    remedy_steps: [
+      'Emergency Posture: Walk the animal slowly uphill or elevate front legs to shift rumen weight off diaphragm',
+      'Gag Placement: Place a smooth wooden stick/gag horizontally in mouth tied behind ears to induce continuous chewing and salivation',
+      'Anti-bloat Administration: Drench with vegetable oil (peanut/mustard oil) + Turpentine oil to break stable foam bubbles',
+      'Veterinary Escalation: Call local veterinary dispensary immediately. In acute life-threatening bloat, a registered vet performs emergency trocharization on the left flank',
+    ],
+    safe_dosage: [
+      'Sweet / Mustard oil: 300-500 ml mixed with 20-30 ml Oil of Turpentine as an oral drench (ensure head is not raised too high to avoid lung aspiration)',
+      'Tympanol / Bloatosil (Commercial Simethicone): 100 ml orally diluted in 500 ml water',
+      'Hing (Asafoetida): 10 grams dissolved in lukewarm water with 50g ginger powder for mild gas relief',
+    ],
+    ipm_priority_order: VET_PROTOCOL_ORDER,
+  },
+
+  // -------------------------------------------------------------------------
+  // 8. PESTE DES PETITS RUMINANTS (PPR) - बकरी प्लेग
+  // -------------------------------------------------------------------------
+  {
+    species: 'Goat',
+    crop_name: 'Goat',
+    disease_name: 'Peste des Petits Ruminants (PPR)',
+    disease_name_hi: 'बकरी प्लेग (PPR)',
+    disease_name_mr: 'शेळी प्लेग / पीपीआर (PPR)',
+    scientific_name: 'Small Ruminant Morbillivirus (Paramyxoviridae)',
+    severity_typical: 'high',
+    affected_organs: 'Oral mucosa, respiratory tract, gastrointestinal tract, lymphoid tissues',
+    description:
+      'A highly contagious and severe viral disease of goats and sheep ("Goat Plague"). Characterized by high fever, necrotizing erosive stomatitis (mouth sores), mucopurulent oculonasal discharge, severe watery diarrhea, and bronchopneumonia with high mortality.',
+    visual_symptoms: [
+      'Sudden high fever (104-106°F / 40-41°C) with dry muzzle and shivering',
+      'Copious mucopurulent yellow crusty discharge from eyes and nose matted on face',
+      'Painful necrotic erosions and whitish cheesy deposits on gums, dental pad, tongue, and lips with foul halitosis',
+      'Severe foul-smelling, profuse watery to bloody diarrhea causing dehydration and emaciation',
+      'Dyspnea, coughing, and harsh chest crackles due to secondary pneumonia',
+    ],
+    how_it_spreads: [
+      'Close contact inhalation of infected aerosol droplets from coughing and sneezing',
+      'Direct contact with tears, nasal mucus, saliva, and infectious diarrhea feces',
+      'Introduction of unquarantined carrier goats purchased from livestock markets',
+      'Sharing grazing grounds, water troughs, and night holding pens with infected flocks',
+    ],
+    prevention_steps: [
+      'Mandatory annual vaccination with Live Attenuated PPR Vaccine (Sungri 96 strain) @ 1 ml S/C for all goats and sheep above 3 months of age',
+      'Isolate newly purchased goats for at least 21 days before joining flock',
+      'Maintain strict shed disinfection with 2% Bleaching Powder or 1% Sodium Hydroxide during regional alerts',
+      'Halt movement of small ruminants to live animal weekly bazaars when outbreaks are reported in taluka',
+    ],
+    remedy_steps: [
+      'Strict Flock Isolation: Separate all sick goats immediately into an isolated, draft-free sick pen at least 30 meters away',
+      'Oral Lesion Care: Gently swab ulcerated lips and mouth with 1% Potassium Permanganate (KMnO4) or 5% Boro-Glycerine 3 times daily',
+      'Rehydration Therapy: Provide frequent oral electrolyte solutions (ORS), lukewarm rice kanji, and electrolyte water with jaggery to combat fatal dehydration',
+      'Veterinary Treatment: Prompt veterinary referral for broad-spectrum antibiotics (Enrofloxacin or Oxytetracycline) to prevent secondary bacterial pneumonia',
+    ],
+    safe_dosage: [
+      'Boro-Glycerine: 10g Boric Acid in 90g Glycerine swabbed over oral erosions 2-3 times daily',
+      'Oral Electrolyte Solution (ORS): 1 sachet in 1 liter clean water, drench 200-500 ml twice daily depending on body weight',
+      'PPR Vaccine (Govt. Campaign): 1 ml S/C in lateral neck region (single dose provides 3-year immunity)',
+    ],
+    ipm_priority_order: VET_PROTOCOL_ORDER,
+  },
+
+  // -------------------------------------------------------------------------
+  // 9. GOAT POX & SHEEP POX (बकरी व मेंढी देवी)
+  // -------------------------------------------------------------------------
+  {
+    species: 'Goat',
+    crop_name: 'Goat',
+    disease_name: 'Goat Pox / Sheep Pox',
+    disease_name_hi: 'बकरी व भेड़ चेचक (Goat Pox)',
+    disease_name_mr: 'शेळी व मेंढी देवी रोग (Goat Pox)',
+    scientific_name: 'Capripoxvirus (Poxviridae)',
+    severity_typical: 'high',
+    affected_organs: 'Unwoolled skin (groin, axilla, muzzle, ears), lungs, systemic mucosa',
+    description:
+      'A severe, contagious viral disease of small ruminants characterized by fever, generalized papules, vesicles, and pustules on unwoolled skin and mucous membranes, often complicated by fatal nodular lung lesions.',
+    visual_symptoms: [
+      'High fever (104-106°F) and extreme dullness',
+      'Circular reddish macules and firm papules (0.5 to 1.5 cm) on face, eyelids, muzzle, groin, axilla, and under-tail',
+      'Papules develop into necrotic scabs that peel off leaving deep scars',
+      'Swollen eyelids, conjunctivitis, and purulent nasal crusts',
+      'Respiratory distress with rapid breathing if internal lung nodules develop',
+    ],
+    how_it_spreads: [
+      'Aerosol inhalation and direct contact with weeping skin scabs, saliva, or secretions',
+      'Mechanical transmission by biting insects, ticks, and contaminated shed bedding',
+      'Movement of infected herds across district grazing corridors',
+    ],
+    prevention_steps: [
+      'Annual vaccination with Goat Pox / Sheep Pox Vaccine before winter season',
+      'Strict quarantine of incoming stock for 21 days',
+      'Disinfect small ruminant sheds weekly with 2% Virkon-S or 1% formalin spray',
+    ],
+    remedy_steps: [
+      'Isolate all affected animals in a dry, warm, well-ventilated enclosure',
+      'Wash cutaneous pustules and scabs with dilute potassium permanganate solution (1:1000)',
+      'Apply neem-oil or zinc oxide antiseptic ointment over broken skin scabs to prevent fly maggots',
+      'Consult veterinary dispensary for supportive antibiotic cover and NSAIDs',
+    ],
+    safe_dosage: [
+      'Potassium Permanganate: 0.1% external wash solution applied twice daily',
+      'Neem Oil + Turmeric paste applied locally on skin scabs',
+      'Goat Pox Vaccine: 0.5 ml S/C annually as per state animal husbandry campaign',
+    ],
+    ipm_priority_order: VET_PROTOCOL_ORDER,
+  },
+
+  // -------------------------------------------------------------------------
+  // 10. CONTAGIOUS ECTHYMA / ORF (लाळरोग / तोंडावरील फोड)
+  // -------------------------------------------------------------------------
+  {
+    species: 'Goat',
+    crop_name: 'Goat',
+    disease_name: 'Contagious Ecthyma (Orf)',
+    disease_name_hi: 'मुंह के छाले / ओरफ रोग (Orf)',
+    disease_name_mr: 'लाळरोग / तोंडावर फोड (Orf)',
+    scientific_name: 'Parapoxvirus (Poxviridae)',
+    severity_typical: 'moderate',
+    affected_organs: 'Lips, muzzle, oral commissures, gums, teats of nursing dams',
+    description:
+      'A common, debilitating viral skin disease of sheep and goats (especially kids and lambs 3-6 months). Causes proliferative, cauliflower-like crusted scabs around the mouth and lips, preventing suckling and feeding.',
+    visual_symptoms: [
+      'Erythematous papules and vesicles on lips and oral corners turning into thick, dry, crusted brown scabs',
+      'Severe pain when attempting to graze or suckle milk; rapid weight loss',
+      'Scabs may spread to eyelids, feet, and teats of nursing does/ewes',
+      'Zoonotic potential: can cause localized painful skin lesions in humans handling scabs with bare hands',
+    ],
+    how_it_spreads: [
+      'Virus enters through minor skin scratches caused by thorny shrubs, dry grass awns, or coarse feed',
+      'Direct contact with infected scabs and sharing contaminated troughs',
+      'Persistence of viral scabs in shed soil and wooden posts for months',
+    ],
+    prevention_steps: [
+      'Inspect kid herds weekly for early lip lesions',
+      'Avoid grazing young kids on dry, spiny, thorny brushwood pastures',
+      'Wear protective gloves when dressing affected animal scabs to avoid human transmission',
+    ],
+    remedy_steps: [
+      'Isolate affected kids and lambs; feed lukewarm milk or fine gruel with a bottle or soft bowl',
+      'Never forcefully peel off thick dry scabs (causes bleeding and spreading)',
+      'Softly apply 5% Boro-Glycerine or Betadine ointment on lip crusts twice daily',
+      'Treat dam teats with antiseptic ointment if lesions appear on mammary skin',
+    ],
+    safe_dosage: [
+      'Betadine (Povidone-Iodine 5%) Ointment: Applied topically on lips twice daily',
+      'Boric Acid Powder: Mixed in pure glycerine (1:10) for oral commissure softening',
+    ],
+    ipm_priority_order: VET_PROTOCOL_ORDER,
+  },
+
+  // -------------------------------------------------------------------------
+  // 11. RANIKHET DISEASE / NEWCASTLE DISEASE (रानीखेत / राणीखेत रोग)
+  // -------------------------------------------------------------------------
+  {
+    species: 'Poultry',
+    crop_name: 'Poultry',
+    disease_name: 'Ranikhet / Newcastle Disease (ND)',
+    disease_name_hi: 'रानीखेत रोग (Newcastle Disease)',
+    disease_name_mr: 'राणीखेत रोग (Newcastle Disease)',
+    scientific_name: 'Avian Orthoavulavirus 1 (Paramyxoviridae)',
+    severity_typical: 'high',
+    affected_organs: 'Respiratory system, digestive tract, central nervous system in birds',
+    description:
+      'An acute, highly contagious, fatal viral disease of domestic poultry and other avian species. Characterized by severe respiratory distress (gasping), bright greenish-white diarrhea, twisted neck (torticollis), and flock mortality reaching up to 90-100%.',
+    visual_symptoms: [
+      'Severe respiratory gasping, sneezing, rattling gargling sounds, and open-beak breathing',
+      'Profuse watery, bright emerald-green or whitish diarrhea',
+      'Nervous signs: torticollis (twisted neck held backwards or downward), tremor, circling, paralysis of legs and wings',
+      'Cyanosis (dark purplish-blue discoloration) of the comb and wattles',
+      'Sudden complete drop in egg production with thin-shelled, deformed eggs',
+    ],
+    how_it_spreads: [
+      'Direct inhalation of airborne viral droplets shed by infected birds',
+      'Ingestion of feed and water contaminated with bird droppings and ocular/nasal discharges',
+      'Mechanical carriage by wild birds, rodents, footwear, egg crates, and feed gunny bags',
+      'Movement of live poultry across village weekly markets and live-bird wholesale mandis',
+    ],
+    prevention_steps: [
+      'Strict vaccination protocol: F1 / Lasota strain eye-drop vaccine at Day 5-7, booster R2B / Mukteswar vaccine at 8-10 weeks',
+      'Strict poultry biosecurity: Install footbaths with potassium permanganate or Virkon-S at coop entrance',
+      'Prohibit wild birds (crows, sparrows, pigeons) from accessing poultry feed and water drinkers',
+      'Immediate safe disposal (deep burial with quicklime) of dead birds; never discard near village water streams',
+    ],
+    remedy_steps: [
+      'Quarantine: Immediately separate all birds showing respiratory distress or twisted necks into an isolated pen',
+      'Electrolyte & Vitamin Boost: Add multivitamins (AD3E + Vitamin B Complex) and electrolytes to drinking water to support flock vigor',
+      'Veterinary Escalation: Immediately notify local Veterinary Assistant Surgeon / Animal Husbandry Dept to implement ring biosecurity',
+      'Disinfection: Spray 2% Bleaching Powder or Virkon-S solution inside empty coop sections',
+    ],
+    safe_dosage: [
+      'Lasota ND Vaccine (Preventive): 1 drop in one eye of chick at 5-7 days of age',
+      'Vitamin AD3E + B-Complex (e.g. Vimeral): 5-10 ml per 100 birds in morning drinking water for 5-7 days',
+      'Electrolyte powder: 1 gram per liter drinking water during acute distress',
+    ],
+    ipm_priority_order: VET_PROTOCOL_ORDER,
+  },
+
+  // -------------------------------------------------------------------------
+  // 12. INFECTIOUS BURSAL DISEASE / GUMBORO (गुम्बोरो रोग)
+  // -------------------------------------------------------------------------
+  {
+    species: 'Poultry',
+    crop_name: 'Poultry',
+    disease_name: 'Infectious Bursal Disease (Gumboro)',
+    disease_name_hi: 'गुम्बोरो रोग (IBD)',
+    disease_name_mr: 'गुम्बोरो आजार (IBD)',
+    scientific_name: 'Avian Birnavirus (Birnaviridae)',
+    severity_typical: 'high',
+    affected_organs: 'Bursa of Fabricius, immune lymphoid system, kidneys',
+    description:
+      'A highly infectious viral immunosuppressive disease primarily affecting young growing chickens (3 to 6 weeks). Causes inflammation and atrophy of the Bursa of Fabricius, severe watery whitish vent diarrhea, vent-pecking, and extreme flock depression.',
+    visual_symptoms: [
+      'Severe flock depression, trembling, ruffled feathers, and huddling together near walls',
+      'Watery yellowish-white diarrhea with urates staining vent feathers ("chalky vent")',
+      'Birds persistently peck at their own vents; reluctance to move or feed',
+      'Dehydration, darkened dry comb, and rapid spike in flock mortality over 3-5 days',
+    ],
+    how_it_spreads: [
+      'Direct ingestion of feces-contaminated feed, water, and poultry litter',
+      'Virus is extremely resistant in the environment and persists in sheds for months',
+    ],
+    prevention_steps: [
+      'Timely vaccination with live IBD vaccine (Intermediate / Georgia strain) via drinking water at 14 and 24 days of age',
+      'Thorough shed cleanout, flame-gunning, and 3-week downtime between broiler batches',
+    ],
+    remedy_steps: [
+      'Immediate supportive care: Provide kidney supportive tonics and electrolytes in drinking water',
+      'Avoid high-protein feed during acute outbreak to reduce kidney stress',
+      'Consult poultry veterinarian for flock management and prophylactic antimicrobial cover',
+    ],
+    safe_dosage: [
+      'Jaggery water (Gud pani): 20 grams per liter clean drinking water for quick energy',
+      'Kidney flushing tonic (e.g. Nefrotec / Renalka): 5-10 ml per 100 birds in drinking water for 5 days',
+    ],
+    ipm_priority_order: VET_PROTOCOL_ORDER,
+  },
+
+  // -------------------------------------------------------------------------
+  // 13. COCCIDIOSIS (रक्तहगवण)
+  // -------------------------------------------------------------------------
+  {
+    species: 'Poultry',
+    crop_name: 'Poultry',
+    disease_name: 'Coccidiosis',
+    disease_name_hi: 'खूनी दस्त / कॉक्सीडियोसिस (Coccidiosis)',
+    disease_name_mr: 'रक्तहगवण / कॉक्सिडिओसिस (Coccidiosis)',
+    scientific_name: 'Eimeria tenella / E. necatrix (Protozoan Parasite)',
+    severity_typical: 'moderate',
+    affected_organs: 'Intestinal mucosa, ceca, digestive tract of birds',
+    description:
+      'A common parasitic disease of poultry caused by protozoan parasites multiplying in the intestinal tract. Causes damaged gut epithelium, bloody or mucous droppings, pale combs, and high mortality in growing broilers.',
+    visual_symptoms: [
+      'Bloody, reddish-brown, or mucous droppings in litter',
+      'Birds appear hunched up with drooping wings, ruffled feathers, and closed eyes',
+      'Pale, blanched comb and wattles due to acute internal intestinal blood loss',
+      'Sharp drop in feed consumption and water intake with stunted flock growth',
+    ],
+    how_it_spreads: [
+      'Ingestion of sporulated protozoan oocysts in wet, warm, cakey poultry litter',
+      'Leaking nipple drinkers and high humidity accelerating oocyst sporulation',
+    ],
+    prevention_steps: [
+      'Keep shed litter strictly dry and friable; rake litter daily and replace wet patches immediately',
+      'Use coccidiostats in broiler feed rations as per approved schedule',
+    ],
+    remedy_steps: [
+      'Immediate anticoccidial water medication (Amprolium or Toltrazuril) for all birds',
+      'Rake and add dry hydrated lime or dry husk over wet litter spots',
+      'Administer Vitamin K to assist blood clotting and epithelial gut repair',
+    ],
+    safe_dosage: [
+      'Amprolium 20% powder: 1-2 grams per liter drinking water for 5-7 days',
+      'Vitamin K3: 2-5 mg per liter drinking water to control gut hemorrhage',
+    ],
+    ipm_priority_order: VET_PROTOCOL_ORDER,
+  },
+
+  // -------------------------------------------------------------------------
+  // 14. HEALTHY GOAT / SHEEP (निरोगी शेळी / मेंढी)
+  // -------------------------------------------------------------------------
+  {
+    species: 'Goat',
+    crop_name: 'Goat',
+    disease_name: 'Healthy Goat / Sheep',
+    disease_name_hi: 'स्वस्थ बकरी / भेड़',
+    disease_name_mr: 'निरोगी शेळी / मेंढी',
+    scientific_name: 'Physiologically Normal Small Ruminant',
+    severity_typical: 'low',
+    affected_organs: 'None - healthy equilibrium',
+    description:
+      'Healthy goat or sheep demonstrating alert posture, shiny coat, active rumination, clean dry muzzle, clear pink oral mucosa, firm dark fecal pellets, and normal temperature (102.5-103.5°F).',
+    visual_symptoms: [
+      'Bright alert eyes without excess tears, discharge, or pale conjunctiva',
+      'Clean muzzle and lips free of scabs, ulcers, or excessive saliva',
+      'Smooth, lustrous coat free from pustules, ticks, or lice',
+      'Active foraging and chewing cud with energetic, brisk gait',
+      'Normal, firm, pelleted feces without watery diarrhea or blood',
+    ],
+    how_it_spreads: ['Non-infectious: Normal healthy animal'],
+    prevention_steps: [
+      'Maintain annual PPR, Goat Pox, and Enterotoxemia (ET) vaccination calendar',
+      'Quarterly deworming with Albendazole or Ivermectin',
+      'Provide clean, dry, elevated slatted flooring to prevent foot rot',
+    ],
+    remedy_steps: [
+      'Maintain good quality tree loppings (Subabul, Neem, Melia) and balanced concentrate',
+      'Inspect flock daily at release for any limping or sluggishness',
+    ],
+    safe_dosage: [
+      'Mineral Mixture for Goats: 10-15 grams daily mixed in grain concentrate',
+    ],
+    ipm_priority_order: VET_PROTOCOL_ORDER,
+  },
+
+  // -------------------------------------------------------------------------
+  // 15. HEALTHY POULTRY (निरोगी कुक्कुट)
+  // -------------------------------------------------------------------------
+  {
+    species: 'Poultry',
+    crop_name: 'Poultry',
+    disease_name: 'Healthy Poultry',
+    disease_name_hi: 'स्वस्थ कुक्कुट / मुर्गी',
+    disease_name_mr: 'निरोगी कुक्कुट / पक्षी',
+    scientific_name: 'Physiologically Normal Avian Species',
+    severity_typical: 'low',
+    affected_organs: 'None - normal health',
+    description:
+      'Healthy poultry bird exhibiting bright red comb and wattles, smooth clean plumage, active foraging, normal vocalization, alert eyes, and steady egg laying or growth rate.',
+    visual_symptoms: [
+      'Bright red, fleshy, warm comb and wattles without crusts or discoloration',
+      'Smooth, shiny, tight feathering without ruffled or soiled vent plumage',
+      'Bright round clear eyes and clean open nostrils without discharge or swelling',
+      'Active walking, scratching, and alert foraging behavior',
+      'Normal firm droppings with white urate cap',
+    ],
+    how_it_spreads: ['Non-infectious: Healthy flock status'],
+    prevention_steps: [
+      'Strict adherence to Ranikhet (Lasota) and Gumboro (IBD) vaccination protocols',
+      'Maintain dry, friable litter and continuous fresh drinking water',
+    ],
+    remedy_steps: [
+      'Supply balanced crumble/mash feed with adequate vitamins and trace minerals',
+      'Ensure adequate cross-ventilation and clean biosecurity barrier',
+    ],
+    safe_dosage: [
+      'Poultry Multivitamin tonic: 5 ml per 100 birds in drinking water twice weekly',
+    ],
+    ipm_priority_order: VET_PROTOCOL_ORDER,
+  },
 ];
 
 // Helper: look up a disease record by species + disease name (case-insensitive)
@@ -322,13 +704,17 @@ function findDisease(speciesName, diseaseName) {
 
   return (
     DISEASE_KNOWLEDGE_BASE.find((item) => {
+      const itemSpecies = item.species.toLowerCase();
       const matchSpecies =
-        item.species.toLowerCase() === s ||
+        itemSpecies === s ||
         item.crop_name.toLowerCase() === s ||
-        (s.includes('cattle') && item.species === 'Cattle') ||
-        (s.includes('buffalo') && (item.species === 'Buffalo' || item.species === 'Cattle')) ||
-        (s.includes('cow') && item.species === 'Cattle') ||
-        (s.includes('goat') && (item.species === 'Goat' || item.species === 'Cattle'));
+        (s.includes('cattle') && itemSpecies === 'cattle') ||
+        (s.includes('buffalo') && (itemSpecies === 'buffalo' || itemSpecies === 'cattle')) ||
+        (s.includes('cow') && itemSpecies === 'cattle') ||
+        (s.includes('goat') && itemSpecies === 'goat') ||
+        (s.includes('sheep') && (itemSpecies === 'sheep' || itemSpecies === 'goat')) ||
+        (s.includes('poultry') && itemSpecies === 'poultry') ||
+        (s.includes('chicken') && itemSpecies === 'poultry');
 
       const matchDisease =
         item.disease_name.toLowerCase().includes(d) ||
@@ -338,6 +724,14 @@ function findDisease(speciesName, diseaseName) {
         (d.includes('fmd') && item.disease_name.includes('FMD')) ||
         (d.includes('foot') && item.disease_name.includes('FMD')) ||
         (d.includes('mouth') && item.disease_name.includes('FMD')) ||
+        (d.includes('mastitis') && item.disease_name.includes('Mastitis')) ||
+        (d.includes('bloat') && item.disease_name.includes('Bloat')) ||
+        (d.includes('tympany') && item.disease_name.includes('Bloat')) ||
+        (d.includes('ppr') && item.disease_name.includes('PPR')) ||
+        (d.includes('ranikhet') && item.disease_name.includes('Ranikhet')) ||
+        (d.includes('newcastle') && item.disease_name.includes('Ranikhet')) ||
+        (d.includes('gumboro') && item.disease_name.includes('Gumboro')) ||
+        (d.includes('coccidiosis') && item.disease_name.includes('Coccidiosis')) ||
         (d.includes('healthy') && item.disease_name.includes('Healthy'));
 
       return matchSpecies && matchDisease;
@@ -347,7 +741,12 @@ function findDisease(speciesName, diseaseName) {
         item.disease_name.toLowerCase().includes(d) ||
         d.includes(item.disease_name.toLowerCase()) ||
         (d.includes('lumpy') && item.disease_name.includes('LSD')) ||
-        (d.includes('fmd') && item.disease_name.includes('FMD'))
+        (d.includes('fmd') && item.disease_name.includes('FMD')) ||
+        (d.includes('mastitis') && item.disease_name.includes('Mastitis')) ||
+        (d.includes('bloat') && item.disease_name.includes('Bloat')) ||
+        (d.includes('ppr') && item.disease_name.includes('PPR')) ||
+        (d.includes('ranikhet') && item.disease_name.includes('Ranikhet')) ||
+        (d.includes('healthy') && item.disease_name.includes('Healthy'))
       );
     }) ||
     null
@@ -359,12 +758,19 @@ function getDiseasesBySpecies(speciesName) {
   if (!speciesName) return DISEASE_KNOWLEDGE_BASE;
   const s = speciesName.toLowerCase().trim();
   const matched = DISEASE_KNOWLEDGE_BASE.filter(
-    (d) =>
-      d.species.toLowerCase() === s ||
-      d.crop_name.toLowerCase() === s ||
-      (s.includes('cattle') && d.species === 'Cattle') ||
-      (s.includes('buffalo') && (d.species === 'Buffalo' || d.species === 'Cattle')) ||
-      (s.includes('goat') && (d.species === 'Goat' || d.species === 'Cattle'))
+    (d) => {
+      const itemSpecies = d.species.toLowerCase();
+      return (
+        itemSpecies === s ||
+        d.crop_name.toLowerCase() === s ||
+        (s.includes('cattle') && itemSpecies === 'cattle') ||
+        (s.includes('buffalo') && (itemSpecies === 'buffalo' || itemSpecies === 'cattle')) ||
+        (s.includes('cow') && itemSpecies === 'cattle') ||
+        (s.includes('goat') && itemSpecies === 'goat') ||
+        (s.includes('sheep') && (itemSpecies === 'sheep' || itemSpecies === 'goat')) ||
+        (s.includes('poultry') && itemSpecies === 'poultry')
+      );
+    }
   );
   return matched.length > 0 ? matched : DISEASE_KNOWLEDGE_BASE;
 }
@@ -381,3 +787,4 @@ module.exports = {
   getDiseasesBySpecies,
   getDiseasesByCrop,
 };
+

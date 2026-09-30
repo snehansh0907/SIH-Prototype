@@ -22,11 +22,11 @@ export const ImageUploader: React.FC = () => {
 
   const hasImage = Boolean(selectedImage || selectedFile);
 
-  // Step 3: Body Area
-  const [selectedBodyArea, setSelectedBodyArea] = useState<AffectedBodyArea>('udder');
+  // Step 3: Body Area (Default to general / whole body, not udder)
+  const [selectedBodyArea, setSelectedBodyArea] = useState<AffectedBodyArea>('general');
 
-  // Step 5: Symptoms Checklist
-  const [selectedSymptoms, setSelectedSymptoms] = useState<string[]>([t.symptomUdderSwelling]);
+  // Step 5: Symptoms Checklist (Default to empty - NEVER force false positive disease)
+  const [selectedSymptoms, setSelectedSymptoms] = useState<string[]>([]);
   const [duration, setDuration] = useState<string>('2 to 3 days');
   const [appetiteStatus, setAppetiteStatus] = useState<string>('Reduced appetite (~50%)');
   const [milkYieldImpact, setMilkYieldImpact] = useState<string>('Reduced (20-40% drop)');
@@ -56,12 +56,30 @@ export const ImageUploader: React.FC = () => {
     if (sampleBodyArea) {
       setSelectedBodyArea(sampleBodyArea);
     }
-    if (condition?.toLowerCase().includes('lumpy') || condition?.toLowerCase().includes('lsd')) {
+    const cond = (condition || '').toLowerCase();
+    if (cond.includes('healthy') || cond.includes('normal')) {
+      setSelectedSymptoms([]);
+      setSelectedBodyArea(sampleBodyArea || 'general');
+    } else if (cond.includes('lumpy') || cond.includes('lsd')) {
       setSelectedSymptoms([t.symptomSkinNodules, t.symptomFever]);
-    } else if (condition?.toLowerCase().includes('mastitis')) {
+      setSelectedBodyArea('skin');
+    } else if (cond.includes('mastitis')) {
       setSelectedSymptoms([t.symptomUdderSwelling, t.symptomDropInMilk]);
-    } else if (condition?.toLowerCase().includes('fmd')) {
+      setSelectedBodyArea('udder');
+    } else if (cond.includes('fmd') || cond.includes('foot and mouth')) {
       setSelectedSymptoms([t.symptomDrooling, t.symptomLimping]);
+      setSelectedBodyArea(sampleBodyArea || 'mouth');
+    } else if (cond.includes('ppr')) {
+      setSelectedSymptoms([t.symptomDiarrhea, t.symptomFever]);
+      setSelectedBodyArea('mouth');
+    } else if (cond.includes('ranikhet') || cond.includes('newcastle')) {
+      setSelectedSymptoms([t.symptomCoughing, t.symptomLethargy]);
+      setSelectedBodyArea('general');
+    } else if (cond.includes('rot')) {
+      setSelectedSymptoms([t.symptomLimping]);
+      setSelectedBodyArea('hooves');
+    } else {
+      setSelectedSymptoms([]);
     }
   };
 
@@ -75,10 +93,20 @@ export const ImageUploader: React.FC = () => {
   };
 
   const toggleSymptom = (sym: string) => {
-    if (selectedSymptoms.includes(sym)) {
-      setSelectedSymptoms(selectedSymptoms.filter((s) => s !== sym));
+    if (sym === t.symptomNormal) {
+      if (selectedSymptoms.includes(sym)) {
+        setSelectedSymptoms([]);
+      } else {
+        setSelectedSymptoms([t.symptomNormal]);
+      }
+      return;
+    }
+
+    const withoutNormal = selectedSymptoms.filter((s) => s !== t.symptomNormal);
+    if (withoutNormal.includes(sym)) {
+      setSelectedSymptoms(withoutNormal.filter((s) => s !== sym));
     } else {
-      setSelectedSymptoms([...selectedSymptoms, sym]);
+      setSelectedSymptoms([...withoutNormal, sym]);
     }
   };
 
@@ -86,17 +114,21 @@ export const ImageUploader: React.FC = () => {
     if (!selectedImage && !selectedFile) {
       console.warn('[ImageUploader] Submit blocked: No image selected');
       setUploadError(t.pleaseUploadImage || 'Please upload a photo of the affected animal to continue');
+      window.scrollTo({ top: 160, behavior: 'smooth' });
       return;
     }
 
     setUploadError(null);
+
+    // If "Normal / None" was checked, treat symptoms list as empty for disease detection
+    const cleanSymptoms = selectedSymptoms.filter((s) => s !== t.symptomNormal);
 
     const payload = {
       animalId: selectedAnimal?.id,
       animalTag: selectedAnimal?.tagNumber,
       animalName: selectedAnimal?.name,
       affectedBodyArea: selectedBodyArea,
-      symptoms: selectedSymptoms,
+      symptoms: cleanSymptoms,
       symptomDuration: duration,
       appetiteStatus,
       milkYieldImpact,
@@ -128,6 +160,7 @@ export const ImageUploader: React.FC = () => {
   ];
 
   const symptomList = [
+    t.symptomNormal,
     t.symptomFever,
     t.symptomLossOfAppetite,
     t.symptomDropInMilk,
@@ -139,6 +172,9 @@ export const ImageUploader: React.FC = () => {
     t.symptomCoughing,
     t.symptomNasalDischarge,
     t.symptomLethargy,
+    t.symptomBloat,
+    t.symptomThroatSwelling,
+    t.symptomMouthUlcers,
   ];
 
   return (
@@ -466,8 +502,9 @@ export const ImageUploader: React.FC = () => {
         {/* Helper text if no photo */}
         {!hasImage && (
           <div className="w-full max-w-full h-auto min-h-0 box-border">
-            <p className="text-[11px] text-amber-800 bg-amber-50 border border-amber-200 rounded-xl px-3 py-2 text-center font-medium animate-fadeIn w-full box-border">
-              📸 {t.pleaseUploadImage || 'Please upload a photo of the affected animal to continue'}
+            <p className="text-xs text-amber-900 bg-amber-100/90 border-2 border-amber-300 rounded-2xl p-3 text-center font-bold flex items-center justify-center gap-2 shadow-xs animate-fadeIn w-full box-border">
+              <span>📸</span>
+              <span>{t.pleaseUploadImage || 'Please upload a photo of the affected animal to continue'}</span>
             </p>
           </div>
         )}
@@ -477,8 +514,12 @@ export const ImageUploader: React.FC = () => {
           <button
             type="button"
             onClick={handleSubmit}
-            disabled={isAnalyzing}
-            className="w-full max-w-full h-auto min-h-[48px] py-4 px-6 rounded-2xl bg-gradient-to-r from-forest-800 via-forest-700 to-forest-800 hover:from-forest-900 hover:to-forest-800 text-white font-extrabold text-base shadow-float-glow flex items-center justify-center gap-2.5 font-display btn-tactile-hero cursor-pointer border border-forest-600/40"
+            disabled={isAnalyzing || !hasImage}
+            className={`w-full max-w-full h-auto min-h-[48px] py-4 px-6 rounded-2xl font-extrabold text-base flex items-center justify-center gap-2.5 font-display transition-all ${
+              !hasImage || isAnalyzing
+                ? 'bg-stone-300 text-stone-500 cursor-not-allowed border border-stone-300 shadow-none'
+                : 'bg-gradient-to-r from-forest-800 via-forest-700 to-forest-800 hover:from-forest-900 hover:to-forest-800 text-white shadow-float-glow btn-tactile-hero cursor-pointer border border-forest-600/40'
+            }`}
           >
             <span className="text-xl">🩺</span>
             <span>{t.btnCheckCrop}</span>

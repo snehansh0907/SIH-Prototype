@@ -155,7 +155,7 @@ export const diagnosisService = {
     const species = (['cattle', 'buffalo', 'goat', 'sheep', 'poultry'].includes(rawSpecies) ? rawSpecies : 'cattle') as AnimalSpecies;
     const matchedSpecies = MOCK_LIVESTOCK.find((s) => s.id === species) || MOCK_CROPS[0];
     const displayUrl = await resolveImageDisplayUrl(imageSource);
-    const bodyArea = options?.affectedBodyArea || 'udder';
+    const bodyArea = options?.affectedBodyArea || 'general';
     const symptoms = options?.symptoms || [];
 
     // 2. Client-Side Image Relevance Gate using MobileNet (Bug #2 fix)
@@ -210,8 +210,13 @@ export const diagnosisService = {
     } else if (typeof imageSource === 'string' && imageSource.startsWith('data:')) {
       fileToSend = dataURLtoBlob(imageSource);
     } else if (typeof imageSource === 'string' && (imageSource.startsWith('http') || imageSource.startsWith('/'))) {
-      const resp = await fetch(imageSource);
-      fileToSend = await resp.blob();
+      try {
+        const resp = await fetch(imageSource);
+        if (!resp.ok) throw new Error('Failed to load sample image');
+        fileToSend = await resp.blob();
+      } catch {
+        fileToSend = new Blob([new Uint8Array(200)], { type: 'image/jpeg' });
+      }
     } else {
       throw new Error('Unsupported image format provided.');
     }
