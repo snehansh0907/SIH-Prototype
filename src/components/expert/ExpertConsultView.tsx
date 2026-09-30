@@ -206,33 +206,32 @@ export const ExpertConsultView: React.FC = () => {
   };
 
   return (
-    <div className="pb-6 animate-fadeIn flex flex-col min-h-[calc(100vh-140px)]">
+    <div className="animate-fadeIn flex flex-col text-left w-full min-w-0">
       {/* Top Header */}
-      <div className="flex items-center justify-between mb-3">
+      <div className="flex items-center justify-between mb-3.5">
         <button
           onClick={resetToHome}
           type="button"
-          className="flex items-center gap-1.5 text-xs font-bold text-forest-800 hover:text-forest-900 active:scale-95 transition-transform"
+          className="flex items-center gap-1.5 text-xs font-bold text-forest-800 hover:text-forest-900 btn-tactile-subtle cursor-pointer bg-forest-50/70 px-2.5 py-1 rounded-full border border-forest-200/50 shadow-xs"
         >
-          <ArrowLeft className="w-4 h-4" />
+          <ArrowLeft className="w-3.5 h-3.5" />
           <span>{t.navHome}</span>
         </button>
 
-        {/* Toll-Free Vet Helpline 1962 Button */}
-        <button
-          type="button"
-          onClick={() => alert(language === 'mr' ? 'शासकीय फिरता पशुवैद्यकीय दवाखाना हेल्पलाइन: १९६२ (टोल-फ्री)' : language === 'hi' ? 'सचल पशुचिकित्सा हेल्पलाइन: 1962 (टोल-फ्री)' : 'Govt. of Maharashtra Mobile Veterinary Clinic Helpline: 1962 (Toll-Free)')}
-          className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-forest-100 text-forest-900 border border-forest-300 font-bold text-xs hover:bg-forest-200 transition-colors shadow-sm cursor-pointer"
+        {/* Helpline Call Button */}
+        <a
+          href="tel:1962"
+          className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-forest-100/90 text-forest-900 border border-forest-300/80 font-bold text-xs hover:bg-forest-200/90 btn-tactile-subtle shadow-xs"
         >
           <PhoneCall className="w-3.5 h-3.5 text-forest-700" />
           <span>1962 (Vet Helpline)</span>
-        </button>
+        </a>
       </div>
 
       {/* Screen Title */}
-      <div className="mb-3">
-        <h2 className="text-lg font-black text-stone-900 font-display flex items-center gap-2">
-          <span>🩺</span>
+      <div className="mb-3.5">
+        <h2 className="text-lg font-black text-forest-950 font-display flex items-center gap-2">
+          <span className="text-xl">🩺</span>
           <span>{t.expertTitle}</span>
         </h2>
         <p className="text-xs text-stone-500 font-medium">
@@ -240,29 +239,33 @@ export const ExpertConsultView: React.FC = () => {
         </p>
       </div>
 
-      {/* Escalation Banner if AI Diagnosis is Uncertain */}
-      {diagnosis.isUncertain && (
-        <div className="rounded-2xl bg-amber-500/15 border-2 border-amber-500 p-3 mb-3 flex items-start gap-2.5">
+      {/* Escalation Banner if AI Diagnosis is High/Critical or Uncertain */}
+      {(diagnosis.isUncertain || diagnosis.severity === 'high') && (
+        <div className="rounded-2xl bg-amber-500/15 border border-amber-400/80 p-3 mb-3 flex items-start gap-2.5 shadow-xs">
           <AlertTriangle className="w-5 h-5 text-amber-800 shrink-0 mt-0.5" />
           <div>
             <div className="text-xs font-black text-amber-950 font-display">
               {t.aiUncertainExpertHelp}
             </div>
-            <div className="text-[11px] text-stone-700 mt-0.5">
-              {t.aiUncertainExpertHelpDesc}
+            <div className="text-[11px] text-stone-700 mt-0.5 leading-relaxed">
+              {language === 'mr'
+                ? 'लक्षणे गंभीर स्वरूपाची आहेत. प्राथमिक उपचारासोबत शासकीय पशुवैद्यकीय अधिकाऱ्यांशी संपर्क साधा.'
+                : language === 'hi'
+                ? 'लक्षण गंभीर श्रेणी के हैं। प्राथमिक उपचार के साथ नजदीकी पशु चिकित्सा अधिकारी से संपर्क करें।'
+                : 'Symptoms indicate acute infection. Administer first aid and seek qualified veterinary examination.'}
             </div>
           </div>
         </div>
       )}
 
-      {/* MANDATORY CROP CONTEXT CARD PINNED AT TOP */}
-      <div className="rounded-2xl bg-amber-50/90 border border-amber-300 p-3.5 shadow-sm mb-3.5 flex items-center justify-between">
-        <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-xl bg-amber-100 flex items-center justify-center text-xl shadow-inner shrink-0">
-            🩺
+      {/* LIVESTOCK CASE CONTEXT CARD PINNED AT TOP */}
+      <div className="glass-card bg-amber-50/70 border border-amber-200/90 p-3 shadow-glass rounded-2xl mb-3 flex items-center justify-between">
+        <div className="flex items-center gap-2.5">
+          <div className="w-9 h-9 rounded-xl bg-amber-100/90 flex items-center justify-center text-lg shadow-inner shrink-0 border border-amber-200/60">
+            🐄
           </div>
           <div>
-            <div className="text-[10px] uppercase font-bold tracking-wider text-amber-800 font-display">
+            <div className="text-[10px] uppercase font-bold tracking-wider text-amber-900/80 font-display">
               {t.cropContextTitle}
             </div>
             <div className="text-xs font-black text-stone-900">
@@ -368,20 +371,20 @@ export const ExpertConsultView: React.FC = () => {
         )}
       </div>
 
-      {/* Agronomist Profile Header (Demo Labeled) */}
-      <div className="bg-white rounded-2xl p-3 border border-stone-200/90 shadow-soft mb-3 flex items-center justify-between">
+      {/* Veterinary Officer Profile Header */}
+      <div className="glass-card bg-white/85 border border-white/90 p-3 shadow-glass rounded-2xl mb-3 flex items-center justify-between">
         <div className="flex items-center gap-2.5">
           <div className="relative">
             <img
               src={expert.avatar}
               alt={expert.name}
-              className="w-11 h-11 rounded-full object-cover border-2 border-forest-600 shadow-sm"
+              className="w-10 h-10 rounded-full object-cover border-2 border-forest-600 shadow-sm"
             />
-            <span className="w-3 h-3 rounded-full bg-emerald-500 border-2 border-white absolute bottom-0 right-0"></span>
+            <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 border-2 border-white absolute bottom-0 right-0"></span>
           </div>
 
           <div>
-            <div className="text-xs font-black text-stone-900 font-display">
+            <div className="text-xs font-black text-forest-950 font-display">
               {language === 'mr' ? expert.nameMr : language === 'hi' ? (expert.nameHi || expert.name) : expert.name}
             </div>
             <div className="text-[11px] text-stone-500 leading-tight">
@@ -390,13 +393,13 @@ export const ExpertConsultView: React.FC = () => {
           </div>
         </div>
 
-        <span className="text-[10px] font-bold text-emerald-800 bg-emerald-100 px-2 py-0.5 rounded-full">
+        <span className="text-[10px] font-bold text-forest-900 bg-forest-100/80 border border-forest-200/60 px-2 py-0.5 rounded-full shadow-xs">
           {t.onlineNow}
         </span>
       </div>
 
       {/* Chat Messages Stream */}
-      <div className="flex-1 bg-stone-100/70 border border-stone-200/70 rounded-3xl p-3.5 overflow-y-auto space-y-3 mb-3 max-h-[340px]">
+      <div className="flex-1 glass-card bg-stone-100/60 border border-white/80 rounded-3xl p-3.5 overflow-y-auto space-y-3 mb-3 max-h-[340px] shadow-inner">
         {messages.map((msg) => {
           const isFarmer = msg.sender === 'farmer';
           const text = getMessageText(msg);
@@ -404,31 +407,31 @@ export const ExpertConsultView: React.FC = () => {
           return (
             <div
               key={msg.id}
-              className={`flex flex-col ${isFarmer ? 'items-end' : 'items-start'}`}
+              className={`flex flex-col animate-fadeIn ${isFarmer ? 'items-end' : 'items-start'}`}
             >
               <div
-                className={`max-w-[85%] rounded-2xl p-3 text-xs leading-relaxed font-medium shadow-sm ${
+                className={`max-w-[85%] rounded-2xl p-3 text-xs leading-relaxed font-medium shadow-xs transition-transform duration-200 ${
                   isFarmer
-                    ? 'bg-forest-800 text-white rounded-br-none'
-                    : 'bg-white text-stone-800 border border-stone-200 rounded-bl-none'
+                    ? 'bg-gradient-to-r from-forest-800 to-forest-700 text-white rounded-br-none shadow-sm'
+                    : 'glass-card bg-white/95 text-stone-800 border-white/90 rounded-bl-none shadow-xs'
                 }`}
               >
                 {text}
               </div>
               <div className="flex items-center gap-1 mt-1 px-1 text-[10px] text-stone-400">
                 <span>{msg.timestamp}</span>
-                {isFarmer && <CheckCheck className="w-3 h-3 text-emerald-600" />}
+                {isFarmer && <CheckCheck className="w-3 h-3 text-forest-600" />}
               </div>
             </div>
           );
         })}
 
         {isTyping && (
-          <div className="flex items-center gap-2 bg-white px-3.5 py-2.5 rounded-2xl rounded-bl-none border border-stone-200 text-stone-600 text-xs shadow-sm w-fit animate-pulse">
+          <div className="flex items-center gap-2 glass-card bg-white/90 px-3.5 py-2.5 rounded-2xl rounded-bl-none border border-white/90 text-stone-600 text-xs shadow-xs w-fit animate-fadeIn">
             <div className="flex items-center gap-1 text-forest-700">
-              <span className="w-2 h-2 rounded-full bg-forest-600 animate-bounce"></span>
-              <span className="w-2 h-2 rounded-full bg-forest-600 animate-bounce [animation-delay:0.2s]"></span>
-              <span className="w-2 h-2 rounded-full bg-forest-600 animate-bounce [animation-delay:0.4s]"></span>
+              <span className="w-1.5 h-1.5 rounded-full bg-forest-600 animate-bounce"></span>
+              <span className="w-1.5 h-1.5 rounded-full bg-forest-600 animate-bounce [animation-delay:0.2s]"></span>
+              <span className="w-1.5 h-1.5 rounded-full bg-forest-600 animate-bounce [animation-delay:0.4s]"></span>
             </div>
             <span className="text-[11px] font-medium text-stone-600 italic">
               {language === 'mr'
@@ -443,9 +446,9 @@ export const ExpertConsultView: React.FC = () => {
       </div>
 
       {/* Quick Questions Chips */}
-      <div className="mb-2">
-        <div className="flex items-center gap-1 text-[10px] uppercase font-bold tracking-wider text-stone-500 mb-1.5 px-1 font-display">
-          <Sparkles className="w-3 h-3 text-amber-500" />
+      <div className="mb-2.5">
+        <div className="flex items-center gap-1 text-[10px] uppercase font-bold tracking-wider text-forest-900/70 mb-1.5 px-1 font-display">
+          <Sparkles className="w-3 h-3 text-gold-500" />
           <span>{t.quickQuestions}</span>
         </div>
 
@@ -456,7 +459,7 @@ export const ExpertConsultView: React.FC = () => {
               type="button"
               disabled={isTyping}
               onClick={() => handleSendMessage(chipLabel)}
-              className="text-[11px] font-bold text-forest-900 bg-white hover:bg-forest-50 border border-stone-200 px-3 py-1.5 rounded-xl whitespace-nowrap active:scale-95 disabled:opacity-50 transition-all shrink-0 shadow-sm cursor-pointer"
+              className="text-[11px] font-bold text-forest-950 glass-card bg-white/90 hover:bg-white border-white/80 px-3 py-1.5 rounded-xl whitespace-nowrap btn-tactile-subtle disabled:opacity-50 transition-all shrink-0 shadow-xs cursor-pointer"
             >
               {chipLabel}
             </button>
@@ -464,13 +467,13 @@ export const ExpertConsultView: React.FC = () => {
         </div>
       </div>
 
-      {/* Message Input Box */}
+      {/* Message Input Box with gentle focus glow */}
       <form
         onSubmit={(e) => {
           e.preventDefault();
           handleSendMessage();
         }}
-        className="flex items-center gap-2 bg-white rounded-2xl p-1.5 border-2 border-forest-700/60 shadow-md"
+        className="flex items-center gap-2 glass-card bg-white/90 rounded-2xl p-1.5 border border-forest-600/40 shadow-glass transition-all duration-200 focus-within:border-forest-600 focus-within:ring-2 focus-within:ring-forest-400/30"
       >
         <input
           type="text"
@@ -484,9 +487,9 @@ export const ExpertConsultView: React.FC = () => {
         <button
           type="submit"
           disabled={!inputMessage.trim() || isTyping}
-          className="w-10 h-10 rounded-xl bg-forest-800 text-white hover:bg-forest-900 disabled:opacity-40 disabled:hover:bg-forest-800 flex items-center justify-center transition-all active:scale-95 shadow-sm shrink-0 cursor-pointer"
+          className="w-9 h-9 rounded-xl bg-gradient-to-r from-forest-800 to-forest-700 text-white hover:from-forest-900 hover:to-forest-800 disabled:opacity-40 flex items-center justify-center btn-tactile-icon shadow-sm shrink-0 cursor-pointer border border-forest-600/40"
         >
-          <Send className="w-4 h-4 text-amber-300" />
+          <Send className="w-4 h-4 text-gold-300" />
         </button>
       </form>
     </div>

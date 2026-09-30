@@ -398,7 +398,7 @@ export const translations = {
     vetReferralTitle: 'VETERINARY REFERRAL GUIDANCE',
     btnRecordVaccine: 'Record Vaccination',
     btnAddToHistory: 'Save to Health Records',
-    containmentZoneBadge: 'Active Surveillance Zone',
+
     statusBetter: 'Recovering Well / Improving',
     statusSame: 'No Change / Same Condition',
     statusWorse: 'Worsened / Needs Urgent Vet Visit',
@@ -846,7 +846,7 @@ export const translations = {
     vetReferralTitle: 'पशु चिकित्सक रेफरल मार्गदर्शन',
     btnRecordVaccine: 'टीकाकरण दर्ज करें',
     btnAddToHistory: 'इतिहास में सहेजें',
-    containmentZoneBadge: 'सक्रिय निगरानी क्षेत्र',
+
     statusBetter: 'सुधार हो रहा है / स्वस्थ हो रहा है',
     statusSame: 'कोई बदलाव नहीं / स्थिति वैसी ही है',
     statusWorse: 'हालत बिगड़ रही है / तत्काल डॉक्टर चाहिए',
@@ -1294,7 +1294,7 @@ export const translations = {
     vetReferralTitle: 'पशुवैद्यकीय रेफरल मार्गदर्शन',
     btnRecordVaccine: 'लसीकरण नोंद करा',
     btnAddToHistory: 'इतिहासात जतन करा',
-    containmentZoneBadge: 'सक्रिय दक्षता क्षेत्र',
+
     statusBetter: 'प्रकृतीत सुधारणा होत आहे / बरे वाटत आहे',
     statusSame: 'काही बदल नाही / परिस्थिती तशीच आहे',
     statusWorse: 'तब्येत बिघडली आहे / तातडीने डॉक्टर हवेत',

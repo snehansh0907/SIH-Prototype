@@ -16,7 +16,7 @@ export const NextOutlookCard: React.FC = () => {
       : outlook.text;
 
   return (
-    <div className="rounded-3xl bg-amber-50/80 border border-amber-300/80 p-4 shadow-soft mb-5">
+    <div className="glass-card bg-amber-50/70 border border-amber-200/90 p-4 shadow-glass rounded-3xl mb-4.5">
       <div className="flex items-center justify-between mb-2">
         <div className="flex items-center gap-2">
           <AlertTriangle className="w-4 h-4 text-amber-700" />
@@ -25,8 +25,8 @@ export const NextOutlookCard: React.FC = () => {
           </h3>
         </div>
 
-        <span className="inline-flex items-center gap-1 text-[11px] font-bold text-amber-800 bg-amber-200/80 px-2 py-0.5 rounded-full">
-          <TrendingUp className="w-3 h-3" />
+        <span className="inline-flex items-center gap-1 text-[11px] font-bold text-amber-900 bg-amber-200/80 px-2.5 py-0.5 rounded-full shadow-xs border border-amber-300/60">
+          <TrendingUp className="w-3 h-3 text-amber-700" />
           <span>{t.riskRising}</span>
         </span>
       </div>

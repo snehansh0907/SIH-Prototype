@@ -710,52 +710,52 @@ export function getNearbyRegionsForLocation(
 }
 
 // ---------------------------------------------------------------------------
-// Advisory and Heatmap Dataset Generator
+// Advisory and Heatmap Dataset Generator (Livestock Specific)
 // ---------------------------------------------------------------------------
-const CROP_ADVISORIES: Record<
+const LIVESTOCK_ADVISORIES: Record<
   string,
   {
     en: string;
     hi: string;
     mr: string;
     primaryDisease: string;
+    speciesDisplay: string;
   }
 > = {
-  sugarcane: {
-    primaryDisease: 'Red Rot & Pyrilla',
-    en: 'Red Rot vigilance alert for sugarcane growers. Ensure active field drainage, rogue out drying clumps, and spray carbendazim preventive.',
-    hi: 'गन्ना उत्पादकों के लिए लाल सड़न सतर्कता अलर्ट। खेत में जल निकासी सुनिश्चित करें, सूखे गुच्छों को हटाएं और कार्बेन्डाजिम का सुरक्षात्मक छिड़काव करें।',
-    mr: 'ऊस पट्ट्यात तांबेरा व खोड किडीचा प्रादुर्भाव. पाण्याचा निचरा सुरळीत ठेवा, बाधित उसाचे गड्डे नष्ट करा व प्रतिबंधात्मक बुरशीनाशक फवारणी करा.',
+  cattle: {
+    primaryDisease: 'Lumpy Skin Disease (LSD) & Mastitis',
+    speciesDisplay: 'Cattle & Buffalo',
+    en: 'Lumpy Skin Disease (LSD) & Mastitis vigilance alert for dairy farmers. Maintain fly and tick control in sheds, isolate febrile cattle, and ensure antiseptic teat dipping.',
+    hi: 'दुग्ध उत्पादकों के लिए लंपी त्वचा रोग (LSD) और थनैला का अलर्ट। पशुशाला में मक्खी-मच्छर नियंत्रण रखें, बुखार से पीड़ित पशुओं को अलग करें और नियमित थन स्वच्छता बनाए रखें।',
+    mr: 'दुग्ध उत्पादकांसाठी लंपी रोग व स्तनदाह (मस्टायटिस) सतर्कता इशारा. गोठ्यात डास-माश्या नियंत्रण ठेवा, बाधित जनावरे वेगळी करा व सडांचे निर्जंतुकीकरण करा.',
   },
-  wheat: {
-    primaryDisease: 'Yellow Rust',
-    en: 'Yellow Rust surveillance alert for wheat growers. Inspect leaf canopies for yellow stripe pustules under cool, humid mornings. Apply propiconazole upon detection.',
-    hi: 'गेहूं उत्पादकों के लिए पीला रतुआ निगरानी अलर्ट। ठंडी, नम सुबह पत्तियों पर पीले धब्बों की जांच करें और लक्षण दिखने पर प्रोपिकोनाज़ोल का छिड़काव करें।',
-    mr: 'गहू पट्ट्यात पिवळा तांबेरा रोगाचा इशारा. सकाळी पानांवरील पिवळ्या पट्ट्यांची तपासणी करा आणि लक्षणे दिसल्यास प्रोपिकोनाझोल फवारा.',
+  buffalo: {
+    primaryDisease: 'Hemorrhagic Septicemia (HS) & Mastitis',
+    speciesDisplay: 'Buffalo',
+    en: 'Hemorrhagic Septicemia (HS) and Black Quarter vigilance across buffalo herds. Ensure dry bedding, monitor respiratory distress, and schedule preventive vaccination.',
+    hi: 'भैंसों में गलघोंटू (HS) और लंगड़ा बुखार का अलर्ट। पशुशाला सूखी रखें, सांस लेने में कठिनाई पर नजर रखें और समय पर टीकाकरण करवाएं।',
+    mr: 'म्हशींमध्ये घटसर्प व फऱ्या आजाराचा सतर्कता इशारा. गोठा कोरडा ठेवा, श्वासोच्छवासावर लक्ष ठेवा व वेळेत प्रतिबंधात्मक लसीकरण करा.',
   },
-  soybean: {
-    primaryDisease: 'Yellow Mosaic & Anthracnose',
-    en: 'Yellow Mosaic Virus alert for soybean crops. Manage whitefly vectors using yellow sticky traps and apply recommended systemic insecticide promptly.',
-    hi: 'सोयाबीन फसलों के लिए पीला मोज़ेक वायरस अलर्ट। पीले चिपचिपे जाल से सफेद मक्खी को नियंत्रित करें और अनुशंसित कीटनाशक का तुरंत छिड़काव करें।',
-    mr: 'सोयाबीन पट्ट्यात पिवळा मोज़ेक रोगाचा इशारा. पांढऱ्या माशीचा बंदोबस्त करा व तात्काळ शिफारस केलेले कीटकनाशक वापरा.',
+  goat: {
+    primaryDisease: 'Peste des Petits Ruminants (PPR) & Enterotoxaemia',
+    speciesDisplay: 'Goats & Sheep',
+    en: 'Peste des Petits Ruminants (PPR) and Enterotoxaemia surveillance alert for goat keepers. Restrict grazing near stagnant water and administer scheduled deworming.',
+    hi: 'बकरी पालकों के लिए पीपीआर (बकरी प्लेग) और फिड़किया (ET) अलर्ट। दूषित पानी के पास चराई रोकें और समय पर कृमिनाशक दवा दें।',
+    mr: 'शेळी पालकांसाठी पीपीआर (शेळी प्लेग) व फिड़किया रोगाचा इशारा. साचलेल्या पाण्याजवळ चराई टाळा व जंतनाशक औषधोपचार करा.',
   },
-  cotton: {
-    primaryDisease: 'Pink Bollworm & Leaf Curl',
-    en: 'Pink Bollworm and Leaf Curl alert across cotton fields. Install pheromone traps at 5 per acre and avoid excessive nitrogen application.',
-    hi: 'कपास के खेतों में गुलाबी सुंडी और लीफ कर्ल का अलर्ट। प्रति एकड़ 5 फेरोमोन ट्रैप लगाएं और अत्यधिक नाइट्रोजन से बचें।',
-    mr: 'कापूस पट्ट्यात गुलाबी बोंडअळी व पानांचा चुरडा रोगाचा इशारा. एकरी ५ कामगंध सापळे लावा व नत्राचा अतिवापर टाळा.',
+  sheep: {
+    primaryDisease: 'Sheep Pox & Foot Rot',
+    speciesDisplay: 'Sheep',
+    en: 'Sheep Pox and Foot Rot surveillance alert. Inspect hooves after rainy spells, disinfect pens with lime, and report skin lesions immediately.',
+    hi: 'भेड़ों में चेचक (शीप पॉक्स) और खुर सड़न का अलर्ट। बारिश के बाद खुरों की जांच करें, चूने से बाड़े को कीटाणुरहित करें और तुरंत रिपोर्ट करें।',
+    mr: 'मेंढ्यांमध्ये देवी व खुरकुताचा प्रादुर्भाव इशारा. पावसानंतर खुरांची तपासणी करा, चुन्याने गोठा निर्जंतुक करा व त्वचेवरील गाठी आढळल्यास नोंद करा.',
   },
-  onion: {
-    primaryDisease: 'Purple Blotch & Thrips',
-    en: 'Purple Blotch fungal alert across onion belts. Avoid sprinkler irrigation during evening hours and spray mancozeb mixed with sticker.',
-    hi: 'प्याज क्षेत्रों में बैंगनी धब्बा कवक का अलर्ट। शाम के समय फव्वारा सिंचाई से बचें और स्टीकर के साथ मैंकोजेब का छिड़काव करें।',
-    mr: 'कांदा पट्ट्यात जांभळा करपा व फुलकिड्यांचा प्रादुर्भाव. संध्याकाळी स्प्रिंकलर टाळा व चिकट द्रवासह मँकोझेब फवारा.',
-  },
-  tomato: {
-    primaryDisease: 'Early Blight & Leaf Curl',
-    en: 'Early Blight outbreak alert for tomato growers. Maintain 4-foot ridge drainage channels and spray copper oxychloride preventive.',
-    hi: 'टमाटर उत्पादकों के लिए अगेती झुलसा का अलर्ट। 4-फुट रिज जल निकासी नालियां बनाए रखें और सुरक्षात्मक कॉपर ऑक्सीक्लोराइड का छिड़काव करें।',
-    mr: 'टोमॅटो पट्ट्यात करपा रोगाचा वाढता प्रादुर्भाव. पाण्याचा निचरा सुरळीत ठेवा व तांबयुक्त बुरशीनाशकाची फवारणी करा.',
+  poultry: {
+    primaryDisease: 'Ranikhet (Newcastle Disease) & Coccidiosis',
+    speciesDisplay: 'Poultry',
+    en: 'Ranikhet Disease (ND) and Coccidiosis biosecurity advisory for poultry farms. Sanitize drinking water, maintain dry litter, and administer Lasota booster.',
+    hi: 'कुक्कुट पालकों के लिए रानीखेत (ND) और कॉक्सिडियोसिस जैव-सुरक्षा अलर्ट। पीने के पानी को कीटाणुरहित रखें और लसोटा बूस्टर टीका लगाएं।',
+    mr: 'कुक्कुट पालनासाठी राणीखेत व कॉक्सिडिओसिस जैव-सुरक्षा सल्ला. पिण्याचे पाणी निर्जंतुक करा, गादी कोरडी ठेवा व लासोटा लस द्या.',
   },
 };
 
@@ -773,13 +773,13 @@ function hashString(str: string): number {
  */
 export function generateRegionalHotspotDataset(
   region: NearbyRegion,
-  cropName: string = 'Tomato'
+  speciesName: string = 'Cattle'
 ): LocationHeatDataset {
-  const normCrop = cropName.toLowerCase().trim();
+  const normSpecies = speciesName.toLowerCase().trim();
   const advisoryTemplate =
-    CROP_ADVISORIES[normCrop] || CROP_ADVISORIES.tomato;
+    LIVESTOCK_ADVISORIES[normSpecies] || LIVESTOCK_ADVISORIES.cattle;
 
-  const seed = hashString(`${region.name}_${region.district}_${normCrop}`);
+  const seed = hashString(`${region.name}_${region.district}_${normSpecies}`);
   
   // Deterministic case count based on seed (5 - 19 cases)
   const activeCasesCount = 5 + (seed % 15);
@@ -794,6 +794,7 @@ export function generateRegionalHotspotDataset(
   const z3Cases = Math.max(1, activeCasesCount - z1Cases - z2Cases);
 
   const distBase = region.distanceKm ? Math.max(1.0, region.distanceKm) : 1.4;
+  const speciesLabel = advisoryTemplate.speciesDisplay || 'Livestock (Cattle & Buffalo)';
 
   const heatZones: HeatZone[] = [
     {
@@ -803,9 +804,9 @@ export function generateRegionalHotspotDataset(
       radius: 90,
       intensity: z1Cases >= 6 ? 'high' : 'moderate',
       areaName: `${region.name} East Belt`,
-      areaNameHi: `${region.nameHi || region.name} पूर्वी क्षेत्र`,
-      areaNameMr: `${region.nameMr} पूर्व पट्टा`,
-      crop: cropName,
+      areaNameHi: `${region.nameHi || region.name} पूर्वी पशुधन पट्टा`,
+      areaNameMr: `${region.nameMr} पूर्व पशुधन पट्टा`,
+      crop: speciesLabel,
       reportedCases: z1Cases,
       distanceKm: Math.round((distBase * 0.8 + 0.5) * 10) / 10,
     },
@@ -816,9 +817,9 @@ export function generateRegionalHotspotDataset(
       radius: 75,
       intensity: z2Cases >= 5 ? 'high' : 'moderate',
       areaName: `${region.name} Ridge Sector`,
-      areaNameHi: `${region.nameHi || region.name} रिज सेक्टर`,
-      areaNameMr: `${region.nameMr} परिसर`,
-      crop: cropName,
+      areaNameHi: `${region.nameHi || region.name} दुग्ध सेक्टर`,
+      areaNameMr: `${region.nameMr} दुग्ध विभाग`,
+      crop: 'Cattle & Buffalo',
       reportedCases: z2Cases,
       distanceKm: Math.round((distBase * 1.5 + 1.2) * 10) / 10,
     },
@@ -829,17 +830,17 @@ export function generateRegionalHotspotDataset(
       radius: 65,
       intensity: 'low',
       areaName: `${region.name} River Belt`,
-      areaNameHi: `${region.nameHi || region.name} नदी बेल्ट`,
-      areaNameMr: `${region.nameMr} नदी पट्टा`,
-      crop: cropName,
+      areaNameHi: `${region.nameHi || region.name} शेळी-मेंढी क्लस्टर`,
+      areaNameMr: `${region.nameMr} शेळी-मेंढी पट्टा`,
+      crop: 'Goats & Sheep',
       reportedCases: z3Cases,
       distanceKm: Math.round((distBase * 2.1 + 2.0) * 10) / 10,
     },
   ];
 
-  const advisory = `KVK ${region.district} Advisory: ${advisoryTemplate.en}`;
-  const advisoryHi = `${region.districtHi || region.district} केवीके सलाह: ${advisoryTemplate.hi}`;
-  const advisoryMr = `${region.districtMr || region.district} केव्हीके सल्ला: ${advisoryTemplate.mr}`;
+  const advisory = `KVK ${region.district} Animal Husbandry Advisory: ${advisoryTemplate.en}`;
+  const advisoryHi = `${region.districtHi || region.district} पशुपालन विभाग / केवीके सलाह: ${advisoryTemplate.hi}`;
+  const advisoryMr = `${region.districtMr || region.district} पशुसंवर्धन विभाग / केव्हीके सल्ला: ${advisoryTemplate.mr}`;
 
   return {
     id: region.id,

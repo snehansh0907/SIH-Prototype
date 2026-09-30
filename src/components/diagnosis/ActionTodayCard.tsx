@@ -51,10 +51,10 @@ export const ActionTodayCard: React.FC = () => {
   };
 
   return (
-    <div className="rounded-3xl bg-white border-2 border-forest-700/60 p-5 shadow-card mb-4 text-left">
+    <div className="glass-card bg-white/85 border border-white/90 p-5 shadow-glass rounded-3xl mb-4 text-left">
       {/* Prominent Section Header */}
-      <div className="flex items-center gap-2.5 mb-4 pb-3 border-b border-stone-200">
-        <span className="w-8 h-8 rounded-xl bg-forest-800 text-amber-300 flex items-center justify-center text-base font-bold shadow-sm">
+      <div className="flex items-center gap-2.5 mb-3.5 pb-3 border-b border-forest-100/80">
+        <span className="w-8 h-8 rounded-xl bg-gradient-to-br from-forest-800 to-forest-700 text-gold-300 flex items-center justify-center text-base font-bold shadow-sm border border-forest-600/40">
           🩺
         </span>
         <div>
@@ -68,7 +68,7 @@ export const ActionTodayCard: React.FC = () => {
       </div>
 
       {/* Action Steps */}
-      <div className="space-y-3">
+      <div className="space-y-2.5">
         {diagnosis.whatToDoToday.map((action) => {
           const title =
             language === 'mr'
@@ -87,21 +87,21 @@ export const ActionTodayCard: React.FC = () => {
           return (
             <div
               key={action.step}
-              className="p-4 rounded-2xl bg-stone-50/90 border border-stone-200/90 shadow-soft"
+              className="p-3.5 rounded-2xl bg-white/80 border border-white/90 shadow-xs hover:bg-white/95 transition-all"
             >
-              <div className="flex items-center justify-between mb-2">
-                <span className={`text-[10px] font-extrabold px-2.5 py-0.5 rounded-full border flex items-center gap-1 ${badge.bg}`}>
+              <div className="flex items-center justify-between mb-1.5">
+                <span className={`text-[10px] font-extrabold px-2.5 py-0.5 rounded-full border flex items-center gap-1 shadow-xs ${badge.bg}`}>
                   <span>{badge.icon}</span>
                   <span>{badge.label}</span>
                 </span>
-                <span className="text-[11px] font-bold text-stone-400">
+                <span className="text-[11px] font-bold text-forest-800 bg-forest-100/60 px-2 py-0.5 rounded-full">
                   Step {action.step}
                 </span>
               </div>
 
               <div className="flex items-start gap-2.5">
                 <div className="flex-1">
-                  <h4 className="text-sm font-black text-stone-900 leading-snug mb-1">
+                  <h4 className="text-sm font-black text-forest-950 leading-snug mb-1">
                     {title}
                   </h4>
                   <p className="text-xs text-stone-700 leading-relaxed font-medium">

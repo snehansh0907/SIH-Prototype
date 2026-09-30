@@ -17,9 +17,11 @@ export const DiagnosisResultView: React.FC = () => {
   );
 
   return (
-    <div className="pb-6 animate-fadeIn">
+    <div className="space-y-3.5 w-full min-w-0 text-left">
       {/* 1. Identified Issue or Rejection State Banner */}
-      <DiagnosisHeader />
+      <div className="motion-stagger-1">
+        <DiagnosisHeader />
+      </div>
 
       {/* 
         CRITICAL SAFETY GATE:
@@ -29,16 +31,24 @@ export const DiagnosisResultView: React.FC = () => {
       {!isInvalidOrRejected && (
         <>
           {/* 2. WHAT YOU SHOULD DO TODAY (Most prominent section) */}
-          <ActionTodayCard />
+          <div className="motion-stagger-2">
+            <ActionTodayCard />
+          </div>
 
           {/* 3. WHAT TO MONITOR */}
-          <MonitorCard />
+          <div className="motion-stagger-3">
+            <MonitorCard />
+          </div>
 
           {/* 4. WHAT MAY HAPPEN NEXT */}
-          <NextOutlookCard />
+          <div className="motion-stagger-4">
+            <NextOutlookCard />
+          </div>
 
           {/* 5. ACTION BUTTONS: Voice, Area Risk, Expert Help */}
-          <DiagnosisActions />
+          <div className="motion-stagger-5">
+            <DiagnosisActions />
+          </div>
         </>
       )}
     </div>

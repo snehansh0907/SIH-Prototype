@@ -36,7 +36,7 @@ export const FollowUpBanner: React.FC = () => {
           particleCount: 50,
           spread: 60,
           origin: { y: 0.8 },
-          colors: ['#2D6A4F', '#52B788', '#D4A373', '#FBBF24'],
+          colors: ['#174D35', '#36B98A', '#F6BD28', '#176B45'],
         });
       } catch {}
     }
@@ -50,9 +50,9 @@ export const FollowUpBanner: React.FC = () => {
     try {
       const formData = new FormData();
       formData.append('image', file);
-      formData.append('case_id', diagnosis?.id || 'demo-case-onion-1');
+      formData.append('case_id', diagnosis?.id || 'demo-case-gauri-1');
       formData.append('farmer_id', user?.id || user?.farmerId || 'farmer123');
-      formData.append('crop', diagnosis?.cropId || user?.monitoredCrop || 'onion');
+      formData.append('crop', diagnosis?.cropId || user?.monitoredCrop || 'cattle');
 
       const response = await apiClient<{ success: boolean; data: { comparison: ComparisonData } }>(
         '/follow-ups/photo',
@@ -69,7 +69,7 @@ export const FollowUpBanner: React.FC = () => {
               particleCount: 50,
               spread: 60,
               origin: { y: 0.8 },
-              colors: ['#2D6A4F', '#52B788', '#D4A373', '#FBBF24'],
+              colors: ['#174D35', '#36B98A', '#F6BD28', '#176B45'],
             });
           } catch {}
         }
@@ -100,7 +100,7 @@ export const FollowUpBanner: React.FC = () => {
             particleCount: 50,
             spread: 60,
             origin: { y: 0.8 },
-            colors: ['#2D6A4F', '#52B788', '#D4A373', '#FBBF24'],
+            colors: ['#174D35', '#36B98A', '#F6BD28', '#176B45'],
           });
         } catch {}
       }
@@ -116,11 +116,11 @@ export const FollowUpBanner: React.FC = () => {
   };
 
   return (
-    <div className="rounded-2xl bg-white border border-stone-200/70 p-4 shadow-sm mb-4 text-left">
-      <div className="flex items-center justify-between mb-1.5">
-        <div className="flex items-center gap-1.5">
-          <span className="text-base">🐮</span>
-          <h3 className="text-xs uppercase tracking-wider font-bold text-stone-500 font-display">
+    <div className="rounded-3xl bg-white/88 backdrop-blur-xl border border-white/95 p-4 shadow-glass mb-4 text-left">
+      <div className="flex items-center justify-between mb-2">
+        <div className="flex items-center gap-2">
+          <span className="text-lg">🐮</span>
+          <h3 className="text-xs uppercase tracking-wider font-extrabold text-[#183027] font-display">
             {t.followUpTitle}
           </h3>
         </div>
@@ -128,15 +128,15 @@ export const FollowUpBanner: React.FC = () => {
           <button
             onClick={handleReset}
             type="button"
-            className="text-[11px] font-semibold text-stone-400 hover:text-stone-700 flex items-center gap-1 cursor-pointer"
+            className="text-[11px] font-bold text-[#596A61] hover:text-[#183027] flex items-center gap-1 cursor-pointer transition-colors"
           >
-            <RotateCcw className="w-3 h-3" />
+            <RotateCcw className="w-3.5 h-3.5" />
             <span>{language === 'mr' ? 'बदला' : language === 'hi' ? 'बदलें' : 'Change'}</span>
           </button>
         )}
       </div>
 
-      <p className="text-xs text-stone-600 mb-3 leading-relaxed">
+      <p className="text-xs text-[#596A61] mb-3.5 leading-relaxed font-bold">
         {t.followUpSubtitle}
       </p>
 
@@ -156,27 +156,27 @@ export const FollowUpBanner: React.FC = () => {
             <button
               onClick={() => handleSelect('better')}
               type="button"
-              className="py-2.5 px-2 rounded-xl bg-emerald-50/70 hover:bg-emerald-100/70 border border-emerald-200/70 text-emerald-900 font-semibold text-xs flex flex-col items-center gap-1 transition-all active:scale-95 shadow-xs cursor-pointer"
+              className="py-3 px-2 rounded-2xl bg-emerald-50/90 hover:bg-emerald-100/90 border border-emerald-200/90 text-emerald-950 font-bold text-xs flex flex-col items-center gap-1.5 btn-tactile-subtle shadow-xs cursor-pointer group"
             >
-              <span className="text-xl">😊</span>
+              <span className="text-2xl group-hover:scale-105 transition-transform">😊</span>
               <span>{language === 'mr' ? 'सुधारणा आहे' : language === 'hi' ? 'सुधार है' : 'Better'}</span>
             </button>
 
             <button
               onClick={() => handleSelect('same')}
               type="button"
-              className="py-2.5 px-2 rounded-xl bg-amber-50/70 hover:bg-amber-100/70 border border-amber-200/70 text-amber-900 font-semibold text-xs flex flex-col items-center gap-1 transition-all active:scale-95 shadow-xs cursor-pointer"
+              className="py-3 px-2 rounded-2xl bg-amber-50/90 hover:bg-amber-100/90 border border-amber-200/90 text-amber-950 font-bold text-xs flex flex-col items-center gap-1.5 btn-tactile-subtle shadow-xs cursor-pointer group"
             >
-              <span className="text-xl">😐</span>
+              <span className="text-2xl group-hover:scale-105 transition-transform">😐</span>
               <span>{language === 'mr' ? 'तसेच आहे' : language === 'hi' ? 'वैसा ही है' : 'Same'}</span>
             </button>
 
             <button
               onClick={() => handleSelect('worse')}
               type="button"
-              className="py-2.5 px-2 rounded-xl bg-rose-50/70 hover:bg-rose-100/70 border border-rose-200/70 text-rose-900 font-semibold text-xs flex flex-col items-center gap-1 transition-all active:scale-95 shadow-xs cursor-pointer"
+              className="py-3 px-2 rounded-2xl bg-rose-50/90 hover:bg-rose-100/90 border border-rose-200/90 text-rose-950 font-bold text-xs flex flex-col items-center gap-1.5 btn-tactile-subtle shadow-xs cursor-pointer group"
             >
-              <span className="text-xl">😟</span>
+              <span className="text-2xl group-hover:scale-105 transition-transform">😟</span>
               <span>{language === 'mr' ? 'बिघडले आहे' : language === 'hi' ? 'गंभीर है' : 'Worse'}</span>
             </button>
           </div>
@@ -186,7 +186,7 @@ export const FollowUpBanner: React.FC = () => {
             type="button"
             disabled={isUploadingPhoto}
             onClick={() => fileInputRef.current?.click()}
-            className="w-full py-2.5 px-3 rounded-xl bg-stone-50 hover:bg-stone-100/90 active:scale-[0.98] border border-stone-200 text-forest-900 font-bold text-xs flex items-center justify-center gap-2 transition-all cursor-pointer"
+            className="w-full py-3 px-3 rounded-2xl bg-stone-50/90 hover:bg-stone-100/90 btn-tactile-subtle border border-stone-200 text-forest-950 font-extrabold text-xs flex items-center justify-center gap-2 cursor-pointer shadow-xs"
           >
             {isUploadingPhoto ? (
               <>
@@ -205,7 +205,7 @@ export const FollowUpBanner: React.FC = () => {
         <div className="animate-fadeIn space-y-2.5">
           {/* Comparison breakdown if photo was used */}
           {comparisonResult && (
-            <div className="rounded-xl border border-stone-200 bg-stone-50/80 p-3 text-xs">
+            <div className="rounded-2xl border border-stone-200 bg-stone-50/90 p-3 text-xs shadow-xs">
               <div className="grid grid-cols-2 gap-2 pb-2 border-b border-stone-200/70 text-[11px]">
                 <div>
                   <span className="text-stone-500 font-medium">{t.previousSeverityLabel} </span>
@@ -219,7 +219,7 @@ export const FollowUpBanner: React.FC = () => {
               <div className="pt-2 flex items-center justify-between">
                 <span className="text-stone-600 font-semibold">{t.comparisonTrendLabel}</span>
                 <span
-                  className={`font-black px-2 py-0.5 rounded-full text-[11px] ${
+                  className={`font-black px-2.5 py-0.5 rounded-full text-[11px] shadow-xs ${
                     comparisonResult.trend === 'improving'
                       ? 'bg-emerald-100 text-emerald-900 border border-emerald-300'
                       : comparisonResult.trend === 'worsening'
@@ -238,10 +238,10 @@ export const FollowUpBanner: React.FC = () => {
           )}
 
           {followUpStatus === 'better' && (
-            <div className="bg-emerald-50/80 border border-emerald-200 rounded-xl p-3 flex items-start gap-2.5">
+            <div className="bg-emerald-50/90 border border-emerald-200 rounded-2xl p-3.5 flex items-start gap-2.5 shadow-xs animate-fadeIn">
               <CheckCircle2 className="w-4 h-4 text-emerald-700 shrink-0 mt-0.5" />
               <div>
-                <div className="text-xs font-bold text-emerald-950 mb-0.5">
+                <div className="text-xs font-black text-emerald-950 mb-0.5">
                   {language === 'mr' ? 'सुधारणा नोंदवली गेली!' : language === 'hi' ? 'सुधार दर्ज किया गया!' : 'Recovery Logged!'}
                 </div>
                 <p className="text-xs text-emerald-900 leading-relaxed font-medium">
@@ -252,10 +252,10 @@ export const FollowUpBanner: React.FC = () => {
           )}
 
           {followUpStatus === 'same' && (
-            <div className="bg-amber-50/80 border border-amber-200 rounded-xl p-3 flex items-start gap-2.5">
+            <div className="bg-amber-50/90 border border-amber-200 rounded-2xl p-3.5 flex items-start gap-2.5 shadow-xs animate-fadeIn">
               <span className="text-base">ℹ️</span>
               <div>
-                <div className="text-xs font-bold text-amber-950 mb-0.5">
+                <div className="text-xs font-black text-amber-950 mb-0.5">
                   {language === 'mr' ? 'निरीक्षण सुरू ठेवा' : language === 'hi' ? 'निगरानी जारी रखें' : 'Continue Monitoring'}
                 </div>
                 <p className="text-xs text-amber-900 leading-relaxed font-medium">
@@ -266,11 +266,11 @@ export const FollowUpBanner: React.FC = () => {
           )}
 
           {followUpStatus === 'worse' && (
-            <div className="bg-rose-50/80 border border-rose-200 rounded-xl p-3">
+            <div className="bg-rose-50/90 border border-rose-200 rounded-2xl p-3.5 shadow-xs animate-fadeIn">
               <div className="flex items-start gap-2 mb-2.5">
                 <span className="text-base shrink-0">⚠️</span>
                 <div>
-                  <div className="text-xs font-bold text-rose-950">
+                  <div className="text-xs font-black text-rose-950">
                     {language === 'mr' ? 'तातडीने पशुवैद्यकीय डॉक्टरांशी संपर्क करा' : language === 'hi' ? 'तत्काल पशु चिकित्सक से संपर्क करें' : 'Immediate Veterinary Consultation Recommended'}
                   </div>
                   <p className="text-xs text-rose-900 leading-relaxed font-medium">
@@ -283,7 +283,7 @@ export const FollowUpBanner: React.FC = () => {
                 <button
                   onClick={() => fileInputRef.current?.click()}
                   type="button"
-                  className="flex items-center justify-center gap-1.5 py-2 px-3 rounded-lg bg-forest-800 text-white font-semibold text-xs hover:bg-forest-900 active:scale-95 transition-transform shadow-xs cursor-pointer"
+                  className="flex items-center justify-center gap-1.5 py-2.5 px-3 rounded-xl bg-forest-800 text-white font-bold text-xs hover:bg-forest-900 btn-tactile shadow-xs cursor-pointer"
                 >
                   <Camera className="w-3.5 h-3.5" />
                   <span>{language === 'mr' ? 'नवीन फोटो काढा' : language === 'hi' ? 'नया फोटो लें' : 'New Photo'}</span>
@@ -292,9 +292,9 @@ export const FollowUpBanner: React.FC = () => {
                 <button
                   onClick={() => setActiveTab('expert')}
                   type="button"
-                  className="flex items-center justify-center gap-1.5 py-2 px-3 rounded-lg bg-amber-600 text-white font-semibold text-xs hover:bg-amber-700 active:scale-95 transition-transform shadow-xs cursor-pointer"
+                  className="flex items-center justify-center gap-1.5 py-2.5 px-3 rounded-xl bg-amber-500 text-stone-950 font-extrabold text-xs hover:bg-amber-400 btn-tactile shadow-xs cursor-pointer"
                 >
-                  <UserCheck className="w-3.5 h-3.5" />
+                  <UserCheck className="w-3.5 h-3.5 text-stone-950" />
                   <span>{t.actionExpert}</span>
                 </button>
               </div>
@@ -305,3 +305,4 @@ export const FollowUpBanner: React.FC = () => {
     </div>
   );
 };
+

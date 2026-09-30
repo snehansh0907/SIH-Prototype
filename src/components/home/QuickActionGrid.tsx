@@ -11,95 +11,101 @@ export const QuickActionGrid: React.FC = () => {
 
   return (
     <div className="text-left">
-      <div className="flex items-center justify-between mb-2 px-1">
-        <h3 className="text-xs uppercase tracking-wider font-bold text-stone-500 font-display">
+      <div className="flex items-center justify-between mb-2.5 px-1">
+        <h3 className="text-xs uppercase tracking-wider font-extrabold text-stone-500 font-display">
           {t.quickActionsTitle}
         </h3>
-        <span className="text-[11px] font-semibold text-emerald-850 flex items-center gap-1">
+        <span className="text-[11px] font-bold text-emerald-800 flex items-center gap-1">
           <Sparkles className="w-3 h-3 text-amber-500" />
           {t.tapToStart}
         </span>
       </div>
 
-      {/* PRIMARY FEATURED ACTIONS: Check Animal (Symptoms) & Report Animal Death (Mortality) */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-        {/* ACTION 1: Check My Animal */}
+      {/* PRIMARY FEATURED ACTIONS: Check Animal & Report Animal Death */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+        {/* ACTION 1: Check My Animal (Dominant Forest Green Raised Liquid Card) */}
         <button
           onClick={() => requireFarmerAccess(() => setActiveTab('check'))}
           type="button"
-          className="w-full rounded-2xl bg-emerald-900 hover:bg-emerald-950 active:scale-[0.99] text-white p-3.5 shadow-sm hover:shadow-md transition-all duration-200 cursor-pointer flex items-center justify-between border border-emerald-800/80 group text-left relative overflow-hidden"
+          className="w-full rounded-3xl bg-gradient-to-r from-[#174D35] via-[#176B45] to-[#174D35] hover:shadow-float-glow text-white p-4 shadow-md btn-tactile-hero cursor-pointer flex items-center justify-between gap-3 border border-white/20 group text-left relative overflow-hidden select-none min-w-0 min-h-[72px] h-auto"
         >
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-emerald-800/90 flex items-center justify-center text-white shrink-0 group-hover:scale-105 transition-transform shadow-inner text-lg">
+          {/* Subtle Ambient Light Shimmer */}
+          <div className="absolute -top-12 -right-12 w-32 h-32 rounded-full bg-emerald-400/20 blur-2xl pointer-events-none group-hover:scale-110 transition-transform duration-500 ambient-bubble-drift" />
+
+          <div className="flex items-center gap-3 relative z-10 min-w-0 flex-1">
+            <div className="w-11 h-11 rounded-2xl bg-white/15 backdrop-blur-md border border-white/25 flex items-center justify-center text-white shrink-0 group-hover:scale-105 transition-transform duration-300 shadow-inner text-xl">
               🩺
             </div>
-            <div>
-              <div className="flex items-center gap-1.5 mb-0.5">
-                <span className="text-sm font-bold font-display text-white tracking-tight">
+            <div className="min-w-0 flex-1">
+              <div className="flex items-center gap-1.5 mb-0.5 flex-wrap">
+                <span className="text-sm font-black font-display text-white tracking-tight">
                   {t.actionCheckCrop}
                 </span>
-                <span className="text-[8px] font-bold px-1.5 py-0.5 rounded-full bg-amber-400 text-stone-900 leading-none">
-                  Symptom AI
+                <span className="text-[9px] font-black px-2 py-0.5 rounded-full bg-amber-400 text-stone-950 shadow-xs leading-none shrink-0 transition-transform duration-200">
+                  AI Triage
                 </span>
               </div>
-              <p className="text-[11px] text-amber-200/90 font-medium line-clamp-1">
+              <p className="text-xs text-sage-200 font-semibold tracking-tight leading-snug break-words">
                 {t.actionCheckCropSub}
               </p>
             </div>
           </div>
 
-          <div className="w-7 h-7 rounded-lg bg-emerald-800/60 flex items-center justify-center text-amber-300 shrink-0 group-hover:translate-x-1 transition-transform">
-            <ArrowRight className="w-3.5 h-3.5" />
+          <div className="w-8 h-8 rounded-2xl bg-white/12 border border-white/20 flex items-center justify-center text-amber-300 shrink-0 group-hover:translate-x-1 transition-transform duration-300 shadow-xs relative z-10">
+            <ArrowRight className="w-4 h-4" />
           </div>
         </button>
 
-        {/* ACTION 2: Report Animal Death (Mortality) */}
+        {/* ACTION 2: Report Animal Death (Mortality) - Emergency Deep Crimson Card */}
         <button
           onClick={() => requireFarmerAccess(() => setActiveTab('mortality'))}
           type="button"
-          className="w-full rounded-2xl bg-rose-950 hover:bg-slate-900 active:scale-[0.99] text-white p-3.5 shadow-sm hover:shadow-md transition-all duration-200 cursor-pointer flex items-center justify-between border border-rose-800/80 group text-left relative overflow-hidden"
+          className="w-full rounded-3xl bg-gradient-to-r from-[#3b0d18] via-[#591428] to-[#3b0d18] hover:shadow-float-glow text-white p-4 shadow-md btn-tactile-hero cursor-pointer flex items-center justify-between gap-3 border border-rose-400/30 group text-left relative overflow-hidden select-none min-w-0 min-h-[72px] h-auto"
         >
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-rose-800/80 flex items-center justify-center text-white shrink-0 group-hover:scale-105 transition-transform shadow-inner text-lg">
+          {/* Subtle Ambient Red Glow */}
+          <div className="absolute -top-12 -right-12 w-32 h-32 rounded-full bg-rose-400/20 blur-2xl pointer-events-none group-hover:scale-110 transition-transform duration-500 ambient-bubble-drift" />
+
+          <div className="flex items-center gap-3 relative z-10 min-w-0 flex-1">
+            <div className="w-11 h-11 rounded-2xl bg-white/15 backdrop-blur-md border border-white/25 flex items-center justify-center text-white shrink-0 group-hover:scale-105 transition-transform duration-300 shadow-inner text-xl">
               🪦
             </div>
-            <div>
-              <div className="flex items-center gap-1.5 mb-0.5">
-                <span className="text-sm font-bold font-display text-white tracking-tight">
+            <div className="min-w-0 flex-1">
+              <div className="flex items-center gap-1.5 mb-0.5 flex-wrap">
+                <span className="text-sm font-black font-display text-white tracking-tight">
                   {language === 'mr' ? 'पशू मृत्यू नोंदवा' : language === 'hi' ? 'पशु मृत्यु दर्ज करें' : 'Report Animal Death'}
                 </span>
-                <span className="text-[8px] font-bold px-1.5 py-0.5 rounded-full bg-rose-400 text-slate-950 leading-none">
+                <span className="text-[9px] font-black px-2 py-0.5 rounded-full bg-rose-400 text-stone-950 shadow-xs leading-none shrink-0 transition-transform duration-200">
                   Mortality
                 </span>
               </div>
-              <p className="text-[11px] text-rose-200/90 font-medium line-clamp-1">
-                {language === 'mr' ? 'महामारी रोखण्यासाठी तातडीने नोंदवा' : language === 'hi' ? 'महामारी रोकथाम हेतु तुरंत सूचित करें' : 'Urgent outbreak & epidemic alert'}
+              <p className="text-xs text-rose-200/90 font-semibold tracking-tight leading-snug break-words">
+                {language === 'mr' ? 'महामारी रोखण्यासाठी तातडीने नोंदवा' : language === 'hi' ? 'महामारी रोकथाम हेतु तुरंत सूचित करें' : 'Outbreak containment alert'}
               </p>
             </div>
           </div>
 
-          <div className="w-7 h-7 rounded-lg bg-rose-800/60 flex items-center justify-center text-rose-300 shrink-0 group-hover:translate-x-1 transition-transform">
-            <ArrowRight className="w-3.5 h-3.5" />
+          <div className="w-8 h-8 rounded-2xl bg-white/12 border border-white/20 flex items-center justify-center text-rose-300 shrink-0 group-hover:translate-x-1 transition-transform duration-300 shadow-xs relative z-10">
+            <ArrowRight className="w-4 h-4" />
           </div>
         </button>
       </div>
 
       {/* SECONDARY ACTIONS GRID: My Herd, Vaccination, My Area, Talk to a Vet */}
-      <div className="grid grid-cols-4 gap-2 mt-2">
+      <div className="grid grid-cols-2 xs:grid-cols-4 gap-2 mt-2.5 min-w-0">
         {/* My Herd */}
         <button
           onClick={() => requireFarmerAccess(() => setActiveTab('herd'))}
           type="button"
-          className="bg-white hover:bg-stone-50 rounded-xl p-2.5 border border-stone-200/80 text-left transition-all active:scale-95 shadow-xs flex flex-col justify-between min-h-[88px] group cursor-pointer"
+          className="glass-card-interactive bg-white/90 backdrop-blur-md hover:bg-white rounded-2xl p-2 sm:p-2.5 border border-white/95 text-left shadow-glass-subtle flex flex-col justify-between min-h-[92px] h-auto min-w-0 group cursor-pointer btn-tactile-subtle"
         >
-          <div className="w-7 h-7 rounded-lg bg-amber-50 text-amber-800 flex items-center justify-center mb-1 group-hover:scale-105 transition-transform text-sm">
+          <div className="w-8 h-8 rounded-xl bg-amber-50 border border-amber-200 text-amber-950 flex items-center justify-center mb-1 group-hover:scale-105 transition-transform duration-200 text-base shadow-xs shrink-0">
             🐮
           </div>
-          <div>
-            <div className="text-[11px] font-bold text-stone-900 font-display line-clamp-1 leading-tight">
+          <div className="min-w-0 w-full">
+            <div className="text-[11px] font-black text-[#183027] font-display break-words line-clamp-2 leading-tight">
               {t.actionMyHerd || 'My Herd'}
             </div>
-            <div className="text-[9px] text-stone-400 font-medium line-clamp-1 mt-0.5">
+            <div className="text-[9px] text-[#596A61] font-bold truncate mt-0.5">
               {language === 'hi' ? 'पशुधन' : language === 'mr' ? 'पशुधन' : 'Animals'}
             </div>
           </div>
@@ -109,16 +115,16 @@ export const QuickActionGrid: React.FC = () => {
         <button
           onClick={() => requireFarmerAccess(() => setActiveTab('vaccination'))}
           type="button"
-          className="bg-white hover:bg-stone-50 rounded-xl p-2.5 border border-stone-200/80 text-left transition-all active:scale-95 shadow-xs flex flex-col justify-between min-h-[88px] group cursor-pointer"
+          className="glass-card-interactive bg-white/90 backdrop-blur-md hover:bg-white rounded-2xl p-2 sm:p-2.5 border border-white/95 text-left shadow-glass-subtle flex flex-col justify-between min-h-[92px] h-auto min-w-0 group cursor-pointer btn-tactile-subtle"
         >
-          <div className="w-7 h-7 rounded-lg bg-emerald-50 text-emerald-800 flex items-center justify-center mb-1 group-hover:scale-105 transition-transform text-sm">
+          <div className="w-8 h-8 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-950 flex items-center justify-center mb-1 group-hover:scale-105 transition-transform duration-200 text-base shadow-xs shrink-0">
             💉
           </div>
-          <div>
-            <div className="text-[11px] font-bold text-stone-900 font-display line-clamp-1 leading-tight">
+          <div className="min-w-0 w-full">
+            <div className="text-[11px] font-black text-[#183027] font-display break-words line-clamp-2 leading-tight">
               {t.actionVaccination || 'Vaccines'}
             </div>
-            <div className="text-[9px] text-stone-400 font-medium line-clamp-1 mt-0.5">
+            <div className="text-[9px] text-[#596A61] font-bold truncate mt-0.5">
               {language === 'hi' ? 'टीकाकरण' : language === 'mr' ? 'लसीकरण' : 'Schedule'}
             </div>
           </div>
@@ -128,16 +134,16 @@ export const QuickActionGrid: React.FC = () => {
         <button
           onClick={() => requireFarmerAccess(() => setActiveTab('area'))}
           type="button"
-          className="bg-white hover:bg-stone-50 rounded-xl p-2.5 border border-stone-200/80 text-left transition-all active:scale-95 shadow-xs flex flex-col justify-between min-h-[88px] group cursor-pointer"
+          className="glass-card-interactive bg-white/90 backdrop-blur-md hover:bg-white rounded-2xl p-2 sm:p-2.5 border border-white/95 text-left shadow-glass-subtle flex flex-col justify-between min-h-[92px] h-auto min-w-0 group cursor-pointer btn-tactile-subtle"
         >
-          <div className="w-7 h-7 rounded-lg bg-sky-50 text-sky-800 flex items-center justify-center mb-1 group-hover:scale-105 transition-transform">
-            <MapPin className="w-3.5 h-3.5 text-sky-700" />
+          <div className="w-8 h-8 rounded-xl bg-sky-50 border border-sky-200 text-sky-900 flex items-center justify-center mb-1 group-hover:scale-105 transition-transform duration-200 shadow-xs shrink-0">
+            <MapPin className="w-4 h-4 text-sky-700" />
           </div>
-          <div>
-            <div className="text-[11px] font-bold text-stone-900 font-display line-clamp-1 leading-tight">
+          <div className="min-w-0 w-full">
+            <div className="text-[11px] font-black text-[#183027] font-display break-words line-clamp-2 leading-tight">
               {t.actionMyArea}
             </div>
-            <div className="text-[9px] text-stone-400 font-medium line-clamp-1 mt-0.5">
+            <div className="text-[9px] text-[#596A61] font-bold truncate mt-0.5">
               {language === 'hi' ? 'रोग रडार' : language === 'mr' ? 'रोग रडार' : 'Radar'}
             </div>
           </div>
@@ -147,16 +153,16 @@ export const QuickActionGrid: React.FC = () => {
         <button
           onClick={() => requireFarmerAccess(() => setActiveTab('expert'))}
           type="button"
-          className="bg-white hover:bg-stone-50 rounded-xl p-2.5 border border-stone-200/80 text-left transition-all active:scale-95 shadow-xs flex flex-col justify-between min-h-[88px] group cursor-pointer"
+          className="glass-card-interactive bg-white/90 backdrop-blur-md hover:bg-white rounded-2xl p-2 sm:p-2.5 border border-white/95 text-left shadow-glass-subtle flex flex-col justify-between min-h-[92px] h-auto min-w-0 group cursor-pointer btn-tactile-subtle"
         >
-          <div className="w-7 h-7 rounded-lg bg-emerald-50 text-emerald-800 flex items-center justify-center mb-1 group-hover:scale-105 transition-transform">
-            <UserCheck className="w-3.5 h-3.5 text-emerald-800" />
+          <div className="w-8 h-8 rounded-xl bg-forest-50 border border-forest-200 text-forest-900 flex items-center justify-center mb-1 group-hover:scale-105 transition-transform duration-200 shadow-xs shrink-0">
+            <UserCheck className="w-4 h-4 text-forest-800" />
           </div>
-          <div>
-            <div className="text-[11px] font-bold text-stone-900 font-display line-clamp-1 leading-tight">
+          <div className="min-w-0 w-full">
+            <div className="text-[11px] font-black text-[#183027] font-display break-words line-clamp-2 leading-tight">
               {t.actionExpert}
             </div>
-            <div className="text-[10px] text-stone-400 font-medium line-clamp-1 mt-0.5">
+            <div className="text-[9px] text-[#596A61] font-bold truncate mt-0.5">
               {language === 'hi' ? 'पशुचिकित्सक' : language === 'mr' ? 'पशुवैद्यक' : 'Vet Officer'}
             </div>
           </div>
@@ -165,3 +171,4 @@ export const QuickActionGrid: React.FC = () => {
     </div>
   );
 };
+

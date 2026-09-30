@@ -83,9 +83,8 @@ export const ImageUploader: React.FC = () => {
   };
 
   const handleSubmit = async () => {
-    // 1. Strict Validation: Prevent submission without an image (Bug #1 & Task #2 fix)
     if (!selectedImage && !selectedFile) {
-      console.warn('[ImageUploader] Submit blocked client-side: No image selected');
+      console.warn('[ImageUploader] Submit blocked: No image selected');
       setUploadError(t.pleaseUploadImage || 'Please upload a photo of the affected animal to continue');
       return;
     }
@@ -103,8 +102,6 @@ export const ImageUploader: React.FC = () => {
       milkYieldImpact,
       otherObservations: otherNotes,
     };
-
-    console.log('[ImageUploader] Submitting diagnosis with image source:', selectedFile ? 'File' : 'DataURL/Sample');
 
     try {
       const imageToDiagnose = selectedFile || selectedImage!;
@@ -145,340 +142,357 @@ export const ImageUploader: React.FC = () => {
   ];
 
   return (
-    <div className="pb-8 animate-fadeIn text-left">
-      {/* Title & Subtitle */}
-      <div className="mb-4">
-        <h2 className="text-xl font-extrabold text-stone-900 font-display flex items-center gap-2">
-          <span>🩺</span>
-          <span>{t.checkCropTitle}</span>
-        </h2>
-        <p className="text-xs text-stone-600 mt-1 leading-relaxed">
-          {t.checkCropSubtitle}
-        </p>
-      </div>
-
-      {/* 1 & 2: Select Animal & Species */}
-      <CropSelector />
-
-      {/* 3: Select Affected Body Area */}
-      <div className="mb-4">
-        <label className="block text-[11px] font-bold uppercase tracking-wider text-stone-600 mb-1.5 font-display">
-          {t.stepBodyAreaSelection || '3. Affected Body Area'}
-        </label>
-        <div className="grid grid-cols-3 gap-2">
-          {bodyAreas.map((b) => {
-            const isSelected = selectedBodyArea === b.key;
-            return (
-              <button
-                key={b.key}
-                type="button"
-                onClick={() => setSelectedBodyArea(b.key)}
-                className={`flex items-center gap-1.5 p-2 rounded-2xl border text-left transition-all active:scale-95 cursor-pointer ${
-                  isSelected
-                    ? 'bg-amber-400 text-forest-950 border-amber-500 font-bold shadow-sm ring-2 ring-amber-300'
-                    : 'bg-white text-stone-700 border-stone-200 hover:bg-stone-50'
-                }`}
-              >
-                <span className="text-base shrink-0">{b.icon}</span>
-                <span className="text-xs font-semibold leading-tight">{b.label}</span>
-              </button>
-            );
-          })}
-        </div>
-      </div>
-
+    <main className="w-full max-w-full h-auto min-h-0 overflow-x-clip text-left animate-fadeIn">
       {/* Hidden File Inputs */}
       <input ref={fileInputRef} type="file" accept="image/*" className="hidden" onChange={handleFileChange} />
       <input ref={cameraInputRef} type="file" accept="image/*" capture="environment" className="hidden" onChange={handleFileChange} />
 
-      {/* 4: Main Upload / Preview Area */}
-      <div className="mb-4">
-        <label className="block text-[11px] font-bold uppercase tracking-wider text-stone-600 mb-1.5 font-display">
-          {t.stepPhotoUpload || '4. Symptom Photograph'}
-        </label>
+      {/* Main Vertical Content Flow Container */}
+      <div className="w-full max-w-full h-auto min-h-0 flex flex-col gap-4 box-border">
+        {/* 1. Header / Title Section */}
+        <section aria-label="Check Animal Header" className="w-full max-w-full h-auto min-h-0 box-border shrink-1">
+          <h2 className="text-xl font-extrabold text-forest-950 font-display flex items-center gap-2">
+            <span className="text-2xl">🩺</span>
+            <span>{t.checkCropTitle}</span>
+          </h2>
+          <p className="text-xs text-stone-600 mt-1 leading-relaxed">
+            {t.checkCropSubtitle}
+          </p>
+        </section>
 
-        {!selectedImage ? (
-          <div className="rounded-3xl border-2 border-dashed border-forest-600/50 bg-white/80 p-5 text-center shadow-soft hover:bg-forest-50/40 transition-colors">
-            <div className="w-14 h-14 rounded-2xl bg-amber-100 text-amber-900 flex items-center justify-center mx-auto mb-2 text-2xl shadow-inner">
-              📸
-            </div>
-            <h4 className="text-sm font-extrabold text-stone-900 mb-1">{t.dragDropText}</h4>
-            <p className="text-xs text-stone-500 mb-3 max-w-xs mx-auto">{t.guideVisible}</p>
+        {/* 2. Step 1 & 2: Select Animal & Species */}
+        <section aria-label="Animal and Species Selector" className="w-full max-w-full h-auto min-h-0 box-border shrink-1">
+          <CropSelector />
+        </section>
 
-            <div className="grid grid-cols-2 gap-2.5 max-w-xs mx-auto">
-              <button
-                type="button"
-                onClick={() => cameraInputRef.current?.click()}
-                className="flex items-center justify-center gap-2 py-2.5 px-3 rounded-2xl bg-forest-800 text-white font-bold text-xs hover:bg-forest-900 active:scale-95 transition-all shadow-sm cursor-pointer"
-              >
-                <Camera className="w-4 h-4 text-amber-300" />
-                <span>{t.takePhoto}</span>
-              </button>
-
-              <button
-                type="button"
-                onClick={() => fileInputRef.current?.click()}
-                className="flex items-center justify-center gap-2 py-2.5 px-3 rounded-2xl bg-white border-2 border-forest-700 text-forest-900 font-bold text-xs hover:bg-forest-50 active:scale-95 transition-all shadow-sm cursor-pointer"
-              >
-                <ImageIcon className="w-4 h-4 text-forest-700" />
-                <span>{t.uploadImage}</span>
-              </button>
-            </div>
+        {/* 3. Step 3: Affected Body Area */}
+        <section aria-label="Affected Body Area" className="w-full max-w-full h-auto min-h-0 box-border shrink-1">
+          <label className="block text-[11px] font-bold uppercase tracking-wider text-forest-900/80 mb-1.5 font-display">
+            {t.stepBodyAreaSelection || '3. Affected Body Area'}
+          </label>
+          <div className="grid grid-cols-2 xs:grid-cols-3 gap-2 w-full min-w-0 h-auto">
+            {bodyAreas.map((b) => {
+              const isSelected = selectedBodyArea === b.key;
+              return (
+                <button
+                  key={b.key}
+                  type="button"
+                  onClick={() => setSelectedBodyArea(b.key)}
+                  className={`flex items-center gap-2 p-2.5 rounded-2xl border text-left btn-tactile-subtle cursor-pointer min-w-0 h-auto w-full box-border ${
+                    isSelected
+                      ? 'bg-gradient-to-r from-forest-800 to-forest-700 text-white border-forest-600/50 shadow-md ring-2 ring-forest-400/40 font-bold'
+                      : 'glass-card text-stone-700 border-white/80 hover:bg-white/90 shadow-xs'
+                  }`}
+                >
+                  <span className="text-lg shrink-0">{b.icon}</span>
+                  <span className="text-xs font-semibold leading-tight break-words flex-1 min-w-0">{b.label}</span>
+                </button>
+              );
+            })}
           </div>
-        ) : (
-          <div className="relative rounded-3xl overflow-hidden border-2 border-forest-600 shadow-card bg-stone-900">
-            <img
-              src={selectedImage}
-              alt="Animal Symptom Preview"
-              className="w-full h-56 object-cover object-center"
-              onError={(e) => {
-                const target = e.currentTarget;
-                const sample = currentCrop?.sampleImages?.find((s) => s.url === selectedImage || s.fallbackUrl === selectedImage);
-                if (sample?.fallbackUrl && target.src !== sample.fallbackUrl) {
-                  target.src = sample.fallbackUrl;
-                }
-              }}
-            />
+        </section>
 
-            <div className="absolute top-3 left-3 right-3 flex items-center justify-between">
-              <span className="px-3 py-1 rounded-full bg-stone-900/80 backdrop-blur-md text-white text-xs font-bold flex items-center gap-1.5 border border-white/20">
-                <Check className="w-3.5 h-3.5 text-emerald-400" />
-                <span>{isSample ? t.fieldSample : t.photoReady}</span>
-              </span>
+        {/* 4. Step 4: Photo Upload / Preview Area */}
+        <section aria-label="Photo Upload" className="w-full max-w-full h-auto min-h-0 box-border shrink-1">
+          <label className="block text-[11px] font-bold uppercase tracking-wider text-forest-900/80 mb-1.5 font-display">
+            {t.stepPhotoUpload || '4. Symptom Photograph'}
+          </label>
 
-              <div className="flex items-center gap-1.5">
+          {!selectedImage ? (
+            <div className="glass-card rounded-3xl border-2 border-dashed border-forest-500/40 p-5 text-center shadow-glass hover:border-forest-600/60 transition-all bg-white/70 w-full max-w-full box-border h-auto">
+              <div className="w-14 h-14 rounded-2xl bg-forest-100/90 text-forest-800 flex items-center justify-center mx-auto mb-2 text-2xl shadow-inner border border-forest-200/50">
+                📸
+              </div>
+              <h4 className="text-sm font-extrabold text-forest-950 mb-1">{t.dragDropText}</h4>
+              <p className="text-xs text-stone-500 mb-4 max-w-xs mx-auto leading-relaxed">{t.guideVisible}</p>
+
+              <div className="grid grid-cols-2 gap-2.5 max-w-xs mx-auto">
+                <button
+                  type="button"
+                  onClick={() => cameraInputRef.current?.click()}
+                  className="flex items-center justify-center gap-2 py-2.5 px-3 rounded-2xl bg-gradient-to-r from-forest-800 to-forest-700 text-white font-bold text-xs hover:from-forest-900 hover:to-forest-800 btn-tactile shadow-md cursor-pointer border border-forest-600/40"
+                >
+                  <Camera className="w-4 h-4 text-gold-300" />
+                  <span>{t.takePhoto}</span>
+                </button>
+
                 <button
                   type="button"
                   onClick={() => fileInputRef.current?.click()}
-                  className="p-2 rounded-full bg-stone-900/80 backdrop-blur-md text-white hover:bg-stone-800 text-xs transition-colors border border-white/20 cursor-pointer"
-                  title={t.replacePhoto}
+                  className="flex items-center justify-center gap-2 py-2.5 px-3 rounded-2xl bg-white/90 border border-forest-600/40 text-forest-900 font-bold text-xs hover:bg-forest-50/80 btn-tactile-subtle shadow-xs cursor-pointer"
                 >
-                  <RefreshCw className="w-4 h-4" />
-                </button>
-                <button
-                  type="button"
-                  onClick={handleRemoveImage}
-                  className="p-2 rounded-full bg-rose-600/90 text-white hover:bg-rose-700 text-xs transition-colors border border-white/20 cursor-pointer"
-                  title={t.removePhoto}
-                >
-                  <Trash2 className="w-4 h-4" />
+                  <ImageIcon className="w-4 h-4 text-forest-700" />
+                  <span>{t.uploadImage}</span>
                 </button>
               </div>
             </div>
+          ) : (
+            <div className="relative rounded-3xl overflow-hidden border border-forest-600/40 shadow-glass-xl bg-stone-950 w-full max-w-full box-border">
+              <img
+                src={selectedImage}
+                alt="Animal Symptom Preview"
+                className="w-full h-56 object-cover object-center"
+                onError={(e) => {
+                  const target = e.currentTarget;
+                  const sample = currentCrop?.sampleImages?.find((s) => s.url === selectedImage || s.fallbackUrl === selectedImage);
+                  if (sample?.fallbackUrl && target.src !== sample.fallbackUrl) {
+                    target.src = sample.fallbackUrl;
+                  }
+                }}
+              />
 
-            <div className="absolute bottom-0 inset-x-0 bg-gradient-to-t from-stone-950 via-stone-950/70 to-transparent p-3 pt-6 text-white text-xs">
-              <span className="font-semibold text-amber-300">
-                {language === 'mr' ? currentCrop.nameMr : language === 'hi' ? currentCrop.nameHi || currentCrop.name : currentCrop.name}
-              </span>{' '}
-              • {t.readyForAnalysis}
+              <div className="absolute top-3 left-3 right-3 flex items-center justify-between">
+                <span className="px-3 py-1 rounded-full bg-forest-950/80 backdrop-blur-md text-white text-xs font-bold flex items-center gap-1.5 border border-white/20 shadow-sm">
+                  <Check className="w-3.5 h-3.5 text-emerald-400" />
+                  <span>{isSample ? t.fieldSample : t.photoReady}</span>
+                </span>
+
+                <div className="flex items-center gap-1.5">
+                  <button
+                    type="button"
+                    onClick={() => fileInputRef.current?.click()}
+                    className="p-2 rounded-full bg-forest-950/80 backdrop-blur-md text-white hover:bg-forest-900 text-xs transition-colors border border-white/20 cursor-pointer shadow-sm"
+                    title={t.replacePhoto}
+                  >
+                    <RefreshCw className="w-4 h-4" />
+                  </button>
+                  <button
+                    type="button"
+                    onClick={handleRemoveImage}
+                    className="p-2 rounded-full bg-rose-600/90 text-white hover:bg-rose-700 text-xs transition-colors border border-white/20 cursor-pointer shadow-sm"
+                    title={t.removePhoto}
+                  >
+                    <Trash2 className="w-4 h-4" />
+                  </button>
+                </div>
+              </div>
+
+              <div className="absolute bottom-0 inset-x-0 bg-gradient-to-t from-stone-950 via-stone-950/70 to-transparent p-3 pt-6 text-white text-xs">
+                <span className="font-semibold text-gold-300">
+                  {language === 'mr' ? currentCrop.nameMr : language === 'hi' ? currentCrop.nameHi || currentCrop.name : currentCrop.name}
+                </span>{' '}
+                • {t.readyForAnalysis}
+              </div>
             </div>
+          )}
+        </section>
+
+        {/* 5. Verified Test Samples Section */}
+        <section aria-label="Sample Cases" className="w-full max-w-full h-auto min-h-0 box-border shrink-1">
+          <div className="flex items-center justify-between mb-2">
+            <span className="text-xs font-bold text-forest-950">{t.orUseSample}</span>
+            <span className="text-[11px] text-forest-700 font-semibold flex items-center gap-1 bg-forest-100/70 px-2 py-0.5 rounded-full">
+              <Sparkles className="w-3 h-3 text-gold-500" />
+              {t.oneClickTest}
+            </span>
+          </div>
+
+          <div className="grid grid-cols-1 xs:grid-cols-2 gap-2 w-full min-w-0 h-auto">
+            {currentCrop.sampleImages.map((sample) => {
+              const isPicked = selectedImage === sample.url || (Boolean(sample.fallbackUrl) && selectedImage === sample.fallbackUrl);
+              const title =
+                language === 'mr'
+                  ? sample.titleMr
+                  : language === 'hi'
+                  ? sample.titleHi || sample.title
+                  : sample.title;
+
+              return (
+                <button
+                  key={sample.id}
+                  type="button"
+                  onClick={() => handleSelectSample(sample.url, sample.bodyArea, sample.condition)}
+                  className={`flex items-center gap-2.5 p-2 rounded-2xl border text-left btn-tactile-subtle cursor-pointer min-w-0 h-auto w-full box-border ${
+                    isPicked
+                      ? 'bg-forest-100/90 border-forest-600/50 ring-2 ring-forest-400/40 shadow-sm'
+                      : 'glass-card border-white/80 hover:bg-white/90 shadow-xs'
+                  }`}
+                >
+                  <img
+                    src={sample.url}
+                    alt={title}
+                    className="w-10 h-10 rounded-xl object-cover shrink-0 border border-white/60 shadow-xs"
+                    onError={(e) => {
+                      const target = e.currentTarget;
+                      if (sample.fallbackUrl && target.src !== sample.fallbackUrl) {
+                        target.src = sample.fallbackUrl;
+                      }
+                    }}
+                  />
+                  <div className="min-w-0 flex-1">
+                    <div className="text-[11px] font-extrabold text-forest-950 truncate leading-tight">
+                      {sample.condition}
+                    </div>
+                    <div className="text-[10px] text-stone-500 truncate mt-0.5">
+                      {sample.isHealthy
+                        ? language === 'mr' ? '🟢 निरोगी' : language === 'hi' ? '🟢 स्वस्थ' : '🟢 Healthy'
+                        : language === 'mr' ? '🔴 लक्षणे' : language === 'hi' ? '🔴 लक्षण' : '🔴 Diseased'}
+                    </div>
+                  </div>
+                </button>
+              );
+            })}
+          </div>
+        </section>
+
+        {/* 6. Symptoms & Observations Main Card */}
+        <section aria-label="Symptoms and Clinical Observations" className="w-full max-w-full h-auto min-h-0 box-border shrink-1 glass-card rounded-3xl border-white/80 p-4 sm:p-5 shadow-glass bg-white/85">
+          {/* 6A: Observed Symptoms Checklist */}
+          <div className="w-full min-w-0 mb-4">
+            <label className="block text-[11px] font-bold uppercase tracking-wider text-forest-950 mb-2.5 font-display">
+              {t.stepSymptomsDetail || '5. Observed Symptoms'}
+            </label>
+
+            {/* Natural Wrapping Flex Chip Layout */}
+            <div className="flex flex-wrap items-start gap-2 w-full h-auto min-h-0 box-border">
+              {symptomList.map((sym) => {
+                const isChecked = selectedSymptoms.includes(sym);
+                return (
+                  <button
+                    key={sym}
+                    type="button"
+                    onClick={() => toggleSymptom(sym)}
+                    className={`inline-flex items-center justify-start gap-2 px-3.5 py-2.5 rounded-2xl font-semibold text-xs min-h-[40px] h-auto w-auto max-w-full box-border whitespace-normal text-left cursor-pointer btn-tactile-subtle ${
+                      isChecked
+                        ? 'bg-gradient-to-r from-forest-800 to-forest-700 text-white font-bold shadow-xs'
+                        : 'bg-white/85 border border-stone-200/90 text-stone-700 hover:bg-forest-50/50'
+                    }`}
+                  >
+                    {isChecked ? <CheckSquare className="w-3.5 h-3.5 text-gold-300 shrink-0" /> : <Square className="w-3.5 h-3.5 text-stone-400 shrink-0" />}
+                    <span className="whitespace-normal break-words max-w-full flex-1 min-w-0 leading-snug">{sym}</span>
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+
+          {/* 6B: Clinical History Form Fields */}
+          <div className="w-full min-w-0 pt-3.5 border-t border-forest-100/70">
+            <label className="block text-[11px] font-bold uppercase tracking-wider text-forest-950 mb-3 font-display">
+              {language === 'mr' ? 'तपासणी तपशील व नोंदी' : language === 'hi' ? 'निरीक्षण व स्थिति विवरण' : 'Clinical History & Details'}
+            </label>
+
+            {/* Duration & Appetite Inputs */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs mb-3 w-full min-w-0">
+              <div className="min-w-0 w-full">
+                <label className="block text-[10px] font-bold text-forest-900/70 mb-1">{t.durationLabel}</label>
+                <select
+                  value={duration}
+                  onChange={(e) => setDuration(e.target.value)}
+                  className="w-full max-w-full box-border min-w-0 px-3 py-2.5 rounded-2xl bg-white/90 border border-stone-200/90 text-xs font-semibold text-stone-900 focus:outline-none focus:ring-2 focus:ring-forest-600 focus:border-forest-600 shadow-xs"
+                >
+                  <option value="Less than 24 hours">{t.duration1Day}</option>
+                  <option value="2 to 3 days">{t.duration23Days}</option>
+                  <option value="4 to 7 days">{t.duration47Days}</option>
+                  <option value="More than a week">{t.durationMoreWeek}</option>
+                </select>
+              </div>
+
+              <div className="min-w-0 w-full">
+                <label className="block text-[10px] font-bold text-forest-900/70 mb-1">{t.appetiteLabel}</label>
+                <select
+                  value={appetiteStatus}
+                  onChange={(e) => setAppetiteStatus(e.target.value)}
+                  className="w-full max-w-full box-border min-w-0 px-3 py-2.5 rounded-2xl bg-white/90 border border-stone-200/90 text-xs font-semibold text-stone-900 focus:outline-none focus:ring-2 focus:ring-forest-600 focus:border-forest-600 shadow-xs"
+                >
+                  <option value="Normal feeding">{t.appetiteNormal}</option>
+                  <option value="Reduced appetite (~50%)">{t.appetiteReduced}</option>
+                  <option value="Completely off-feed">{t.appetiteNone}</option>
+                </select>
+              </div>
+            </div>
+
+            {/* Milk Yield Impact */}
+            <div className="mb-3 min-w-0 w-full">
+              <label className="block text-[10px] font-bold text-forest-900/70 mb-1">{t.milkYieldLabel}</label>
+              <select
+                value={milkYieldImpact}
+                onChange={(e) => setMilkYieldImpact(e.target.value)}
+                className="w-full max-w-full box-border min-w-0 px-3 py-2.5 rounded-2xl bg-white/90 border border-stone-200/90 text-xs font-semibold text-stone-900 focus:outline-none focus:ring-2 focus:ring-forest-600 focus:border-forest-600 shadow-xs"
+              >
+                <option value="Normal yield">{t.milkNormal}</option>
+                <option value="Reduced (20-40% drop)">{t.milkReduced}</option>
+                <option value="Severe drop (>50% or discolored)">{t.milkDrastic}</option>
+                <option value="Not applicable">{t.milkNA}</option>
+              </select>
+            </div>
+
+            {/* Other Observations Notes */}
+            <div className="min-w-0 w-full">
+              <label className="block text-[10px] font-bold text-forest-900/70 mb-1">{t.otherObservationsLabel}</label>
+              <input
+                type="text"
+                placeholder={t.otherObservationsPlaceholder}
+                value={otherNotes}
+                onChange={(e) => setOtherNotes(e.target.value)}
+                className="w-full max-w-full box-border min-w-0 px-3.5 py-2.5 rounded-2xl bg-white/90 border border-stone-200/90 text-xs text-stone-900 placeholder:text-stone-400 focus:outline-none focus:ring-2 focus:ring-forest-600 focus:border-forest-600 shadow-xs"
+              />
+            </div>
+          </div>
+        </section>
+
+        {/* 7. Photo Guidelines Section */}
+        <section aria-label="Photo Guidelines" className="w-full max-w-full h-auto min-h-0 box-border shrink-1">
+          <PhotoGuidance />
+        </section>
+
+        {/* 8. Upload / Validation Error Banner (if any) */}
+        {uploadError && (
+          <section aria-label="Error Notice" className="w-full max-w-full h-auto min-h-0 box-border shrink-1">
+            <div className="p-3.5 rounded-2xl bg-rose-50 border-2 border-rose-300 text-rose-900 text-xs font-semibold flex items-start gap-2.5 animate-fadeIn w-full box-border">
+              <span className="text-base shrink-0 mt-0.5">⚠️</span>
+              <div className="leading-snug min-w-0 flex-1">
+                <div className="font-bold text-rose-950 mb-0.5">
+                  {uploadError.toLowerCase().includes('upload a photo') ||
+                  uploadError.toLowerCase().includes('फोटो') ||
+                  uploadError.toLowerCase().includes('photo')
+                    ? language === 'mr'
+                      ? 'फोटो आवश्यक आहे'
+                      : language === 'hi'
+                      ? 'फोटो आवश्यक है'
+                      : 'Image Required'
+                    : language === 'mr'
+                    ? 'सूचना'
+                    : language === 'hi'
+                    ? 'सूचना'
+                    : 'Notice'}
+                </div>
+                <div className="text-rose-800 break-words">{uploadError}</div>
+              </div>
+            </div>
+          </section>
+        )}
+
+        {/* Helper text if no photo */}
+        {!hasImage && (
+          <div className="w-full max-w-full h-auto min-h-0 box-border">
+            <p className="text-[11px] text-amber-800 bg-amber-50 border border-amber-200 rounded-xl px-3 py-2 text-center font-medium animate-fadeIn w-full box-border">
+              📸 {t.pleaseUploadImage || 'Please upload a photo of the affected animal to continue'}
+            </p>
           </div>
         )}
-      </div>
 
-      {/* Verified Test Samples */}
-      <div className="mb-4">
-        <div className="flex items-center justify-between mb-2">
-          <span className="text-xs font-bold text-stone-600">{t.orUseSample}</span>
-          <span className="text-[11px] text-forest-700 font-semibold flex items-center gap-0.5">
-            <Sparkles className="w-3 h-3 text-amber-500" />
-            {t.oneClickTest}
-          </span>
-        </div>
-
-        <div className="grid grid-cols-2 gap-2">
-          {currentCrop.sampleImages.map((sample) => {
-            const isPicked = selectedImage === sample.url || (Boolean(sample.fallbackUrl) && selectedImage === sample.fallbackUrl);
-            const title =
-              language === 'mr'
-                ? sample.titleMr
-                : language === 'hi'
-                ? sample.titleHi || sample.title
-                : sample.title;
-
-            return (
-              <button
-                key={sample.id}
-                type="button"
-                onClick={() => handleSelectSample(sample.url, sample.bodyArea, sample.condition)}
-                className={`flex items-center gap-2 p-2 rounded-2xl border text-left transition-all active:scale-95 cursor-pointer ${
-                  isPicked
-                    ? 'bg-forest-100 border-forest-600 ring-2 ring-forest-400'
-                    : 'bg-white border-stone-200 hover:bg-stone-50'
-                }`}
-              >
-                <img
-                  src={sample.url}
-                  alt={title}
-                  className="w-10 h-10 rounded-xl object-cover shrink-0"
-                  onError={(e) => {
-                    const target = e.currentTarget;
-                    if (sample.fallbackUrl && target.src !== sample.fallbackUrl) {
-                      target.src = sample.fallbackUrl;
-                    }
-                  }}
-                />
-                <div className="min-w-0">
-                  <div className="text-[11px] font-extrabold text-stone-900 truncate leading-tight">
-                    {sample.condition}
-                  </div>
-                  <div className="text-[10px] text-stone-500 truncate mt-0.5">
-                    {sample.isHealthy
-                      ? language === 'mr' ? '🟢 निरोगी' : language === 'hi' ? '🟢 स्वस्थ' : '🟢 Healthy'
-                      : language === 'mr' ? '🔴 लक्षणे' : language === 'hi' ? '🔴 लक्षण' : '🔴 Diseased'}
-                  </div>
-                </div>
-              </button>
-            );
-          })}
-        </div>
-      </div>
-
-      {/* 5: Step 5: Symptoms Checklist & History */}
-      <div className="mb-4 bg-white rounded-2xl border border-stone-200 p-4 shadow-sm">
-        <label className="block text-[11px] font-bold uppercase tracking-wider text-stone-700 mb-2 font-display">
-          {t.stepSymptomsDetail || '5. Observed Symptoms & History'}
-        </label>
-
-        {/* Symptoms checklist */}
-        <div className="flex flex-wrap gap-1.5 mb-3">
-          {symptomList.map((sym) => {
-            const isChecked = selectedSymptoms.includes(sym);
-            return (
-              <button
-                key={sym}
-                type="button"
-                onClick={() => toggleSymptom(sym)}
-                className={`text-[11px] px-2.5 py-1.5 rounded-xl font-semibold flex items-center gap-1.5 transition-all cursor-pointer ${
-                  isChecked
-                    ? 'bg-amber-400 text-forest-950 font-bold shadow-xs'
-                    : 'bg-stone-100 text-stone-700 hover:bg-stone-200'
-                }`}
-              >
-                {isChecked ? <CheckSquare className="w-3.5 h-3.5 text-forest-900" /> : <Square className="w-3.5 h-3.5 text-stone-400" />}
-                <span>{sym}</span>
-              </button>
-            );
-          })}
-        </div>
-
-        {/* Duration & Appetite Grids */}
-        <div className="grid grid-cols-2 gap-2 text-xs mb-3">
-          <div>
-            <label className="block text-[10px] font-bold text-stone-500 mb-1">{t.durationLabel}</label>
-            <select
-              value={duration}
-              onChange={(e) => setDuration(e.target.value)}
-              className="w-full px-2 py-1.5 rounded-xl bg-stone-50 border border-stone-300 text-xs font-semibold text-stone-900 focus:outline-none focus:ring-2 focus:ring-forest-600"
-            >
-              <option value="Less than 24 hours">{t.duration1Day}</option>
-              <option value="2 to 3 days">{t.duration23Days}</option>
-              <option value="4 to 7 days">{t.duration47Days}</option>
-              <option value="More than a week">{t.durationMoreWeek}</option>
-            </select>
-          </div>
-
-          <div>
-            <label className="block text-[10px] font-bold text-stone-500 mb-1">{t.appetiteLabel}</label>
-            <select
-              value={appetiteStatus}
-              onChange={(e) => setAppetiteStatus(e.target.value)}
-              className="w-full px-2 py-1.5 rounded-xl bg-stone-50 border border-stone-300 text-xs font-semibold text-stone-900 focus:outline-none focus:ring-2 focus:ring-forest-600"
-            >
-              <option value="Normal feeding">{t.appetiteNormal}</option>
-              <option value="Reduced appetite (~50%)">{t.appetiteReduced}</option>
-              <option value="Completely off-feed">{t.appetiteNone}</option>
-            </select>
-          </div>
-        </div>
-
-        {/* Milk yield change */}
-        <div className="mb-2">
-          <label className="block text-[10px] font-bold text-stone-500 mb-1">{t.milkYieldLabel}</label>
-          <select
-            value={milkYieldImpact}
-            onChange={(e) => setMilkYieldImpact(e.target.value)}
-            className="w-full px-2 py-1.5 rounded-xl bg-stone-50 border border-stone-300 text-xs font-semibold text-stone-900 focus:outline-none focus:ring-2 focus:ring-forest-600"
+        {/* 9. Primary Submit CTA Section */}
+        <section aria-label="Submit Health Check" className="w-full max-w-full h-auto min-h-0 box-border shrink-1 mt-1 mb-2">
+          <button
+            type="button"
+            onClick={handleSubmit}
+            disabled={isAnalyzing}
+            className="w-full max-w-full h-auto min-h-[48px] py-4 px-6 rounded-2xl bg-gradient-to-r from-forest-800 via-forest-700 to-forest-800 hover:from-forest-900 hover:to-forest-800 text-white font-extrabold text-base shadow-float-glow flex items-center justify-center gap-2.5 font-display btn-tactile-hero cursor-pointer border border-forest-600/40"
           >
-            <option value="Normal yield">{t.milkNormal}</option>
-            <option value="Reduced (20-40% drop)">{t.milkReduced}</option>
-            <option value="Severe drop (>50% or discolored)">{t.milkDrastic}</option>
-            <option value="Not applicable">{t.milkNA}</option>
-          </select>
-        </div>
-
-        {/* Notes */}
-        <div>
-          <label className="block text-[10px] font-bold text-stone-500 mb-1">{t.otherObservationsLabel}</label>
-          <input
-            type="text"
-            placeholder={t.otherObservationsPlaceholder}
-            value={otherNotes}
-            onChange={(e) => setOtherNotes(e.target.value)}
-            className="w-full px-2.5 py-1.5 rounded-xl bg-stone-50 border border-stone-300 text-xs text-stone-900 focus:outline-none focus:ring-2 focus:ring-forest-600"
-          />
-        </div>
+            <span className="text-xl">🩺</span>
+            <span>{t.btnCheckCrop}</span>
+          </button>
+        </section>
       </div>
-
-      {/* Photo Guidance */}
-      <PhotoGuidance />
-
-      {/* Inline Upload / Validation Error Banner (Task #1 & #2 fix) */}
-      {uploadError && (
-        <div className="mb-3.5 p-3.5 rounded-2xl bg-rose-50 border-2 border-rose-300 text-rose-900 text-xs font-semibold flex items-start gap-2.5 animate-fadeIn">
-          <span className="text-base shrink-0 mt-0.5">⚠️</span>
-          <div className="leading-snug">
-            <div className="font-bold text-rose-950 mb-0.5">
-              {uploadError.toLowerCase().includes('upload a photo') ||
-              uploadError.toLowerCase().includes('फोटो') ||
-              uploadError.toLowerCase().includes('photo')
-                ? language === 'mr'
-                  ? 'फोटो आवश्यक आहे'
-                  : language === 'hi'
-                  ? 'फोटो आवश्यक है'
-                  : 'Image Required'
-                : language === 'mr'
-                ? 'सूचना'
-                : language === 'hi'
-                ? 'सूचना'
-                : 'Notice'}
-            </div>
-            <div className="text-rose-800">{uploadError}</div>
-          </div>
-        </div>
-      )}
-
-      {/* Inline helper if no image selected */}
-      {!hasImage && (
-        <p className="text-[11px] text-amber-800 bg-amber-50 border border-amber-200 rounded-xl px-3 py-2 text-center mb-2.5 font-medium animate-fadeIn">
-          📸 {t.pleaseUploadImage || 'Please upload a photo of the affected animal to continue'}
-        </p>
-      )}
-
-      {/* Primary Submit CTA (Task #2: blocks client-side with friendly message if no image) */}
-      <button
-        type="button"
-        onClick={handleSubmit}
-        disabled={isAnalyzing}
-        className={`w-full py-4 px-6 rounded-2xl font-extrabold text-base transition-all duration-200 shadow-elevated flex items-center justify-center gap-2 font-display ${
-          isAnalyzing
-            ? 'bg-stone-200 text-stone-400 border border-stone-300 cursor-not-allowed shadow-none'
-            : !hasImage
-            ? 'bg-forest-800/85 hover:bg-forest-800 active:scale-[0.98] text-white shadow-elevated cursor-pointer'
-            : 'bg-forest-800 hover:bg-forest-900 active:scale-[0.98] text-white shadow-elevated cursor-pointer'
-        }`}
-      >
-        <span className="text-lg">🩺</span>
-        <span>{t.btnCheckCrop}</span>
-      </button>
 
       {/* Processing Modal */}
       {isAnalyzing && <ProcessingModal />}
 
       {/* Invalid Crop Image Alert Modal */}
       {showInvalidModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-stone-900/60 backdrop-blur-sm animate-fadeIn">
-          <div className="bg-white rounded-3xl p-6 max-w-sm w-full shadow-elevated border-2 border-stone-200 text-center animate-scaleUp">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-stone-900/60 backdrop-blur-md modal-backdrop-anim">
+          <div className="glass-card bg-white/95 rounded-3xl p-6 max-w-sm w-full shadow-glass-xl border border-white/90 text-center modal-surface-anim">
             <div className="w-14 h-14 rounded-2xl bg-rose-100 text-rose-600 flex items-center justify-center mx-auto mb-4 border border-rose-200 shadow-inner">
               <span className="text-2xl">⚠️</span>
             </div>
@@ -494,13 +508,13 @@ export const ImageUploader: React.FC = () => {
             <button
               type="button"
               onClick={() => setShowInvalidModal(false)}
-              className="w-full py-3.5 px-5 rounded-2xl bg-forest-800 hover:bg-forest-900 active:scale-95 text-white font-extrabold text-sm transition-all shadow-md font-display cursor-pointer"
+              className="w-full py-3.5 px-5 rounded-2xl bg-forest-800 hover:bg-forest-900 btn-tactile text-white font-extrabold text-sm shadow-md font-display cursor-pointer"
             >
               {t.btnOk}
             </button>
           </div>
         </div>
       )}
-    </div>
+    </main>
   );
 };
