@@ -23,17 +23,7 @@ In rural India, livestock diseases like **Lumpy Skin Disease (LSD)** and **Foot-
 
 ---
 
-## 📸 Product Screenshots
-
-| 1. Livestock Owner Home | 2. Check Animal (AI Triage) | 3. Regional Surveillance Map |
-| :---: | :---: | :---: |
-| ![Owner Home](docs/owner-home.png) | ![Check Animal](docs/check-animal.png) | ![Surveillance Map](docs/surveillance-map.png) |
-
-| 4. Veterinary Officer Dashboard | 5. Outbreak Alerts & Containment |
-| :---: | :---: |
-| ![Veterinary Dashboard](docs/veterinary-dashboard.png) | ![Outbreak Alerts](docs/outbreak-alerts.png) |
-
----
+--
 
 ## 🔑 Demo Access (Prototype Testing)
 
