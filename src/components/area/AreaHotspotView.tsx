@@ -7,6 +7,7 @@ import { StatusBadge } from '../common/StatusBadge';
 import type { SeverityLevel, AreaReport } from '../../types';
 import { VoiceButton } from '../common/VoiceButton';
 import { hotspotService } from '../../services/hotspotService';
+import { AreaMapView } from './AreaMapView';
 import {
   getNearbyRegionsForLocation,
   generateRegionalHotspotDataset,
@@ -385,6 +386,7 @@ export const AreaHotspotView: React.FC = () => {
 
   const defaultLocId = nearbyRegions[0]?.id || 'niphad';
   const [selectedLocId, setSelectedLocId] = useState<string>(defaultLocId);
+  const [viewMode, setViewMode] = useState<'map' | 'radar'>('map');
   const [backendReport, setBackendReport] = useState<AreaReport | null>(null);
 
   // Fetch real anonymized hotspot data from backend diagnosis cases
@@ -597,22 +599,61 @@ export const AreaHotspotView: React.FC = () => {
         </div>
       </div>
 
-      {/* ANONYMOUS COMMUNITY CLUSTER RADAR - Heatmap Visualization */}
+      {/* ANONYMOUS COMMUNITY CLUSTER MAP / RADAR - Geospatial Visualization */}
       <div className="rounded-3xl bg-white border border-stone-200/90 p-4 shadow-soft mb-5 overflow-hidden">
-        <div className="flex items-center justify-between mb-3">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 mb-3">
           <div className="flex items-center gap-2">
             <Layers className="w-4 h-4 text-forest-700" />
             <h4 className="text-xs font-extrabold uppercase tracking-wider text-stone-900 font-display">
               {t.areaMapTitle}
             </h4>
+            <span className="text-[10px] font-black text-emerald-900 bg-emerald-100 border border-emerald-300 px-2 py-0.5 rounded-full">
+              {t.radius5km}
+            </span>
           </div>
-          <span className="text-[10px] font-black text-emerald-900 bg-emerald-100 border border-emerald-300 px-2.5 py-0.5 rounded-full">
-            {t.radius5km}
-          </span>
+
+          {/* Toggle between Leaflet Map and Animated Radar */}
+          <div className="flex items-center bg-stone-100 p-1 rounded-2xl border border-stone-200 self-start sm:self-auto">
+            <button
+              type="button"
+              onClick={() => setViewMode('map')}
+              className={`px-3 py-1 rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center gap-1 ${
+                viewMode === 'map'
+                  ? 'bg-forest-800 text-white shadow-sm'
+                  : 'text-stone-600 hover:text-stone-900'
+              }`}
+            >
+              <span>🗺️</span>
+              <span>Interactive Map</span>
+            </button>
+            <button
+              type="button"
+              onClick={() => setViewMode('radar')}
+              className={`px-3 py-1 rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center gap-1 ${
+                viewMode === 'radar'
+                  ? 'bg-forest-800 text-white shadow-sm'
+                  : 'text-stone-600 hover:text-stone-900'
+              }`}
+            >
+              <span>📡</span>
+              <span>Radar Scan</span>
+            </button>
+          </div>
         </div>
 
-        {/* Heatmap Spatial Radar Canvas */}
-        <div className="relative w-full h-64 sm:h-72 bg-[#041d11] rounded-2xl overflow-hidden border border-forest-800 shadow-inner flex items-center justify-center p-4">
+        {/* View Mode 1: Leaflet Interactive Geospatial Map */}
+        {viewMode === 'map' ? (
+          <div className="animate-fadeIn">
+            <AreaMapView
+              centerLat={selectedFarm?.latitude || user?.latitude || 20.0825}
+              centerLng={selectedFarm?.longitude || user?.longitude || 74.1112}
+              height="440px"
+            />
+          </div>
+        ) : (
+          /* View Mode 2: Heatmap Spatial Radar Canvas */
+          <div className="animate-fadeIn">
+            <div className="relative w-full h-64 sm:h-72 bg-[#041d11] rounded-2xl overflow-hidden border border-forest-800 shadow-inner flex items-center justify-center p-4">
           {/* 1. Radar Grid & Concentric Distance Rings (1.5km, 3.0km, 5.0km) */}
           <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
             {/* 5.0 km Outer Ring */}
@@ -755,6 +796,8 @@ export const AreaHotspotView: React.FC = () => {
                 </span>
               </div>
             </div>
+          </div>
+        )}
           </div>
         )}
       </div>

@@ -18,6 +18,7 @@ import { useLanguage } from '../../context/LanguageContext';
 import { apiClient } from '../../services/apiClient';
 import type { VeterinaryCaseRecord, OutbreakAlert, Language } from '../../types';
 import { VetCaseDetailModal } from './VetCaseDetailModal';
+import { AreaMapView } from '../area/AreaMapView';
 
 export const VetOfficialDashboard: React.FC = () => {
   const { user, logout } = useAuth();
@@ -26,6 +27,7 @@ export const VetOfficialDashboard: React.FC = () => {
   const [cases, setCases] = useState<VeterinaryCaseRecord[]>([]);
   const [outbreakAlerts, setOutbreakAlerts] = useState<OutbreakAlert[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [showMapSection, setShowMapSection] = useState(true);
   const [selectedStatusTab, setSelectedStatusTab] = useState<string>('all');
   const [selectedSpecies, setSelectedSpecies] = useState<string>('all');
   const [searchQuery, setSearchQuery] = useState('');
@@ -423,6 +425,47 @@ export const VetOfficialDashboard: React.FC = () => {
             <div className="text-2xl font-black text-amber-200 mt-1">{mortalityCount}</div>
             <div className="text-[10px] text-amber-400/80 mt-0.5 font-medium">Death Reports</div>
           </div>
+        </div>
+
+        {/* REGIONAL GEOSPATIAL MAP & OUTBREAK CONTAINMENT ZONES (LEAFLET.JS) */}
+        <div className="bg-slate-900 rounded-3xl border border-slate-800 p-5 shadow-2xl space-y-3">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+            <div>
+              <div className="flex items-center gap-2">
+                <span className="text-base">🗺️</span>
+                <h3 className="text-sm font-black uppercase tracking-wider text-white">
+                  Regional Geospatial Surveillance Map
+                </h3>
+                <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-indigo-950 text-indigo-300 border border-indigo-800">
+                  OpenStreetMap • 5km Containment Perimeter
+                </span>
+              </div>
+              <p className="text-xs text-slate-400 mt-0.5">
+                Pin color indicates live status (🟢 Resolved, 🟡 Under Review, 🟣 Sample Taken, 🔴 Escalated/Mortality). Click any marker to view case file.
+              </p>
+            </div>
+            <button
+              type="button"
+              onClick={() => setShowMapSection(!showMapSection)}
+              className="text-xs font-bold text-slate-300 hover:text-white px-3 py-1.5 rounded-xl bg-slate-800 border border-slate-700 transition-all self-start sm:self-auto cursor-pointer"
+            >
+              {showMapSection ? 'Collapse Map ▲' : 'Expand Map ▼'}
+            </button>
+          </div>
+
+          {showMapSection && (
+            <div className="pt-1 animate-fadeIn">
+              <AreaMapView
+                cases={cases}
+                outbreaks={outbreakAlerts}
+                centerLat={20.0825}
+                centerLng={74.1112}
+                height="460px"
+                onSelectCase={(c) => setActiveCaseForDetail(c)}
+                isVetView={true}
+              />
+            </div>
+          )}
         </div>
 
         {/* Filter & Search Bar */}
