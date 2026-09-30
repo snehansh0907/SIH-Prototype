@@ -1,5 +1,5 @@
 /**
- * Centralized API Client for Krishi Sarthak
+ * Centralized API Client for Pashu Sarthak
  * Configurable via environment variable NEXT_PUBLIC_API_URL or VITE_API_URL
  */
 
@@ -86,7 +86,7 @@ export async function apiClient<T>(endpoint: string, options: RequestOptions = {
       /abort|timed out|timeout|signal is aborted/i.test(error.message || '');
 
     if (isAbort) {
-      console.error(`[Krishi Sarthak API] Request to ${endpoint} timed out after ${timeout}ms. Original error:`, error);
+      console.error(`[Pashu Sarthak API] Request to ${endpoint} timed out after ${timeout}ms. Original error:`, error);
       const friendlyTimeoutErr: any = new Error(
         'The diagnosis server took too long to respond. Please check your connection and try again.'
       );
@@ -125,7 +125,7 @@ export async function apiClient<T>(endpoint: string, options: RequestOptions = {
         /NetworkError|Failed to fetch|network|econnrefused/i.test(error.message || ''));
 
     if (isNetworkError) {
-      console.error(`[Krishi Sarthak API] Network connection failed for ${endpoint}. Original error:`, error);
+      console.error(`[Pashu Sarthak API] Network connection failed for ${endpoint}. Original error:`, error);
       const friendlyNetErr: any = new Error(
         'Unable to reach the diagnosis server. Please ensure the backend is running.'
       );
@@ -141,9 +141,9 @@ export async function apiClient<T>(endpoint: string, options: RequestOptions = {
     }
 
     if (!endpoint.includes('/auth')) {
-      console.warn(`[Krishi Sarthak API] Request to ${endpoint} failed:`, error.message);
+      console.warn(`[Pashu Sarthak API] Request to ${endpoint} failed:`, error.message);
     } else {
-      console.warn(`[Krishi Sarthak API] Authentication request to ${endpoint} failed:`, error.message);
+      console.warn(`[Pashu Sarthak API] Authentication request to ${endpoint} failed:`, error.message);
     }
     throw error;
   }

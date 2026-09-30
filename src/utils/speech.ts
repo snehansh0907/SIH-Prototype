@@ -1,5 +1,5 @@
 /**
- * Voice synthesis and audio playback helper for Krishi Sarthak
+ * Voice synthesis and audio playback helper for Pashu Sarthak
  * Provides authentic, natural audio narration in Hindi (hi), Marathi (mr), and English (en).
  */
 

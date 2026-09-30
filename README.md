@@ -458,7 +458,7 @@ The AI module can then be integrated with the backend diagnosis workflow.
 For production:
 
 ```env
-VITE_API_URL=https://krishi-sarthak-api.onrender.com/api
+VITE_API_URL=https://pashu-sarthak-api.onrender.com/api
 ```
 
 ---

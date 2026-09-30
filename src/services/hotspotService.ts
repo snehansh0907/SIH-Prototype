@@ -33,7 +33,7 @@ export const hotspotService = {
     const currentDistrict = filters?.district || 'Nashik';
     const currentDistrictMr = filters?.districtMr || 'नाशिक';
     const currentTaluka = filters?.taluka || 'Local Area';
-    const currentCrop = filters?.crop || 'Tomato';
+    const currentCrop = filters?.crop || 'Cattle';
     const farmLat = filters?.latitude ?? 20.085;
     const farmLng = filters?.longitude ?? 74.11;
 
@@ -103,8 +103,8 @@ export const hotspotService = {
         activeCasesCount: activeCount,
         lastUpdated: '15 mins ago',
         clusters,
-        communityAdvisory: `Regional Advisory: Disease surveillance alert active for ${currentCrop} growers across ${currentTaluka} (${currentDistrict}). ${activeCount} reported cases identified within 10 km. Inspect lower canopy and ensure drainage.`,
-        communityAdvisoryMr: `प्रादेशिक सल्ला: ${currentTaluka} (${currentDistrictMr}) परिसरातील ${currentCrop} उत्पादक शेतकऱ्यांसाठी रोगाचा इशारा. १० किमी परिसरात ${activeCount} प्रकरणे नोंदवली गेली आहेत. पिकाची तपासणी करा व पाण्याचा निचरा ठेवा.`,
+        communityAdvisory: `Regional Advisory: Disease surveillance alert active for ${currentCrop} owners across ${currentTaluka} (${currentDistrict}). ${activeCount} reported cases identified within 10 km. Maintain shed hygiene and isolate symptomatic livestock.`,
+        communityAdvisoryMr: `प्रादेशिक सल्ला: ${currentTaluka} (${currentDistrictMr}) परिसरातील ${currentCrop} पशुपालक शेतकऱ्यांसाठी रोगाचा इशारा. १० किमी परिसरात ${activeCount} प्रकरणे नोंदवली गेली आहेत. गोठ्यात स्वच्छता ठेवा व बाधित जनावरांना वेगळे बांधा.`,
       };
     } catch (err) {
       console.warn('[hotspotService] Real /api/hotspots call failed, using dynamic local area report:', err);

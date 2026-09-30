@@ -16,13 +16,13 @@ const LANGUAGE_CYCLE: Language[] = ['en', 'hi', 'mr'];
 
 export const LanguageProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [language, setLanguageState] = useState<Language>(() => {
-    const saved = localStorage.getItem('krishi_sarthak_lang') as Language;
+    const saved = (localStorage.getItem('pashu_sarthak_lang') || localStorage.getItem('krishi_sarthak_lang')) as Language;
     return LANGUAGE_CYCLE.includes(saved) ? saved : 'en';
   });
 
   const setLanguage = (lang: Language) => {
     setLanguageState(lang);
-    localStorage.setItem('krishi_sarthak_lang', lang);
+    localStorage.setItem('pashu_sarthak_lang', lang);
   };
 
   const toggleLanguage = () => {

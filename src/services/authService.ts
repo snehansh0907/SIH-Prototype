@@ -2,10 +2,16 @@ import type { AuthRole, FarmerUser } from '../types';
 import { apiClient } from './apiClient';
 import { DISTRICT_COORDINATES } from './locationRegionService';
 
-export const STORAGE_KEY_ROLE = 'krishi_sarthak_auth_role';
-export const STORAGE_KEY_USER = 'krishi_sarthak_current_user';
-export const STORAGE_KEY_LEGACY_USER = 'krishi_sarthak_auth_user';
-export const STORAGE_KEY_REGISTERED = 'krishi_sarthak_registered_users';
+export const STORAGE_KEY_ROLE = 'pashu_sarthak_auth_role';
+export const STORAGE_KEY_USER = 'pashu_sarthak_current_user';
+export const STORAGE_KEY_LEGACY_USER = 'pashu_sarthak_auth_user';
+export const STORAGE_KEY_REGISTERED = 'pashu_sarthak_registered_users';
+
+// Fallback legacy storage keys for seamless user migration
+export const LEGACY_STORAGE_KEY_ROLE = 'krishi_sarthak_auth_role';
+export const LEGACY_STORAGE_KEY_USER = 'krishi_sarthak_current_user';
+export const LEGACY_STORAGE_KEY_LEGACY_USER = 'krishi_sarthak_auth_user';
+export const LEGACY_STORAGE_KEY_REGISTERED = 'krishi_sarthak_registered_users';
 
 export const SUPABASE_URL =
   (import.meta as any).env?.VITE_SUPABASE_URL || 'https://kgsrhvwvgasbwacdcsis.supabase.co';
@@ -277,7 +283,7 @@ export const MOCK_DEMO_USER: FarmerUser = {
   name: 'Demo Explorer (Guest)',
   nameHi: 'डेमो किसान (अतिथि)',
   nameMr: 'डेमो वापरकर्ता (अतिथी)',
-  emailOrPhone: 'demo@krishisarthak.in',
+  emailOrPhone: 'demo@pashusarthak.in',
   latitude: 20.145,
   longitude: 74.228,
   userType: 'demo',
@@ -326,7 +332,7 @@ export function normalizeStoredUser(item: any): FarmerUser | null {
   const base = item.user && typeof item.user === 'object' ? item.user : item;
   const pw = (item.password || base.password || base.password_hash || base.passwordHash || base.pw || '').trim();
   const phone = base.phone || base.phone_number || base.phoneNumber || base.mobile || base.mobile_number || '';
-  const farmerId = base.farmerId || base.farmer_id || (base.id ? `KSF-${String(base.id).slice(0, 6).toUpperCase()}` : '');
+  const farmerId = base.farmerId || base.farmer_id || (base.id ? `PSF-${String(base.id).slice(0, 6).toUpperCase()}` : '');
   const id = base.id || base.user_id || base.userId || generateUUID();
   const farmId = base.farmId || base.farm_id || `farm-${id}`;
   const farmName = base.farmName || base.farm_name || `${(base.name || 'Farmer').split(' ')[0]}'s Farm`;
@@ -369,7 +375,9 @@ export function normalizeStoredUser(item: any): FarmerUser | null {
 
 export function getLocalRegisteredUsers(): FarmerUser[] {
   try {
-    const raw = typeof localStorage !== 'undefined' ? localStorage.getItem(STORAGE_KEY_REGISTERED) : null;
+    const raw = typeof localStorage !== 'undefined'
+      ? (localStorage.getItem(STORAGE_KEY_REGISTERED) || localStorage.getItem(LEGACY_STORAGE_KEY_REGISTERED))
+      : null;
     if (!raw) return [];
     const list: any[] = JSON.parse(raw);
     if (!Array.isArray(list)) return [];
@@ -799,7 +807,7 @@ export const authService = {
       ...demo,
       name: isVet ? demo.name : `Demo Explorer (${demo.name})`,
       nameMr: isVet ? demo.nameMr : `डेमो वापरकर्ता (${demo.nameMr})`,
-      emailOrPhone: isVet ? (demo.email || 'vet_niphad@gov.in') : 'demo@krishisarthak.in',
+      emailOrPhone: isVet ? (demo.email || 'vet_niphad@gov.in') : 'demo@pashusarthak.in',
       userType: isVet ? 'registered' : 'demo',
       isDemo: !isVet,
     };
@@ -821,6 +829,9 @@ export const authService = {
       localStorage.removeItem(STORAGE_KEY_ROLE);
       localStorage.removeItem(STORAGE_KEY_USER);
       localStorage.removeItem(STORAGE_KEY_LEGACY_USER);
+      localStorage.removeItem(LEGACY_STORAGE_KEY_ROLE);
+      localStorage.removeItem(LEGACY_STORAGE_KEY_USER);
+      localStorage.removeItem(LEGACY_STORAGE_KEY_LEGACY_USER);
     }
   },
 
@@ -830,8 +841,8 @@ export const authService = {
   getStoredSession(): { role: AuthRole; user: FarmerUser | null } {
     try {
       if (typeof localStorage !== 'undefined') {
-        const storedRole = localStorage.getItem(STORAGE_KEY_ROLE) as AuthRole | null;
-        const storedUser = localStorage.getItem(STORAGE_KEY_USER) || localStorage.getItem(STORAGE_KEY_LEGACY_USER);
+        const storedRole = (localStorage.getItem(STORAGE_KEY_ROLE) || localStorage.getItem(LEGACY_STORAGE_KEY_ROLE)) as AuthRole | null;
+        const storedUser = localStorage.getItem(STORAGE_KEY_USER) || localStorage.getItem(STORAGE_KEY_LEGACY_USER) || localStorage.getItem(LEGACY_STORAGE_KEY_USER) || localStorage.getItem(LEGACY_STORAGE_KEY_LEGACY_USER);
 
         if ((storedRole === 'farmer' || storedRole === 'demo' || storedRole === 'vet_official') && storedUser) {
           const parsed = JSON.parse(storedUser);

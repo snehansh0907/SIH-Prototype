@@ -42,7 +42,7 @@ async function reverseGeocode(latitude, longitude) {
     const nominatimUrl = `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}&zoom=18&addressdetails=1`;
     const response = await fetch(nominatimUrl, {
       headers: {
-        'User-Agent': 'KrishiSarthak/1.0 (SIH 2026 Agricultural Prototype; contact@krishisarthak.in)',
+        'User-Agent': 'PashuSarthak/1.0 (SIH 2026 Livestock Surveillance Prototype; contact@pashusarthak.in)',
         'Accept-Language': 'en',
       },
       signal: AbortSignal.timeout(6000),

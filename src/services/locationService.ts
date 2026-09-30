@@ -396,7 +396,7 @@ export const locationService = {
       const response = await fetch(url, {
         headers: {
           'Accept-Language': 'en',
-          'User-Agent': 'KrishiSarthak/1.0 (SIH 2026 Prototype)',
+          'User-Agent': 'PashuSarthak/1.0 (SIH 2026 Prototype)',
         },
         signal: AbortSignal.timeout(5000),
       });
@@ -576,7 +576,7 @@ export const locationService = {
       const nomResp = await fetch(nomUrl, {
         headers: {
           'Accept-Language': 'en',
-          'User-Agent': 'KrishiSarthak/1.0 (SIH 2026 Agricultural Prototype; contact@krishisarthak.in)',
+          'User-Agent': 'PashuSarthak/1.0 (SIH 2026 Livestock Surveillance Prototype; contact@pashusarthak.in)',
         },
         signal: AbortSignal.timeout(6000),
       });
