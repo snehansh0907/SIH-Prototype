@@ -225,8 +225,7 @@ npm run preview
 
 ## 🌐 Deployment Configuration
 
-- **Frontend Hosting**: Vercel (`pashu-sarthak.vercel.app` / `sih-prototype.vercel.app`)
-- **Backend API**: Render (`https://pashu-sarthak-api.onrender.com/api`)
+- **Frontend Hosting**: Vercel (`sih-prototype.vercel.app`)
 - **Database & Storage**: Supabase PostgreSQL
 
 ---
