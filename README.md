@@ -14,8 +14,6 @@ The solution is designed around the need for an efficient system for the **early
 
 🌐 **Web App:** https://sih-prototype-seven-red.vercel.app/
 
-⚙️ **Backend API:** https://krishi-sarthak-api.onrender.com/
-
 ---
 
 # 📌 The Problem
