@@ -449,17 +449,6 @@ export const LoginScreen: React.FC = () => {
       <div className="fixed top-12 left-1/2 -translate-x-1/2 w-80 h-80 rounded-full bg-forest-400/15 blur-3xl pointer-events-none -z-10 animate-float-slow" />
       <div className="fixed bottom-16 right-1/4 w-72 h-72 rounded-full bg-gold-400/10 blur-3xl pointer-events-none -z-10 animate-float-slow [animation-delay:3s]" />
 
-      {/* Desktop Helper Banner */}
-      <div className="hidden md:flex items-center justify-between w-full max-w-md mb-3 px-2 text-xs text-stone-600">
-        <div className="flex items-center gap-1.5 font-bold text-forest-900">
-          <span className="w-2 h-2 rounded-full bg-forest-600 animate-pulse"></span>
-          <span>🐄 Pashu Sarthak • पशु सार्थक</span>
-        </div>
-        <div className="text-stone-500 font-semibold px-2 py-0.5 rounded-full bg-white/80 border border-stone-200 shadow-xs">
-          SIH26128 Prototype
-        </div>
-      </div>
-
       {/* Main Card Shell */}
       <div className="w-full max-w-md glass-card bg-white/90 rounded-3xl shadow-glass-xl overflow-hidden border border-white/90 flex flex-col relative">
         {/* Header Bar - Deep Forest Green with 3-Language Selector */}
