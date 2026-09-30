@@ -1,5 +1,14 @@
 [
   {
+    "id": "87300e12-282f-48f6-a60d-4c5880c13db8",
+    "case_id": "dbf066c0-1e17-4105-a7ad-56dbae65051e",
+    "farmer_id": "542d3fbc-f0f7-4e82-84b9-f8394659b61b",
+    "status": "better",
+    "notes": null,
+    "new_image_url": null,
+    "created_at": "2026-09-29T21:15:10.507Z"
+  },
+  {
     "id": "8dffeadb-507e-4bdd-94f8-13d06b4e2d6b",
     "case_id": "diag-onion-default",
     "farmer_id": "542d3fbc-f0f7-4e82-84b9-f8394659b61b",

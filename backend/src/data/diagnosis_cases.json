@@ -1,5 +1,93 @@
 [
   {
+    "id": "5960560a-93fb-4647-8a11-de615bf6f149",
+    "farmer_id": "suresh123",
+    "farm_id": "7d8ae2f6-8461-4950-a873-486e071b6fa1",
+    "crop_cycle_id": null,
+    "image_url": "/uploads/crop_1790759467065_110788233.jpg",
+    "predicted_disease": "Bovine Mastitis (थनैला रोग / स्तनदाह)",
+    "confidence": 88,
+    "severity_band": "Moderate",
+    "severity_percent": 40,
+    "latitude": 20.085,
+    "longitude": 74.11,
+    "status": "suspected",
+    "created_at": "2026-09-30T09:11:08.141Z",
+    "crop_name": "cattle",
+    "advisory": {
+      "status": "MODERATE",
+      "what_to_do_today": [
+        "Stripping & Cold Fermentation: Frequent complete hand-milking/stripping of the affected quarter every 2 hours to remove bacterial toxins",
+        "Cold Water Compress: Apply cold water splash or ice packs to the hot inflamed udder quarter during acute swelling",
+        "Intramammary Infusion: Administer veterinary-prescribed intramammary antibiotic tube strictly under aseptic cannula insertion",
+        "Proper Disposal: Never discard mastitic milk onto the shed floor or feed raw to calves; boil or safely bury with disinfectant",
+        "Supportive Anti-inflammatory: Administer systemic anti-inflammatory (Meloxicam) to alleviate udder pain and fever",
+        "Feed soft, easily digestible boiled mash (rice/ragi gruel with 50g jaggery and salt)",
+        "Provide fresh tender green fodder and ad libitum clean drinking water with electrolytes"
+      ],
+      "what_to_monitor": [
+        "Measure and record rectal body temperature twice daily using a veterinary thermometer",
+        "Track rumination chews per minute (normal 45-60) and observe water intake",
+        "Inspect lesion margins for secondary bacterial pus or maggot infestation",
+        "Monitor milk yield volume to track systemic recovery timeline"
+      ],
+      "prevention": [
+        "Post-milking teat dipping: Dip all 4 teats immediately after milking in 0.5% Povidone-Iodine solution",
+        "Keep cows standing for 45 minutes post-milking by providing fresh green feed, allowing the teat sphincter to close tightly",
+        "Clean shed flooring daily; ensure dry bedded stalls free of pooled slurry and sharp stones",
+        "Practice clean milk production: wash hands, use separate clean towels for each animal, and milk infected quarters last",
+        "Dry Cow Therapy (DCT) at the end of lactation using approved long-acting intramammary infusion"
+      ],
+      "immediateActions": [
+        "Stripping & Cold Fermentation: Frequent complete hand-milking/stripping of the affected quarter every 2 hours to remove bacterial toxins",
+        "Cold Water Compress: Apply cold water splash or ice packs to the hot inflamed udder quarter during acute swelling",
+        "Intramammary Infusion: Administer veterinary-prescribed intramammary antibiotic tube strictly under aseptic cannula insertion",
+        "Proper Disposal: Never discard mastitic milk onto the shed floor or feed raw to calves; boil or safely bury with disinfectant",
+        "Supportive Anti-inflammatory: Administer systemic anti-inflammatory (Meloxicam) to alleviate udder pain and fever"
+      ],
+      "monitoring": [
+        "Measure and record rectal body temperature twice daily using a veterinary thermometer",
+        "Track rumination chews per minute (normal 45-60) and observe water intake",
+        "Inspect lesion margins for secondary bacterial pus or maggot infestation",
+        "Monitor milk yield volume to track systemic recovery timeline"
+      ],
+      "supportiveCare": [
+        "Feed soft, easily digestible boiled mash (rice/ragi gruel with 50g jaggery and salt)",
+        "Provide fresh tender green fodder and ad libitum clean drinking water with electrolytes"
+      ],
+      "veterinaryEscalation": [
+        "Povidone-Iodine Teat Dip (0.5% active iodine): Dip 2 cm of each teat immediately post-milking daily",
+        "Trisodium Citrate (Oral): 12-15 grams daily mixed in jaggery for 7 days to restore milk pH and udder defense",
+        "Cloxacillin + Ampicillin intramammary infusion: 1 tube infused per quarter after full evacuation (veterinary advice)",
+        "Contact Maharashtra Department of Animal Husbandry Toll-Free Helpline: 1962 for doorstep veterinary support",
+        "Consult nearest Veterinary Dispensary if fever or lesions persist beyond 3 days"
+      ],
+      "expert_help_required": false,
+      "disease_info": {
+        "disease_name": "Bovine Mastitis",
+        "scientific_name": "Staphylococcus aureus / Streptococcus agalactiae / E. coli",
+        "description": "Inflammation of the mammary gland and udder tissue, predominantly bacterial in origin. Results in physical, chemical, and microbiological changes in milk, along with pathological changes in glandular udder tissue.",
+        "how_it_spreads": [
+          "Contagious transmission during milking through milkers hands, common udder cloths, and teat cups",
+          "Environmental transmission: unhygienic, wet, dung-soiled shed floors entering open teat sphincter post-milking",
+          "Teat skin cracks, wounds, tick bites, and incomplete milking leaving residual milk"
+        ],
+        "safe_dosage": [
+          "Povidone-Iodine Teat Dip (0.5% active iodine): Dip 2 cm of each teat immediately post-milking daily",
+          "Trisodium Citrate (Oral): 12-15 grams daily mixed in jaggery for 7 days to restore milk pH and udder defense",
+          "Cloxacillin + Ampicillin intramammary infusion: 1 tube infused per quarter after full evacuation (veterinary advice)"
+        ],
+        "vet_protocol_order": [
+          "Quarantine & Shed Biosecurity",
+          "Antiseptic Wash & Fly Repellent",
+          "Supportive Mash Feeding",
+          "Veterinary Medical Treatment",
+          "Ring Vaccination in 5km Zone"
+        ]
+      }
+    }
+  },
+  {
     "id": "mort-59c4a889-e210-4902-bdd7-d20416e848bb",
     "case_id": "mort-59c4a889-e210-4902-bdd7-d20416e848bb",
     "report_type": "mortality",
@@ -45,7 +133,7 @@
     "severity_percent": 40,
     "latitude": 20.085,
     "longitude": 74.11,
-    "status": "suspected",
+    "status": "Sample Collected",
     "created_at": "2026-09-29T21:12:15.650Z",
     "crop_name": "cattle",
     "advisory": {
@@ -121,7 +209,22 @@
           "Ring Vaccination in 5km Zone"
         ]
       }
-    }
+    },
+    "status_history": [
+      {
+        "from_status": "suspected",
+        "to_status": "Sample Collected",
+        "timestamp": "2026-09-30T09:08:20.030Z",
+        "updated_by": "Dr. Rajesh Kadam (Taluka Veterinary Officer)",
+        "notes": "Blood and scab samples collected during farm visit",
+        "sample_id": "MH-NIP-2026-S9912",
+        "lab_referral": "District Disease Diagnostic Laboratory (DDDL), Nashik"
+      }
+    ],
+    "vet_notes": "Blood and scab samples collected during farm visit",
+    "lab_referral": "District Disease Diagnostic Laboratory (DDDL), Nashik",
+    "sample_id": "MH-NIP-2026-S9912",
+    "updated_at": "2026-09-30T09:08:20.030Z"
   },
   {
     "id": "0d76d000-2501-4b15-ba2b-45d18b7433da",
