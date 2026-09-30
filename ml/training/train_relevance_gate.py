@@ -1,7 +1,7 @@
 """
-Krishi Sarthak - Stage 1 Crop / Leaf Relevance Gate Training & ONNX Export
-Trains a binary MobileNetV2 classifier to distinguish genuine agricultural crop leaves
-from all non-crop images (people, faces, cars, animals, buildings, food, electronics, documents, etc.).
+Pashu Sarthak - Stage 1 Diagnostic Relevance Gate Training & ONNX Export (SIH26128)
+Trains a binary MobileNetV2 classifier to distinguish genuine diagnostic images
+from unrelated non-animal/noise images.
 """
 
 import os

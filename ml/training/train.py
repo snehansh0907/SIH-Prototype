@@ -1,7 +1,6 @@
 """
-Krishi Sarthak - Reproducible Training Pipeline
-Architecture: MobileNetV2 Transfer Learning on Agricultural Plant Pathology Dataset
-Dataset: PlantVillage Dataset (38 Classes)
+Pashu Sarthak - Reproducible Training Pipeline (SIH26128)
+Architecture: MobileNetV2 Transfer Learning
 Export: PyTorch (.pth) and ONNX (.onnx) format
 """
 
@@ -123,7 +122,7 @@ def export_to_onnx(model, output_path: str, device: str = 'cpu'):
     print(f"[Export] Saved ONNX model successfully -> {output_path}")
 
 def main():
-    parser = argparse.ArgumentParser(description="Krishi Sarthak Crop Disease Training Pipeline")
+    parser = argparse.ArgumentParser(description="Pashu Sarthak Vision Diagnostic Model Training Pipeline (SIH26128)")
     parser.add_argument("--data_dir", type=str, default="./data/PlantVillage", help="Path to PlantVillage color image folder")
     parser.add_argument("--output_dir", type=str, default="./models", help="Directory to save model artifacts")
     parser.add_argument("--epochs", type=int, default=DEFAULT_EPOCHS)

@@ -1,5 +1,5 @@
 // =========================================================
-// Krishi Sarthak - Auth Controller
+// Pashu Sarthak - Auth Controller (SIH26128)
 // =========================================================
 // Handles farmer registration, credential verification,
 // and session retrieval against the shared Supabase database.

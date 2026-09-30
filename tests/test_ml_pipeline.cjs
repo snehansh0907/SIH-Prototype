@@ -1,5 +1,5 @@
 /**
- * Krishi Sarthak - End-to-End ML Pipeline Automated Test Suite
+ * Pashu Sarthak - End-to-End ML Pipeline Automated Test Suite (SIH26128)
  * Validates real model inference, preprocessing, health checks,
  * low-confidence thresholds, and API integration.
  */
@@ -10,7 +10,7 @@ const assert = require('assert');
 
 async function runTests() {
   console.log('===============================================================');
-  console.log('  Krishi Sarthak - Automated ML Pipeline Test Suite');
+  console.log('  Pashu Sarthak - Automated ML Pipeline Test Suite');
   console.log('===============================================================');
 
   let passed = 0;

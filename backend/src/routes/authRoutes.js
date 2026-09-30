@@ -1,5 +1,5 @@
 // =========================================================
-// Krishi Sarthak - Auth Routes
+// Pashu Sarthak - Auth Routes (SIH26128)
 // =========================================================
 
 const express = require('express');

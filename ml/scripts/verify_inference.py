@@ -1,6 +1,6 @@
 """
-Krishi Sarthak - End-to-End Inference Verification Script
-Tests the ML pipeline on authentic crop images across healthy, diseased, and out-of-distribution inputs.
+Pashu Sarthak - End-to-End Inference Verification Script (SIH26128)
+Tests the ML pipeline on authentic diagnostic images across healthy, symptomatic, and out-of-distribution inputs.
 """
 
 import os
@@ -24,7 +24,7 @@ def run_verification():
     ]
     
     print("==========================================================================================")
-    print("  Krishi Sarthak - ML Inference Verification Benchmark")
+    print("  Pashu Sarthak - ML Inference Verification Benchmark")
     print(f"  Model: MobileNetV2-PlantVillage | Framework: ONNX Runtime | Classes: 38")
     print("==========================================================================================")
     print(f"{'Input Test Image':<28} | {'Predicted Crop/Disease':<32} | {'Confidence':<10} | {'Latency':<9} | {'Review'}")

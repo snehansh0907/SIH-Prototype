@@ -1,5 +1,5 @@
 """
-Krishi Sarthak - ML Inference Engine (Python)
+Pashu Sarthak - ML Inference Engine (Python) (SIH26128)
 Performs real deep learning inference using the MobileNetV2 ONNX model.
 """
 

@@ -1,541 +1,251 @@
-# 🐄 Pashu Sarthak
+# 🐄 Pashu Sarthak (पशु सार्थक)
 
-> **Smart Livestock Health for Every Farmer**
+> **SIH26128** — Smart India Hackathon 2026  
+> **Unified Mobile-First Progressive Web App (PWA) for Livestock Disease Early-Warning & Veterinary Surveillance**
 
-Pashu Sarthak is an AI-powered digital livestock health platform designed to help livestock owners identify animal health problems, understand disease risks, monitor nearby livestock disease activity, maintain herd health information, and access veterinary guidance through a simple, farmer-friendly interface.
-
-Built as a prototype for **Smart India Hackathon (SIH)** under **SIH26128**, Pashu Sarthak brings livestock health monitoring, AI-assisted symptom analysis, weather-based risk intelligence, location-aware disease awareness, herd records, vaccination tracking, and veterinary guidance together in one platform.
-
-The solution is designed around the need for an efficient system for the **early detection, prevention, and management of livestock diseases and animal health issues**, including faster reporting, risk assessment, preventive action, referral, and coordinated response.
-
----
-
-## 🚀 Live Demo
-
-🌐 **Web App:** https://sih-prototype-seven-red.vercel.app/
+[![MIT License](https://img.shields.io/badge/License-MIT-emerald.svg)](LICENSE)
+[![PWA Ready](https://img.shields.io/badge/PWA-Installable-green.svg)](https://pashu-sarthak.vercel.app)
+[![React 19](https://img.shields.io/badge/React-19-blue.svg)](https://react.dev/)
+[![TailwindCSS](https://img.shields.io/badge/TailwindCSS-3.4-teal.svg)](https://tailwindcss.com/)
+[![Express.js](https://img.shields.io/badge/Backend-Express.js-black.svg)](backend)
 
 ---
 
-# 📌 The Problem
+## 📌 Problem & Solution
 
-Livestock owners and field workers often face several challenges when managing animal health:
+### The Challenge
+In rural India, livestock diseases like **Lumpy Skin Disease (LSD)** and **Foot-and-Mouth Disease (FMD)** spread rapidly through vector bites and community contact. Smallholder livestock farmers often lack immediate veterinary access, leading to delayed disease reporting, secondary bacterial complications, and uncontained epidemic outbreaks. Meanwhile, state veterinary officers face severe gaps in real-time syndromic field telemetry.
 
-* Difficulty identifying animal diseases at an early stage
-* Symptoms may be reported only after the condition becomes serious
-* Limited access to nearby veterinary expertise and diagnostic facilities
-* Incomplete vaccination and treatment histories
-* Limited awareness of livestock disease activity in nearby areas
-* Weather and environmental conditions can increase disease risk
-* Animal-health information may remain fragmented across farms, veterinary services, and records
-* Limited access to simple, multilingual animal-health guidance
-
-Delayed identification and reporting of livestock diseases can increase animal mortality, reduce productivity, increase treatment costs, and affect farmers' incomes.
-
-The official SIH26128 problem statement specifically highlights the need for unified and realtime mechanisms for animal-health risk identification, rapid reporting, risk assessment, preventive action, referral, and coordinated response, including in low-connectivity environments.
+### The Solution: Pashu Sarthak
+**Pashu Sarthak** bridges the rural veterinary gap with a **single, unified mobile Progressive Web App** serving two interconnected user roles:
+1. **🐄 Livestock Owners**: Early symptom detection, AI photo triage, herd tracking, vaccination schedules, bioclimatic vector risk forecasts, and instant veterinary guidance.
+2. **🧑‍⚕️ Veterinary Officers**: Taluka-level syndromic surveillance, automated outbreak threshold detection, spatial disease hotspot heatmaps, laboratory triage queues, and rapid containment ring broadcasts.
 
 ---
 
-# 💡 Our Solution
+## 📸 Product Screenshots
 
-**Pashu Sarthak acts as a digital livestock health companion for farmers.**
+| 1. Livestock Owner Home | 2. Check Animal (AI Triage) | 3. Regional Surveillance Map |
+| :---: | :---: | :---: |
+| ![Owner Home](docs/owner-home.png) | ![Check Animal](docs/check-animal.png) | ![Surveillance Map](docs/surveillance-map.png) |
 
-The platform combines livestock owner information, herd details, animal symptom monitoring, AI-assisted analysis, weather intelligence, location-based disease awareness, vaccination history, and veterinary guidance to help farmers make faster and more informed animal-health decisions.
-
-Instead of relying on multiple disconnected sources, livestock owners can access important animal-health information from one unified platform.
-
-The system is designed to support both **animal-level and herd-level health management**, while providing early warnings and guidance that can help farmers report potential health problems sooner.
-
----
-
-# ✨ Key Features
-
-## 🐄 Livestock Owner & Herd Profiles
-
-Farmers can create and manage their livestock profile, including:
-
-* Livestock owner details
-* Location
-* Livestock species
-* Breed information
-* Herd size
-* Animal age information
-* Vaccination history
-* Health and disease case information
-
-The application connects livestock-health information with the farmer's actual herd and profile, helping create a structured digital health record.
+| 4. Veterinary Officer Dashboard | 5. Outbreak Alerts & Containment |
+| :---: | :---: |
+| ![Veterinary Dashboard](docs/veterinary-dashboard.png) | ![Outbreak Alerts](docs/outbreak-alerts.png) |
 
 ---
 
-## 📸 Check My Animal — AI-Assisted Animal Health Diagnosis
+## 🔑 Demo Access (Prototype Testing)
 
-Livestock owners can upload or capture an image of an animal showing visible symptoms.
+You can explore both roles instantly using the built-in demo credentials or one-click demo login:
 
-The system is designed to assist with identifying potential animal-health conditions and provide useful information such as:
+### 🧑‍⚕️ Veterinary Officer Demo
+- **Email / ID**: `vet_niphad@gov.in`
+- **Password**: `vet123`
+- **Jurisdiction**: Taluka Veterinary Dispensary, Niphad, Nashik District (134 Gram Panchayats)
+- **Features**: Active triage queue, 48 surveillance cases, Niphad LSD outbreak ring containment, laboratory triage flags.
 
-* Possible disease or health condition
-* Symptom-based assessment
-* Risk/severity indication
-* Recommended preventive steps
-* Suggested next actions
-* Veterinary consultation guidance
-
-The prototype focuses on visually identifiable livestock-health conditions and AI-assisted triage rather than claiming to replace professional veterinary diagnosis.
-
-The goal is to make early animal-health assessment more accessible and convenient for livestock owners.
-
----
-
-## 🩺 Animal Health Records
-
-Pashu Sarthak helps maintain important livestock-health information in a structured manner.
-
-Farmers can keep track of:
-
-* Animal and herd information
-* Previous health cases
-* Vaccination history
-* Treatment information
-* Reported symptoms
-* Disease-related observations
-
-Maintaining these records can help farmers and veterinary professionals understand an animal's health history and make better-informed decisions.
+### 🐄 Livestock Owner Demo
+- **Account 1 (Cattle & Buffalo)**: `farmer123` / password `farmer123` (Ramesh Patil, Niphad)
+- **Account 2 (Dairy Herd)**: `vikas123` / password `vikas123` (Vikas More, Chandori)
+- **Account 3 (Goat & Sheep)**: `suresh123` / password `suresh123` (Suresh Jadhav, Ozar)
+- **Guest Explorer**: Click **"Continue as Demo"** on the login screen to explore without entering credentials.
 
 ---
 
-## 🌦️ Weather & Livestock Risk Intelligence
+## 🚀 Key Innovations & Features
 
-Pashu Sarthak uses environmental conditions to provide livestock-health risk awareness.
+### 1. Transparent Multi-Stage AI Pathology Pipeline
+- **Client-Side Image Relevance Gate**: Uses lightweight TensorFlow.js MobileNet in-browser to verify animal tissue presence (skin nodules, muzzle, hooves, udder) before consuming bandwidth or server compute. Rejects non-animal objects (vehicles, text documents, scenery) immediately with supportive user feedback.
+- **Multi-Species Disease Detection**: Evaluates Cattle, Buffalo, Goat, Sheep, and Poultry conditions including Lumpy Skin Disease (LSD), Foot-and-Mouth Disease (FMD), Bovine Mastitis, Blackleg, Bloat, PPR, and Newcastle disease.
+- **Healthy Baseline & Low-Confidence Guard**: Recognizes healthy livestock without forcing false positives; returns explicit low-confidence guidance (`< 0.60`) recommending daylight photo retakes or veterinary officer escalation.
 
-The platform considers factors such as:
+### 2. Bioclimatic Vector Risk Scoring
+- Combines live Open-Meteo meteorological telemetry (ambient temperature, relative humidity, precipitation, wind speed) with local disease case density.
+- Predicts vector breeding pressure (Stomoxys biting flies, Culicoides midges, ticks) and heat stress indices for dairy cattle.
 
-* Temperature
-* Humidity
-* Rain probability
-* Current weather conditions
-* Seasonal conditions
-* Environmental risk factors
+### 3. Automated Epidemic Triage & Ring Containment
+- Evaluates incoming community health reports against spatial-temporal threshold rules (e.g. `≥ 5` active cases of a contagious viral disease in a 3 km radius within 48 hours).
+- Automatically triggers a **Taluka Outbreak Alert**, flags cases for laboratory swab dispatch, and provides 5 km ring vaccination and quarantine advisories.
 
-These conditions can be used to identify situations where livestock health risks may increase and provide farmers with preventive awareness.
+### 4. Natural Voice Narration & Trilingual Support
+- Built-in multi-lingual voice guidance in **Marathi (मराठी)**, **Hindi (हिंदी)**, and **English**.
+- Same-origin audio streaming proxy (`/api/tts`) provides studio-quality voice playback for rural dairy farmers.
 
-The risk system can also be extended to incorporate historical disease trends and environmental correlations.
-
----
-
-## 📍 My Area — Local Livestock Disease Awareness
-
-The **My Area** section helps livestock owners understand animal-health activity around their location.
-
-It focuses on:
-
-* Nearby regions
-* Livestock disease activity
-* Potential outbreak zones
-* Community-level risk awareness
-* Location-based disease monitoring
-* Geographic disease hotspots
-
-This helps farmers understand whether an animal-health issue may be isolated or could be part of a larger local pattern.
-
-Geospatial risk mapping and historical disease information are important components of the broader SIH26128 expected solution.
+### 5. Installable Single-PWA Architecture
+- Unified manifest (`manifest.webmanifest`) and service worker (`sw.js`).
+- Seamless offline caching for core assets, cached herd records, emergency helpline access (1962), and first-aid guidelines.
 
 ---
 
-## 👨‍⚕️ Talk to a Vet
-
-Farmers can access veterinary guidance through the **Talk to a Vet** section.
-
-The platform provides:
-
-* Animal-health questions and answers
-* Veterinary guidance
-* Quick questions
-* Context-aware livestock information
-* Symptom-related guidance
-* Consultation interface
-
-The system is designed to make animal-health knowledge and veterinary guidance easier to access, especially for livestock owners who may have difficulty reaching veterinary services immediately.
-
----
-
-## 🔊 Listen to Advice
-
-Pashu Sarthak includes an audio-based advice experience to make livestock-health information more accessible.
-
-This is especially useful for users who may prefer listening to guidance instead of reading long blocks of text.
-
-Audio-based guidance can help improve accessibility for farmers in rural environments and support easier consumption of important health advisories.
-
----
-
-## 🌐 Multilingual & Farmer-Friendly Interface
-
-The interface is designed to be simple, accessible, and farmer-friendly.
-
-Pashu Sarthak supports a multilingual experience to reduce language barriers and make livestock-health information easier to understand.
-
-The platform aims to reduce the complexity often associated with digital healthcare and livestock-management systems.
-
----
-
-## 📱 Progressive Web App (PWA)
-
-Pashu Sarthak is built as a **Progressive Web App**.
-
-This allows users to:
-
-* Open the application on mobile devices
-* Install it like an app on supported devices
-* Access a responsive mobile-friendly interface
-* Experience an app-like workflow without requiring a traditional app-store installation
-* Use the platform through a lightweight web-based experience
-
-The architecture can also be extended toward offline and low-connectivity workflows, which are part of the expected direction of SIH26128.
-
----
-
-# 🛠️ Tech Stack
-
-## 🎨 Frontend
-
-* React
-* TypeScript
-* Vite
-* CSS / Responsive UI
-* Progressive Web App (PWA)
-
-## ⚙️ Backend
-
-* Node.js
-* Express.js
-* REST APIs
-
-## 🤖 AI / Machine Learning
-
-* Python
-* Computer Vision
-* AI-assisted livestock symptom analysis
-* Image-based disease/condition classification
-* ONNX-based model integration
-
-The AI component is designed as an **assisted triage system** to identify potential livestock-health conditions from visible symptoms and support early reporting.
-
----
-
-## 🗄️ Database & Cloud Services
-
-* Supabase
-* PostgreSQL
-
-Used for cloud-based application data and backend integration.
-
-The database stores information such as:
-
-* Livestock owner profiles
-* Herd information
-* Species and breed
-* Animal health records
-* Vaccination history
-* Disease case history
-* Location-related information
-
----
-
-## 🌦️ External Data
-
-* Open-Meteo API
-
-Used for weather-related intelligence and environmental risk analysis.
-
-Weather information can be combined with livestock-health observations and seasonal patterns to provide risk awareness.
-
----
-
-## 🚀 Deployment
-
-* **Vercel** — Frontend deployment
-* **Render** — Backend API deployment
-* **Supabase** — Database and backend services
-
----
-
-# 🏗️ System Architecture
+## 🏗️ System Architecture
 
 ```text
-                    ┌──────────────────────┐
-                    │   Livestock Owner    │
-                    │   Mobile / Web App   │
-                    └──────────┬───────────┘
-                               │
-                               ▼
-                    ┌──────────────────────┐
-                    │ React + Vite + PWA   │
-                    │      Frontend        │
-                    │       (Vercel)       │
-                    └──────────┬───────────┘
-                               │
-                         REST API Requests
-                               │
-                               ▼
-                    ┌──────────────────────┐
-                    │  Node.js + Express   │
-                    │       Backend        │
-                    │       (Render)       │
-                    └───────┬─────┬────────┘
-                            │     │
-             ┌──────────────┘     └──────────────┐
-             ▼                                   ▼
-   ┌──────────────────┐                ┌──────────────────┐
-   │    Supabase      │                │   Open-Meteo     │
-   │ Database / Data  │                │ Weather Data     │
-   └──────────────────┘                └──────────────────┘
-             │
-             ▼
-   ┌──────────────────────────────┐
-   │ AI / ML Animal Health Engine │
-   │ Image & Symptom Analysis     │
-   └──────────────────────────────┘
-             │
-             ▼
-   ┌──────────────────────────────┐
-   │ Livestock Risk & Disease     │
-   │ Awareness / Triage Layer     │
-   └──────────────────────────────┘
+┌─────────────────────────────────────────────────────────────────────────┐
+│                      PASHU SARTHAK PWA CLIENT                           │
+│  React 19 • TypeScript • TailwindCSS • Leaflet • TensorFlow.js          │
+└─────────────────────────────────┬───────────────────────────────────────┘
+                                  │
+                  HTTPS / REST API / Form-Data
+                                  ▼
+┌─────────────────────────────────────────────────────────────────────────┐
+│                      EXPRESS.JS BACKEND ENGINE                          │
+│                                                                         │
+│  ┌───────────────────────┐  ┌───────────────────┐  ┌─────────────────┐  │
+│  │ Disease Detection API │  │ Bioclimatic Risk  │  │ Epidemic Triage │  │
+│  │ (Multi-Species AI)    │  │ (Open-Meteo Live) │  │ (Spatial Clust) │  │
+│  └──────────┬────────────┘  └─────────┬─────────┘  └────────┬────────┘  │
+└─────────────┼─────────────────────────┼─────────────────────┼───────────┘
+              ▼                         ▼                     ▼
+┌───────────────────────────┐ ┌──────────────────┐ ┌─────────────────────┐
+│    Supabase PostgreSQL    │ │  Open-Meteo API  │ │ ONNX Neural Runtime │
+│ (Herd, Cases, Survellance)│ │ (Weather Telemet)│ │ (Offline In-Memory) │
+└───────────────────────────┘ └──────────────────┘ └─────────────────────┘
 ```
 
 ---
 
-# 📂 Project Structure
+## 📂 Repository Structure
 
-```text
+```
 SIH-Prototype/
-│
-├── frontend/
+├── backend/                         # Node.js Express Backend Service
 │   ├── src/
-│   │   ├── components/
-│   │   ├── services/
-│   │   ├── context/
-│   │   ├── i18n/
-│   │   ├── assets/
-│   │   └── ...
-│   │
-│   ├── public/
-│   ├── vite.config.ts
-│   └── package.json
+│   │   ├── app.js                   # Express app with CORS & root routing
+│   │   ├── config/supabase.js       # Supabase client initialization
+│   │   ├── controllers/             # Pathology, auth, risk, triage controllers
+│   │   ├── data/                    # Disease knowledge base & district coordinates
+│   │   ├── middleware/              # Centralized error & async handlers
+│   │   ├── routes/                  # REST endpoint definitions
+│   │   └── services/                # Diagnosis, risk, hotspot, triage services
+│   ├── .env.example                 # Backend environment variable template
+│   ├── package.json                 # Backend dependencies & scripts
+│   ├── server.js                    # Server startup script
+│   └── supabase-migration-pashu-sarthak.sql # Database schema & tables
 │
-├── backend/
-│   ├── src/
-│   │   ├── controllers/
-│   │   ├── config/
-│   │   ├── routes/
-│   │   ├── services/
-│   │   └── ...
-│   │
-│   ├── server.js
-│   └── package.json
+├── docs/                            # Documentation screenshots
+│   ├── check-animal.png
+│   ├── outbreak-alerts.png
+│   ├── owner-home.png
+│   ├── surveillance-map.png
+│   └── veterinary-dashboard.png
 │
-├── ml/
-│   ├── models/
-│   ├── scripts/
-│   └── ...
+├── ml/                              # Neural Network Models & Training Scripts
+│   ├── models/                      # Dual-stage ONNX models (< 10 MB each)
+│   ├── training/                    # PyTorch training & ONNX export pipelines
+│   └── inference/                   # Python standalone inference tester
 │
-└── README.md
+├── public/                          # PWA Icons & Web Manifest
+│   ├── icon-192.png
+│   ├── icon-512.png
+│   ├── icon-maskable-512.png
+│   ├── apple-touch-icon.png
+│   └── favicon.svg
+│
+├── src/                             # Frontend React 19 Application
+│   ├── components/
+│   │   ├── area/                    # Geospatial map & radar surveillance
+│   │   ├── auth/                    # Unified dual-role login & registration
+│   │   ├── check-crop/              # Animal health check & symptom observation
+│   │   ├── common/                  # Reusable badges, voice buttons, selects
+│   │   ├── diagnosis/               # Clinical triage result & advisory views
+│   │   ├── expert/                  # Dr. Ashok Kulkarni AI Veterinary Assistant
+│   │   ├── herd/                    # Herd register & vaccination records
+│   │   ├── home/                    # Owner dashboard & quick action grid
+│   │   ├── layout/                  # Mobile container, headers & bottom nav
+│   │   ├── mortality/               # Animal death reporting & disposal guidelines
+│   │   ├── officer/                 # Veterinary officer mobile surveillance portal
+│   │   ├── risk/                    # Bioclimatic vector risk forecast
+│   │   └── vet/                     # Veterinary case verification modal
+│   ├── context/                     # Auth, Livestock, and Language providers
+│   ├── data/                        # Maharashtra cascading administrative hierarchy
+│   ├── i18n/                        # Trilingual dictionary (EN, HI, MR)
+│   ├── services/                    # API client, offline mock data & business logic
+│   ├── types/                       # TypeScript models & domain interfaces
+│   ├── utils/                       # Speech synthesis & audio helpers
+│   ├── App.tsx                      # Root role-gated application router
+│   ├── main.tsx                     # Entry point & PWA service worker registration
+│   └── index.css                    # Design tokens, typography & liquid styling
+│
+├── .env.example                     # Frontend environment variable template
+├── index.html                       # HTML5 Shell with viewport-fit & PWA headers
+├── LICENSE                          # MIT License
+├── package.json                     # Frontend dependencies & build scripts
+├── tailwind.config.js               # Theme configuration & color palette
+├── tsconfig.json                    # TypeScript compiler configuration
+├── vercel.json                      # Vercel deployment routing & headers
+└── vite.config.ts                   # Vite build & VitePWA configuration
 ```
 
 ---
 
-# ⚡ Getting Started
+## 💻 Local Setup & Development
 
-## Prerequisites
+### Prerequisites
+- **Node.js**: v18.0.0 or later
+- **npm**: v9.0.0 or later
 
-Make sure you have:
-
-* Node.js 18 or above
-* npm
-* Python 3.x
-* A Supabase project
-
----
-
-## 1️⃣ Clone the Repository
-
+### 1. Clone Repository
 ```bash
 git clone https://github.com/snehansh0907/SIH-Prototype.git
 cd SIH-Prototype
 ```
 
----
-
-## 2️⃣ Setup the Backend
-
+### 2. Frontend Setup
 ```bash
-cd backend
+# Install frontend dependencies
 npm install
-```
 
-Create a `.env` file inside the `backend` directory:
+# Create local environment config
+cp .env.example .env
 
-```env
-PORT=5000
-
-SUPABASE_URL=your_supabase_project_url
-SUPABASE_ANON_KEY=your_supabase_anon_key
-
-OPEN_METEO_BASE_URL=https://api.open-meteo.com
-
-FRONTEND_URL=http://localhost:5173
-```
-
-Start the backend:
-
-```bash
-npm start
-```
-
-The backend will run on:
-
-```text
-http://localhost:5000
-```
-
----
-
-## 3️⃣ Setup the Frontend
-
-Open another terminal:
-
-```bash
-cd frontend
-npm install
-```
-
-Create a `.env.local` file:
-
-```env
-VITE_API_URL=http://localhost:5000/api
-```
-
-Start the frontend:
-
-```bash
+# Run Vite dev server
 npm run dev
 ```
+Open **`http://localhost:5173`** in your browser.
 
-Open the local URL shown by Vite.
+### 3. Backend Setup
+```bash
+cd backend
+
+# Install backend dependencies
+npm install
+
+# Create backend environment config
+cp .env.example .env
+
+# Start Express API server
+npm run dev
+```
+Backend will start on **`http://localhost:5001`** (Health check: `http://localhost:5001/api/health`).
 
 ---
 
-## 4️⃣ Setup the AI / ML Environment
-
-If the AI diagnosis module is being run locally, install the required Python dependencies from the ML directory/environment.
+## 🛠️ Production Build & Verification
 
 ```bash
-cd ml
-pip install -r requirements.txt
-```
+# Type check and build production bundle
+npm run build
 
-The AI module can then be integrated with the backend diagnosis workflow.
-
----
-
-# 🔐 Environment Variables
-
-## Backend
-
-| Variable              | Description                   |
-| --------------------- | ----------------------------- |
-| `PORT`                | Backend server port           |
-| `SUPABASE_URL`        | Supabase project URL          |
-| `SUPABASE_ANON_KEY`   | Supabase API key              |
-| `OPEN_METEO_BASE_URL` | Open-Meteo API base URL       |
-| `FRONTEND_URL`        | Allowed frontend URL for CORS |
-
-## Frontend
-
-| Variable       | Description     |
-| -------------- | --------------- |
-| `VITE_API_URL` | Backend API URL |
-
-For production:
-
-```env
-VITE_API_URL=https://pashu-sarthak-api.onrender.com/api
+# Preview production build locally
+npm run preview
 ```
 
 ---
 
-# 🎯 Project Objectives
+## 🌐 Deployment Configuration
 
-Pashu Sarthak aims to:
-
-* Improve early awareness of livestock health problems
-* Enable faster reporting of animal-health symptoms
-* Support AI-assisted livestock disease triage
-* Maintain animal and herd health information
-* Track vaccination and treatment history
-* Provide weather-based livestock-health risk awareness
-* Enable location-aware disease and outbreak monitoring
-* Improve access to veterinary guidance
-* Provide multilingual and farmer-friendly health information
-* Support better preventive action and disease awareness
-* Create a unified digital livestock-health experience
-* Make animal-health technology more accessible to rural livestock owners
-
-These objectives align with the broader SIH26128 requirement for early warning, rapid reporting, risk assessment, preventive action, referral, and coordinated management of livestock diseases and animal-health issues.
+- **Frontend Hosting**: Vercel (`pashu-sarthak.vercel.app` / `sih-prototype.vercel.app`)
+- **Backend API**: Render (`https://pashu-sarthak-api.onrender.com/api`)
+- **Database & Storage**: Supabase PostgreSQL
 
 ---
 
-# 🔮 Future Scope
+## 📄 License
 
-Pashu Sarthak can be expanded with:
-
-* 🤖 More advanced livestock disease detection models
-* 📷 Real-time camera-based animal health assessment
-* 🐄 Animal-level digital health passports
-* 🏷️ QR/RFID-based livestock identification
-* 🗺️ Live geospatial livestock disease heatmaps
-* 🔔 Push notifications and disease alerts
-* 💉 Automated vaccination reminders
-* 🧑‍⚕️ Direct connection with verified veterinarians
-* 🧪 Laboratory sample collection and referral workflows
-* 📊 Veterinary department dashboards
-* 📈 Advanced herd health analytics
-* 🌦️ Disease prediction using weather and historical trends
-* 🦠 Outbreak detection and containment intelligence
-* 🗣️ Expanded regional language support
-* 📡 Offline-first functionality for low-connectivity rural areas
-* 📱 Native Android/iOS applications
-* 🔊 IVR and voice-based livestock-health assistance
-
-The SIH26128 expected solution also envisions symptom and mortality reporting, AI/rule-based triage, geospatial risk mapping, weather and historical disease trends, multilingual alerts, laboratory referral, case escalation, veterinary dashboards, and mobile/web/IVR/offline channels.
+This project is licensed under the **MIT License** — see the [LICENSE](LICENSE) file for details.
 
 ---
 
-# 👥 Team
-
-**TEAM CYPHER**
-Smart India Hackathon (SIH) Prototype
-
-* **Lakshya Vadera**
-* **Snehansh Tripathy**
-* **Lau Kumar Singh**
-* **Maahi Arora**
-* **Utsav Kumar**
-* **Parth Upadhyay**
-
-Built with the goal of making **smart livestock health more accessible to every farmer**. 🐄
-
----
-
-# 📄 License
-
-This project is licensed under the **MIT License**.
-
----
-
-::: {align="center"}
-
-### 🐄 Pashu Sarthak
-
-**"सही समय पर सही सलाह — Smarter Livestock Health"**
-
-Made with ❤️ for farmers, healthier livestock, and smarter animal-health management.
+*Pashu Sarthak • Smart India Hackathon 2026 (Problem Statement: SIH26128)*  
+*Developed with ❤️ for the Department of Animal Husbandry & Rural Livestock Keepers.*

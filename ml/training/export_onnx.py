@@ -1,5 +1,5 @@
 """
-Krishi Sarthak - PyTorch to ONNX Export Utility
+Pashu Sarthak - PyTorch to ONNX Export Utility (SIH26128)
 Converts trained PyTorch model checkpoints (.pth) to standard optimized ONNX models (.onnx).
 """
 

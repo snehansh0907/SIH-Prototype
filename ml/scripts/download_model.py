@@ -1,6 +1,6 @@
 """
-Krishi Sarthak - Model Download Script
-Downloads the pre-trained MobileNetV2 ONNX model weights and class labels from the official repository.
+Pashu Sarthak - Model Download Script (SIH26128)
+Downloads the pre-trained MobileNetV2 ONNX model weights and class labels.
 """
 
 import os

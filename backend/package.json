@@ -1,7 +1,7 @@
 {
-  "name": "krishi-sarthak-backend",
+  "name": "pashu-sarthak-backend",
   "version": "1.0.0",
-  "description": "Backend API for Krishi Sarthak - AI-powered crop health detection, risk forecasting, hotspot monitoring, and expert validation system for farmers in Maharashtra, India.",
+  "description": "Backend API for Pashu Sarthak (SIH26128) - Smart Livestock Disease Early-Warning & Veterinary Surveillance System.",
   "main": "server.js",
   "type": "commonjs",
   "scripts": {
@@ -10,12 +10,14 @@
     "seed": "node seed.js"
   },
   "keywords": [
-    "krishi-sarthak",
+    "pashu-sarthak",
     "smart-india-hackathon",
-    "crop-health",
-    "agriculture"
+    "sih2026",
+    "livestock-health",
+    "veterinary-surveillance",
+    "animal-disease"
   ],
-  "author": "Krishi Sarthak Team",
+  "author": "Pashu Sarthak Team",
   "license": "MIT",
   "dependencies": {
     "@supabase/supabase-js": "^2.45.4",

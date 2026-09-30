@@ -1,6 +1,6 @@
 """
-Krishi Sarthak - Model Evaluation & Benchmark Script
-Evaluates ONNX / PyTorch crop disease model against test datasets,
+Pashu Sarthak - Model Evaluation & Benchmark Script (SIH26128)
+Evaluates ONNX diagnostic vision model against test datasets,
 calculates Top-1 accuracy, per-class metrics, confusion matrix, and low-confidence statistics.
 """
 
@@ -19,7 +19,7 @@ def evaluate_model(model_path: str, labels_path: str, test_dir: str):
         labels = json.load(f)
 
     print("==========================================================================================")
-    print("  Krishi Sarthak - Crop Disease Model Evaluation")
+    print("  Pashu Sarthak - Diagnostic Vision Model Evaluation")
     print(f"  Model: {os.path.basename(model_path)}")
     print(f"  Test Directory: {test_dir}")
     print("==========================================================================================")

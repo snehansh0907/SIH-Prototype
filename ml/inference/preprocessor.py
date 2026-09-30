@@ -1,6 +1,6 @@
 """
-Krishi Sarthak - ML Image Preprocessor
-Preprocesses farmer crop leaf images for MobileNetV2 ONNX inference.
+Pashu Sarthak - ML Image Preprocessor (SIH26128)
+Preprocesses animal/livestock symptom images for MobileNetV2 ONNX inference.
 Input: JPEG, PNG, WEBP image file or byte stream.
 Output: Normalized float32 numpy tensor of shape (1, 3, 224, 224) in NCHW format.
 """

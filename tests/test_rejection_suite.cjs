@@ -1,18 +1,18 @@
 /**
- * Krishi Sarthak - End-to-End Rejection & Diagnosis Test Suite
- * Tests all non-crop negative images, low quality images, unsupported crops,
- * and valid positive crop images against the real backend API.
+ * Pashu Sarthak - End-to-End Rejection & Diagnosis Test Suite (SIH26128)
+ * Tests non-animal negative images, low quality images, unsupported species,
+ * and valid positive images against the backend API.
  */
 
 const fs = require('fs');
 const path = require('path');
 const sharp = require(path.resolve(__dirname, '../backend/node_modules/sharp'));
 
-const API_BASE = 'http://localhost:5000/api';
+const API_BASE = 'http://localhost:5001/api';
 const NEGATIVES_DIR = path.resolve(__dirname, '../ml/test_images/negatives');
 const POSITIVES_DIR = path.resolve(__dirname, '../ml/test_images');
 
-async function sendDiagnosisRequest(filePath, cropName = 'Tomato') {
+async function sendDiagnosisRequest(filePath, cropName = 'Cattle') {
   const formData = new FormData();
   const fileBuffer = fs.readFileSync(filePath);
   const blob = new Blob([fileBuffer], { type: 'image/jpeg' });
@@ -36,7 +36,7 @@ async function sendDiagnosisRequest(filePath, cropName = 'Tomato') {
 
 async function runTestSuite() {
   console.log('======================================================================');
-  console.log('  KRISHI SARTHAK - MULTI-STAGE ML REJECTION & DIAGNOSIS TEST SUITE');
+  console.log('  PASHU SARTHAK - MULTI-STAGE ML REJECTION & DIAGNOSIS TEST SUITE');
   console.log('======================================================================\n');
 
   let passedTests = 0;

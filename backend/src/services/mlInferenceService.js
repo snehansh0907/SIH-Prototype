@@ -1,5 +1,5 @@
 // =========================================================
-// Krishi Sarthak - Multi-Stage Real ML Inference Service
+// Pashu Sarthak - Multi-Stage Real ML Inference Service (SIH26128)
 // =========================================================
 // Architecture:
 // STAGE 0: Image Quality & Integrity Validation
@@ -51,7 +51,7 @@ class MLInferenceService {
     this.classMapping = {};
     this.isInitialized = false;
     this.initError = null;
-    this.modelName = 'KrishiSarthak-DualStage-MobileNetV2';
+    this.modelName = 'PashuSarthak-DualStage-MobileNetV2';
     this.modelVersion = '2.0.0';
   }
 
@@ -94,7 +94,7 @@ class MLInferenceService {
       this.initError = null;
 
       console.log('====================================================');
-      console.log('  Krishi Sarthak Multi-Stage ML Engine Initialized');
+      console.log('  Pashu Sarthak Multi-Stage ML Engine Initialized');
       console.log(`  Architecture: Stage 1 Relevance Gate + Stage 2 Disease Classifier`);
       console.log(`  Stage 1 Model: MobileNetV2-Relevance Gate`);
       console.log(`  Stage 2 Model: MobileNetV2-PlantVillage (${Object.keys(this.classMapping).length} classes)`);

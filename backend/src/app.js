@@ -1,5 +1,5 @@
 // =========================================================
-// Krishi Sarthak - Express App
+// Pashu Sarthak Backend - Express App (SIH26128)
 // =========================================================
 // Wires together middleware, routes, and error handling.
 // =========================================================
@@ -30,6 +30,8 @@ const app = express();
 // ---------------- Global Middleware ----------------
 const allowedOrigins = [
   process.env.FRONTEND_URL,
+  'https://pashu-sarthak.vercel.app',
+  'https://sih-prototype.vercel.app',
   'http://localhost:5173',
   'http://localhost:5174',
   'http://127.0.0.1:5173',
@@ -62,8 +64,17 @@ app.options('*', cors(corsOptions));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Serve uploaded crop images statically (e.g. http://localhost:5000/uploads/crop_123.jpg)
+// Serve uploaded animal/tissue images statically
 app.use('/uploads', express.static(path.join(__dirname, '..', 'uploads')));
+
+// ---------------- Root Endpoint ----------------
+app.get('/', (req, res) => {
+  res.json({
+    name: 'Pashu Sarthak API',
+    status: 'ok',
+    health: '/api/health',
+  });
+});
 
 // ---------------- Health Check ----------------
 const mlInferenceService = require('./services/mlInferenceService');
